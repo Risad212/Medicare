@@ -677,12 +677,14 @@ input:-webkit-autofill:focus {
   width: 64px;
   height: 64px;
   fill: #1C274C;
+  margin-bottom: 10px;
 }
 
 .service-card .title {
   font-size: 23px;
   text-transform: capitalize;
   margin: 10px 0;
+  font-weight: 600;
 }
 
 .service-card .card-btn {
