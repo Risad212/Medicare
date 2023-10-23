@@ -492,47 +492,53 @@ input:-webkit-autofill:focus {
   z-index: 5;
   position: relative;
 }
+
 .feature-section .feature-card {
   padding: 30px 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.10);
   transition: all 400ms ease;
   background: #fff;
 }
-.feature-section .feature-card:hover{
+
+.feature-section .feature-card:hover {
   background: var(--primary-color);
 }
-.feature-card:hover .icon svg{
+
+.feature-card:hover .icon svg {
   fill: #fff;
 }
+
 .feature-card:hover .title,
-.feature-card:hover p{
+.feature-card:hover p {
   color: #fff;
 }
-.feature-card .icon svg{
+
+.feature-card .icon svg {
   fill: var(--primary-color);
   width: 55px;
   height: 55px;
   margin-bottom: 10px;
 }
+
 .feature-card .title {
   display: block;
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 15px
 }
-.feature-card p{
+
+.feature-card p {
   font-size: 16px;
   line-height: 26px;
   color: #666666;
   font-weight: 300;
 }
 
-
 /*================================================
              ABOUT SECTION
 ==================================================*/
 .about-section {
-  margin-top: 100px;
+  margin: 100px 0;
 }
 
 .sotry-content p {
@@ -541,11 +547,13 @@ input:-webkit-autofill:focus {
   font-weight: 300;
   font-size: 1rem;
 }
-.sotry-content .title{
+
+.sotry-content .title {
   margin-bottom: 15px;
   font-size: 25px;
   font-weight: 600;
 }
+
 .sotry-content a {
   padding: 10px 25px;
   background: transparent;
@@ -567,23 +575,23 @@ input:-webkit-autofill:focus {
 
 @keyframes hover {
   from {
-      box-shadow: inset 0 0 0 0.01px var(--primary-color);
+    box-shadow: inset 0 0 0 0.01px var(--primary-color);
   }
 
   to {
-      box-shadow: inset 8.79928em 0 0 0.01px var(--primary-color);
-      color: #fff;
+    box-shadow: inset 8.79928em 0 0 0.01px var(--primary-color);
+    color: #fff;
   }
 }
 
 @keyframes leave {
   from {
-      box-shadow: inset -8.79928em 0 0 0.01px var(--primary-color);
-      color: #fff;
+    box-shadow: inset -8.79928em 0 0 0.01px var(--primary-color);
+    color: #fff;
   }
 
   to {
-      box-shadow: inset 0 0 0 0.01px var(--primary-color);
+    box-shadow: inset 0 0 0 0.01px var(--primary-color);
   }
 }
 
@@ -623,10 +631,85 @@ input:-webkit-autofill:focus {
 /*=============== Story Responsive Tablet =============== */
 @media screen and (max-width: 992px) {
   #story {
-      margin-top: 35px;
+    margin-top: 35px;
   }
 
   .sotry-content {
-      margin-bottom: 15px;
+    margin-bottom: 15px;
   }
+}
+
+
+/*================================================
+             SERVICE SECTION
+==================================================*/
+.service-section {
+  padding: 100px 0;
+  background: #f8f8f8;
+}
+
+.service-section .title-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.service-section .title-head .subtitle {
+  display: block;
+  font-size: 16px;
+  color: #666666;
+  margin-bottom: 5px;
+}
+
+.service-section .title-head .title {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.service-card {
+  padding: 30px 20px;
+  background: #fff;
+  text-align: center;
+  border: 1px solid #eee;
+  transition: .4s;
+}
+
+.service-card .icon svg {
+  width: 64px;
+  height: 64px;
+  fill: #1C274C;
+}
+
+.service-card .title {
+  font-size: 23px;
+  text-transform: capitalize;
+  margin: 10px 0;
+}
+
+.service-card .card-btn {
+  border: 1px solid #fff;
+  font-size: 14px;
+  font-weight: 400;
+  background: #049f84;
+  padding: 8px 25px;
+  text-transform: capitalize;
+  color: #fff;
+  display: inline-block;
+  word-spacing: 2px;
+  margin-top: 10px;
+}
+
+.service-card:hover{
+  background: var(--primary-color);
+  color: #fff;
+}
+.service-card:hover .icon svg{
+  fill: #fff;
+}
+.service-card:hover .card-btn{
+  background: transparent;
+}
+
+.service-card .card-btn:hover{
+  background: #fff;
+  color: #1C274C;
 }
