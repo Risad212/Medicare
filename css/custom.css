@@ -209,11 +209,17 @@ input:-webkit-autofill:focus {
   width: 70%;
 }
 
-
 .nav-button a {
   background: var(--primary-color);
   padding: 10px 25px !important;
   color: #fff !important;
+  border: 2px solid var(--primary-color);
+  transition: .4s;
+}
+
+.nav-button:hover a {
+  background: transparent;
+  color: var(--primary-color) !important;
 }
 
 .dropdown {
@@ -341,6 +347,7 @@ input:-webkit-autofill:focus {
   color: #fff;
   line-height: 1.2;
   text-transform: uppercase;
+  margin-bottom: 20px;
 }
 
 .slider-section .title p {
@@ -357,7 +364,6 @@ input:-webkit-autofill:focus {
 }
 
 .slider-section .btn-title {
-  border: none;
   padding: 12px 30px;
   color: #fff;
   position: relative;
@@ -373,6 +379,7 @@ input:-webkit-autofill:focus {
   transition: all 0.5s ease-in-out;
   border: 3px solid var(--primary-color);
   outline: none;
+  margin-top: 15px;
 }
 
 .slider-section .btn-title:hover {
@@ -817,16 +824,20 @@ input:-webkit-autofill:focus {
 .doctor-card .card-content {
   padding: 20px 25px;
 }
-.card-img{
+
+.card-img {
   overflow: hidden;
 }
-.card-img img{
+
+.card-img img {
   transition: .4s;
 }
-.card-img:hover img{
+
+.card-img:hover img {
   transform: scale(1.2);
 }
-.card-content  .title {
+
+.card-content .title {
   color: #111111;
   font-weight: 600;
   margin-top: 0;
@@ -834,7 +845,7 @@ input:-webkit-autofill:focus {
   text-transform: capitalize;
 }
 
-.card-content .speacility{
+.card-content .speacility {
   font-weight: 500;
   margin-top: 0;
   padding: 0;
@@ -843,7 +854,7 @@ input:-webkit-autofill:focus {
   font-size: 17px;
 }
 
-.card-content .card-btn{
+.card-content .card-btn {
   padding: 10px 25px;
   background: var(--primary-color);
   display: inline-block;
@@ -853,13 +864,19 @@ input:-webkit-autofill:focus {
   border: 2px solid var(--primary-color);
 }
 
-.card-content .card-btn:hover{
+.card-content .card-btn:hover {
   background: transparent;
   color: var(--primary-color);
 }
+
 /*================================================
              TESTIMONIAL SECTION
 ==================================================*/
+.testimonial-section {
+  background: #e2f4f1;
+  padding: 60px 0;
+}
+
 .testimonial-section .testimonial-slider {
   background: #fff;
   text-align: center;
@@ -870,10 +887,12 @@ input:-webkit-autofill:focus {
   margin: 1.5rem auto;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
 }
-.testimonial-section .testimonial-slider .single-slider{
+
+.testimonial-section .testimonial-slider .single-slider {
   padding: 45px;
 }
-.testimonial-section .testimonial-slider .single-slider .comment{
+
+.testimonial-section .testimonial-slider .single-slider .comment {
   background-color: var(--primary-color);
   color: #fff;
   font-size: 0.86rem;
@@ -884,6 +903,7 @@ input:-webkit-autofill:focus {
   position: relative;
   font-weight: 400;
 }
+
 .testimonial-section .testimonial-slider .single-slider .comment::before {
   content: "";
   position: absolute;
@@ -895,7 +915,8 @@ input:-webkit-autofill:focus {
   transform: translateX(-50%) rotate(45deg);
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
 }
-.testimonial-section .testimonial-slider .single-slider .name{
+
+.testimonial-section .testimonial-slider .single-slider .name {
   font-size: 18px;
   font-weight: 600;
   margin-top: 15px;
@@ -907,7 +928,7 @@ input:-webkit-autofill:focus {
   margin: auto;
 }
 
-.testimonial-section .testimonial-slider .single-slider .job{
+.testimonial-section .testimonial-slider .single-slider .job {
   font-size: 0.7rem;
   color: #8d8e97;
   font-weight: 400;
@@ -960,16 +981,18 @@ input:-webkit-autofill:focus {
   margin-right: 9px;
 }
 
-.owl-carousel .owl-dots.disabled, .owl-carousel .owl-nav.disabled{
+.owl-carousel .owl-dots.disabled,
+.owl-carousel .owl-nav.disabled {
   display: block;
 }
 
 /*================================================
              BLOG SECTION
 ==================================================*/
-.blog-section{
+.blog-section {
   padding: 100px 0;
 }
+
 .blog-section .blog-left .title {
   font-size: 35px;
   line-height: 1.2;
@@ -986,7 +1009,7 @@ input:-webkit-autofill:focus {
 .blog-section .img-wrapper {
   position: relative;
   overflow: hidden;
-  /* box-shadow: 0px 0px 35px 0px rgba(0, 0, 0, 0.07); */
+  border-radius: 20px;
 }
 
 .blog-section .img-wrapper img {
@@ -1077,24 +1100,77 @@ input:-webkit-autofill:focus {
 /*=============== Blog Responsive Mobile =============== */
 @media screen and (max-width: 767px) {
   .blog-section {
-      margin-top: 40px;
-      margin-bottom: 40px;
+    margin-top: 40px;
+    margin-bottom: 40px;
   }
 
   .blog-section .blog-left .title {
-      margin-right: 0px;
-      font-size: 30px;
+    margin-right: 0px;
+    font-size: 30px;
   }
 
   .blog-section .blog-left .img-wrapper .text-box {
-      padding: 10px 15px;
+    padding: 10px 15px;
   }
 
   .blog-section .blog-left .img-wrapper .text-box h3 {
-      font-size: 20px;
+    font-size: 20px;
   }
 
   .blog-section .blog-left .button {
-      margin-top: 5px;
+    margin-top: 5px;
   }
+}
+
+/*================================================
+             SISTER CONCERNS SECTION
+==================================================*/
+.sister-concern-section .clients-photo img {
+  object-fit: scale-down;
+}
+
+/*================================================
+            FOOTER SECTION 
+==================================================*/
+.footer-section {
+  padding: 80px 0;
+  background: #0e2737;
+}
+
+.footer-widget-1 .footer-logo {
+  color: #fff;
+}
+
+.footer-widget-1 p {
+  color: #fff;
+  font-weight: 300;
+  margin-top: 25px;
+  line-height: 25px;
+}
+.footer-widget-1 .social-list{
+  margin-top: 20px;
+}
+.footer-widget-1 .social-list .item {
+  display: inline-block;
+  font-size: 14px;
+  color: #ffffff;
+  height: 35px;
+  width: 35px;
+  border: 1px solid #ffffff;
+  line-height: 33px;
+  text-align: center;
+  border-radius: 50%;
+  margin-right: 15px;
+  transition: .4s;
+}
+.footer-widget-1 .social-list .item:hover{
+  background: #fff;
+  margin-top: 0px;
+}
+.footer-widget-1 .social-list .item:hover svg{
+  fill: var(--primary-color);
+}
+.footer-widget-1 .social-list .item svg {
+  width: 16px;
+  fill: #fff;
 }
