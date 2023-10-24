@@ -1,4 +1,3 @@
-
 /*================================================
             BASE CSS
 ==================================================*/
@@ -78,6 +77,26 @@ body {
 
 a:hover {
   text-decoration: none;
+}
+
+/*----- title head style -----*/
+.title-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.title-head .subtitle {
+  display: block;
+  font-size: 16px;
+  color: #666666;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.title-head .title {
+  font-size: 30px;
+  font-weight: 600;
+  text-transform: capitalize;
 }
 
 /* Remove Chrome Input Field's Unwanted Yellow Background Color */
@@ -182,7 +201,7 @@ input:-webkit-autofill:focus {
   transition: .4s;
 }
 
-.header .navbar-nav .nav-item:last-child .nav-link::after{
+.header .navbar-nav .nav-item:last-child .nav-link::after {
   content: unset;
 }
 
@@ -352,36 +371,14 @@ input:-webkit-autofill:focus {
   letter-spacing: 0.5px;
   border-radius: 0px;
   transition: all 0.5s ease-in-out;
-  animation: leave 0.4s forwards;
   border: 3px solid var(--primary-color);
   outline: none;
 }
 
 .slider-section .btn-title:hover {
-  animation: hover 0.4s forwards;
+  background: var(--primary-color);
 }
 
-@keyframes hover {
-  from {
-    box-shadow: inset 0 0 0 0.01px var(--primary-color);
-  }
-
-  to {
-    box-shadow: inset 11em 0 0 0.01px var(--primary-color);
-    color: #fff;
-  }
-}
-
-@keyframes leave {
-  from {
-    box-shadow: inset -11em 0 0 0.01px var(--primary-color);
-    color: #fff;
-  }
-
-  to {
-    box-shadow: inset 0 0 0 0.01px var(--primary-color);
-  }
-}
 
 
 /*----- owl button style -------*/
@@ -570,7 +567,6 @@ input:-webkit-autofill:focus {
   transition: all .3s ease-in-out;
   display: inline-block;
   position: relative;
-  /*-- optional ---*/
   animation: leave 0.4s forwards;
 }
 
@@ -584,7 +580,7 @@ input:-webkit-autofill:focus {
   }
 
   to {
-    box-shadow: inset 8.79928em 0 0 0.01px var(--primary-color);
+    box-shadow: inset 9em 0 0 0.01px var(--primary-color);
     color: #fff;
   }
 }
@@ -705,18 +701,20 @@ input:-webkit-autofill:focus {
   margin-top: 10px;
 }
 
-.service-card:hover{
+.service-card:hover {
   background: var(--primary-color);
   color: #fff;
 }
-.service-card:hover .icon svg{
+
+.service-card:hover .icon svg {
   fill: #fff;
 }
-.service-card:hover .card-btn{
+
+.service-card:hover .card-btn {
   background: transparent;
 }
 
-.service-card .card-btn:hover{
+.service-card .card-btn:hover {
   background: #fff;
   color: #1C274C;
 }
@@ -726,8 +724,8 @@ input:-webkit-autofill:focus {
 ==================================================*/
 #counter {
   background-image:
-      linear-gradient(rgba(41, 41, 41, 0.752), rgba(29, 29, 29, 0.73)),
-      url('../media/home/counter-bg.webp');
+    linear-gradient(rgba(41, 41, 41, 0.752), rgba(29, 29, 29, 0.73)),
+    url('../media/home/counter-bg.webp');
   background-size: cover;
   background-repeat: no-repeat;
   padding: 80px 0;
@@ -795,11 +793,121 @@ input:-webkit-autofill:focus {
 /*=============== Counter Responsive Mobile =============== */
 @media screen and (max-width: 767px) {
   #counter {
-      padding: 40px 0;
+    padding: 40px 0;
   }
 
   #counter .item {
-      padding-top: 30px;
-      padding-bottom: 5px;
+    padding-top: 30px;
+    padding-bottom: 5px;
   }
+}
+
+/*================================================
+             DOCTOR SECTION
+==================================================*/
+.doctor-section {
+  padding: 100px 0;
+}
+
+.doctor-card {
+  background: #FFFFFF;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.doctor-card .card-content {
+  padding: 20px 25px;
+}
+.card-img{
+  overflow: hidden;
+}
+.card-img img{
+  transition: .4s;
+}
+.card-img:hover img{
+  transform: scale(1.2);
+}
+.card-content  .title {
+  color: #111111;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 8px;
+  text-transform: capitalize;
+}
+
+.card-content .speacility{
+  font-weight: 500;
+  margin-top: 0;
+  padding: 0;
+  text-transform: capitalize;
+  display: block;
+  font-size: 17px;
+}
+
+.card-content .card-btn{
+  padding: 10px 25px;
+  background: var(--primary-color);
+  display: inline-block;
+  margin-top: 15px;
+  color: #fff;
+  transition: .4s;
+  border: 2px solid var(--primary-color);
+}
+
+.card-content .card-btn:hover{
+  background: transparent;
+  color: var(--primary-color);
+}
+/*================================================
+             TESTIMONIAL SECTION
+==================================================*/
+.client-slider {
+  background: #fff;
+  text-align: center;
+  width: 95%;
+  max-width: 600px;
+  padding: 2rem;
+  margin: 1.5rem auto;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+}
+.single-slider{
+  padding: 45px;
+}
+.single-slider .comment{
+  background-color: #000;
+  color: #fff;
+  font-size: 0.86rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  letter-spacing: 0.4px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  position: relative;
+  font-weight: 400;
+}
+.single-slider .comment::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  height: 20px;
+  width: 20px;
+  background-color: #000;
+  transform: translateX(-50%) rotate(45deg);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
+}
+.single-slider .name{
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+.single-slider img {
+  max-width: 60px;
+  border-radius: 50%;
+  margin: auto;
+}
+
+.single-slider .job{
+  font-size: 0.7rem;
+  color: #8d8e97;
+  font-weight: 400;
 }
