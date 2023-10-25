@@ -37,8 +37,7 @@
                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                      <g id="SVGRepo_iconCarrier">
-                        <path
-                           fill="#1C274C"
+                        <path fill="#1C274C"
                            d="M32,0C18.746,0,8,10.746,8,24c0,5.219,1.711,10.008,4.555,13.93c0.051,0.094,0.059,0.199,0.117,0.289l16,24 C29.414,63.332,30.664,64,32,64s2.586-0.668,3.328-1.781l16-24c0.059-0.09,0.066-0.195,0.117-0.289C54.289,34.008,56,29.219,56,24 C56,10.746,45.254,0,32,0z M32,32c-4.418,0-8-3.582-8-8s3.582-8,8-8s8,3.582,8,8S36.418,32,32,32z">
                         </path>
                      </g>
@@ -57,7 +56,7 @@
                            fill="white"></path>
                      </g>
                   </svg>
-                 <span>Sat - Thu 8:00AM - 11:00PM Friday CLOSED</span>
+                  <span>Sat - Thu 8:00AM - 11:00PM Friday CLOSED</span>
                </span>
             </div>
             <div class="topbar-right">
@@ -137,14 +136,14 @@
          <nav class="navbar navbar-expand-lg">
             <a class="navbar-brand" href="#"><img src="media/common/logo.png" alt=""></a>
             <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbar-content">
-                <div class="hamburger-toggle order-lg-1">
-                    <div class="hamburger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </div>
+               data-bs-target="#navbar-content">
+               <div class="hamburger-toggle order-lg-1">
+                  <div class="hamburger">
+                     <span></span>
+                     <span></span>
+                     <span></span>
+                  </div>
+               </div>
             </button>
             <div class="collapse navbar-collapse" id="navbar-content">
                <ul class="navbar-nav ms-auto">
@@ -158,7 +157,18 @@
                      <a class="nav-link" href="#">our services</a>
                   </li>
                   <li class="nav-item dropdown">
-                     <a class="nav-link" href="#">doctors</a>
+                     <a class="nav-link" href="#">
+                        doctors
+                        <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                           <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                           <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                           <g id="SVGRepo_iconCarrier">
+                              <rect fill="white"></rect>
+                              <path d="M17 9.5L12 14.5L7 9.5" stroke="#000000" stroke-linecap="round"
+                                 stroke-linejoin="round"></path>
+                           </g>
+                        </svg>
+                     </a>
                      <ul class="dropdown-list">
                         <li class="item"><a href="#">Doctor 1</a></li>
                         <li class="item"><a href="#">Doctor 2</a></li>
@@ -171,7 +181,18 @@
                      <a class="nav-link" href="#">gallary</a>
                   </li>
                   <li class="nav-item dropdown">
-                     <a class="nav-link" href="#">Pages</a>
+                     <a class="nav-link" href="#">
+                        Pages
+                        <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                           <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                           <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                           <g id="SVGRepo_iconCarrier">
+                              <rect fill="white"></rect>
+                              <path d="M17 9.5L12 14.5L7 9.5" stroke="#000000" stroke-linecap="round"
+                                 stroke-linejoin="round"></path>
+                           </g>
+                        </svg>
+                     </a>
                      <ul class="dropdown-list">
                         <li class="item"><a href="#">Page 1</a></li>
                         <li class="item"><a href="#">Page 1</a></li>
@@ -1157,7 +1178,7 @@
        ====================================*/
       $(".clients-slider").owlCarousel({
          loop: true,
-         margin: 30,
+         margin: 5,
          nav: true,
          dots: false,
          autoplay: true,
@@ -1175,11 +1196,33 @@
                items: 2
             },
             1000: {
-               items: 5
+               items: 4
             }
+         }
+      });
+
+       /*===================================
+         Toggle Menu
+       ====================================*/
+      document.addEventListener('click', function (e) {
+         // Hamburger menu
+         if (e.target.classList.contains('hamburger-toggle')) {
+            e.target.children[0].classList.toggle('active');
+         }
+      })
+
+      /*===================================
+         sticky Menu
+       ====================================*/
+      const navbarMenu = document.querySelector('.header');
+      let navTopbar = nav.offsetTop;
+      window.addEventListener('scroll', () => {
+         if (window.scrollY >= navTopbar) {
+            navbarMenu.classList.add('sticky-nav');
+         } else {
+            navbarMenu.classList.remove('sticky-nav');
          }
       });
    </script>
 </body>
-
 </html>

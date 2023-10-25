@@ -372,6 +372,26 @@ input:-webkit-autofill:focus {
   transform: rotate(-45deg);
 }
 
+.dropdown-icon {
+  position: absolute;
+  width: 21px;
+  top: 27px;
+}
+
+.sticky-nav {
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  border-top: 1px solid #e2e2e2;
+  border-bottom: 1px solid #e2e2e2;
+  transition: 0.1s;
+  z-index: 999;
+  box-shadow: 0 3px 7px 1px rgba(144, 161, 180, .2);
+}
+
 /*---------- Mobile Responsive -----------*/
 @media only screen and (max-width: 600px) {
   .header .navbar-nav .nav-item .nav-link {
@@ -382,12 +402,22 @@ input:-webkit-autofill:focus {
     align-items: unset;
     padding: 15px 0;
   }
-  .nav-button a{
+
+  .nav-button a {
     display: inline-block;
   }
-  .dropdown-list{
-    top: 15px;
-    left: 88px;
+
+  .dropdown-list {
+    top: 35px;
+    left: 15px;
+  }
+
+  .dropdown-icon {
+    top: 7px;
+  }
+
+  .header .navbar-nav .nav-item .nav-link::after {
+    content: unset;
   }
 }
 
@@ -510,6 +540,7 @@ input:-webkit-autofill:focus {
 .slider-section .btn-title:hover {
   background: var(--primary-color);
 }
+
 /*----- owl button style -------*/
 .slider-section .owl-carousel .owl-nav button.owl-next,
 .slider-section .owl-carousel .owl-nav button.owl-prev {
@@ -664,12 +695,14 @@ input:-webkit-autofill:focus {
   color: #666666;
   font-weight: 300;
 }
+
 /*---------- Mobile Responsive -----------*/
 @media only screen and (max-width: 600px) {
-  .feature-section{
+  .feature-section {
     margin-top: 50px;
   }
-  .feature-section .feature-card{
+
+  .feature-section .feature-card {
     margin-bottom: 30px;
   }
 }
@@ -777,9 +810,10 @@ input:-webkit-autofill:focus {
     margin-bottom: 15px;
   }
 }
+
 /*---------- Mobile Responsive -----------*/
 @media only screen and (max-width: 600px) {
-  .about-section{
+  .about-section {
     margin: 50px 0;
   }
 }
@@ -1006,13 +1040,15 @@ input:-webkit-autofill:focus {
 }
 
 @media only screen and (max-width: 600px) {
-  .doctor-section{
+  .doctor-section {
     padding: 50px 0;
   }
-  .doctor-card{
+
+  .doctor-card {
     margin-bottom: 30px;
   }
 }
+
 /*================================================
              TESTIMONIAL SECTION
 ==================================================*/
@@ -1081,7 +1117,7 @@ input:-webkit-autofill:focus {
 .testimonial-slider .owl-prev,
 .testimonial-slider .owl-next {
   position: absolute;
-  top: 55%;
+  top: 45%;
   border-radius: 5%;
   width: 45px;
   height: 45px;
@@ -1092,11 +1128,11 @@ input:-webkit-autofill:focus {
 }
 
 .testimonial-slider .owl-prev {
-  left: 25px;
+  left: 10px;
 }
 
 .testimonial-slider .owl-next {
-  right: 25px;
+  right: 10px;
 }
 
 .owl-theme .owl-nav [class*='owl-']:hover {
@@ -1132,25 +1168,31 @@ input:-webkit-autofill:focus {
 
 /*----- Mobile Responsive ------*/
 @media only screen and (max-width: 600px) {
-  .testimonial-section .testimonial-slider .single-slider{
+  .testimonial-section .testimonial-slider .single-slider {
     padding: 0;
   }
-  .testimonial-slider .owl-prev, .testimonial-slider .owl-next{
+
+  .testimonial-slider .owl-prev,
+  .testimonial-slider .owl-next {
     width: 40px;
     height: 40px;
     top: 35%;
     background: #fff !important;
   }
-  .testimonial-slider .owl-prev{
+
+  .testimonial-slider .owl-prev {
     left: -21px;
   }
-  .testimonial-slider .owl-next{
+
+  .testimonial-slider .owl-next {
     right: -21px;
   }
-  .testimonial-section .testimonial-slider .single-slider .comment{
+
+  .testimonial-section .testimonial-slider .single-slider .comment {
     padding: 1rem;
   }
 }
+
 /*================================================
              BLOG SECTION
 ==================================================*/
@@ -1267,6 +1309,7 @@ input:-webkit-autofill:focus {
   .blog-section {
     padding: 50px 0;
   }
+
   .blog-section .blog-left .title {
     margin-right: 0px;
     font-size: 30px;
@@ -1409,19 +1452,23 @@ input:-webkit-autofill:focus {
 
 
 @media only screen and (max-width: 768px) {
-  .footer-widget-2{
+  .footer-widget-2 {
     padding-left: 0;
   }
+
   .footer-section {
     padding-top: 50px;
   }
-  .deparment-list .item{
+
+  .deparment-list .item {
     margin-bottom: 12px;
   }
-  .footer-widget-4 .contact-list .item{
+
+  .footer-widget-4 .contact-list .item {
     margin-bottom: 14px;
   }
-  .footer-widget-4 .contact-list .item a{
+
+  .footer-widget-4 .contact-list .item a {
     align-items: center;
   }
 }
