@@ -1388,10 +1388,6 @@ input:-webkit-autofill:focus {
   padding-bottom: 30px;
 }
 
-.footer-widget-1 .footer-logo {
-  color: #fff;
-}
-
 .footer-widget-1 p {
   color: #cbcbcb;
   font-weight: 300;
@@ -1414,12 +1410,10 @@ input:-webkit-autofill:focus {
   text-align: center;
   border-radius: 50%;
   margin-right: 15px;
-  transition: .4s;
 }
 
 .footer-widget-1 .social-list .item:hover {
   background: #fff;
-  margin-top: 0px;
 }
 
 .footer-widget-1 .social-list .item:hover svg {
@@ -1432,7 +1426,7 @@ input:-webkit-autofill:focus {
 }
 
 .footer-widget-2 {
-  padding-left: 70px;
+  padding-left: 45px;
 }
 
 .footer-section .widget-title {
@@ -1448,15 +1442,21 @@ input:-webkit-autofill:focus {
 .deparment-list .item {
   position: relative;
   display: block;
-  font-weight: 400;
-  font-size: 16px;
-  margin-bottom: 18px;
+  font-weight: 300;
+  font-size: 15px;
+  border-bottom: 1px solid #7e7e7e;
+  padding-bottom: 14px;
+  padding-top: 10px;
+  transition: all 500ms;
 }
 
 .deparment-list .item a {
   color: #cbcbcb;
+  transition: all 500ms;
 }
-
+.deparment-list .item:hover a{
+  color: var(--primary-color);
+}
 /*------ footer widget 4 --------*/
 .footer-widget-4 .contact-list .item {
   margin-bottom: 22px;
@@ -1487,7 +1487,7 @@ input:-webkit-autofill:focus {
   border-top: 1px solid #797979;
   display: flex;
   justify-content: space-between;
-  color: #fff;
+  color: #a4a4a4;
   padding: 15px 0;
 }
 
