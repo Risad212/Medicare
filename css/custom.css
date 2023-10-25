@@ -71,6 +71,7 @@ address {
 
 ul {
   list-style: none;
+  color: #777;
 }
 
 html,
@@ -1149,16 +1150,18 @@ input:-webkit-autofill:focus {
             FOOTER SECTION 
 ==================================================*/
 .footer-section {
-  padding: 80px 0;
+  padding-top: 80px;
   background: #0e2737;
 }
-
+.footer-section .footer-content{
+  padding-bottom: 30px;
+}
 .footer-widget-1 .footer-logo {
   color: #fff;
 }
 
 .footer-widget-1 p {
-  color: #fff;
+  color: #cbcbcb;
   font-weight: 300;
   margin-top: 25px;
   line-height: 25px;
@@ -1219,7 +1222,7 @@ input:-webkit-autofill:focus {
 }
 
 .deparment-list .item a {
-  color: #fff;
+  color: #cbcbcb;
 }
 
 /*------ footer widget 4 --------*/
@@ -1229,7 +1232,7 @@ input:-webkit-autofill:focus {
 
 .footer-widget-4 .contact-list .item a {
   display: flex;
-  color: #fff;
+  color: #cbcbcb;
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
@@ -1245,4 +1248,13 @@ input:-webkit-autofill:focus {
 .footer-widget-4 .contact-list .item .icon {
   margin-right: 12px;
   margin-top: 6px;
+}
+
+/*---- copwywrite text ----*/
+.footer-section .copay-write{
+  border-top: 1px solid #797979;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  padding: 15px 0;
 }
