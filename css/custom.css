@@ -102,7 +102,9 @@ a:hover {
   font-weight: 600;
   text-transform: capitalize;
 }
-
+.active-nav{
+  color: var(--primary-color) !important;
+}
 /* Remove Chrome Input Field's Unwanted Yellow Background Color */
 
 input:-webkit-autofill,
@@ -1509,5 +1511,92 @@ input:-webkit-autofill:focus {
 
   .footer-widget-4 .contact-list .item a {
     align-items: center;
+  }
+}
+
+/*================================================
+           Back to top
+==================================================*/
+.scrollup {
+  position: fixed;
+  width: 35px;
+  height: 70px;
+  line-height: 50px;
+  text-align: center;
+  background-color: var(--primary-color);
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  animation-delay: .95s;
+  display: inline-block;
+  transform: rotate(180deg);
+  bottom: 8%;
+  right: 3%;
+  z-index: 3;
+  opacity: 18;
+  cursor: pointer;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+
+.scrollup:hover {
+  background-color: #000;
+  transition: 1s;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+}
+
+.back-to-top span {
+  padding-bottom: 10px;
+}
+
+.back-to-top--active {
+  visibility: visible;
+  -webkit-animation: back-to-top .5s ease-in;
+  animation: back-to-top .5s ease-in;
+  transition: width 3s;
+}
+
+.scroll-effects {
+  background: url("../media/common/scrolling-icon.png");
+  width: 19px;
+  height: 16px;
+  display: inline-block;
+  -webkit-animation-name: scroll_effects;
+  animation-name: scroll_effects;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+}
+
+@-webkit-keyframes scroll_effects {
+
+  from,
+  to {
+      -webkit-transform: translateY(20px);
+      transform: translateY(20px);
+  }
+
+  50% {
+      -webkit-transform: translateY(0);
+      transform: translateY(0);
+  }
+}
+
+@keyframes scroll_effects {
+
+  from,
+  to {
+      -webkit-transform: translateY(20px);
+      transform: translateY(20px);
+  }
+
+  50% {
+      -webkit-transform: translateY(0);
+      transform: translateY(0);
   }
 }

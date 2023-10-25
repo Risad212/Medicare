@@ -6,7 +6,22 @@ document.addEventListener('click', function (e) {
     }
 })
 
-
+/*[ Back to top ]
+===========================================================*/
+$(".scrollup").hide();
+$(window).scroll(function () {
+    if ($(this).scrollTop() > 400) {
+        $('.scrollup').fadeIn();
+    } else {
+        $('.scrollup').fadeOut();
+    }
+});
+$('.scrollup').on('click', function () {
+    $('body,html').animate({
+        scrollTop: 0
+    }, 800);
+    return false;
+});
 
 
 
