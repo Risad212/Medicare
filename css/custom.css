@@ -1147,9 +1147,11 @@ input:-webkit-autofill:focus {
   margin-top: 25px;
   line-height: 25px;
 }
-.footer-widget-1 .social-list{
+
+.footer-widget-1 .social-list {
   margin-top: 20px;
 }
+
 .footer-widget-1 .social-list .item {
   display: inline-block;
   font-size: 14px;
@@ -1163,14 +1165,65 @@ input:-webkit-autofill:focus {
   margin-right: 15px;
   transition: .4s;
 }
-.footer-widget-1 .social-list .item:hover{
+
+.footer-widget-1 .social-list .item:hover {
   background: #fff;
   margin-top: 0px;
 }
-.footer-widget-1 .social-list .item:hover svg{
+
+.footer-widget-1 .social-list .item:hover svg {
   fill: var(--primary-color);
 }
+
 .footer-widget-1 .social-list .item svg {
   width: 16px;
   fill: #fff;
+}
+
+.footer-widget-2 {
+  padding-left: 70px;
+}
+.footer-section .widget-title {
+  position: relative;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 30px;
+  text-transform: capitalize;
+  margin-bottom: 25px;
+}
+
+.deparment-list .item {
+  position: relative;
+  display: block;
+  font-weight: 400;
+  font-size: 16px;
+  margin-bottom: 18px;
+}
+
+.deparment-list .item a{
+  color: #fff;
+}
+
+/*------ footer widget 4 --------*/
+.footer-widget-4 .contact-list .item{
+  margin-bottom: 22px;
+}
+.footer-widget-4 .contact-list .item a{
+  display: flex;
+  color: #fff;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  padding: 0;
+  margin: 0;
+}
+.footer-widget-4 .contact-list .item .icon svg{
+  width: 30px;
+  fill: #fff;
+}
+
+.footer-widget-4 .contact-list .item  .icon {
+  margin-right: 12px;
+  margin-top: 6px;
 }
