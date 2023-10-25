@@ -65,6 +65,9 @@ a:focus {
   outline: 0 solid;
 }
 
+address {
+  margin: 0;
+}
 
 ul {
   list-style: none;
@@ -114,14 +117,13 @@ input:-webkit-autofill:focus {
   }
 }
 
-
-
 /*--------------------------------------------------------------
-# Header section 
+# Topbar section 
 --------------------------------------------------------------*/
 .topbar {
   padding: 8px 0;
-  background: #00c0a1;
+  background: #049f84;
+  color: #fff;
 }
 
 .topbar .topbar-wrap {
@@ -141,7 +143,7 @@ input:-webkit-autofill:focus {
 }
 
 .topbar .topbar-wrap .topbar-left span svg {
-  width: 28px;
+  width: 22px;
 }
 
 .topbar .topbar-wrap .topbar-left span:last-child svg {
@@ -162,13 +164,27 @@ input:-webkit-autofill:focus {
   border-radius: 50%;
   border: none;
   margin-right: 15px;
+  transition: all 500ms;
 }
-
 .topbar .topbar-wrap .topbar-right .socail-list .item svg {
   fill: #fff;
   width: 14px;
 }
-
+.topbar .topbar-wrap .topbar-right .socail-list .item:first-child:hover{
+  background: #3b5998;
+}
+.topbar .topbar-wrap .topbar-right .socail-list .item:nth-child(2):hover{
+  background: #26a7de;
+}
+.topbar .topbar-wrap .topbar-right .socail-list .item:nth-child(3):hover{
+  background: #0072b1;
+}
+.topbar .topbar-wrap .topbar-right .socail-list .item:last-child:hover{
+  background: #CD201F;
+}
+/*--------------------------------------------------------------
+# Header section 
+--------------------------------------------------------------*/
 .header {
   background: #F0F0ED;
 }
@@ -1183,6 +1199,7 @@ input:-webkit-autofill:focus {
 .footer-widget-2 {
   padding-left: 70px;
 }
+
 .footer-section .widget-title {
   position: relative;
   font-size: 20px;
@@ -1201,15 +1218,16 @@ input:-webkit-autofill:focus {
   margin-bottom: 18px;
 }
 
-.deparment-list .item a{
+.deparment-list .item a {
   color: #fff;
 }
 
 /*------ footer widget 4 --------*/
-.footer-widget-4 .contact-list .item{
+.footer-widget-4 .contact-list .item {
   margin-bottom: 22px;
 }
-.footer-widget-4 .contact-list .item a{
+
+.footer-widget-4 .contact-list .item a {
   display: flex;
   color: #fff;
   font-weight: 400;
@@ -1218,12 +1236,13 @@ input:-webkit-autofill:focus {
   padding: 0;
   margin: 0;
 }
-.footer-widget-4 .contact-list .item .icon svg{
+
+.footer-widget-4 .contact-list .item .icon svg {
   width: 30px;
   fill: #fff;
 }
 
-.footer-widget-4 .contact-list .item  .icon {
+.footer-widget-4 .contact-list .item .icon {
   margin-right: 12px;
   margin-top: 6px;
 }
