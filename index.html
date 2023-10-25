@@ -954,7 +954,7 @@
 
                   <div class="img-wrapper">
                      <a href="blog-details.html">
-                        <img class="lazy img-fluid"
+                        <img class="img-fluid"
                            src="https://images.pexels.com/photos/3769151/pexels-photo-3769151.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                            alt="">
                      </a>
@@ -977,7 +977,7 @@
                         <div class="box">
                            <div class="img-wrapper">
                               <a href="blog-details.html">
-                                 <img class="lazy img-fluid" src="media/home/blog2.jpg" alt="">
+                                 <img class="img-fluid" src="media/home/blog2.jpg" alt="">
                               </a>
                            </div>
                         </div>
@@ -995,7 +995,7 @@
                         <div class="box">
                            <div class="img-wrapper">
                               <a href="blog-details.html">
-                                 <img class="lazy img-fluid" src="media/home/blog3.jpg" alt="">
+                                 <img class="img-fluid" src="media/home/blog3.jpg" alt="">
                               </a>
                            </div>
                         </div>
@@ -1013,7 +1013,7 @@
                         <div class="box">
                            <div class="img-wrapper">
                               <a href="blog-details.html">
-                                 <img class="lazy img-fluid" src="media/home/blog4.jpg" alt="">
+                                 <img class="img-fluid" src="media/home/blog4.jpg" alt="">
                               </a>
                            </div>
                         </div>
@@ -1392,17 +1392,6 @@
             }
          }
       });
-
-      /*===================================
-        Toggle Menu
-      ====================================*/
-      document.addEventListener('click', function (e) {
-         // Hamburger menu
-         if (e.target.classList.contains('hamburger-toggle')) {
-            e.target.children[0].classList.toggle('active');
-         }
-      })
-
       /*===================================
          sticky Menu
        ====================================*/
@@ -1415,7 +1404,6 @@
             navbarMenu.classList.remove('sticky-nav');
          }
       });
-
 
       /*===================================
          add active class
