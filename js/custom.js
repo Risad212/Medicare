@@ -7,17 +7,7 @@ document.addEventListener('click', function (e) {
 })
 
 
-// For Nav sticky
-const nav = document.querySelector('.header');
-let navTop = nav.offsetTop;
-function fixedNav() {
-    if (window.scrollY >= navTop) {
-        nav.classList.add('sticky-nav');
-    } else {
-        nav.classList.remove('sticky-nav');
-    }
-}
-window.addEventListener('scroll', fixedNav);
+
 
 
 

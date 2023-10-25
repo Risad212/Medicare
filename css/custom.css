@@ -995,19 +995,58 @@ input:-webkit-autofill:focus {
   padding: 20px 25px;
 }
 
-.card-img {
+.doctor-card .card-img {
   overflow: hidden;
+  position: relative;
 }
 
-.card-img img {
+.doctor-card .card-img img {
   transition: .4s;
 }
 
-.card-img:hover img {
+.doctor-card .card-img:hover img {
   transform: scale(1.2);
 }
-
-.card-content .title {
+.doctor-card .card-img .social-media{
+  position: absolute;
+  top: 20px;
+  left: -20%;
+  -webkit-transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  -o-transition: all 0.4s ease-in-out;
+  -ms-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+.doctor-card .card-img:hover .social-media{
+  left: 20px;
+}
+.doctor-card .card-img .social-media .item{
+  background-color: var(--primary-color);
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  display: block;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  -webkit-transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  -o-transition: all 0.4s ease-in-out;
+  -ms-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+.doctor-card .card-img .social-media .item svg{
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+}
+.doctor-card .card-img .social-media .item:hover{
+  background: #fff;
+}
+.doctor-card .card-img .social-media .item:hover svg{
+  fill: var(--primary-color);
+}
+.doctor-card .card-content .title {
   color: #111111;
   font-weight: 600;
   margin-top: 0;
@@ -1016,7 +1055,7 @@ input:-webkit-autofill:focus {
   font-size: 18px;
 }
 
-.card-content .speacility {
+.doctor-card .card-content .speacility {
   font-weight: 500;
   margin-top: 0;
   padding: 0;
@@ -1025,7 +1064,7 @@ input:-webkit-autofill:focus {
   font-size: 14px;
 }
 
-.card-content .card-btn {
+.doctor-card .card-content .card-btn {
   padding: 8px 15px;
   background: var(--primary-color);
   display: inline-block;
@@ -1035,11 +1074,10 @@ input:-webkit-autofill:focus {
   border: 2px solid var(--primary-color);
 }
 
-.card-content .card-btn:hover {
+.doctor-card .card-content .card-btn:hover {
   background: transparent;
   color: var(--primary-color);
 }
-
 @media only screen and (max-width: 600px) {
   .doctor-section {
     padding: 50px 0;
