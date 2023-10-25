@@ -1011,8 +1011,9 @@ input:-webkit-autofill:focus {
   color: #111111;
   font-weight: 600;
   margin-top: 0;
-  margin-bottom: 8px;
+  margin-bottom: 0px;
   text-transform: capitalize;
+  font-size: 18px;
 }
 
 .card-content .speacility {
@@ -1021,11 +1022,11 @@ input:-webkit-autofill:focus {
   padding: 0;
   text-transform: capitalize;
   display: block;
-  font-size: 17px;
+  font-size: 14px;
 }
 
 .card-content .card-btn {
-  padding: 10px 25px;
+  padding: 8px 15px;
   background: var(--primary-color);
   display: inline-block;
   margin-top: 15px;
