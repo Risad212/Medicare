@@ -102,9 +102,11 @@ a:hover {
   font-weight: 600;
   text-transform: capitalize;
 }
-.active-nav{
+
+.active-nav {
   color: var(--primary-color) !important;
 }
+
 /* Remove Chrome Input Field's Unwanted Yellow Background Color */
 
 input:-webkit-autofill,
@@ -119,6 +121,85 @@ input:-webkit-autofill:focus {
     max-width: 1212px !important
   }
 }
+
+/*--------- breadcrumb section -----------*/
+.breadcrumb {
+  background-image: linear-gradient(rgb(0 0 0 / 68%), rgb(0 0 0 / 66%)), url(../media/common/breadcamd.jpg);
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  padding: 70px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.breadcrumb .breadcrumb-content {
+  overflow: hidden;
+  text-align: center;
+}
+
+.breadcrumb .breadcrumb-text-wrapper {
+  display: inline-block;
+}
+
+.breadcrumb .breadcrumb-content .page-name {
+  display: block;
+  font-size: 30px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+.breadcrumb .breadcrumb-list {
+  display: inline-block;
+  float: none;
+  margin-top: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb .breadcrumb-list li {
+  float: left;
+  margin-right: 20px;
+  position: relative;
+  list-style: none;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.breadcrumb .breadcrumb-list li a {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.breadcrumb .breadcrumb-list li:first-child::before {
+  bottom: -1px;
+  content: "/";
+  position: absolute;
+  right: -14px;
+}
+
+.breadcrumb .breadcrumb-list li:first-child {
+  padding-left: 15px;
+}
+
+/* ============= [ Breadcrumb Responsive  ] ==============*/
+@media only screen and (max-width: 767px) {
+  .breadcrumb .breadcrumb-content .page-name {
+    font-size: 25px;
+    letter-spacing: 0px;
+  }
+}
+
+
 
 /*--------------------------------------------------------------
 # Topbar section 
@@ -1009,7 +1090,8 @@ input:-webkit-autofill:focus {
 .doctor-card .card-img:hover img {
   transform: scale(1.2);
 }
-.doctor-card .card-img .social-media{
+
+.doctor-card .card-img .social-media {
   position: absolute;
   top: 20px;
   left: -20%;
@@ -1019,10 +1101,12 @@ input:-webkit-autofill:focus {
   -ms-transition: all 0.4s ease-in-out;
   transition: all 0.4s ease-in-out;
 }
-.doctor-card .card-img:hover .social-media{
+
+.doctor-card .card-img:hover .social-media {
   left: 20px;
 }
-.doctor-card .card-img .social-media .item{
+
+.doctor-card .card-img .social-media .item {
   background-color: var(--primary-color);
   width: 40px;
   height: 40px;
@@ -1037,17 +1121,21 @@ input:-webkit-autofill:focus {
   -ms-transition: all 0.4s ease-in-out;
   transition: all 0.4s ease-in-out;
 }
-.doctor-card .card-img .social-media .item svg{
+
+.doctor-card .card-img .social-media .item svg {
   width: 20px;
   height: 20px;
   fill: #fff;
 }
-.doctor-card .card-img .social-media .item:hover{
+
+.doctor-card .card-img .social-media .item:hover {
   background: #fff;
 }
-.doctor-card .card-img .social-media .item:hover svg{
+
+.doctor-card .card-img .social-media .item:hover svg {
   fill: var(--primary-color);
 }
+
 .doctor-card .card-content .title {
   color: #111111;
   font-weight: 600;
@@ -1080,6 +1168,7 @@ input:-webkit-autofill:focus {
   background: transparent;
   color: var(--primary-color);
 }
+
 @media only screen and (max-width: 600px) {
   .doctor-section {
     padding: 50px 0;
@@ -1412,6 +1501,7 @@ input:-webkit-autofill:focus {
   border-radius: 50%;
   margin-right: 15px;
 }
+
 .footer-widget-1 .social-list .item:hover {
   background: #fff;
 }
@@ -1449,6 +1539,7 @@ input:-webkit-autofill:focus {
   padding-top: 10px;
   transition: all 500ms;
 }
+
 /* .deparment-list .item:last-child{
   border-bottom: none;
 } */
@@ -1456,9 +1547,11 @@ input:-webkit-autofill:focus {
   color: #cbcbcb;
   transition: all 500ms;
 }
-.deparment-list .item:hover a{
+
+.deparment-list .item:hover a {
   color: var(--primary-color);
 }
+
 /*------ footer widget 4 --------*/
 .footer-widget-4 .contact-list .item {
   margin-bottom: 22px;
@@ -1514,7 +1607,8 @@ input:-webkit-autofill:focus {
   .footer-widget-4 .contact-list .item a {
     align-items: center;
   }
-  .footer-section .copay-write{
+
+  .footer-section .copay-write {
     flex-direction: column;
     align-items: center;
   }
@@ -1583,13 +1677,13 @@ input:-webkit-autofill:focus {
 
   from,
   to {
-      -webkit-transform: translateY(20px);
-      transform: translateY(20px);
+    -webkit-transform: translateY(20px);
+    transform: translateY(20px);
   }
 
   50% {
-      -webkit-transform: translateY(0);
-      transform: translateY(0);
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
   }
 }
 
@@ -1597,12 +1691,221 @@ input:-webkit-autofill:focus {
 
   from,
   to {
-      -webkit-transform: translateY(20px);
-      transform: translateY(20px);
+    -webkit-transform: translateY(20px);
+    transform: translateY(20px);
   }
 
   50% {
-      -webkit-transform: translateY(0);
-      transform: translateY(0);
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
   }
+}
+
+
+/*================================================
+            about hospital
+==================================================*/
+.about-hospital {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+.about-hospital .about-content .subtitle {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--primary-color);
+  font-size: 17px;
+}
+
+.about-hospital .about-content .title {
+  margin-bottom: 0;
+  line-height: 1.3;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.about-hospital .about-content p {
+  color: #757575;
+  margin: 0;
+  line-height: 24px;
+  margin-top: 10px;
+  font-weight: 400;
+}
+
+.about-hospital .widget-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.about-hospital .widget {
+  font-size: 14.5px;
+  line-height: 1.7;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 20px;
+}
+
+.about-hospital .widget .icon {
+  margin-bottom: 13px;
+  -webkit-box-shadow: 0 10px 55px 5px rgba(0, 0, 0, 0.123);
+  box-shadow: 0 10px 55px 5px rgba(0, 0, 0, 0.123);
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 20px;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  display: block;
+}
+
+.about-hospital .widget .icon:hover {
+  background: var(--primary-color);
+}
+
+.about-hospital .widget .icon:hover svg {
+  fill: #fff;
+}
+
+.about-hospital .widget .icon svg {
+  width: 25px;
+  height: 25px;
+  fill: var(--primary-color)
+}
+
+.about-hospital .widget .widget-title {
+  display: block;
+  color: #121521;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.about-hospital .widget p {
+  color: #777;
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+@media only screen and (max-width: 768px) {
+  .about-hospital .about-content {
+    margin-top: 20px;
+  }
+
+  .about-hospital .widget {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
+  .about-hospital .widget .widget-title {
+    font-size: 14px;
+  }
+}
+
+/*================================================
+         our vission section
+==================================================*/
+.our-vission {
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+
+.single-vission-box {
+  margin-bottom: 30px;
+  background-color: #ffffff;
+  -webkit-box-shadow: 0 10px 55px 5px rgba(63, 177, 158, 0.218);
+  box-shadow: 0 10px 55px 5px rgba(63, 177, 158, 0.218);
+  padding: 25px 20px;
+  position: relative;
+  z-index: 1;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  overflow: hidden;
+}
+
+.single-vission-box:hover {
+  color: #fff;
+  margin-top: -15px;
+}
+
+.single-vission-box::before {
+  width: 0;
+  height: 100%;
+  z-index: -1;
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: var(--primary-color);
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.single-vission-box::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 10px solid #ffffff;
+  left: -80px;
+  bottom: -80px;
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0.15;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.single-vission-box:hover::before {
+  width: 100%;
+}
+
+.single-vission-box:hover::after {
+  left: -50px;
+  bottom: -50px;
+}
+
+.single-vission-box .icon {
+  margin-bottom: 20px;
+  text-align: center;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 100%;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  font-size: 25px;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.single-vission-box:hover .icon {
+  background: #fff;
+}
+
+.single-vission-box .icon svg {
+  width: 35px;
+  stroke: #fff;
+}
+
+.single-vission-box:hover .icon svg{
+  stroke: var(--primary-color);
+}
+
+.single-vission-box .title {
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  margin-bottom: 0;
+  position: relative;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.single-vission-box p {
+  margin-top: 12px;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  margin-bottom: 0;
 }
