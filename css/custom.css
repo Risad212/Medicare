@@ -1812,7 +1812,7 @@ input:-webkit-autofill:focus {
   padding-bottom: 40px;
 }
 
-.single-vission-box {
+.our-vission .single-vission-box {
   margin-bottom: 30px;
   background-color: #ffffff;
   -webkit-box-shadow: 0 10px 55px 5px rgba(63, 177, 158, 0.218);
@@ -1825,12 +1825,12 @@ input:-webkit-autofill:focus {
   overflow: hidden;
 }
 
-.single-vission-box:hover {
+.our-vission .single-vission-box:hover {
   color: #fff;
   margin-top: -15px;
 }
 
-.single-vission-box::before {
+.our-vission .single-vission-box::before {
   width: 0;
   height: 100%;
   z-index: -1;
@@ -1843,7 +1843,7 @@ input:-webkit-autofill:focus {
   transition: 0.5s;
 }
 
-.single-vission-box::after {
+.our-vission .single-vission-box::after {
   content: '';
   position: absolute;
   width: 100px;
@@ -1858,16 +1858,16 @@ input:-webkit-autofill:focus {
   transition: 0.5s;
 }
 
-.single-vission-box:hover::before {
+.our-vission .single-vission-box:hover::before {
   width: 100%;
 }
 
-.single-vission-box:hover::after {
+.our-vission .single-vission-box:hover::after {
   left: -50px;
   bottom: -50px;
 }
 
-.single-vission-box .icon {
+.our-vission .single-vission-box .icon {
   margin-bottom: 20px;
   text-align: center;
   width: 60px;
@@ -1881,31 +1881,34 @@ input:-webkit-autofill:focus {
   transition: 0.5s;
 }
 
-.single-vission-box:hover .icon {
+.our-vission .single-vission-box:hover .icon {
   background: #fff;
 }
 
-.single-vission-box .icon svg {
+.our-vission .single-vission-box .icon svg {
   width: 35px;
   stroke: #fff;
 }
 
-.single-vission-box:hover .icon svg{
+.our-vission .single-vission-box:hover .icon svg {
   stroke: var(--primary-color);
 }
 
-.single-vission-box .title {
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
+.our-vission .single-vission-box .title {
   margin-bottom: 0;
   position: relative;
   font-size: 20px;
   font-weight: 700;
 }
 
-.single-vission-box p {
+.our-vission .single-vission-box p {
   margin-top: 12px;
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
   margin-bottom: 0;
+  color: #757574;
+  transition: .5s;
+}
+
+.our-vission .single-vission-box:hover p {
+  color: #fff;
+
 }
