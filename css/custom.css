@@ -1808,9 +1808,10 @@ input:-webkit-autofill:focus {
 }
 
 @media only screen and (max-width: 767px) {
-  .about-hospital{
+  .about-hospital {
     padding: 30px 0;
   }
+
   .about-hospital .about-image .first-img,
   .about-hospital .circle {
     display: none;
@@ -1819,7 +1820,8 @@ input:-webkit-autofill:focus {
   .about-hospital .about-content {
     padding-left: 10px;
   }
-  .about-hospital .title{
+
+  .about-hospital .title {
     font-size: 30px;
   }
 }
@@ -1930,4 +1932,75 @@ input:-webkit-autofill:focus {
 
 .our-vission .single-vission-box:hover p {
   color: #fff;
+}
+
+/*================================================
+      services page
+==================================================*/
+.services-page {
+  padding: 50px 0;
+}
+
+
+/*================================================
+      emargency service
+==================================================*/
+.emargency-services {
+  padding: 80px 0;
+}
+
+.emargency-services .emargency-content {
+  padding-left: 15px;
+  padding-top: 15px;
+}
+
+.emargency-services .emargency-content .subtitle {
+  letter-spacing: 6px;
+  line-height: 1em;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 400;
+  display: inline-block;
+}
+
+.emargency-services .emargency-content .title {
+  margin-top: 12px;
+  font-size: 42px;
+  font-weight: 700;
+}
+
+.emargency-services .emargency-content p{
+  font-weight: 300;
+  margin-top: 1rem;
+}
+.emargency-services .emarency-wrap {
+  display: flex;
+  margin-top: 30px;
+}
+
+.emargency-services .emarency-wrap .box {
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
+}
+
+.emargency-services .emarency-wrap .box .icon {
+  background: var(--primary-color);
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+.emargency-services .emarency-wrap .box .icon svg {
+  fill: #fff;
+  width: 35px;
+  height: 35px;
+}
+.emargency-services .emarency-wrap .box div span{
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+}
+.emargency-services .emarency-wrap .box div h5{
+  font-size: 18px;
 }
