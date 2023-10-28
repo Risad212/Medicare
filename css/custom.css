@@ -1941,7 +1941,6 @@ input:-webkit-autofill:focus {
   padding: 50px 0;
 }
 
-
 /*================================================
       emargency service
 ==================================================*/
@@ -2003,4 +2002,36 @@ input:-webkit-autofill:focus {
 }
 .emargency-services .emarency-wrap .box div h5{
   font-size: 18px;
+}
+
+/*================================================
+      prevention service
+==================================================*/
+.prevention-section{
+  background: #e2f4f1;
+  padding: 80px 0;
+}
+.prevention-section .single-prevention{
+  display: inline-flex;
+  margin-bottom: 30px;
+}
+.prevention-section .single-prevention .icon{
+   background: var(--primary-color);
+   display: inline-block;
+   padding: 10px;
+   border-radius: 50%;
+   position: relative;
+   height: 100%;
+   margin-right: 15px;
+}
+.prevention-section .single-prevention .icon svg{
+  width: 40px;
+  height: 40px;
+}
+.prevention-section .single-prevention .content .title{
+  font-size: 21px;
+  font-weight: 600;
+}
+.prevention-section .single-prevention .content p{
+  font-weight: 300;
 }
