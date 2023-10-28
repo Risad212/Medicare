@@ -2043,3 +2043,44 @@ input:-webkit-autofill:focus {
 .doctor-page{
   padding: 50px 0;
 }
+.pagination-wrap{
+  text-align: center;
+  margin-top: 40px;
+}
+.pagination-list li{
+  display: inline-block;
+  padding: 0 8px;
+  box-shadow: 0 0 15px #d0d0d0;
+  margin-right: 8px;
+  transition: all .5s;
+}
+.pagination-list li a svg{
+  width: 25px;
+  height: 25px;
+  fill: #000;
+}
+.pagination-list li a{
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 17px;
+  color: var(--primary-color) !important;
+  font-weight: 500;
+}
+.pagination-list li:hover{
+  background: var(--primary-color);
+}
+.pagination-list li:hover a{
+  color: #fff !important;
+}
+.pagination-list li:hover a svg{
+  fill: #fff;
+}
+
+.pagination-list .active{
+  background: var(--primary-color);
+}
+.pagination-list .active a{
+ color: #fff !important;
+}
