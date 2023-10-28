@@ -1940,7 +1940,6 @@ input:-webkit-autofill:focus {
 .services-page {
   padding: 50px 0;
 }
-
 /*================================================
       emargency service
 ==================================================*/
@@ -2003,6 +2002,21 @@ input:-webkit-autofill:focus {
 .emargency-services .emarency-wrap .box div h5{
   font-size: 18px;
 }
+/*---------- Mobile Responsive -----------*/
+@media only screen and (max-width: 600px) {
+  .emargency-services {
+    padding: 50px 0;
+  }
+  .emargency-services .emargency-content .title{
+    font-size: 30px;
+  }
+  .emargency-services .emarency-wrap{
+    flex-direction: column;
+  }
+  .emargency-services .emarency-wrap .box{
+    margin-bottom: 15px;
+  }
+}
 
 /*================================================
       prevention service
@@ -2035,7 +2049,12 @@ input:-webkit-autofill:focus {
 .prevention-section .single-prevention .content p{
   font-weight: 300;
 }
-
+/*---------- Mobile Responsive -----------*/
+@media only screen and (max-width: 600px) {
+  .prevention-section {
+    padding: 50px 0;
+  }
+}
 
 /*================================================
      Doctors Page 
@@ -2057,7 +2076,7 @@ input:-webkit-autofill:focus {
 .pagination-list li a svg{
   width: 25px;
   height: 25px;
-  fill: #000;
+  fill: var(--primary-color);
 }
 .pagination-list li a{
   display: inline-block;
@@ -2083,4 +2102,33 @@ input:-webkit-autofill:focus {
 }
 .pagination-list .active a{
  color: #fff !important;
+}
+/*================================================
+     Contact Page 
+==================================================*/
+.contact-page{
+  padding: 50px 0;
+}
+.contact-info {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  grid-gap: 25px;
+}
+.contact-info .single-info{
+  text-align: center;
+  padding: 27px;
+  box-shadow: 0 2px 14px 5px rgba(20, 20, 20, 0.05);
+  border-radius: 3px;
+}
+.contact-info .single-info .icon svg{
+  fill: var(--primary-color);
+}
+.contact-info .single-info .content .title{
+  color: #2a303b;
+  line-height: 1.3;
+  font-weight: 600;
+  margin-top: 15px;
+}
+.contact-info .single-info .content span{
+  color: #777;
 }
