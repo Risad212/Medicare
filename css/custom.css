@@ -2035,3 +2035,11 @@ input:-webkit-autofill:focus {
 .prevention-section .single-prevention .content p{
   font-weight: 300;
 }
+
+
+/*================================================
+     Doctors Page 
+==================================================*/
+.doctor-page{
+  padding: 50px 0;
+}
