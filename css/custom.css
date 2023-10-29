@@ -2250,7 +2250,7 @@ input:-webkit-autofill:focus {
   transform: scale(1.2);
 }
 
-.gallary-section .single-image .image-overlay{
+.gallary-section .single-image .image-overlay {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -2265,7 +2265,7 @@ input:-webkit-autofill:focus {
   height: 100%;
 }
 
-.gallary-section .single-image .image-overlay .image-btn{
+.gallary-section .single-image .image-overlay .image-btn {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -2281,11 +2281,76 @@ input:-webkit-autofill:focus {
   opacity: 0;
   transition: .8s;
 }
-.gallary-section .single-image .image-overlay .image-btn svg{
+
+.gallary-section .single-image .image-overlay .image-btn svg {
   width: 25px;
   height: 25px;
   fill: var(--primary-color);
 }
-.gallary-section .single-image:hover .image-btn{
- opacity: 1;
+
+.gallary-section .single-image:hover .image-btn {
+  opacity: 1;
+}
+
+/*================================================
+     Blog Page 
+==================================================*/
+.blog-page {
+  padding: 50px 0;
+}
+
+.blog-page .blog-card {
+  box-shadow: 0px 0px 35px 0px rgba(0, 0, 0, 0.07);
+}
+
+.blog-page .blog-card .blog-img {
+  overflow: hidden;
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
+}
+
+.blog-page .blog-card .blog-img a img {
+  width: 100%;
+
+  transition: .4s;
+}
+
+.blog-page .blog-card .blog-img:hover a img {
+  transform: scale(1.2);
+}
+
+.blog-page .card-body {
+  padding: 20px 30px;
+}
+
+.blog-page .card-body .cart-top {
+  display: flex;
+  justify-content: space-between;
+  text-transform: capitalize;
+}
+
+.card-body .cart-top {
+  font-size: 14px;
+  color: #777;
+}
+
+.card-body .cart-top svg {
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+}
+
+.card-body .title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 15px;
+}
+
+.card-body .title a:hover {
+  color: var(--primary-color);
+}
+
+.card-body p {
+  color: #4c4c4d;
+  margin-top: 18px;
 }
