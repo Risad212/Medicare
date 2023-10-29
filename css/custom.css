@@ -937,7 +937,7 @@ input:-webkit-autofill:focus {
 .service-card .icon svg {
   width: 64px;
   height: 64px;
-  fill: #1C274C;
+  fill: var(--primary-color);
   margin-bottom: 10px;
 }
 
@@ -952,7 +952,7 @@ input:-webkit-autofill:focus {
   border: 1px solid #fff;
   font-size: 14px;
   font-weight: 400;
-  background: #049f84;
+  background: var(--primary-color);
   padding: 8px 25px;
   text-transform: capitalize;
   color: #fff;
