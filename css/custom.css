@@ -2387,4 +2387,10 @@ input:-webkit-autofill:focus {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 2px;
+  border: 2px solid var(--primary-color);
+  transition: .4s;
+}
+.appoinment-page .form-wrap .appoinment-btn:hover{
+  background: transparent;
+  color: var(--primary-color);
 }
