@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>Medicare | Appoinment</title>
     <meta charset="UTF-8">
@@ -11,8 +10,8 @@
     <!--==== BASE CSS ====-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <!--===== DateRangePicker css =====-->
+    <link rel="stylesheet" type="text/css" href="css/daterangepicker.css" />
     <!--==== CUSTOM CSS ====-->
     <link rel="stylesheet" href="css/custom.css">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -22,7 +21,6 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-
 <body>
 
     <!--========== Topbar Section ==========-->
@@ -187,7 +185,7 @@
                        <a class="nav-link" href="contact.html">contact</a>
                     </li>
                     <li class="nav-item nav-button">
-                       <a class="nav-link"  id="appoinment" href="appoinment.html">Appoinment</a>
+                       <a class="nav-link" href="appoinment.html">Appoinment</a>
                     </li>
                  </ul>
               </div>
@@ -236,7 +234,7 @@
                     </select>
                 </div>
                 <div class="mb-4">
-                    <input type="date" id="appoinment_number" placeholder="Your Number">
+                    <input type="text" name="txtDate" data-date-format="dd-mm-yyyy" id="dateTo" placeholder="date" required="">
                 </div>
                 <div class="mb-4">
                     <select name="time" id="time">
@@ -254,7 +252,6 @@
             </div>
         </div>
     </section>
-
 
     <!--============== FOOTER SECTION ===============-->
     <footer class="footer-section">
@@ -480,7 +477,8 @@
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     <!--===============================================================================================-->
-    <script src="js/owl.carousel.min.js"></script>
+    <script type="text/javascript" src="js/moment.min.js"></script>
+    <script type="text/javascript" src="js/daterangepicker.min.js"></script>
     <!--===============================================================================================-->
     <script src="js/custom.js"></script>
     <script>
@@ -497,16 +495,17 @@
             }
         });
 
-
-        /*===================================
-           add active class
-         ====================================*/
-        function myFunction() {
-            var element = document.getElementById("appoinment");
-            element.classList.add("active-nav");
-        }
-        myFunction();
+        $(function() {
+            $('#dateTo').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                 minDate: new Date(),
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            });
+            $('#dateTo').val('');
+        });
     </script>
 </body>
-
 </html>

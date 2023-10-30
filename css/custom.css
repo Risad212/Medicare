@@ -979,6 +979,11 @@ input:-webkit-autofill:focus {
   color: #1C274C;
 }
 
+@media only screen and (max-width: 768px) {
+  .service-section{
+    padding: 50px 0;
+  }
+}
 /*================================================
              COUNTER SECTION
 ==================================================*/
@@ -2391,7 +2396,12 @@ input:-webkit-autofill:focus {
   background: transparent;
   color: var(--primary-color);
 }
-
+@media only screen and (max-width: 768px) {
+  .appoinment-page .form-wrap{
+    width: 100%;
+    padding: 25px;
+  }
+}
 /*================================================
      Blog Details Page 
 ==================================================*/
