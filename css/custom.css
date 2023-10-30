@@ -2141,9 +2141,6 @@ input:-webkit-autofill:focus {
 }
 
 .contact-info .single-info {
-  /* text-align: center; */
-  /* padding: 27px; */
-  /* box-shadow: 0 2px 14px 5px rgba(20, 20, 20, 0.05); */
   border-radius: 3px;
 }
 
@@ -2399,7 +2396,7 @@ input:-webkit-autofill:focus {
      Blog Details Page 
 ==================================================*/
 .blog-details {
-  padding: 90px 0 60px;
+  padding: 50px 0;
 }
 
 .blog-details .blog-left .blog-meta-info {
@@ -2419,12 +2416,10 @@ input:-webkit-autofill:focus {
 .blog-details .blog-left .blog-meta-info .meta-list .item {
   padding-right: 15px;
   font-size: 14px;
-  color: var(--dark-color);
 }
 
-.blog-details .blog-left .blog-meta-info .meta-list .item i {
-  margin-right: 12px;
-  color: var(--primary-color);
+.blog-details .blog-left .blog-meta-info .meta-list .item svg{
+  margin-right: 3px;
 }
 
 .blog-details .blog-left .blog-discription {
@@ -2445,15 +2440,20 @@ input:-webkit-autofill:focus {
 .blog-details .blog-left .social-list .social-item {
   font-size: 20px;
   border: 1px solid #ddd;
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   margin-right: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
-
+.blog-details .blog-left .social-list .social-item svg{
+  width: 22px;
+  height: 22px;
+  fill: #000;
+}
 .blog-details .blog-left .comment-section .comment-title {
   line-height: 34px;
   padding-bottom: 30px;
@@ -2461,7 +2461,10 @@ input:-webkit-autofill:focus {
   font-size: 22px;
   font-weight: 700;
 }
-
+.blog-details .blog-left .comment-section .single-comment .comment-author{
+  font-weight: 600;
+  font-size: 18px;
+}
 .blog-details .blog-left .comment-section .single-comment {
   display: flex;
   margin-bottom: 25px;
@@ -2477,7 +2480,7 @@ input:-webkit-autofill:focus {
 
 .blog-details .blog-left .comment-section .comments {
   padding: 22px 40px;
-  background: var(--primary-light);
+  background: #e2f4f1;
   border-radius: 4px;
 }
 
@@ -2492,10 +2495,10 @@ input:-webkit-autofill:focus {
   border-radius: 4px;
   width: 80px;
   height: 32px;
-  margin-top: 20px;
+  margin-top: 5px;
   border: none;
   background: var(--primary-color);
-  color: var(--light-color);
+  color: #fff;
   font-size: 14px
 }
 
@@ -2508,7 +2511,9 @@ input:-webkit-autofill:focus {
   border-width: 1px 0 0;
   border-color: #eaeaea;
 }
-
+.comment-form-wrap .title{
+  font-weight: 600;
+}
 .comment-form-wrap form input,
 textarea {
   padding: 12px 20px;
@@ -2523,7 +2528,7 @@ textarea {
   padding: 10px 29px;
   border: none;
   background: var(--primary-color);
-  color: var(--light-color);
+  color: #fff;
   border: 2px solid var(--primary-color);
   transition: .4s;
 }
@@ -2541,7 +2546,6 @@ textarea {
   position: relative;
   margin-bottom: 20px;
 }
-
 .blog-right .widget_search .search-form label {
   display: block;
 }
@@ -2572,7 +2576,7 @@ textarea {
 .blog-right .search-submit {
   font-size: 18px;
   color: var(--light-color);
-  width: 50px;
+  width: 70px;
   height: 100%;
   position: absolute;
   right: 0;
@@ -2583,7 +2587,10 @@ textarea {
   padding: 0;
   border-radius: 0 4px 4px 0;
 }
-
+.blog-right .search-submit svg{
+  width: 20px;
+  height: 20px;
+}
 .blog-right .recent-post {
   border: 1px solid #eaeaea;
   border-radius: 4px;
@@ -2595,6 +2602,7 @@ textarea {
   padding-bottom: 15px;
   border-bottom: 1px solid #eaeaea;
   margin-bottom: 25px;
+  font-weight: 600;
 }
 
 
@@ -2664,10 +2672,6 @@ textarea {
   color: var(--primary-color);
 }
 
-.sidebar-ads {
-  margin-top: 30px;
-}
-
 /*-- populate tag --*/
 .populate-tag {
   margin-top: 30px;
@@ -2684,7 +2688,7 @@ textarea {
 
 .populate-tag .tag-list {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   grid-gap: 5px;
 }
 
@@ -2694,7 +2698,7 @@ textarea {
   padding: 2px 10px;
   margin-bottom: 8px;
   margin-right: 5px;
-  background-color: var(--light-color);
+  background-color: #fff;
   border: 1px solid #eaeaea;
   border-radius: 4px;
   width: 100%;
@@ -2706,7 +2710,7 @@ textarea {
 }
 
 .populate-tag .tag-list .tag-item:hover a {
-  color: var(--light-color);
+  color: #fff;
 }
 
 
@@ -2717,8 +2721,8 @@ textarea {
   }
 
   .blog-right .post-thumnail a img {
-      width: unset;
-      height: unset;
+      width: 100%;
+      height: 100%;
   }
 
   .blog-right .recent-posts-info {
