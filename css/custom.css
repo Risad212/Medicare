@@ -2232,6 +2232,7 @@ input:-webkit-autofill:focus {
   padding: 8px 15px;
   transition: .5s;
   font-size: 16px;
+  cursor: pointer;
 }
 
 .portfolio-menu .item:hover {
@@ -2239,6 +2240,11 @@ input:-webkit-autofill:focus {
   color: #fff;
 }
 
+.portfolio-item{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-column-gap: 15px;
+}
 .gallary-section .single-image {
   position: relative;
   overflow: hidden;
