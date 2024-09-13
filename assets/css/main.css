@@ -1,8 +1,42 @@
-/*================================================
-            BASE CSS
-==================================================*/
+/*[ FONT ]
+       Single Font Use in This Template 
+*/
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Poppins:wght@300;400;500;700&display=swap');
+@font-face {
+  font-family: Montserrat;
+  src: url("../fonts/Montserrat/Montserrat-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Montserrat;
+  src: url("../fonts/Montserrat/Montserrat-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url("../fonts/poppins/Poppins-Light.ttf") format("truetype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url("../fonts/poppins/Poppins-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url("../fonts/poppins/Poppins-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url("../fonts/poppins/Poppins-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
 
 html,
 body {
@@ -12,7 +46,7 @@ body {
 
 body {
   overflow-x: hidden;
-  font-family: 'Poppins', sans-serif;
+  font-family: Poppins;
   font-size: 14px;
   line-height: 24px;
   font-weight: 400;
@@ -28,7 +62,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: Montserrat;
 }
 
 /*------- primary color -------*/
@@ -116,15 +150,16 @@ input:-webkit-autofill:focus {
 }
 
 /*----- Container-------*/
-@media (min-width:1200px) {
+@media (min-width: 1200px) {
   .container {
-    max-width: 1212px !important
+    max-width: 1212px !important;
   }
 }
 
 /*--------- breadcrumb section -----------*/
 .breadcrumb {
-  background-image: linear-gradient(rgb(0 0 0 / 68%), rgb(0 0 0 / 66%)), url(../media/common/breadcamd.jpg);
+  background-image: linear-gradient(rgb(0 0 0 / 68%), rgb(0 0 0 / 66%)),
+    url(../media/common/breadcamd.jpg);
   background-size: cover;
   background-position: center;
   width: 100%;
@@ -199,8 +234,6 @@ input:-webkit-autofill:focus {
   }
 }
 
-
-
 /*--------------------------------------------------------------
 # Topbar section 
 --------------------------------------------------------------*/
@@ -269,7 +302,7 @@ input:-webkit-autofill:focus {
 }
 
 .topbar .topbar-wrap .topbar-right .socail-list .item:last-child:hover {
-  background: #CD201F;
+  background: #cd201f;
 }
 
 @media only screen and (max-width: 600px) {
@@ -282,7 +315,7 @@ input:-webkit-autofill:focus {
 # Header section 
 --------------------------------------------------------------*/
 .header {
-  background: #F0F0ED;
+  background: #f0f0ed;
 }
 
 .header .navbar {
@@ -294,7 +327,7 @@ input:-webkit-autofill:focus {
 }
 
 .header .navbar-nav .nav-item .nav-link {
-  color: #2C2D3F;
+  color: #2c2d3f;
   text-transform: capitalize;
   font-weight: 500;
   font-size: 14px;
@@ -303,14 +336,14 @@ input:-webkit-autofill:focus {
 }
 
 .header .navbar-nav .nav-item .nav-link::after {
-  content: '';
+  content: "";
   width: 0%;
   height: 2px;
   background: var(--primary-color);
   position: absolute;
   left: 12px;
   bottom: 20px;
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .header .navbar-nav .nav-item:last-child .nav-link::after {
@@ -326,7 +359,7 @@ input:-webkit-autofill:focus {
   padding: 10px 25px !important;
   color: #fff !important;
   border: 2px solid var(--primary-color);
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .nav-button:hover a {
@@ -347,7 +380,7 @@ input:-webkit-autofill:focus {
   transform: scaleY(0);
   visibility: hidden;
   transform-origin: top;
-  transition: .4s;
+  transition: 0.4s;
   box-shadow: 0px 3px 5px #3333334d;
   z-index: 2;
 }
@@ -356,7 +389,7 @@ input:-webkit-autofill:focus {
   color: #000;
   padding: 5px 15px;
   display: block;
-  transition: .4s;
+  transition: 0.4s;
   position: relative;
   border-bottom: 1px solid#f7f7f7;
 }
@@ -366,7 +399,7 @@ input:-webkit-autofill:focus {
 }
 
 .dropdown-list .item a::after {
-  content: '';
+  content: "";
   position: absolute;
   background: var(--primary-color);
   height: 2px;
@@ -413,7 +446,8 @@ input:-webkit-autofill:focus {
   background: #333;
   border-radius: 2px;
   z-index: 1;
-  transition: transform 0.2s cubic-bezier(0.77, 0.2, 0.05, 1), background 0.2s cubic-bezier(0.77, 0.2, 0.05, 1), all 0.2s ease-in-out;
+  transition: transform 0.2s cubic-bezier(0.77, 0.2, 0.05, 1),
+    background 0.2s cubic-bezier(0.77, 0.2, 0.05, 1), all 0.2s ease-in-out;
   left: 0px;
 }
 
@@ -472,7 +506,7 @@ input:-webkit-autofill:focus {
   border-bottom: 1px solid #e2e2e2;
   transition: 0.1s;
   z-index: 999;
-  box-shadow: 0 3px 7px 1px rgba(144, 161, 180, .2);
+  box-shadow: 0 3px 7px 1px rgba(144, 161, 180, 0.2);
 }
 
 /*---------- Mobile Responsive -----------*/
@@ -520,7 +554,6 @@ input:-webkit-autofill:focus {
   height: 85vh;
 }
 
-
 .slider-overlay {
   background-color: rgba(0, 0, 0, 0.5);
   height: 85vh;
@@ -547,7 +580,7 @@ input:-webkit-autofill:focus {
 .carousel-single-item .owl-stage .active .title .skill-ul,
 .carousel-single-item .owl-stage .active .title .mobile-social-icon {
   opacity: 1;
-  transform: translateY(0)translateX(0);
+  transform: translateY(0) translateX(0);
 }
 
 .carousel-single-item .slider-overlay .title h2 {
@@ -606,7 +639,7 @@ input:-webkit-autofill:focus {
   color: #fff;
   position: relative;
   display: inline-block;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   text-transform: capitalize;
   z-index: 99;
   font-size: 16px;
@@ -633,7 +666,7 @@ input:-webkit-autofill:focus {
   transform: translateX(50%, -50%);
   width: 50px;
   height: 50px;
-  transition: all .3s ease-in;
+  transition: all 0.3s ease-in;
   border: 2px solid #fff;
   border-radius: 50%;
   background: transparent;
@@ -728,7 +761,6 @@ input:-webkit-autofill:focus {
   }
 }
 
-
 /*================================================
              FEATURE SECTION
 ==================================================*/
@@ -740,7 +772,7 @@ input:-webkit-autofill:focus {
 
 .feature-section .feature-card {
   padding: 30px 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   transition: all 400ms ease;
   background: #fff;
 }
@@ -769,7 +801,7 @@ input:-webkit-autofill:focus {
   display: block;
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 15px
+  margin-bottom: 15px;
 }
 
 .feature-card p {
@@ -818,7 +850,7 @@ input:-webkit-autofill:focus {
   border: 2px solid var(--primary-color);
   position: relative;
   overflow: hidden;
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   display: inline-block;
   position: relative;
   animation: leave 0.4s forwards;
@@ -856,8 +888,8 @@ input:-webkit-autofill:focus {
   margin-left: 0;
 }
 
-.no-gutters>.col,
-.no-gutters>[class*=col-] {
+.no-gutters > .col,
+.no-gutters > [class*="col-"] {
   padding-right: 0;
   padding-left: 0;
 }
@@ -931,7 +963,7 @@ input:-webkit-autofill:focus {
   background: #fff;
   text-align: center;
   border: 1px solid #eee;
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .service-card .icon svg {
@@ -976,11 +1008,11 @@ input:-webkit-autofill:focus {
 
 .service-card .card-btn:hover {
   background: #fff;
-  color: #1C274C;
+  color: #1c274c;
 }
 
 @media only screen and (max-width: 768px) {
-  .service-section{
+  .service-section {
     padding: 50px 0;
   }
 }
@@ -988,9 +1020,11 @@ input:-webkit-autofill:focus {
              COUNTER SECTION
 ==================================================*/
 #counter {
-  background-image:
-    linear-gradient(rgba(41, 41, 41, 0.752), rgba(29, 29, 29, 0.73)),
-    url('../media/home/counter-bg.webp');
+  background-image: linear-gradient(
+      rgba(41, 41, 41, 0.752),
+      rgba(29, 29, 29, 0.73)
+    ),
+    url("../media/home/counter-bg.webp");
   background-size: cover;
   background-repeat: no-repeat;
   padding: 80px 0;
@@ -1075,7 +1109,7 @@ input:-webkit-autofill:focus {
 }
 
 .doctor-card {
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.05);
 }
 
@@ -1089,7 +1123,7 @@ input:-webkit-autofill:focus {
 }
 
 .doctor-card .card-img img {
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .doctor-card .card-img:hover img {
@@ -1165,7 +1199,7 @@ input:-webkit-autofill:focus {
   display: inline-block;
   margin-top: 15px;
   color: #fff;
-  transition: .4s;
+  transition: 0.4s;
   border: 2px solid var(--primary-color);
 }
 
@@ -1256,7 +1290,7 @@ input:-webkit-autofill:focus {
   border-radius: 5%;
   width: 45px;
   height: 45px;
-  transition: all .3s ease-in;
+  transition: all 0.3s ease-in;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
   background: #fff;
   cursor: pointer;
@@ -1270,14 +1304,14 @@ input:-webkit-autofill:focus {
   right: 10px;
 }
 
-.owl-theme .owl-nav [class*='owl-']:hover {
+.owl-theme .owl-nav [class*="owl-"]:hover {
   background: none;
 }
 
 .testimonial-slider .owl-nav .owl-prev svg,
 .testimonial-slider .owl-nav .owl-next svg {
   width: 50%;
-  fill: #000
+  fill: #000;
 }
 
 .testimonial-slider .owl-nav .owl-prev:hover,
@@ -1567,7 +1601,6 @@ input:-webkit-autofill:focus {
   padding: 15px 0;
 }
 
-
 @media only screen and (max-width: 768px) {
   .footer-widget-2 {
     padding-left: 0;
@@ -1608,7 +1641,7 @@ input:-webkit-autofill:focus {
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   border-radius: 20px;
-  animation-delay: .95s;
+  animation-delay: 0.95s;
   display: inline-block;
   transform: rotate(180deg);
   bottom: 8%;
@@ -1634,8 +1667,8 @@ input:-webkit-autofill:focus {
 
 .back-to-top--active {
   visibility: visible;
-  -webkit-animation: back-to-top .5s ease-in;
-  animation: back-to-top .5s ease-in;
+  -webkit-animation: back-to-top 0.5s ease-in;
+  animation: back-to-top 0.5s ease-in;
   transition: width 3s;
 }
 
@@ -1655,7 +1688,6 @@ input:-webkit-autofill:focus {
 }
 
 @-webkit-keyframes scroll_effects {
-
   from,
   to {
     -webkit-transform: translateY(20px);
@@ -1669,7 +1701,6 @@ input:-webkit-autofill:focus {
 }
 
 @keyframes scroll_effects {
-
   from,
   to {
     -webkit-transform: translateY(20px);
@@ -1681,7 +1712,6 @@ input:-webkit-autofill:focus {
     transform: translateY(0);
   }
 }
-
 
 /*================================================
             about hospital
@@ -1767,7 +1797,7 @@ input:-webkit-autofill:focus {
   border: none;
   text-transform: capitalize;
   font-size: 16px;
-  transition: .4s;
+  transition: 0.4s;
   margin-top: 25px;
 }
 
@@ -1837,7 +1867,7 @@ input:-webkit-autofill:focus {
   width: 0;
   height: 100%;
   z-index: -1;
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -1847,7 +1877,7 @@ input:-webkit-autofill:focus {
 }
 
 .our-vission .single-vission-box::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 100px;
   height: 100px;
@@ -1908,7 +1938,7 @@ input:-webkit-autofill:focus {
   margin-top: 12px;
   margin-bottom: 0;
   color: #757574;
-  transition: .5s;
+  transition: 0.5s;
 }
 
 .our-vission .single-vission-box:hover p {
@@ -2068,7 +2098,7 @@ input:-webkit-autofill:focus {
   padding: 0 8px;
   box-shadow: 0 0 15px #d0d0d0;
   margin-right: 8px;
-  transition: all .5s;
+  transition: all 0.5s;
 }
 
 .pagination-list li a svg {
@@ -2170,7 +2200,7 @@ input:-webkit-autofill:focus {
   border: 2px solid var(--primary-color);
   margin-bottom: 5px;
   letter-spacing: 2px;
-  transition: .4s;
+  transition: 0.4s;
   padding: 18px 30px 18px;
 }
 
@@ -2180,100 +2210,12 @@ input:-webkit-autofill:focus {
 }
 
 .google-map {
-  height: 400px
+  height: 400px;
 }
 
 .google-map iframe {
   width: 100%;
   height: 100%;
-}
-
-/*================================================
-     Gallary Page 
-==================================================*/
-.gallary-section {
-  padding: 50px 0;
-}
-
-.gallary-section .portfolio-menu {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.portfolio-menu .item {
-  display: inline-block;
-  margin-right: 25px;
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
-  padding: 8px 15px;
-  transition: .5s;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.portfolio-menu .item:hover {
-  background: var(--primary-color);
-  color: #fff;
-}
-
-.portfolio-item{
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-column-gap: 15px;
-}
-.gallary-section .single-image {
-  position: relative;
-  overflow: hidden;
-}
-
-.gallary-section .single-image img {
-  transition: .4s;
-}
-
-.gallary-section .single-image:hover img {
-  transform: scale(1.2);
-}
-
-.gallary-section .single-image .image-overlay {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  background: rgba(5, 211, 176, 0.7);
-  width: 100%;
-  height: 0%;
-  transition: .4s;
-  z-index: 1;
-}
-
-.gallary-section .single-image:hover .image-overlay {
-  height: 100%;
-}
-
-.gallary-section .single-image .image-overlay .image-btn {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  background: #fff;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  opacity: 0;
-  transition: .8s;
-}
-
-.gallary-section .single-image .image-overlay .image-btn svg {
-  width: 25px;
-  height: 25px;
-  fill: var(--primary-color);
-}
-
-.gallary-section .single-image:hover .image-btn {
-  opacity: 1;
 }
 
 /*================================================
@@ -2296,7 +2238,7 @@ input:-webkit-autofill:focus {
 .blog-page .blog-card .blog-img a img {
   width: 100%;
 
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .blog-page .blog-card .blog-img:hover a img {
@@ -2353,7 +2295,7 @@ input:-webkit-autofill:focus {
 }
 
 .appoinment-page .form-wrap input,
-.appoinment-page .form-wrap select{
+.appoinment-page .form-wrap select {
   width: 100%;
   height: 55px;
   padding: 0 15px;
@@ -2363,7 +2305,7 @@ input:-webkit-autofill:focus {
   border: none;
   text-transform: capitalize;
 }
-.appoinment-page .form-wrap .appoinment-btn{
+.appoinment-page .form-wrap .appoinment-btn {
   background: var(--primary-color);
   padding: 12px 40px;
   border: none;
@@ -2372,14 +2314,14 @@ input:-webkit-autofill:focus {
   text-transform: uppercase;
   letter-spacing: 2px;
   border: 2px solid var(--primary-color);
-  transition: .4s;
+  transition: 0.4s;
 }
-.appoinment-page .form-wrap .appoinment-btn:hover{
+.appoinment-page .form-wrap .appoinment-btn:hover {
   background: transparent;
   color: var(--primary-color);
 }
 @media only screen and (max-width: 768px) {
-  .appoinment-page .form-wrap{
+  .appoinment-page .form-wrap {
     width: 100%;
     padding: 25px;
   }
@@ -2395,7 +2337,7 @@ input:-webkit-autofill:focus {
   margin-top: 12px;
   margin-bottom: 7px;
 }
-.blog-details .blog-title-info .blog-title{
+.blog-details .blog-title-info .blog-title {
   font-weight: 600;
   margin-bottom: 13px;
   margin-top: 25px;
@@ -2410,7 +2352,7 @@ input:-webkit-autofill:focus {
   font-size: 14px;
 }
 
-.blog-details .blog-left .blog-meta-info .meta-list .item svg{
+.blog-details .blog-left .blog-meta-info .meta-list .item svg {
   margin-right: 3px;
 }
 
@@ -2441,7 +2383,7 @@ input:-webkit-autofill:focus {
   justify-content: center;
   cursor: pointer;
 }
-.blog-details .blog-left .social-list .social-item svg{
+.blog-details .blog-left .social-list .social-item svg {
   width: 22px;
   height: 22px;
   fill: #000;
@@ -2453,7 +2395,7 @@ input:-webkit-autofill:focus {
   font-size: 22px;
   font-weight: 700;
 }
-.blog-details .blog-left .comment-section .single-comment .comment-author{
+.blog-details .blog-left .comment-section .single-comment .comment-author {
   font-weight: 600;
   font-size: 18px;
 }
@@ -2491,7 +2433,7 @@ input:-webkit-autofill:focus {
   border: none;
   background: var(--primary-color);
   color: #fff;
-  font-size: 14px
+  font-size: 14px;
 }
 
 /*-- comment form --*/
@@ -2503,7 +2445,7 @@ input:-webkit-autofill:focus {
   border-width: 1px 0 0;
   border-color: #eaeaea;
 }
-.comment-form-wrap .title{
+.comment-form-wrap .title {
   font-weight: 600;
 }
 .comment-form-wrap form input,
@@ -2522,7 +2464,7 @@ textarea {
   background: var(--primary-color);
   color: #fff;
   border: 2px solid var(--primary-color);
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .comment-form-wrap form button:hover {
@@ -2534,7 +2476,7 @@ textarea {
 .blog-right .widget_search {
   margin-bottom: 30px;
   font-size: 14px;
-  font-size: .875rem;
+  font-size: 0.875rem;
   position: relative;
   margin-bottom: 20px;
 }
@@ -2579,7 +2521,7 @@ textarea {
   padding: 0;
   border-radius: 0 4px 4px 0;
 }
-.blog-right .search-submit svg{
+.blog-right .search-submit svg {
   width: 20px;
   height: 20px;
 }
@@ -2596,7 +2538,6 @@ textarea {
   margin-bottom: 25px;
   font-weight: 600;
 }
-
 
 .blog-right .single-post {
   display: flex;
@@ -2625,7 +2566,7 @@ textarea {
 .blog-right .post-title a {
   line-height: 20px;
   font-weight: 700 !important;
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .blog-right .post-title:hover a {
@@ -2636,7 +2577,7 @@ textarea {
   margin-top: 5px;
   text-transform: capitalize;
   color: #585c63;
-  font-size: .875rem;
+  font-size: 0.875rem;
   line-height: 17px;
 }
 
@@ -2657,7 +2598,7 @@ textarea {
 
 .blog-right .category-list .item {
   margin-bottom: 10px;
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .blog-right .category-list .item:hover a {
@@ -2694,7 +2635,7 @@ textarea {
   border: 1px solid #eaeaea;
   border-radius: 4px;
   width: 100%;
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .populate-tag .tag-list .tag-item:hover {
@@ -2705,61 +2646,60 @@ textarea {
   color: #fff;
 }
 
-
 @media only screen and (max-width: 992px) {
   .blog-right .single-post {
-      display: block;
-      margin-bottom: 25px;
+    display: block;
+    margin-bottom: 25px;
   }
 
   .blog-right .post-thumnail a img {
-      width: 100%;
-      height: 100%;
+    width: 100%;
+    height: 100%;
   }
 
   .blog-right .recent-posts-info {
-      margin-top: 12px;
+    margin-top: 12px;
   }
 
   .blog-right .recent-post {
-      padding: 15px;
+    padding: 15px;
   }
 
   .blog-right .recent-post .title {
-      padding-top: 15px;
+    padding-top: 15px;
   }
 
   .blog-right .category-title {
-      font-size: 18px;
+    font-size: 18px;
   }
 
   .populate-tag {
-      padding: 0;
+    padding: 0;
   }
 
   .populate-tag .tag-list {
-      grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .blog-right .blog-category {
-      padding: 30px 20px;
+    padding: 30px 20px;
   }
 }
 
 @media only screen and (max-width: 768px) {
   .blog-details .blog-left .blog-meta-info .meta-list .item {
-      padding-right: 12px;
+    padding-right: 12px;
   }
 
   .blog-right {
-      margin-top: 30px;
+    margin-top: 30px;
   }
 
   .blog-details .blog-left .comment-section .single-comment {
-      flex-direction: column;
+    flex-direction: column;
   }
 
   .blog-details .blog-left .comment-section .comment-img {
-      margin-bottom: 15px;
+    margin-bottom: 15px;
   }
 }
