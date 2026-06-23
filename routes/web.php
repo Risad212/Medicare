@@ -32,5 +32,7 @@ Route::get('/appoinment', function () {
     return view('frontend.appoinment');
 })->name('appoinment');
 
+// ================ Start Backend Route ================
 Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+

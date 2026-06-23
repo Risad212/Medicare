@@ -16,6 +16,7 @@
     <section class="material-half-bg">
         <div class="cover"></div>
     </section>
+
     <section class="login-content">
         <div class="logo">
             <h1>Vali</h1>
@@ -60,21 +61,31 @@
                     <button class="btn btn-primary btn-block"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>SIGN IN</button>
                 </div>
             </form>
-            <form class="forget-form" action="index.html">
+
+            <!----- Forgot Password ------->
+            <form method="POST" class="forget-form" action="{{ route('password.email') }}">
+                @csrf
                 <h3 class="login-head"><i class="bi bi-person-lock me-2"></i>Forgot Password ?</h3>
                 <div class="mb-3">
                     <label class="form-label">EMAIL</label>
-                    <input class="form-control" type="text" placeholder="Email">
+                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                    @error('email')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                 @enderror
                 </div>
                 <div class="mb-3 btn-container d-grid">
-                    <button class="btn btn-primary btn-block"><i class="bi bi-unlock me-2 fs-5"></i>RESET</button>
+                     <button class="btn btn-primary btn-block"><i class="bi bi-unlock me-2 fs-5"></i>Send Password Reset Link</button>
                 </div>
                 <div class="mb-3 mt-3">
                     <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="bi bi-chevron-left me-1"></i> Back to Login</a></p>
                 </div>
             </form>
+
         </div>
     </section>
+    
     <!-- Essential javascripts for application to work-->
     <script src="{{ asset('backend-assets/js/jquery-3.7.0.min.js') }}"></script>
     <script src="{{ asset('backend-assets/js/bootstrap.min.js') }}"></script>

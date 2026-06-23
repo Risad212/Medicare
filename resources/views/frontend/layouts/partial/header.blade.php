@@ -121,19 +121,19 @@
             <div class="collapse navbar-collapse" id="navbar-content">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" id="home" href="index.html">Home</a>
+                        <a class="nav-link" id="home" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="about.html">About Us</a>
+                        <a class="nav-link" href="about">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="services.html">our services</a>
+                        <a class="nav-link" href="service">our services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="doctors.html">doctors<a>
+                        <a class="nav-link" href="doctor">doctors<a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link" href="blog.html">
+                        <a class="nav-link" href="blog">
                             Blog
                             <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -150,10 +150,10 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.html">contact</a>
+                        <a class="nav-link" href="contact">contact</a>
                     </li>
                     <li class="nav-item nav-button">
-                        <a class="nav-link" href="appoinment.html">Appoinment</a>
+                        <a class="nav-link" href="appoinment">Appoinment</a>
                     </li>
                 </ul>
             </div>
