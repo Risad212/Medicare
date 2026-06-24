@@ -1,12 +1,14 @@
 <?php
 
-use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminPageController;
+
 
 Route::get('/', function () {
     return view('frontend.index');
-})->name('/');;
+})->name('home');;
 
 Route::get('/about', function () {
     return view('frontend.about');
@@ -34,5 +36,17 @@ Route::get('/appoinment', function () {
 
 // ================ Start Backend Route ================
 Auth::routes();
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/admin', [HomeController::class, 'index'])->name('home');
+
+/**
+ *  Starting Frontend CMS Route
+ */
+Route::get('/admin/pages/home',    [AdminPageController::class, 'index'])->name('admin.home');
+Route::get('/admin/pages/about',   [AdminPageController::class, 'about'])->name('admin.about');
+Route::get('/admin/pages/service',[AdminPageController::class, 'service'])->name('admin.service');
+Route::get('/admin/pages/doctor', [AdminPageController::class, 'doctor'])->name('admin.doctor');
+Route::get('/admin/pages/blog',    [AdminPageController::class, 'blog'])->name('admin.blog');
+Route::get('/admin/pages/contact', [AdminPageController::class, 'contact'])->name('admin.contact');
+
+
 

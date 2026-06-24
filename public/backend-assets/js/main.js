@@ -1,16 +1,21 @@
+(function () {
+	"use strict";
 
-<select name="cmbOrderDate" class="form-control border-warning" required>
-    <option value="">Select Order Date</option>
+	var treeviewMenu = $('.app-menu');
 
-    @foreach($qOrderDate as $sOrderDate)
-        @if(in_array(date('Y-m-d', strtotime($sOrderDate)), [
-            date('Y-m-d'),
-            date('Y-m-d', strtotime('+1 days'))
-        ]))
-            <option value="{{ date('Y-m-d', strtotime($sOrderDate)) }}">
-                {{ date('d-m-Y', strtotime($sOrderDate)) }}
-            </option>
-        @endif
-    @endforeach
-</select>
-        
+	// Toggle Sidebar
+	$('[data-toggle="sidebar"]').click(function(event) {
+		event.preventDefault();
+		$('.app').toggleClass('sidenav-toggled');
+	});
+
+	// Activate sidebar treeview toggle
+	$("[data-toggle='treeview']").click(function(event) {
+		event.preventDefault();
+		if(!$(this).parent().hasClass('is-expanded')) {
+			treeviewMenu.find("[data-toggle='treeview']").parent().removeClass('is-expanded');
+		}
+		$(this).parent().toggleClass('is-expanded');
+	});
+
+})();

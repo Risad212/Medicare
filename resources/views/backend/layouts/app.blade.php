@@ -48,7 +48,7 @@
 
 
     <!-- Essential javascripts for application to work-->
-    <script src="{{ asset('backend-assets/css/main.css') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('backend-assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('backend-assets/js/main.js') }}"></script>
     <!-- Page specific javascripts-->
