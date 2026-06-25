@@ -123,34 +123,56 @@
 <section class="about-section">
     <div class="container">
         <div class="row align-items-center">
+
             <div class="col-12 col-lg-6">
                 <div class="sotry-content">
-                    <h3 class="title">Your Trusted Partner in Health</h3>
-                    <p class="mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. A blanditiis error natus nam
-                        minus laboriosam assumenda esse eaque labore hic totam, quos similique incidunt, quibusdam,
-                        provident reiciendis cum voluptas! Voluptas?.
-                        assumenda esse eaque labore hic totam totam. <br><br>
-                        provident reiciendis cum voluptas! Voluptas, provident reiciendis cum voluptas! Voluptas?</p>
-                    <a class="about-btn" href="#">Know More</a>
+
+                    <h3 class="title">
+                        
+                    </h3>
+
+                    <p class="mb-2">
+                        
+                    </p>
+
+                    <a class="about-btn" href="{{ $section->content['button_link'] }}">
+                        
+                    </a>
+
                 </div>
             </div>
+
+
             <div class="col-12 col-lg-6">
                 <div class="row no-gutters">
+
                     <div class="col-6">
+
                         <div class="single-thumb">
-                            <img class="lazy img-fluid" src="{{ asset('frontend-assets/media/home/about-1.jpg') }}" alt="">
+                            <img class="lazy img-fluid"
+                            src="{{ asset('storage/'.$section->content['left_top_image']) }}">
                         </div>
+
                         <div class="single-thumb">
-                            <img class="lazy img-fluid" src="{{ asset('frontend-assets/media/home/about-2.jpg') }}" alt="">
+                            <img class="lazy img-fluid"
+                            src="{{ asset('storage/'.$section->content['left_bottom_image']) }}">
                         </div>
+
                     </div>
+
+
                     <div class="col-6">
+
                         <div class="single-thumb">
-                            <img class="lazy img-fluid" src="{{ asset('frontend-assets/media/home/about-3.jpeg') }}" alt="">
+                            <img class="lazy img-fluid"
+                            src="{{ asset('storage/'.$section->content['right_image']) }}">
                         </div>
+
                     </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 </section>

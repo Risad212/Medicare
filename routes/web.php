@@ -4,8 +4,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminPageController;
+use App\Http\Controllers\PageSectionController;
+use App\Http\Controllers\Frontend\PageController;
 
-
+/**
+ * Front End Page View Route
+ */
 Route::get('/', function () {
     return view('frontend.index');
 })->name('home');;
@@ -39,14 +43,19 @@ Auth::routes();
 Route::get('/admin', [HomeController::class, 'index'])->name('home');
 
 /**
- *  Starting Frontend CMS Route
+ *  Admin Frontend Page CMS
  */
-Route::get('/admin/pages/home',    [AdminPageController::class, 'index'])->name('admin.home');
-Route::get('/admin/pages/about',   [AdminPageController::class, 'about'])->name('admin.about');
-Route::get('/admin/pages/service',[AdminPageController::class, 'service'])->name('admin.service');
-Route::get('/admin/pages/doctor', [AdminPageController::class, 'doctor'])->name('admin.doctor');
-Route::get('/admin/pages/blog',    [AdminPageController::class, 'blog'])->name('admin.blog');
-Route::get('/admin/pages/contact', [AdminPageController::class, 'contact'])->name('admin.contact');
+Route::get('/admin/pages/home',    [AdminPageController::class, 'about'])->name('admin.home');
+
+/**
+ * CMS CRUD
+ */
+Route::apiResource('page-sections', PageSectionController::class);
+
+/**
+ * CMS Frontend Data Read Route
+ */
+Route::get('/', [PageController::class, 'home']);
 
 
 

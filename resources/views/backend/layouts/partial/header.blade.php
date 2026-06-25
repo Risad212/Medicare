@@ -102,11 +102,6 @@
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-file-earmark"></i><span class="app-menu__label">Pages</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
             <ul class="treeview-menu">
                 <li><a class="treeview-item" href="{{ route('admin.home') }}"><i class="icon bi bi-circle-fill"></i>Home</a></li>
-                <li><a class="treeview-item" href="{{ route('admin.about') }}"><i class="icon bi bi-circle-fill"></i>About</a></li>
-                <li><a class="treeview-item" href="{{ route('admin.service') }}"><i class="icon bi bi-circle-fill"></i>Service</a></li>
-                <li><a class="treeview-item" href="{{ route('admin.doctor') }}"><i class="icon bi bi-circle-fill"></i>Doctor</a></li>
-                <li><a class="treeview-item" href="{{ route('admin.blog') }}"><i class="icon bi bi-circle-fill"></i>Blog</a></li>
-                <li><a class="treeview-item" href="{{ route('admin.contact') }}"><i class="icon bi bi-circle-fill"></i>Contact</a></li>
             </ul>
         </li>
         <li><a class="app-menu__item" href="docs.html"><i class="app-menu__icon bi bi-code-square"></i><span class="app-menu__label">Docs</span></a></li>

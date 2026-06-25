@@ -14069,7 +14069,7 @@ textarea.form-control-lg {
 .tile .tile-title {
   margin-top: 0;
   margin-bottom: 20px;
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 .tile .tile-title-w-btn {
   display: -webkit-box;
@@ -14880,4 +14880,19 @@ textarea.form-control-lg {
 }
 .user .user-settings label {
   color: #666;
+}
+
+/**
+ Form Grid
+*/
+.form-row.column-2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-row.column-3{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
 }

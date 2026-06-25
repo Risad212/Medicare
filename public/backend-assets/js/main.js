@@ -18,4 +18,17 @@
 		$(this).parent().toggleClass('is-expanded');
 	});
 
+	/**
+	 * Preview Image Before Submit Form To Save IN Database
+	 */
+	function previewImage(inputId, previewId) {
+		document.getElementById(inputId).addEventListener('change', function(e) {
+			document.getElementById(previewId).src = URL.createObjectURL(e.target.files[0]);
+		});
+	}
+
+	previewImage('left_top_image', 'preview_left_top');
+	previewImage('left_bottom_image', 'preview_left_bottom');
+	previewImage('right_image', 'preview_right_image');
+
 })();
