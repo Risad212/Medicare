@@ -135,7 +135,7 @@
                         
                     </p>
 
-                    <a class="about-btn" href="{{ $section->content['button_link'] }}">
+                    <a class="about-btn" href="#">
                         
                     </a>
 
@@ -149,13 +149,11 @@
                     <div class="col-6">
 
                         <div class="single-thumb">
-                            <img class="lazy img-fluid"
-                            src="{{ asset('storage/'.$section->content['left_top_image']) }}">
+                            <img src="" alt="">
                         </div>
 
                         <div class="single-thumb">
-                            <img class="lazy img-fluid"
-                            src="{{ asset('storage/'.$section->content['left_bottom_image']) }}">
+                            <img src="" alt="">
                         </div>
 
                     </div>
@@ -164,8 +162,7 @@
                     <div class="col-6">
 
                         <div class="single-thumb">
-                            <img class="lazy img-fluid"
-                            src="{{ asset('storage/'.$section->content['right_image']) }}">
+                            <img src="" alt="">
                         </div>
 
                     </div>

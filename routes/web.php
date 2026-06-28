@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminPageController;
-use App\Http\Controllers\PageSectionController;
-use App\Http\Controllers\Frontend\PageController;
 
 /**
  * Front End Page View Route
@@ -42,20 +40,6 @@ Route::get('/appoinment', function () {
 Auth::routes();
 Route::get('/admin', [HomeController::class, 'index'])->name('home');
 
-/**
- *  Admin Frontend Page CMS
- */
-Route::get('/admin/pages/home',    [AdminPageController::class, 'about'])->name('admin.home');
-
-/**
- * CMS CRUD
- */
-Route::apiResource('page-sections', PageSectionController::class);
-
-/**
- * CMS Frontend Data Read Route
- */
-Route::get('/', [PageController::class, 'home']);
 
 
 

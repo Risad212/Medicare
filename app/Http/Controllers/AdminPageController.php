@@ -15,7 +15,7 @@ class AdminPageController extends Controller
     }
 
     /**
-     * Frontend Page Admin CMS For Home
+     * Home page about section cms ui show
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
