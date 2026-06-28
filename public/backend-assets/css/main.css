@@ -14574,15 +14574,20 @@ textarea.form-control-lg {
 .login-content .login-box {
   position: relative;
   min-width: 350px;
-  min-height: 390px;
+  min-height: 430px;
   background-color: #fff;
   -webkit-box-shadow: 0px 29px 147.5px 102.5px rgba(0, 0, 0, 0.05), 0px 29px 95px 0px rgba(0, 0, 0, 0.16);
-          box-shadow: 0px 29px 147.5px 102.5px rgba(0, 0, 0, 0.05), 0px 29px 95px 0px rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 29px 147.5px 102.5px rgba(0, 0, 0, 0.05), 0px 29px 95px 0px rgba(0, 0, 0, 0.16);
   -webkit-perspective: 800px;
-          perspective: 800px;
+  perspective: 800px;
   -webkit-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
 }
+
+.login-content .register-box{
+  min-height: 550px;
+}
+
 .login-content .login-box .login-head {
   margin-top: 0;
   margin-bottom: 20px;

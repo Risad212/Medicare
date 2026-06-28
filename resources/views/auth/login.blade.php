@@ -5,9 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Main CSS-->
     <link rel="stylesheet" type="text/css" href="{{asset('backend-assets/css/main.css')}}">
-    <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <title>Login - Vali Admin</title>
 </head>
@@ -22,31 +20,29 @@
             <h1>Vali</h1>
         </div>
         <div class="login-box">
+
+            {{-- Login Form --}}
             <form class="login-form" method="POST" action="{{ route('login') }}">
                 @csrf
                 <h3 class="login-head"><i class="bi bi-person me-2"></i>SIGN IN</h3>
                 <div class="mb-3">
                     <label class="form-label">USERNAME</label>
                     <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="Email" required autofocus>
-
                     @error('email')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
                     @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label">PASSWORD</label>
-
                     <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
                     @error('password')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
                     @enderror
                 </div>
-
                 <div class="mb-3">
                     <div class="utility">
                         <div class="form-check">
@@ -60,9 +56,12 @@
                 <div class="mb-3 btn-container d-grid">
                     <button class="btn btn-primary btn-block"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>SIGN IN</button>
                 </div>
+                <div class="mb-3 mt-2 text-center">
+                    <p class="semibold-text mb-0">Don't have an account? <a href="{{ route('register') }}">Register</a></p>
+                </div>
             </form>
 
-            <!----- Forgot Password ------->
+            {{-- Forgot Password Form --}}
             <form method="POST" class="forget-form" action="{{ route('password.email') }}">
                 @csrf
                 <h3 class="login-head"><i class="bi bi-person-lock me-2"></i>Forgot Password ?</h3>
@@ -70,13 +69,13 @@
                     <label class="form-label">EMAIL</label>
                     <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
                     @error('email')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                 @enderror
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
                 <div class="mb-3 btn-container d-grid">
-                     <button class="btn btn-primary btn-block"><i class="bi bi-unlock me-2 fs-5"></i>Send Password Reset Link</button>
+                    <button class="btn btn-primary btn-block"><i class="bi bi-unlock me-2 fs-5"></i>Send Password Reset Link</button>
                 </div>
                 <div class="mb-3 mt-3">
                     <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="bi bi-chevron-left me-1"></i> Back to Login</a></p>
@@ -85,13 +84,11 @@
 
         </div>
     </section>
-    
-    <!-- Essential javascripts for application to work-->
+
     <script src="{{ asset('backend-assets/js/jquery-3.7.0.min.js') }}"></script>
     <script src="{{ asset('backend-assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('backend-assets/js/main.js') }}"></script>
     <script type="text/javascript">
-        // Login Page Flipbox control
         $('.login-content [data-toggle="flip"]').click(function() {
             $('.login-box').toggleClass('flipped');
             return false;
