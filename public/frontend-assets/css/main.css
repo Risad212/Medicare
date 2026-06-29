@@ -1526,9 +1526,10 @@ input:-webkit-autofill:focus {
   transition: all 500ms;
 }
 
-/* .deparment-list .item:last-child{
+.deparment-list .item:last-child{
   border-bottom: none;
-} */
+}
+
 .deparment-list .item a {
   color: #cbcbcb;
   transition: all 500ms;
@@ -1560,7 +1561,6 @@ input:-webkit-autofill:focus {
 
 .footer-widget-4 .contact-list .item .icon {
   margin-right: 12px;
-  margin-top: 6px;
 }
 
 /*---- copwywrite text ----*/

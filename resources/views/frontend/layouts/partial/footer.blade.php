@@ -4,15 +4,13 @@
         <div class="row gy-4 footer-content">
             <div class="col-lg-3">
                 <div class="footer-widget-1">
-                    <a href="#">
-                        <img class="img-fluid" src="{{ asset('frontend-assets/media/common/logo.png') }}" alt="">
+                    <a href="/">
+                       <img class="img-fluid" src="{{ asset('storage/'.$setting->footer_logo) }}" alt="">
                     </a>
-                    <p>Our Clinic has grown to provide a world class facility for the clinic advanced restorative.
-                        We are among the most qualified implant providers in the AUS with over 30 years of quality training
-                        and experience.</p>
+                    <p>{{ $setting->footer_description }}</p>
                     <div class="social-list">
                         <span class="item">
-                            <a href="#"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                            <a href="{{ $setting->facebook }}"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 310 310" xml:space="preserve">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -27,7 +25,7 @@
                             </a>
                         </span>
                         <span class="item">
-                            <a href="#">
+                            <a href="{{ $setting->twitter }}">
                                 <svg viewBox="0 -23.5 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid"
                                     stroke="#000000">
@@ -44,7 +42,7 @@
                             </a>
                         </span>
                         <span class="item">
-                            <a href="#">
+                            <a href="{{ $setting->linkedin }}">
                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -60,7 +58,7 @@
                             </a>
                         </span>
                         <span class="item">
-                            <a href="#">
+                            <a href="{{ $setting->youtube }}">
                                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-271 311.2 256 179.8"
                                     xml:space="preserve">
@@ -121,8 +119,7 @@
                                     </svg>
                                 </span>
                                 <address class="address">
-                                    2130 Fulton Street San Diego
-                                    CA 94117-1080 USA
+                                    {{ $setting->address}}
                                 </address>
                             </a>
                         </li>
@@ -140,8 +137,7 @@
                                     </svg>
                                 </span>
                                 <span>
-                                    Mon to Fri : 08:30 - 11:00
-                                    +880 02145 6789
+                                    {{$setting->phone}}
                                 </span>
                             </a>
                         </li>
@@ -159,8 +155,7 @@
                                     </svg>
                                 </span>
                                 <span>
-                                    Do you have a Question?
-                                    info@gmail.com
+                                     {{$setting->email}}
                                 </span>
                             </a>
                         </li>
@@ -181,8 +176,7 @@
                                     </svg>
                                 </span>
                                 <span>
-                                    Mon - Sat 8.00 - 11.00
-                                    Friday CLOSED
+                                     {{$setting->working_hours}}
                                 </span>
                             </a>
                         </li>
@@ -191,7 +185,7 @@
             </div>
         </div>
         <div class="copay-write">
-            <span class="text">© Copyright by Medicare</span>
+            <span class="text"> {{$setting->copyright}}</span>
             <span class="text">Design & Developed by Bongosoft Ltd.</span>
         </div>
     </div>

@@ -15,7 +15,7 @@
                             </path>
                         </g>
                     </svg>
-                    <span>234 Triumph, Los Angeles, California, US</span>
+                <span>{{ $setting->address }}</span>
                 </span>
                 <span><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -29,13 +29,13 @@
                                 fill="white"></path>
                         </g>
                     </svg>
-                    <span>Sat - Thu 8:00AM - 11:00PM Friday CLOSED</span>
+                    <span>{{ $setting->working_hours }}</span>
                 </span>
             </div>
             <div class="topbar-right">
                 <ul class="socail-list">
                     <li class="item">
-                        <a href="#">
+                        <a href="{{ $setting->facebook }}">
                             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 310 310" xml:space="preserve">
                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -51,7 +51,7 @@
                         </a>
                     </li>
                     <li class="item">
-                        <a href="#">
+                        <a href="{{ $setting->twitter }}">
                             <svg viewBox="0 -23.5 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" stroke="#000000">
                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -67,7 +67,7 @@
                         </a>
                     </li>
                     <li class="item">
-                        <a href="#">
+                        <a href="{{ $setting->linkedin }}">
                             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                 viewBox="0 0 512 512" xml:space="preserve">
                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -83,7 +83,7 @@
                         </a>
                     </li>
                     <li class="item">
-                        <a href="#">
+                        <a href="{{ $setting->youtube }}">
                             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-271 311.2 256 179.8"
                                 xml:space="preserve">
@@ -107,7 +107,7 @@
 <header class="header">
     <div class="container">
         <nav class="navbar navbar-expand-lg">
-            <a class="navbar-brand" href="#"><img src="{{ asset('frontend-assets/media/common/logo.png') }}" alt=""></a>
+            <a class="navbar-brand" href="/"><img src="{{ asset('storage/'.$setting->logo) }}" alt=""></a>
             <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbar-content">
                 <div class="hamburger-toggle order-lg-1">

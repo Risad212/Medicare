@@ -2,15 +2,20 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\AdminPageController;
 
-/**
- * Front End Page View Route
- */
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SettingController;
+
+
+/*
+|--------------------------------------------------------------------------
+| Frontend Routes
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
     return view('frontend.index');
-})->name('home');;
+})->name('home');
 
 Route::get('/about', function () {
     return view('frontend.about');
@@ -36,10 +41,26 @@ Route::get('/appoinment', function () {
     return view('frontend.appoinment');
 })->name('appoinment');
 
-// ================ Start Backend Route ================
+/*
+|--------------------------------------------------------------------------
+| Backend / Admin Routes
+|--------------------------------------------------------------------------
+*/
+
 Auth::routes();
-Route::get('/admin', [HomeController::class, 'index'])->name('home');
+
+Route::get('/admin', [HomeController::class, 'index'])
+    ->name('admin.home');
 
 
+/*
+|--------------------------------------------------------------------------
+| Settings Routes
+|--------------------------------------------------------------------------
+*/
 
+Route::get('/admin/settings/general', [SettingController::class, 'general'])
+    ->name('settings.general');
 
+Route::post('/admin/settings/general', [SettingController::class, 'update'])
+    ->name('settings.update');

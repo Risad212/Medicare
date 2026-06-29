@@ -78,7 +78,7 @@
         </div>
     </div>
     <ul class="app-menu">
-        <li><a class="app-menu__item active" href="dashboard.html"><i class="app-menu__icon bi bi-speedometer"></i><span class="app-menu__label">Dashboard</span></a></li>
+        <li><a class="app-menu__item active" href="{{ route('settings.general') }}"><i class="app-menu__icon bi bi-speedometer"></i><span class="app-menu__label">Dashboard</span></a></li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-laptop"></i><span class="app-menu__label">UI Elements</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
             <ul class="treeview-menu">
                 <li><a class="treeview-item" href="bootstrap-components.html"><i class="icon bi bi-circle-fill"></i> Bootstrap Elements</a></li>
@@ -99,9 +99,14 @@
                 <li><a class="treeview-item" href="table-data-table.html"><i class="icon bi bi-circle-fill"></i> Data Tables</a></li>
             </ul>
         </li>
-        <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-file-earmark"></i><span class="app-menu__label">Pages</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
+       <li class="treeview is-expanded">
+            <a class="app-menu__item" href="#" data-toggle="treeview">
+                <i class="app-menu__icon bi bi-gear"></i>
+                <span class="app-menu__label">Settings</span>
+                <i class="treeview-indicator bi bi-chevron-right"></i>
+            </a>
             <ul class="treeview-menu">
-                <li><a class="treeview-item" href="#"><i class="icon bi bi-circle-fill"></i>Home</a></li>
+                <li><a class="treeview-item active" href="{{ route('settings.general') }}"><i class="icon bi bi-circle-fill"></i>General</a></li>
             </ul>
         </li>
         <li><a class="app-menu__item" href="docs.html"><i class="app-menu__icon bi bi-code-square"></i><span class="app-menu__label">Docs</span></a></li>
