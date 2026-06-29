@@ -107,6 +107,7 @@
             </a>
             <ul class="treeview-menu">
                 <li><a class="treeview-item active" href="{{ route('settings.general') }}"><i class="icon bi bi-circle-fill"></i>General</a></li>
+                <li><a class="treeview-item active" href="{{ route('settings.home') }}"><i class="icon bi bi-circle-fill"></i>Home</a></li>
             </ul>
         </li>
         <li><a class="app-menu__item" href="docs.html"><i class="app-menu__icon bi bi-code-square"></i><span class="app-menu__label">Docs</span></a></li>

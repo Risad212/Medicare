@@ -18,6 +18,16 @@ class SettingController extends Controller
         return view('backend.settings.general', compact('setting'));
     }
 
+    /**
+     * General UI Show From Settings
+     *
+     * @return void
+     */
+    public function home()
+    {
+        return view('backend.settings.home');
+    }
+
 
     /**
      * General Data Save In DB

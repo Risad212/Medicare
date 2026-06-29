@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SettingController;
 
 
@@ -49,7 +49,7 @@ Route::get('/appoinment', function () {
 
 Auth::routes();
 
-Route::get('/admin', [HomeController::class, 'index'])
+Route::get('/admin', [AdminController::class, 'index'])
     ->name('admin.home');
 
 
@@ -61,6 +61,9 @@ Route::get('/admin', [HomeController::class, 'index'])
 
 Route::get('/admin/settings/general', [SettingController::class, 'general'])
     ->name('settings.general');
+
+Route::get('/admin/settings/home', [SettingController::class, 'home'])
+    ->name('settings.home');
 
 Route::post('/admin/settings/general', [SettingController::class, 'update'])
     ->name('settings.update');
