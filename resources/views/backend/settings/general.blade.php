@@ -10,7 +10,7 @@
 
                 <h3 class="mb-4">General Settings</h3>
 
-                <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('settings.general.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     {{-- SITE IDENTITY --}}

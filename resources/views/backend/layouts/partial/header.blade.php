@@ -99,7 +99,7 @@
                 <li><a class="treeview-item" href="table-data-table.html"><i class="icon bi bi-circle-fill"></i> Data Tables</a></li>
             </ul>
         </li>
-       <li class="treeview is-expanded">
+       <li class="treeview">
             <a class="app-menu__item" href="#" data-toggle="treeview">
                 <i class="app-menu__icon bi bi-gear"></i>
                 <span class="app-menu__label">Settings</span>
@@ -110,6 +110,19 @@
                 <li><a class="treeview-item active" href="{{ route('settings.home') }}"><i class="icon bi bi-circle-fill"></i>Home</a></li>
             </ul>
         </li>
+
+        <li class="treeview">
+            <a class="app-menu__item" href="#" data-toggle="treeview">
+                <i class="app-menu__icon bi bi-images"></i>
+                <span class="app-menu__label">Sliders</span>
+                <i class="treeview-indicator bi bi-chevron-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a class="treeview-item active" href="{{ route('admin.sliders.index') }}"><i class="icon bi bi-circle-fill"></i>All Sliders</a></li>
+                <li><a class="treeview-item" href="{{ route('admin.sliders.create') }}"><i class="icon bi bi-circle-fill"></i>Add New</a></li>
+            </ul>
+        </li>
+
         <li><a class="app-menu__item" href="docs.html"><i class="app-menu__icon bi bi-code-square"></i><span class="app-menu__label">Docs</span></a></li>
     </ul>
 </aside>

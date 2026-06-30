@@ -8,6 +8,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Settings\GeneralSettingController;
 use App\Http\Controllers\Settings\HomeSettingController;
 
+use App\Http\Controllers\Admin\SliderController;
+
 use App\Http\Controllers\Frontend\HomeController;
 
 /*
@@ -65,7 +67,7 @@ Route::get('/admin/settings/general', [GeneralSettingController::class, 'general
     ->name('settings.general');
 
 Route::post('/admin/settings/general', [GeneralSettingController::class, 'update'])
-    ->name('settings.update');
+    ->name('settings.general.update');
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +78,12 @@ Route::get('/admin/settings/home', [HomeSettingController::class, 'home'])
     ->name('settings.home');
 
 Route::post('/admin/settings/home', [HomeSettingController::class, 'update'])
-    ->name('settings.update');
+    ->name('settings.home.update');
 
 
+/*
+|--------------------------------------------------------------------------
+| Slider Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('/admin/sliders', SliderController::class)->names('admin.sliders');

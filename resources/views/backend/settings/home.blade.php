@@ -9,7 +9,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <form action="#" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('settings.home.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             {{-- About Section --}}
