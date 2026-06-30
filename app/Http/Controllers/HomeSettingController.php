@@ -40,7 +40,13 @@ class HomeSettingController extends Controller
             $data['about_image_three'] = $request->file('about_image_three')->store('home','public');
         }
 
-        HomeSetting::create($data);
+        $setting = HomeSetting::first();
+
+        if ($setting) {
+            $setting->update($data);
+        } else {
+            HomeSetting::create($data);
+        }
 
         return back();
     }
