@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\GeneralSetting;
 
-class SettingController extends Controller
+class GeneralSettingController extends Controller
 {
     /**
-     * General UI Show From Settings
+     * General Admin Form UI Show
      *
      * @return void
      */
@@ -16,16 +16,6 @@ class SettingController extends Controller
     {
         $setting = GeneralSetting::first();
         return view('backend.settings.general', compact('setting'));
-    }
-
-    /**
-     * General UI Show From Settings
-     *
-     * @return void
-     */
-    public function home()
-    {
-        return view('backend.settings.home');
     }
 
 

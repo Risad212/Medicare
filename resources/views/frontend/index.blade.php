@@ -128,47 +128,45 @@
                 <div class="sotry-content">
 
                     <h3 class="title">
-                        
+                        {{ $homeSetting->about_title }}
                     </h3>
 
                     <p class="mb-2">
-                        
+                        {{ $homeSetting->about_description }}
                     </p>
 
-                    <a class="about-btn" href="#">
-                        
+                    <a class="about-btn" href="{{ route('about') }}">
+                        {{ $homeSetting->about_button_text }}
                     </a>
 
                 </div>
             </div>
 
-
             <div class="col-12 col-lg-6">
-                <div class="row no-gutters">
+            <div class="row no-gutters">
 
-                    <div class="col-6">
+                <div class="col-6">
 
-                        <div class="single-thumb">
-                            <img src="" alt="">
-                        </div>
-
-                        <div class="single-thumb">
-                            <img src="" alt="">
-                        </div>
-
+                    <div class="single-thumb">
+                        <img class="lazy img-fluid" src="{{ asset('storage/'.$homeSetting->about_image_one) }}" alt="">
                     </div>
 
-
-                    <div class="col-6">
-
-                        <div class="single-thumb">
-                            <img src="" alt="">
-                        </div>
-
+                    <div class="single-thumb">
+                        <img class="lazy img-fluid" src="{{ asset('storage/'.$homeSetting->about_image_two) }}" alt="">
                     </div>
 
                 </div>
+
+                <div class="col-6">
+
+                    <div class="single-thumb">
+                        <img class="lazy img-fluid" src="{{ asset('storage/'.$homeSetting->about_image_three) }}" alt="">
+                    </div>
+
+                </div>
+
             </div>
+        </div>
 
         </div>
     </div>

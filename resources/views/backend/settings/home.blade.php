@@ -11,7 +11,6 @@
 
         <form action="#" method="POST" enctype="multipart/form-data">
             @csrf
-            @method('PUT')
 
             {{-- About Section --}}
             <div class="tile mb-4">
@@ -22,24 +21,24 @@
                     <div class="form-group mb-2">
                         <label>Title</label>
                         <input type="text" name="about_title" class="form-control"
-                            value="{{ old('about_title', $setting->about_title ?? '') }}">
+                            value="{{ old('about_title', $homeSetting->about_title ?? '') }}">
                     </div>
                     <div class="form-group mb-2">
                         <label>Description</label>
-                        <textarea name="about_description" class="form-control" rows="4">{{ old('about_description', $setting->about_description ?? '') }}</textarea>
+                        <textarea name="about_description" class="form-control" rows="4">{{ old('about_description', $homeSetting->about_description ?? '') }}</textarea>
                     </div>
                       <div class="form-group mb-2">
                          <label>Button Text</label>
                          <input type="text" name="about_button_text" class="form-control"
-                                    value="{{ old('about_button_text', $setting->about_button_text ?? '') }}">
+                                    value="{{ old('about_button_text', $homeSetting->about_button_text ?? '') }}">
                      </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Left Top (Recommended size: 370 × 270 px)</label>
-                                @if(!empty($setting->about_image_one))
+                                @if(!empty($homeSetting->about_image_one))
                                     <div class="mb-2">
-                                        <img src="{{ asset('storage/' . $setting->about_image_one) }}" height="80" class="img-thumbnail">
+                                        <img src="{{ asset('storage/' . $homeSetting->about_image_one) }}" width="10%" class="img-thumbnail">
                                     </div>
                                 @endif
                                 <input type="file" name="about_image_one" class="form-control">
@@ -48,9 +47,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Left Bottom (Recommended upload size: 370 × 270 px)</label>
-                                @if(!empty($setting->about_image_two))
+                                @if(!empty($homeSetting->about_image_two))
                                     <div class="mb-2">
-                                        <img src="{{ asset('storage/' . $setting->about_image_two) }}" height="80" class="img-thumbnail">
+                                        <img src="{{ asset('storage/' . $homeSetting->about_image_two) }}" width="10%" class="img-thumbnail">
                                     </div>
                                 @endif
                                 <input type="file" name="about_image_two" class="form-control">
@@ -59,9 +58,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Right (Recommended image size: 501 × 750 px)</label>
-                                @if(!empty($setting->about_image_three))
+                                @if(!empty($homeSetting->about_image_three))
                                     <div class="mb-2">
-                                        <img src="{{ asset('storage/' . $setting->about_image_three) }}" height="80" class="img-thumbnail">
+                                        <img src="{{ asset('storage/' . $homeSetting->about_image_three) }}" width="10%" class="img-thumbnail">
                                     </div>
                                 @endif
                                 <input type="file" name="about_image_three" class="form-control">
@@ -85,7 +84,7 @@
                 <div class="form-group">
                     <label>Label</label>
                     <input type="text" name="counter_one_text" class="form-control"
-                        value="{{ old('counter_one_text', $setting->counter_one_text ?? 'Hospital Rooms') }}">
+                        value="{{ old('counter_one_text', $homeSetting->counter_one_text ?? '') }}">
                 </div>
             </div>
 
@@ -93,7 +92,7 @@
                 <div class="form-group">
                     <label>Number</label>
                     <input type="number" name="counter_one_number" class="form-control"
-                        value="{{ old('counter_one_number', $setting->counter_one_number ?? '3468') }}">
+                        value="{{ old('counter_one_number', $homeSetting->counter_one_number ?? '') }}">
                 </div>
             </div>
         </div>
@@ -104,7 +103,7 @@
                 <div class="form-group">
                     <label>Label</label>
                     <input type="text" name="counter_two_text" class="form-control"
-                        value="{{ old('counter_two_text', $setting->counter_two_text ?? 'Specialist Doctors') }}">
+                        value="{{ old('counter_two_text', $homeSetting->counter_two_text ?? '') }}">
                 </div>
             </div>
 
@@ -112,7 +111,7 @@
                 <div class="form-group">
                     <label>Number</label>
                     <input type="number" name="counter_two_number" class="form-control"
-                        value="{{ old('counter_two_number', $setting->counter_two_number ?? '557') }}">
+                        value="{{ old('counter_two_number', $homeSetting->counter_two_number ?? '') }}">
                 </div>
             </div>
         </div>
@@ -123,7 +122,7 @@
                 <div class="form-group">
                     <label>Label</label>
                     <input type="text" name="counter_three_text" class="form-control"
-                        value="{{ old('counter_three_text', $setting->counter_three_text ?? 'Happy Patients') }}">
+                        value="{{ old('counter_three_text', $homeSetting->counter_three_text ?? '') }}">
                 </div>
             </div>
 
@@ -131,7 +130,7 @@
                 <div class="form-group">
                     <label>Number</label>
                     <input type="number" name="counter_three_number" class="form-control"
-                        value="{{ old('counter_three_number', $setting->counter_three_number ?? '2000') }}">
+                        value="{{ old('counter_three_number', $homeSetting->counter_three_number ?? '') }}">
                 </div>
             </div>
         </div>
@@ -142,7 +141,7 @@
                     <div class="form-group">
                         <label>Label</label>
                         <input type="text" name="counter_four_text" class="form-control"
-                            value="{{ old('counter_four_text', $setting->counter_four_text ?? 'Years of Experience') }}">
+                            value="{{ old('counter_four_text', $homeSetting->counter_four_text ?? '') }}">
                     </div>
                 </div>
 
@@ -150,7 +149,7 @@
                     <div class="form-group">
                         <label>Number</label>
                         <input type="number" name="counter_four_number" class="form-control"
-                            value="{{ old('counter_four_number', $setting->counter_four_number ?? '30') }}">
+                            value="{{ old('counter_four_number', $homeSetting->counter_four_number ?? '') }}">
                     </div>
                 </div>
              </div>

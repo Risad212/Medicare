@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\HomeSetting;
+
+class HomeSettingController extends Controller
+{
+    /**
+     * Home Setting Form UI Show
+     *
+     * @return void
+     */
+    public function home()
+    {
+        $homeSetting = HomeSetting::first();
+
+       return view('backend.settings.home', compact('homeSetting'));
+    }
+
+    /**
+     * Home Setting Data Save In DB
+     *
+     * @return void
+     */
+    public function update(Request $request)
+    {
+       $data = $request->except(['_token']);
+
+        if($request->hasFile('about_image_one')){
+            $data['about_image_one'] = $request->file('about_image_one')->store('home','public');
+        }
+
+        if($request->hasFile('about_image_two')){
+            $data['about_image_two'] = $request->file('about_image_two')->store('home','public');
+        }
+
+        if($request->hasFile('about_image_three')){
+            $data['about_image_three'] = $request->file('about_image_three')->store('home','public');
+        }
+
+        HomeSetting::create($data);
+
+        return back();
+    }
+}
