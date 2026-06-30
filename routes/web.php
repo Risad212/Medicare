@@ -4,8 +4,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\GeneralSettingController;
-use App\Http\Controllers\HomeSettingController;
+
+use App\Http\Controllers\Settings\GeneralSettingController;
+use App\Http\Controllers\Settings\HomeSettingController;
 
 use App\Http\Controllers\Frontend\HomeController;
 
