@@ -10,6 +10,8 @@ use App\Http\Controllers\Settings\HomeSettingController;
 
 use App\Http\Controllers\Admin\SliderController;
 
+use App\Http\Controllers\Admin\DoctorController;
+
 use App\Http\Controllers\Frontend\HomeController;
 
 /*
@@ -87,3 +89,11 @@ Route::post('/admin/settings/home', [HomeSettingController::class, 'update'])
 |--------------------------------------------------------------------------
 */
 Route::resource('/admin/sliders', SliderController::class)->names('admin.sliders');
+
+
+/*
+|--------------------------------------------------------------------------
+| Doctors Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('/admin/doctors', DoctorController::class)->names('admin.doctors');

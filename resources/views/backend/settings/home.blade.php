@@ -21,28 +21,28 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-2">
-                                <label>Title</label>
+                                <label class="mb-2">Title</label>
                                 <input type="text" name="about_title" class="form-control"
                                     value="{{ old('about_title', $homeSetting->about_title ?? '') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-2">
-                                <label>Button Text</label>
+                                <label class="mb-2">Button Text</label>
                                 <input type="text" name="about_button_text" class="form-control"
                                     value="{{ old('about_button_text', $homeSetting->about_button_text ?? '') }}">
                             </div>
                         </div>
                     </div>
                     <div class="form-group mb-2">
-                        <label>Description</label>
+                        <label class="mb-2">Description</label>
                         <textarea name="about_description" class="form-control" rows="4">{{ old('about_description', $homeSetting->about_description ?? '') }}</textarea>
                     </div>
                 </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Left Top (Recommended size: 370 × 270 px)</label>
+                                <label class="mb-2">Left Top (Recommended size: 370 × 270 px)</label>
                                 @if(!empty($homeSetting->about_image_one))
                                     <div class="mb-2">
                                         <img src="{{ asset('storage/' . $homeSetting->about_image_one) }}" width="10%" class="img-thumbnail">
@@ -53,7 +53,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Left Bottom (Recommended upload size: 370 × 270 px)</label>
+                                <label class="mb-2">Left Bottom (Recommended upload size: 370 × 270 px)</label>
                                 @if(!empty($homeSetting->about_image_two))
                                     <div class="mb-2">
                                         <img src="{{ asset('storage/' . $homeSetting->about_image_two) }}" width="10%" class="img-thumbnail">
@@ -64,7 +64,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Right (Recommended image size: 501 × 750 px)</label>
+                                <label class="mb-2">Right (Recommended image size: 501 × 750 px)</label>
                                 @if(!empty($homeSetting->about_image_three))
                                     <div class="mb-2">
                                         <img src="{{ asset('storage/' . $homeSetting->about_image_three) }}" width="10%" class="img-thumbnail">
@@ -89,7 +89,7 @@
         <div class="row mb-2">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Label</label>
+                    <label class="mb-2">Label</label>
                     <input type="text" name="counter_one_text" class="form-control"
                         value="{{ old('counter_one_text', $homeSetting->counter_one_text ?? '') }}">
                 </div>
@@ -97,7 +97,7 @@
 
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Number</label>
+                    <label class="mb-2">Number</label>
                     <input type="number" name="counter_one_number" class="form-control"
                         value="{{ old('counter_one_number', $homeSetting->counter_one_number ?? '') }}">
                 </div>
@@ -108,7 +108,7 @@
         <div class="row mb-2">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Label</label>
+                    <label class="mb-2">Label</label>
                     <input type="text" name="counter_two_text" class="form-control"
                         value="{{ old('counter_two_text', $homeSetting->counter_two_text ?? '') }}">
                 </div>
@@ -116,7 +116,7 @@
 
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Number</label>
+                    <label class="mb-2">Number</label>
                     <input type="number" name="counter_two_number" class="form-control"
                         value="{{ old('counter_two_number', $homeSetting->counter_two_number ?? '') }}">
                 </div>
@@ -127,7 +127,7 @@
         <div class="row mb-2">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Label</label>
+                    <label class="mb-2">Label</label>
                     <input type="text" name="counter_three_text" class="form-control"
                         value="{{ old('counter_three_text', $homeSetting->counter_three_text ?? '') }}">
                 </div>
@@ -135,7 +135,7 @@
 
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Number</label>
+                    <label class="mb-2">Number</label>
                     <input type="number" name="counter_three_number" class="form-control"
                         value="{{ old('counter_three_number', $homeSetting->counter_three_number ?? '') }}">
                 </div>
@@ -146,7 +146,7 @@
             <div class="row mb-2">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Label</label>
+                        <label class="mb-2">Label</label>
                         <input type="text" name="counter_four_text" class="form-control"
                             value="{{ old('counter_four_text', $homeSetting->counter_four_text ?? '') }}">
                     </div>
@@ -154,7 +154,7 @@
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Number</label>
+                        <label class="mb-2">Number</label>
                         <input type="number" name="counter_four_number" class="form-control"
                             value="{{ old('counter_four_number', $homeSetting->counter_four_number ?? '') }}">
                     </div>

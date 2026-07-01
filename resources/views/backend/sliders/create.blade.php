@@ -19,23 +19,23 @@
                     @csrf
 
                     <div class="form-group mb-2">
-                        <label>Title</label>
+                        <label class="mb-2">Title</label>
                         <input type="text" name="title" class="form-control" value="{{ old('title') }}">
                         @error('title') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <div class="form-group mb-2">
-                        <label>Description</label>
+                        <label class="mb-2">Description</label>
                         <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
                     </div>
 
                     <div class="form-group mb-2">
-                        <label>Button Text</label>
+                        <label class="mb-2">Button Text</label>
                         <input type="text" name="button_text" class="form-control" value="{{ old('button_text') }}">
                     </div>
 
                     <div class="form-group mb-2">
-                        <label>Background Image</label>
+                        <label class="mb-2">Background Image</label>
                         <input type="file" name="bg_image" class="form-control">
                     </div>
 

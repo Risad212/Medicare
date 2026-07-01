@@ -362,7 +362,6 @@ input:-webkit-autofill:focus {
   display: block;
   transition: 0.4s;
   position: relative;
-  border-bottom: 1px solid#f7f7f7;
 }
 
 .dropdown-list .item a:hover {
@@ -370,7 +369,7 @@ input:-webkit-autofill:focus {
 }
 
 .dropdown-list .item a::after {
-  content: "";
+  /* content: ""; */
   position: absolute;
   background: var(--primary-color);
   height: 2px;

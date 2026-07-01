@@ -14901,3 +14901,19 @@ textarea.form-control-lg {
   grid-template-columns: 1fr 1fr 1fr;
   gap: 15px;
 }
+
+.status-active{
+    background:#16a34a;
+    color:#fff;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:12px;
+}
+
+.status-inactive{
+    background:#dc2626;
+    color:#fff;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:12px;
+}

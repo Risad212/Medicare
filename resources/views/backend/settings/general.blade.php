@@ -22,7 +22,7 @@
                         <div class="card-body">
 
                             <div class="form-group mb-2">
-                                <label>Site Name</label>
+                                <label class="mb-2">Site Name</label>
 
                                 <input type="text"
                                        name="site_name"
@@ -33,7 +33,7 @@
                             <div class="row">
 
                                 <div class="col-md-6">
-                                    <label>Site Logo Recommended size: 200x60 px</label>
+                                    <label class="mb-2">Site Logo Recommended size: 200x60 px</label>
 
                                     <div class="border rounded p-3 text-center">
 
@@ -50,7 +50,7 @@
 
 
                                 <div class="col-md-6">
-                                    <label>Site Favicon (Recommended size: 32×32 px, PNG or ICO)</label>
+                                    <label class="mb-2">Site Favicon (Recommended size: 32×32 px, PNG or ICO)</label>
 
                                     <div class="border rounded p-3 text-center">
 
@@ -84,7 +84,7 @@
 
                             <div class="form-group mb-2">
 
-                                <label>Address</label>
+                                <label class="mb-2">Address</label>
 
                                 <textarea name="address"
                                           class="form-control"
@@ -95,7 +95,7 @@
 
                             <div class="form-group mb-2">
 
-                                <label>Working Hours</label>
+                                <label class="mb-2">Working Hours</label>
 
                                 <textarea name="working_hours"
                                           class="form-control"
@@ -111,7 +111,7 @@
 
 
                                 <div class="col-md-6 form-group mb-2">
-                                    <label>Facebook</label>
+                                    <label class="mb-2">Facebook</label>
 
                                     <input name="facebook"
                                            class="form-control"
@@ -120,7 +120,7 @@
 
 
                                 <div class="col-md-6 form-group mb-2">
-                                    <label>Twitter / X</label>
+                                    <label class="mb-2">Twitter / X</label>
 
                                     <input name="twitter"
                                            class="form-control"
@@ -129,7 +129,7 @@
 
 
                                 <div class="col-md-6 form-group">
-                                    <label>LinkedIn</label>
+                                    <label class="mb-2">LinkedIn</label>
 
                                     <input name="linkedin"
                                            class="form-control"
@@ -138,7 +138,7 @@
 
 
                                 <div class="col-md-6 form-group">
-                                    <label>YouTube</label>
+                                    <label class="mb-2">YouTube</label>
 
                                     <input name="youtube"
                                            class="form-control"
@@ -165,7 +165,7 @@
 
                         <!-- Footer Logo -->
                         <div class="form-group mb-3">
-                            <label>Footer Logo</label>
+                            <label class="mb-2">Footer Logo</label>
 
                             @if(!empty($setting->footer_logo))
                                 <div class="mb-2">
@@ -183,7 +183,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label>Phone Number</label>
+                                    <label class="mb-2">Phone Number</label>
                                     <input type="text"
                                         name="phone"
                                         class="form-control"
@@ -193,7 +193,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label>Email</label>
+                                    <label class="mb-2">Email</label>
                                     <input type="email"
                                         name="email"
                                         class="form-control"
@@ -205,7 +205,7 @@
 
                         <!-- Footer Description -->
                         <div class="form-group mb-3">
-                            <label>Short Description</label>
+                            <label class="mb-2">Short Description</label>
                             <textarea name="footer_description"
                                     class="form-control"
                                     rows="4">{{ $setting->footer_description ?? '' }}</textarea>
@@ -213,7 +213,7 @@
 
                         <!-- Copyright -->
                         <div class="form-group">
-                            <label>Copyright Text</label>
+                            <label class="mb-2">Copyright Text</label>
                             <input name="copyright"
                                 class="form-control"
                                 value="{{ $setting->copyright ?? '' }}">

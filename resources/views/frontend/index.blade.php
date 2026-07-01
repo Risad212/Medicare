@@ -413,43 +413,52 @@
             <h3 class="title">Experienced Medical Specialist</h3>
         </div>
         <div class="row">
-            <div class="col-lg-4">
-                <div class="doctor-card">
-                    <div class="card-img">
-                        <img class="img-fluid" src="{{ asset('frontend-assets/media/home/doctor-1.png') }}" alt="">
-                    </div>
-                    <div class="card-content">
-                        <h4 class="title">Dr. Ema Jackson</h4>
-                        <span class="speacility">Dermatologist</span>
-                        <a href="#" class="card-btn">Book Appoinment</a>
-                    </div>
+
+    @forelse($doctors as $doctor)
+
+        <div class="col-lg-4 mb-4">
+
+            <div class="doctor-card">
+
+                <div class="card-img">
+
+                    @if($doctor->image)
+                        <img class="img-fluid"
+                             src="{{ asset('storage/'.$doctor->image) }}"
+                             alt="{{ $doctor->name }}">
+                    @endif
+
                 </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="doctor-card">
-                    <div class="card-img">
-                        <img class="img-fluid" src="{{ asset('frontend-assets/media/home/doctor-2.png') }}" alt="">
-                    </div>
-                    <div class="card-content">
-                        <h4 class="title">Dr. Flora Aldrich</h4>
-                        <span class="speacility">physicians</span>
-                        <a href="#" class="card-btn">Book Appoinment</a>
-                    </div>
+
+                <div class="card-content">
+
+                    <h4 class="title">
+                        {{ $doctor->name }}
+                    </h4>
+
+                    <span class="speacility">
+                        {{ $doctor->department }}
+                    </span>
+
+                    <a href="#" class="card-btn">
+                        Book Appointment
+                    </a>
+
                 </div>
+
             </div>
-            <div class="col-lg-4">
-                <div class="doctor-card">
-                    <div class="card-img">
-                        <img class="img-fluid" src="{{ asset('frontend-assets/media/home/doctor-3.png') }}" alt="">
-                    </div>
-                    <div class="card-content">
-                        <h4 class="title">Dr. Steven Hank</h4>
-                        <span class="speacility">Orthopaedist</span>
-                        <a href="#" class="card-btn">Book Appoinment</a>
-                    </div>
-                </div>
-            </div>
+
         </div>
+
+    @empty
+
+        <div class="col-12 text-center">
+            <p>No doctors found</p>
+        </div>
+
+    @endforelse
+
+</div>
     </div>
 </section>
 
