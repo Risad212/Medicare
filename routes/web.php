@@ -10,7 +10,7 @@ use App\Http\Controllers\Settings\HomeSettingController;
 
 use App\Http\Controllers\Admin\SliderController;
 
-use App\Http\Controllers\Admin\DoctorController;
+use App\Http\Controllers\Frontend\DoctorController;
 
 use App\Http\Controllers\Frontend\HomeController;
 

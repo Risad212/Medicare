@@ -414,7 +414,7 @@
         </div>
         <div class="row">
 
-    @forelse($doctors as $doctor)
+       @forelse($doctors as $doctor)
 
         <div class="col-lg-4 mb-4">
 
