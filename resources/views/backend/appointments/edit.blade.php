@@ -15,13 +15,13 @@
                 <div class="row">
 
                     <div class="col-lg-6 mb-2">
-                        <label>Doctor</label>
+                        <label class="mb-2">Doctor</label>
                         <input type="text" class="form-control" value="{{ $appointment->doctor->name ?? 'N/A' }}" readonly>
                         <input type="hidden" name="doctor_id" value="{{ $appointment->doctor_id }}">
                     </div>
 
                     <div class="col-lg-6 mb-2">
-                        <label>Visit Type</label>
+                        <label class="mb-2">Visit Type</label>
                         <select name="visit_type" class="form-control">
                             <option value="1" {{ $appointment->visit_type == 1 ? 'selected' : '' }}>First Visit</option>
                             <option value="2" {{ $appointment->visit_type == 2 ? 'selected' : '' }}>Second Visit</option>
@@ -30,17 +30,17 @@
                     </div>
 
                     <div class="col-lg-6 mb-2">
-                        <label>Patient Name</label>
+                        <label class="mb-2">Patient Name</label>
                         <input type="text" name="name" class="form-control" value="{{ $appointment->patient_name }}">
                     </div>
 
                     <div class="col-lg-6 mb-2">
-                        <label>Age</label>
+                        <label class="mb-2">Age</label>
                         <input type="number" name="age" class="form-control" value="{{ $appointment->age }}">
                     </div>
 
                     <div class="col-lg-6 mb-2">
-                        <label>Gender</label>
+                        <label class="mb-2">Gender</label>
                         <select name="gender" class="form-control">
                             <option value="1" {{ $appointment->gender == 1 ? 'selected' : '' }}>Male</option>
                             <option value="2" {{ $appointment->gender == 2 ? 'selected' : '' }}>Female</option>
@@ -49,13 +49,26 @@
                     </div>
 
                     <div class="col-lg-6 mb-2">
-                        <label>Phone</label>
+                        <label class="mb-2">Phone</label>
                         <input type="text" name="phone" class="form-control" value="{{ $appointment->phone }}">
                     </div>
 
                     <div class="col-lg-6 mb-2">
-                        <label>Appointment Date</label>
+                        <label class="mb-2">Appointment Date</label>
                         <input type="date" name="date" class="form-control" value="{{ $appointment->appointment_date }}">
+                    </div>
+
+                    <div class="col-lg-6 mb-2">
+                        <label class="mb-2">Status</label>
+                        <select name="status" class="form-control">
+                            <option value="0" {{ $appointment->status == 0 ? 'selected' : '' }}>
+                                Pending
+                            </option>
+
+                            <option value="1" {{ $appointment->status == 1 ? 'selected' : '' }}>
+                                Completed
+                            </option>
+                        </select>
                     </div>
 
                 </div>

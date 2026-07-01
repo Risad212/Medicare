@@ -33,14 +33,7 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'doctor_id' => 'required',
-            'name' => 'required',
-            'phone' => 'required',
-            'visit_type' => 'required',
-            'date' => 'required|date',
-            'gender' => 'required',
-        ]);
+        // dd($request->all());
 
         $appointment = Appointment::findOrFail($id);
 
@@ -52,7 +45,7 @@ class AppointmentController extends Controller
             'phone' => $request->phone,
             'visit_type' => $request->visit_type,
             'appointment_date' => $request->date,
-            'status' => $appointment->status,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('admin.appointments.index')
