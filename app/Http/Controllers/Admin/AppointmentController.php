@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
+use App\Models\Doctor;
 
 class AppointmentController extends Controller
 {
@@ -23,9 +24,10 @@ class AppointmentController extends Controller
      */
     public function edit(string $id)
     {
-        $appointment = Appointment::findOrFail($id);
+         $appointment = Appointment::findOrFail($id);
+         $doctors     = Doctor::where('status', 1)->get();
 
-        return view('backend.appointments.edit', compact('appointment'));
+         return view('backend.appointments.edit', compact('appointment', 'doctors'));
     }
 
     /**
@@ -33,8 +35,6 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // dd($request->all());
-
         $appointment = Appointment::findOrFail($id);
 
         $appointment->update([

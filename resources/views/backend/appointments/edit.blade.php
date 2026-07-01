@@ -8,6 +8,12 @@
         <div class="tile">
             <h3 class="tile-title">Edit Appointment</h3>
 
+             @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
             <form action="{{ route('admin.appointments.update', $appointment->id) }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -16,8 +22,16 @@
 
                     <div class="col-lg-6 mb-2">
                         <label class="mb-2">Doctor</label>
-                        <input type="text" class="form-control" value="{{ $appointment->doctor->name ?? 'N/A' }}" readonly>
-                        <input type="hidden" name="doctor_id" value="{{ $appointment->doctor_id }}">
+                        <select name="doctor_id" class="form-control">
+                            @foreach($doctors as $doctor)
+
+                                <option value="{{ $doctor->id }}"
+                                    {{ $appointment->doctor_id == $doctor->id ? 'selected' : '' }}>
+                                    {{ $doctor->name }}
+                                </option>
+
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="col-lg-6 mb-2">
