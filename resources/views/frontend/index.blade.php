@@ -5,50 +5,21 @@
 <section class="slider-section">
     <div class="carousel-single-item owl-carousel owl-theme">
 
-        <div class="single-slider" style="background-image: url({{ asset('frontend-assets/media/home/slider-1.jpg') }});">
+        @foreach($sliders as $slider)
+        <div class="single-slider" style="background-image: url('{{ asset('storage/' . $slider->bg_image) }}');">
             <div class="slider-overlay">
                 <div class="container">
                     <div class="title">
-                        <h2>HealWell Hospital Caring for Life</h2>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quas ab asperiores quidem
-                            expedita perspiciatis blanditiis at.</p>
+                        <h2>{{ $slider->title }}</h2>
+                        <p>{{ $slider->description }}</p>
                         <div class="btn-title-home">
-                            <a href="#" class="btn-title">Get Started</a>
+                            <a href="#" class="btn-title">{{ $slider->button_text }}</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="single-slider-2" style="background-image: url({{ asset('frontend-assets/media/home/slider-2.jpg') }});">
-            <div class="slider-overlay">
-                <div class="container">
-                    <div class="title">
-                        <h2>VitaCare Your Health Our Priority</h2>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quas ab asperiores quidem
-                            expedita perspiciatis blanditiis at.</p>
-                        <div>
-                            <a href="#" class="btn-title">Get Started</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="single-slider-3" style="background-image: url({{ asset('frontend-assets/media/home/slider-3.png') }});">
-            <div class="slider-overlay">
-                <div class="container">
-                    <div class="title">
-                        <h2>Hope Health Restoring Wellness</h2>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quas ab asperiores quidem
-                            expedita perspiciatis blanditiis at.</p>
-                        <div>
-                            <a href="#" class="btn-title">Get Started</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @endforeach
 
     </div>
 </section>
