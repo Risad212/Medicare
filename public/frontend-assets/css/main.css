@@ -2673,3 +2673,102 @@ textarea {
     margin-bottom: 15px;
   }
 }
+
+/*================================================
+     Doctor Details Page
+==================================================*/
+.doctor-details {
+  padding: 50px 0;
+}
+
+.doctor-details .doctor-details-image img {
+  width: 100%;
+}
+
+.doctor-details .doctor-name {
+  font-size: 22px;
+  line-height: 32px;
+}
+
+.doctor-details .doctor-speacilist {
+  font-size: 16px;
+  font-weight: 300;
+  color: #7e7e7e;
+  line-height: 25px;
+}
+
+.doctor-details .doctor-degree {
+  font-size: 14px;
+  margin-bottom: 23px;
+}
+
+.doctor-details .doctor-availability {
+  font-size: 14px;
+  margin-bottom: 23px;
+  line-height: 23px;
+}
+
+.doctor-details .doctor-appointment-btn,
+.doctor-details .default-btn {
+  padding: 8px 15px;
+  background: var(--primary-color);
+  display: inline-block;
+  margin-top: 15px;
+  text-transform: capitalize;
+  color: #fff;
+  transition: .4s;
+  border: 2px solid var(--primary-color);
+}
+
+.doctor-details p {
+  font-size: 14px;
+  color: #595959;
+  /* font-weight: 300; */
+}
+
+.doctor-details .doctor-appointment-btn:hover,
+.doctor-details .default-btn:hover {
+  background: transparent;
+  color: var(--primary-color);
+}
+
+.doctor-details .appointment-here-form {
+  margin-top: 30px;
+  background-color: #fff;
+  -webkit-box-shadow: 0 0 20px 3px rgba(0, 0, 0, .05);
+  box-shadow: 0 0 20px 3px rgba(0, 0, 0, .05);
+  padding: 50px;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-details h3 {
+  font-size: 21px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.doctor-details .appointment-here-form label {
+  font-weight: 500;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.doctor-details .appointment-here-form .form-group {
+  margin-bottom: 16px;
+}
+
+.doctor-details .form-group .form-control {
+  height: 50px;
+  color: #001430;
+  border: 1px solid #e8e8e8;
+  background-color: #e5edec;
+  border-radius: 4px;
+  font-size: 14px;
+  padding: 10px 20px;
+  width: 100%;
+}
+
+.doctor-details .default-btn {
+  margin-top: 15px;
+}

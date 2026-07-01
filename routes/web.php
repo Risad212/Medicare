@@ -35,6 +35,8 @@ Route::get('/doctor', function () {
     return view('frontend.doctor');
 })->name('doctor');
 
+Route::get('/doctor/{id}', [DoctorController::class, 'show'])->name('doctor.show');
+
 Route::get('/blog', function () {
     return view('frontend.blog');
 })->name('blog');

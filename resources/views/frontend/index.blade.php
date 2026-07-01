@@ -440,7 +440,7 @@
                         {{ $doctor->department }}
                     </span>
 
-                    <a href="#" class="card-btn">
+                    <a href="{{ route('admin.doctors.show', $doctor->id) }}" class="card-btn">
                         Book Appointment
                     </a>
 
