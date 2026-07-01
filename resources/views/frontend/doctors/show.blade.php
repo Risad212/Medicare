@@ -49,12 +49,17 @@
                         <strong>Specialist:</strong> {{ $doctor->specialist }}
                     </h5>
 
-                    <div class="mb-3">
-                        {!! $doctor->services !!}
-                    </div>
+                    <div class="mb-2">
+                       <strong>Services:</strong>
+                       {!! $doctor->services !!}
+                   </div>
 
                     <h5 class="doctor-availability">
                         <strong>Availability:</strong> {{ $doctor->availability }}
+                    </h5>
+
+                    <h5 class="doctor-availability">
+                        <strong>Phone:</strong> {{ $doctor->phone }}
                     </h5>
 
                 </div>
