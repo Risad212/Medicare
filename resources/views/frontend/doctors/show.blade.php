@@ -72,8 +72,14 @@
                         <a id="appointment"></a>
 
                         <h3>Make an Appointment</h3>
+                          @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                          @endif
 
-                        <form action="#">
+                      <form action="{{ route('appointment.store') }}" method="POST">
+                         @csrf
+
+                          <input type="hidden" name="doctor_id" value="{{ $doctor->id }}"> 
 
                             <div class="row">
 
@@ -111,7 +117,7 @@
                                 <div class="col-lg-6">
                                     <label>Age</label>
                                     <div class="form-group">
-                                        <input type="text"
+                                        <input type="number"
                                                class="form-control"
                                                name="age"
                                                placeholder="Your age">
@@ -122,7 +128,7 @@
                                     <label>Gender</label>
                                     <div class="form-group">
                                         <select class="form-control" name="gender">
-                                            <option disabled selected>Select Gender</option>
+                                            <option value="" disabled selected>Select Gender</option>
                                             <option value="1">Male</option>
                                             <option value="2">Female</option>
                                             <option value="3">Other</option>
@@ -147,46 +153,6 @@
                                                name="date"
                                                class="form-control appoiment-date">
                                     </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <label>Reference</label>
-                                    <div class="form-group">
-                                        <select class="form-control" name="ref_type">
-                                            <option disabled selected>Reference</option>
-                                            <option value="1">Self</option>
-                                            <option value="2">Other</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <input type="hidden" name="doctor_id" value="17">
-
-                            </div>
-
-                            <div class="border border-1 border-success p-3 mb-2 rounded"
-                                 id="ref_person"
-                                 style="display:none;">
-
-                                <div class="mb-3 form-group">
-                                    <input type="text"
-                                           class="form-control"
-                                           name="ref_other_name"
-                                           placeholder="Reference Person Name">
-                                </div>
-
-                                <div class="mb-3 form-group">
-                                    <input type="text"
-                                           class="form-control"
-                                           name="ref_other_phone"
-                                           placeholder="Reference Person Phone">
-                                </div>
-
-                                <div class="mb-0 form-group">
-                                    <input type="text"
-                                           class="form-control"
-                                           name="ref_other_address"
-                                           placeholder="Reference Person Address">
                                 </div>
 
                             </div>

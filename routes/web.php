@@ -11,8 +11,8 @@ use App\Http\Controllers\Settings\HomeSettingController;
 use App\Http\Controllers\Admin\SliderController;
 
 use App\Http\Controllers\Frontend\DoctorController;
-
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\AppointmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +48,9 @@ Route::get('/contact', function () {
 Route::get('/appoinment', function () {
     return view('frontend.appoinment');
 })->name('appoinment');
+
+Route::post('/appointment', [AppointmentController::class, 'store'])
+    ->name('appointment.store');
 
 /*
 |--------------------------------------------------------------------------
