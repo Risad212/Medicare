@@ -17,21 +17,28 @@
                 <div class="tile-title-w-btn">
                     <h3 class="title">About Section</h3>
                 </div>
-                <div class="tile-body">
-                    <div class="form-group mb-2">
-                        <label>Title</label>
-                        <input type="text" name="about_title" class="form-control"
-                            value="{{ old('about_title', $homeSetting->about_title ?? '') }}">
+                    <div class="tile-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-2">
+                                <label>Title</label>
+                                <input type="text" name="about_title" class="form-control"
+                                    value="{{ old('about_title', $homeSetting->about_title ?? '') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-2">
+                                <label>Button Text</label>
+                                <input type="text" name="about_button_text" class="form-control"
+                                    value="{{ old('about_button_text', $homeSetting->about_button_text ?? '') }}">
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group mb-2">
                         <label>Description</label>
                         <textarea name="about_description" class="form-control" rows="4">{{ old('about_description', $homeSetting->about_description ?? '') }}</textarea>
                     </div>
-                      <div class="form-group mb-2">
-                         <label>Button Text</label>
-                         <input type="text" name="about_button_text" class="form-control"
-                                    value="{{ old('about_button_text', $homeSetting->about_button_text ?? '') }}">
-                     </div>
+                </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
