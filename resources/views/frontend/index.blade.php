@@ -440,10 +440,10 @@
                         {{ $doctor->department }}
                     </span>
 
-                    <a href="{{ route('admin.doctors.show', $doctor->id) }}" class="card-btn">
+                    <a href="{{ route('doctor.show', $doctor->id) }}" class="card-btn">
                         Book Appointment
                     </a>
-
+                    
                 </div>
 
             </div>
