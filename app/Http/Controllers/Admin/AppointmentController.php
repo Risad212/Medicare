@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Appointment;
+
+class AppointmentController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $appointments = Appointment::with('doctor')->latest()->get();
+
+        return view('backend.appointments.index', compact('appointments'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $appointment = Appointment::findOrFail($id);
+
+        return view('backend.appointments.edit', compact('appointment'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $request->validate([
+            'doctor_id' => 'required',
+            'name' => 'required',
+            'phone' => 'required',
+            'visit_type' => 'required',
+            'date' => 'required|date',
+            'gender' => 'required',
+        ]);
+
+        $appointment = Appointment::findOrFail($id);
+
+        $appointment->update([
+            'doctor_id' => $request->doctor_id,
+            'patient_name' => $request->name,
+            'age' => $request->age,
+            'gender' => $request->gender,
+            'phone' => $request->phone,
+            'visit_type' => $request->visit_type,
+            'appointment_date' => $request->date,
+            'status' => $appointment->status,
+        ]);
+
+        return redirect()->route('admin.appointments.index')
+            ->with('success', 'Appointment updated successfully!');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $appointment = Appointment::findOrFail($id);
+        $appointment->delete();
+
+        return back()->with('success', 'Appointment deleted successfully!');
+    }
+}

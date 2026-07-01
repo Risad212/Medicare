@@ -9,17 +9,19 @@ use App\Http\Controllers\Settings\GeneralSettingController;
 use App\Http\Controllers\Settings\HomeSettingController;
 
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 
 use App\Http\Controllers\Frontend\DoctorController;
 use App\Http\Controllers\Frontend\HomeController;
-use App\Http\Controllers\Frontend\AppointmentController;
+use App\Http\Controllers\Frontend\AppointmentController as FrontAppointmentController;
+
+
 
 /*
 |--------------------------------------------------------------------------
 | Frontend Routes
 |--------------------------------------------------------------------------
 */
-
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -49,7 +51,7 @@ Route::get('/appoinment', function () {
     return view('frontend.appoinment');
 })->name('appoinment');
 
-Route::post('/appointment', [AppointmentController::class, 'store'])
+Route::post('/appointment', [FrontAppointmentController::class, 'store'])
     ->name('appointment.store');
 
 /*
@@ -102,3 +104,11 @@ Route::resource('/admin/sliders', SliderController::class)->names('admin.sliders
 |--------------------------------------------------------------------------
 */
 Route::resource('/admin/doctors', DoctorController::class)->names('admin.doctors');
+
+
+/*
+|--------------------------------------------------------------------------
+| Appoinments Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('/admin/appointments', AdminAppointmentController::class)->names('admin.appointments');
