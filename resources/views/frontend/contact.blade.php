@@ -3,21 +3,9 @@
 @section('front-content')
 
 <!--========== BreadCamb Section ==========-->
-<div class="breadcrumb">
-    <div class="container">
-        <div class="col-xs-12">
-            <div class="breadcrumb-content">
-                <div class="breadcrumb-text-wrapper">
-                    <h2 class="page-name">Contact Us</h2>
-                    <ul class="breadcrumb-list">
-                        <li><a href="#">Home</a></li>
-                        <li>Contact</li>
-                    </ul>
-                </div><!--/.breadcrumb-text-wrapper-->
-            </div><!--/.breadcrumb-content-->
-        </div><!--/.col-xs-12-->
-    </div>
-</div>
+@include('frontend.components.breadcrumb', [
+    'title' => 'Contact Us'
+])
 
 <!--========== Contact Section ==========-->
 <section class="contact-page">
