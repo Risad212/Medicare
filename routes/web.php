@@ -10,10 +10,11 @@ use App\Http\Controllers\Settings\HomeSettingController;
 
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
+use App\Http\Controllers\Admin\DoctorController as AdminDoctorController;
 
-use App\Http\Controllers\Frontend\DoctorController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AboutController;
+use App\Http\Controllers\Frontend\DoctorController as FrontendDoctorController;
 use App\Http\Controllers\Frontend\AppointmentController as FrontAppointmentController;
 
 
@@ -32,11 +33,9 @@ Route::get('/service', function () {
     return view('frontend.service');
 })->name('service');
 
-Route::get('/doctor', function () {
-    return view('frontend.doctor');
-})->name('doctor');
+Route::get('/doctor', [FrontendDoctorController::class, 'index'])->name('doctor');
 
-Route::get('/doctor/{id}', [DoctorController::class, 'show'])->name('doctor.show');
+Route::get('/doctor/{id}', [FrontendDoctorController::class, 'show'])->name('doctor.show');
 
 Route::get('/blog', function () {
     return view('frontend.blog');
@@ -102,7 +101,7 @@ Route::resource('/admin/sliders', SliderController::class)->names('admin.sliders
 | Doctors Routes
 |--------------------------------------------------------------------------
 */
-Route::resource('/admin/doctors', DoctorController::class)->names('admin.doctors');
+Route::resource('/admin/doctors', AdminDoctorController::class)->names('admin.doctors');
 
 
 /*
