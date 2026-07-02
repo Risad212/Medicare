@@ -13,7 +13,7 @@ class HomeController extends Controller
     {
         $homeSetting = HomeSetting::first();
         $sliders     = Slider::all();
-        $doctors     = Doctor::all();
+        $doctors     = Doctor::latest()->take(3)->get();
 
         return view('frontend.index', compact('homeSetting', 'sliders', 'doctors'));
     }

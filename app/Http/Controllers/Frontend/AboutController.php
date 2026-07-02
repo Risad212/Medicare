@@ -10,7 +10,7 @@ class AboutController extends Controller
 {
      public function index()
       {
-        $doctors     = Doctor::all();
+        $doctors     = Doctor::latest()->take(3)->get();
         return view('frontend.about', compact('doctors'));
      }
 }

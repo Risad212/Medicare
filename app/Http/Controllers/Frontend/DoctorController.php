@@ -9,7 +9,7 @@ class DoctorController extends Controller
 {
     public function index()
       {
-        $doctors     = Doctor::all();
+        $doctors = Doctor::latest()->paginate(4);
         return view('frontend.doctor', compact('doctors'));
      }
 

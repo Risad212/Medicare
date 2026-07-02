@@ -1100,51 +1100,6 @@ input:-webkit-autofill:focus {
   transform: scale(1.2);
 }
 
-.doctor-card .card-img .social-media {
-  position: absolute;
-  top: 20px;
-  left: -20%;
-  -webkit-transition: all 0.4s ease-in-out;
-  -moz-transition: all 0.4s ease-in-out;
-  -o-transition: all 0.4s ease-in-out;
-  -ms-transition: all 0.4s ease-in-out;
-  transition: all 0.4s ease-in-out;
-}
-
-.doctor-card .card-img:hover .social-media {
-  left: 20px;
-}
-
-.doctor-card .card-img .social-media .item {
-  background-color: var(--primary-color);
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  display: block;
-  border-radius: 50%;
-  margin-bottom: 10px;
-  -webkit-transition: all 0.4s ease-in-out;
-  -moz-transition: all 0.4s ease-in-out;
-  -o-transition: all 0.4s ease-in-out;
-  -ms-transition: all 0.4s ease-in-out;
-  transition: all 0.4s ease-in-out;
-}
-
-.doctor-card .card-img .social-media .item svg {
-  width: 20px;
-  height: 20px;
-  fill: #fff;
-}
-
-.doctor-card .card-img .social-media .item:hover {
-  background: #fff;
-}
-
-.doctor-card .card-img .social-media .item:hover svg {
-  fill: var(--primary-color);
-}
-
 .doctor-card .card-content .title {
   color: #111111;
   font-weight: 600;
