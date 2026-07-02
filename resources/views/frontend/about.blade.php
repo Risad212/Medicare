@@ -192,83 +192,9 @@
 </section>
 
 <!--============== TESTIMONIAL SECTION ===============-->
-<section class="testimonial-section">
-    <div class="container">
-        <div class="title-head">
-            <span class="subtitle">testimonial</span>
-            <h3 class="title">what our costomer say</h3>
-        </div>
-        <div class="testimonial-slider owl-carousel owl-theme">
-            <div class="single-slider">
-                <p class="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                    labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                <img class="img-fluid" src="{{ asset('frontend-assets/media/home/client-1.png') }}" />
-                <h3 class="name">Albert Sinelly</h3>
-                <h4 class="job">Founder Of Devoker Company</h4>
-            </div>
-            <div class="single-slider">
-                <p class="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                    labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                <img class="img-fluid" src="{{ asset('frontend-assets/media/home/client-2.png') }}" />
-                <h3 class="name">Hirok Meryam</h3>
-                <h4 class="job">Product Manager</h4>
-            </div>
-            <div class="single-slider">
-                <p class="comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                    labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                <img class="img-fluid" src="{{ asset('frontend-assets/media/home/client-3.png') }}" />
-                <h3 class="name">Sebastian Sert</h3>
-                <h4 class="job">Co-Founder</h4>
-            </div>
-        </div>
-    </div>
-</section>
+@include('frontend.components.testimonial')
 
 <!--============== DOCTORS SECTION ===============-->
-<section class="doctor-section">
-    <div class="container">
-        <div class="title-head">
-            <span class="subtitle">OUR DOCTORS</span>
-            <h3 class="title">Experienced Medical Specialist</h3>
-        </div>
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="doctor-card">
-                    <div class="card-img">
-                        <img class="img-fluid" src="{{ asset('frontend-assets/media/home/doctor-1.png') }}" alt="">
-                    </div>
-                    <div class="card-content">
-                        <h4 class="title">Dr. Ema Jackson</h4>
-                        <span class="speacility">Dermatologist</span>
-                        <a href="#" class="card-btn">Book Appoinment</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="doctor-card">
-                    <div class="card-img">
-                        <img class="img-fluid" src="{{ asset('frontend-assets/media/home/doctor-2.png') }}" alt="">
-                    </div>
-                    <div class="card-content">
-                        <h4 class="title">Dr. Flora Aldrich</h4>
-                        <span class="speacility">physicians</span>
-                        <a href="#" class="card-btn">Book Appoinment</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="doctor-card">
-                    <div class="card-img">
-                        <img class="img-fluid" src="{{ asset('frontend-assets/media/home/doctor-3.png') }}" alt="">
-                    </div>
-                    <div class="card-content">
-                        <h4 class="title">Dr. Steven Hank</h4>
-                        <span class="speacility">Orthopaedist</span>
-                        <a href="#" class="card-btn">Book Appoinment</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+@include('frontend.components.doctor')
+
 @endsection

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentControll
 
 use App\Http\Controllers\Frontend\DoctorController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\AppointmentController as FrontAppointmentController;
 
 
@@ -25,9 +26,7 @@ use App\Http\Controllers\Frontend\AppointmentController as FrontAppointmentContr
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/about', function () {
-    return view('frontend.about');
-})->name('about');
+Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 Route::get('/service', function () {
     return view('frontend.service');
