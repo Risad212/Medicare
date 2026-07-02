@@ -6,7 +6,7 @@
                     <h2 class="page-name">{{ $title }}</h2>
                     <ul class="breadcrumb-list">
                         <li><a href="{{ route('home') }}">Home</a></li>
-                        <li>About</li>
+                        <li>{{ $title }}</li>
                     </ul>
                 </div><!--/.breadcrumb-text-wrapper-->
             </div><!--/.breadcrumb-content-->

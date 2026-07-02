@@ -22,8 +22,12 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <!-- SUMMERNOTE CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="{{ asset('backend-assets/css/main.css') }}">
+
     <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
@@ -51,6 +55,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('backend-assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('backend-assets/js/main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
     <!-- Page specific javascripts-->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <script type="text/javascript">
@@ -142,6 +147,18 @@
             ga('create', 'UA-72504830-1', 'auto');
             ga('send', 'pageview');
         }
+
+
+        /**
+         * Summer Note JS
+         */
+         $(document).ready(function() {
+            if ($('#content').length) {
+                $('#content').summernote({
+                    height: 300,
+                });
+            }
+        });
     </script>
 </body>
 

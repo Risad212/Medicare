@@ -2,21 +2,9 @@
 
 @section('front-content')
 
-<div class="breadcrumb">
-    <div class="container">
-        <div class="col-xs-12">
-            <div class="breadcrumb-content">
-                <div class="breadcrumb-text-wrapper">
-                    <h2 class="page-name">Doctor Details</h2>
-                    <ul class="breadcrumb-list">
-                        <li><a href="{{ route('home') }}">Home</a></li>
-                        <li>Doctor</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@include('frontend.components.breadcrumb', [
+    'title' => 'Doctor Details'
+])
 
 <section class="doctor-details">
     <div class="container my-4">

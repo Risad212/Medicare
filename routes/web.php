@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AboutController;
+use App\Http\Controllers\Frontend\BlogController as FrontBlogController;
 use App\Http\Controllers\Frontend\DoctorController as FrontendDoctorController;
 use App\Http\Controllers\Frontend\AppointmentController as FrontAppointmentController;
 
@@ -38,13 +39,11 @@ Route::get('/doctor', [FrontendDoctorController::class, 'index'])->name('doctor'
 
 Route::get('/doctor/{id}', [FrontendDoctorController::class, 'show'])->name('doctor.show');
 
-Route::get('/blog', function () {
-    return view('frontend.blog');
-})->name('blog');
+Route::get('/blog', [FrontBlogController::class, 'index'])->name('blog');
 
-Route::get('/contact', function () {
-    return view('frontend.contact');
-})->name('contact');
+Route::get('/blog/{slug}', [FrontBlogController::class, 'show'])->name('blog.show');
+
+Route::get('/contact', function () { return view('frontend.contact'); })->name('contact');
 
 Route::get('/appointment', [FrontAppointmentController::class, 'index'])->name('appointment');
 
@@ -104,7 +103,7 @@ Route::resource('/admin/doctors', AdminDoctorController::class)->names('admin.do
 
 /*
 |--------------------------------------------------------------------------
-| Doctors Routes
+| Blogs Routes
 |--------------------------------------------------------------------------
 */
 Route::resource('/admin/blogs', AdminBlogController::class)->names('admin.blogs');
@@ -116,3 +115,4 @@ Route::resource('/admin/blogs', AdminBlogController::class)->names('admin.blogs'
 |--------------------------------------------------------------------------
 */
 Route::resource('/admin/appointments', AdminAppointmentController::class)->names('admin.appointments');
+
