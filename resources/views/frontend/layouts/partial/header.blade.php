@@ -120,41 +120,45 @@
             </button>
             <div class="collapse navbar-collapse" id="navbar-content">
                 <ul class="navbar-nav ms-auto">
+
                     <li class="nav-item">
-                        <a class="nav-link" id="home" href="/">Home</a>
+                        <a class="nav-link" href="{{ route('home') }}">Home</a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="about">About Us</a>
+                        <a class="nav-link" href="{{ route('about') }}">About Us</a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="service">our services</a>
+                        <a class="nav-link" href="{{ route('service') }}">Our Services</a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="doctor">doctors<a>
+                        <a class="nav-link" href="{{ route('doctor') }}">Doctors</a>
                     </li>
+
                     <li class="nav-item dropdown">
-                        <a class="nav-link" href="blog">
+                        <a class="nav-link" href="{{ route('blog') }}">
                             Blog
-                            <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <rect fill="white"></rect>
-                                    <path d="M17 9.5L12 14.5L7 9.5" stroke="#000000" stroke-linecap="round"
-                                        stroke-linejoin="round"></path>
-                                </g>
-                            </svg>
                         </a>
+
                         <ul class="dropdown-list">
-                            <li class="item"><a href="blog-details.html">Blog Details</a></li>
+                            <li class="item">
+                                <a href="#">Blog Details</a>
+                            </li>
                         </ul>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="contact">contact</a>
+                        <a class="nav-link" href="{{ route('contact') }}">Contact</a>
                     </li>
+
                     <li class="nav-item nav-button">
-                        <a class="nav-link" href="appoinment">Appoinment</a>
+                        <a class="nav-link" href="{{ route('appointment') }}">
+                            Appointment
+                        </a>
                     </li>
+
                 </ul>
             </div>
         </nav>
