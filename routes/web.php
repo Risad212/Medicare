@@ -11,6 +11,7 @@ use App\Http\Controllers\Settings\HomeSettingController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 use App\Http\Controllers\Admin\DoctorController as AdminDoctorController;
+use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AboutController;
@@ -103,7 +104,15 @@ Route::resource('/admin/doctors', AdminDoctorController::class)->names('admin.do
 
 /*
 |--------------------------------------------------------------------------
-| Appoinments Routes
+| Doctors Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('/admin/blogs', AdminBlogController::class)->names('admin.blogs');
+
+
+/*
+|--------------------------------------------------------------------------
+| Appointments Routes
 |--------------------------------------------------------------------------
 */
 Route::resource('/admin/appointments', AdminAppointmentController::class)->names('admin.appointments');
