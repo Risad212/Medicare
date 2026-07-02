@@ -5,9 +5,17 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Models\Doctor;
 
 class AppointmentController extends Controller
 {
+
+    public function index()
+     {
+        $doctors = Doctor::where('status', 1)->get();
+        return view('frontend.appointment', compact('doctors'));
+     }
+
     public function store(Request $request)
      { 
        $request->validate([
@@ -18,7 +26,6 @@ class AppointmentController extends Controller
         'date'       => 'required|date',
         'gender'     => 'required',
     ]);
-    
        Appointment::create([
         'doctor_id'        => $request->doctor_id,
         'patient_name'     => $request->name,
@@ -29,7 +36,6 @@ class AppointmentController extends Controller
         'appointment_date' => $request->date,
         'status'           => 0,
     ]);
-
      return back()->with('success', 'Appointment saved');
     }
 }

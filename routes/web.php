@@ -45,12 +45,9 @@ Route::get('/contact', function () {
     return view('frontend.contact');
 })->name('contact');
 
-Route::get('/appointment', function () {
-    return view('frontend.appointment');
-})->name('appointment');
+Route::get('/appointment', [FrontAppointmentController::class, 'index'])->name('appointment');
 
-Route::post('/appointment', [FrontAppointmentController::class, 'store'])
-    ->name('appointment.store');
+Route::post('/appointment', [FrontAppointmentController::class, 'store'])->name('appointment.store');
 
 /*
 |--------------------------------------------------------------------------
