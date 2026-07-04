@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentControll
 use App\Http\Controllers\Admin\DoctorController as AdminDoctorController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CategoryController as AdminBlogCategoryController;
+use App\Http\Controllers\Admin\TagController as AdminBlogTagController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AboutController;
@@ -116,6 +117,14 @@ Route::resource('/admin/blogs', AdminBlogController::class)->names('admin.blogs'
 |--------------------------------------------------------------------------
 */
 Route::resource('/admin/blog/categories', AdminBlogCategoryController::class)->names('admin.categories');
+
+
+/*
+|--------------------------------------------------------------------------
+| Blog Tag Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('/admin/blog/tags', AdminBlogTagController::class)->names('admin.tags');
 
 
 /*

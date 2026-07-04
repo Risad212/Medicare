@@ -35,19 +35,31 @@
                     </div>
 
                     <div class="form-group mb-2">
-                    <label>Category</label>
-                    <select name="category" class="form-control">
-                        <option value="">Select Category</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->name }}"
-                                {{ old('category', $blog->category ?? '') == $category->name ? 'selected' : '' }}>
-                                {{ $category->name }}
+                        <label>Category</label>
+                        <select name="category" class="form-control">
+                            <option value="">Select Category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->name }}"
+                                    {{ old('category', $blog->category ?? '') == $category->name ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                   <div class="form-group mb-2">
+                    <label>Tag</label>
+                    <select name="tags" class="form-control">
+                        <option value="">Select Tag</option>
+                        @foreach($tags as $tag)
+                            <option value="{{ $tag->name }}"
+                                {{ old('tags', $blog->tags ?? '') == $tag->name ? 'selected' : '' }}>
+                                {{ $tag->name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
                  
-
                     <div class="form-group mb-2">
                         <label class="mb-2">Image</label>
                         <input type="file" name="image" class="form-control">

@@ -39,11 +39,17 @@
                     </div>
 
                     <div class="form-group mb-2">
-                        <label class="mb-2">Tags <small class="text-muted">(comma separated)</small></label>
-                        <input type="text" name="tags" class="form-control"
-                            value="{{ old('tags', $blog->tags) }}"
-                            placeholder="e.g. heart, surgery, tips">
-                    </div>
+                    <label class="mb-2">Tags</label>
+                    <select name="tags" class="form-control">
+                        <option value="">Select Tag</option>
+                        @foreach($tags as $tag)
+                            <option value="{{ $tag->name }}"
+                                {{ old('tags', $blog->tags) == $tag->name ? 'selected' : '' }}>
+                                {{ $tag->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
                     <div class="form-group mb-2">
                         <label class="mb-2">Excerpt</label>
