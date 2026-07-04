@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,7 +18,8 @@ class BlogController extends Controller
     {
        
         $blogs = Blog::latest()->get();
-        return view('backend.blogs.index', compact('blogs'));
+        $categories = Category::latest()->get();
+        return view('backend.blogs.index', compact('blogs', 'categories'));
     }
 
     /**
@@ -25,7 +27,8 @@ class BlogController extends Controller
      */
     public function create()
     {
-        return view('backend.blogs.create');
+        $categories = Category::latest()->get();
+        return view('backend.blogs.create', compact('categories'));
     }
 
     /**
@@ -65,7 +68,8 @@ class BlogController extends Controller
      */
     public function edit(Blog $blog)
     {
-        return view('backend.blogs.edit', compact('blog'));
+        $categories = Category::latest()->get();
+        return view('backend.blogs.edit', compact('blog', 'categories'));
     }
 
     /**
@@ -78,7 +82,7 @@ class BlogController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->only(['title', 'excerpt', 'content', 'author', 'order']);
+        $data = $request->only(['title', 'excerpt', 'content', 'order', 'category']);
         $data['status'] = $request->has('status') ? 1 : 0;
 
         if ($request->hasFile('image')) {

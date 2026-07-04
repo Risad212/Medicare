@@ -13,6 +13,8 @@ class Blog extends Model
         'content',
         'image',
         'author',
+        'category',
+        'tags',
         'status',
         'order'
     ];

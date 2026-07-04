@@ -19,32 +19,52 @@
                     @csrf
                     @method('PUT')
 
-                    <div class="form-group">
-                        <label>Title</label>
+                    <div class="form-group mb-2">
+                        <label class="mb-2">Title</label>
                         <input type="text" name="title" class="form-control" value="{{ old('title', $blog->title) }}">
                         @error('title') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
-                    <div class="form-group">
-                        <label>Excerpt</label>
+                    <div class="form-group mb-2">
+                        <label class="mb-2">Category</label>
+                        <select name="category" class="form-control">
+                            <option value="">Select Category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->name }}"
+                                    {{ old('category', $blog->category) == $category->name ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label class="mb-2">Tags <small class="text-muted">(comma separated)</small></label>
+                        <input type="text" name="tags" class="form-control"
+                            value="{{ old('tags', $blog->tags) }}"
+                            placeholder="e.g. heart, surgery, tips">
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label class="mb-2">Excerpt</label>
                         <textarea name="excerpt" class="form-control" rows="3">{{ old('excerpt', $blog->excerpt) }}</textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label>Content</label>
+                    <div class="form-group mb-2">
+                        <label class="mb-2">Content</label>
                         <textarea name="content" id="content" class="form-control">{{ old('content', $blog->content) }}</textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label>Image</label><br>
+                    <div class="form-group mb-2">
+                        <label class="mb-2">Image</label><br>
                         @if($blog->image)
                             <img src="{{ asset('storage/' . $blog->image) }}" height="80" class="mb-2 d-block">
                         @endif
                         <input type="file" name="image" class="form-control">
                     </div>
 
-                    <div class="form-group">
-                        <label>Status</label><br>
+                    <div class="form-group mb-2">
+                        <label class="mb-2">Status</label><br>
                         <input type="checkbox" name="status" value="1" {{ $blog->status ? 'checked' : '' }}> Published
                     </div>
 

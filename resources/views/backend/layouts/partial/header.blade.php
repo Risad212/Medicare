@@ -135,6 +135,7 @@
             <ul class="treeview-menu">
                 <li><a class="treeview-item active" href="{{ route('admin.blogs.index') }}"><i class="icon bi bi-circle-fill"></i>All Blog</a></li>
                 <li><a class="treeview-item active" href="{{ route('admin.blogs.create') }}"><i class="icon bi bi-circle-fill"></i>Add New</a></li>
+                <li><a class="treeview-item" href="{{ route('admin.categories.index') }}"><i class="icon bi bi-circle-fill"></i>Categories</a></li>
             </ul>
         </li>
         

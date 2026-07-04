@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 use App\Http\Controllers\Admin\DoctorController as AdminDoctorController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\CategoryController as AdminBlogCategoryController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AboutController;
@@ -111,8 +112,17 @@ Route::resource('/admin/blogs', AdminBlogController::class)->names('admin.blogs'
 
 /*
 |--------------------------------------------------------------------------
+| Blog Category Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('/admin/blog/categories', AdminBlogCategoryController::class)->names('admin.categories');
+
+
+/*
+|--------------------------------------------------------------------------
 | Appointments Routes
 |--------------------------------------------------------------------------
 */
 Route::resource('/admin/appointments', AdminAppointmentController::class)->names('admin.appointments');
+
 

@@ -26,6 +26,7 @@
                             <th>Title</th>
                             <th>Excerpt</th>
                             <th>Author</th>
+                            <th>Category</th>
                             <th>Status</th>
                             <th>Date</th>
                             <th>Actions</th>
@@ -45,6 +46,7 @@
                             <td>{{ Str::limit($blog->title, 50) }}</td>
                             <td>{{ Str::limit($blog->excerpt, 60) }}</td>
                             <td>{{ $blog->author }}</td>
+                            <td>{{ $blog->category ?? 'N/A' }}</td>
                             <td>
                             @if($blog->status == 1)
                                 <span class="status-active">
