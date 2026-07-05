@@ -22,31 +22,30 @@ class BlogController extends Controller
             $query->where('tags', 'like', '%' . $request->tag . '%');
         }
 
-        $blogs      = $query->paginate(9);
-        $categories = Blog::where('status', 1)
-                        ->whereNotNull('category')
-                        ->selectRaw('category, count(*) as count')
-                        ->groupBy('category')
-                        ->get();
-        $tags       = Tag::latest()->get();
-
+        $blogs       = $query->paginate(9);
+        $categories  = Blog::where('status', 1)
+                            ->whereNotNull('category')
+                            ->selectRaw('category, count(*) as count')
+                            ->groupBy('category')
+                            ->get();
+        $tags        = Tag::latest()->get();
         $recentPosts = Blog::where('status', 1)->latest()->take(5)->get();
 
         return view('frontend.blog', compact('blogs', 'categories', 'tags', 'recentPosts'));
     }
 
     public function show($slug)
-        {
-            $blog       = Blog::where('slug', $slug)->where('status', 1)->firstOrFail();
-            $categories = Blog::where('status', 1)
+    {
+        $blog        = Blog::where('slug', $slug)->where('status', 1)->firstOrFail();
+        $categories  = Blog::where('status', 1)
                             ->whereNotNull('category')
                             ->selectRaw('category, count(*) as count')
                             ->groupBy('category')
                             ->get();
-            $tags       = Tag::latest()->get();
+        $tags        = Tag::latest()->get();
+        $recentPosts = Blog::where('status', 1)->latest()->take(5)->get();
+        $comments    = $blog->comments()->latest()->get();
 
-             $recentPosts = Blog::where('status', 1)->latest()->take(5)->get();
-
-            return view('frontend.blogs.show', compact('blog', 'categories', 'tags', 'recentPosts'));
-        }
+        return view('frontend.blogs.show', compact('blog', 'categories', 'tags', 'recentPosts', 'comments'));
+    }
 }

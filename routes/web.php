@@ -14,12 +14,16 @@ use App\Http\Controllers\Admin\DoctorController as AdminDoctorController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CategoryController as AdminBlogCategoryController;
 use App\Http\Controllers\Admin\TagController as AdminBlogTagController;
+use App\Http\Controllers\Admin\BlogCommentController as AdminBlogCommentController;
+
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\BlogController as FrontBlogController;
 use App\Http\Controllers\Frontend\DoctorController as FrontendDoctorController;
 use App\Http\Controllers\Frontend\AppointmentController as FrontAppointmentController;
+use App\Http\Controllers\Frontend\BlogCommentController;
+
 
 
 
@@ -50,6 +54,8 @@ Route::get('/contact', function () { return view('frontend.contact'); })->name('
 Route::get('/appointment', [FrontAppointmentController::class, 'index'])->name('appointment');
 
 Route::post('/appointment', [FrontAppointmentController::class, 'store'])->name('appointment.store');
+
+Route::post('/blog/{blog_id}/comment', [BlogCommentController::class, 'store'])->name('blog.comment.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -126,6 +132,15 @@ Route::resource('/admin/blog/categories', AdminBlogCategoryController::class)->n
 */
 Route::resource('/admin/blog/tags', AdminBlogTagController::class)->names('admin.tags');
 
+
+/*
+|--------------------------------------------------------------------------
+| Blog Comment Routes Admin
+|--------------------------------------------------------------------------
+*/
+Route::resource('/admin/comments', AdminBlogCommentController::class)
+    ->names('admin.comments')
+    ->only(['index', 'update', 'destroy']);
 
 /*
 |--------------------------------------------------------------------------
