@@ -17,7 +17,7 @@
 - Blog listing with category and tag filtering
 - Blog detail page with comments, recent posts, social share
 - Appointment booking form (select doctor, date, time, visit type)
-- Contact page
+- Contact page contact form (sent to email)
 - About page
 
 ### Admin Panel (CMS)
