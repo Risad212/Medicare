@@ -1,5 +1,9 @@
 @extends('frontend.layouts.front-app')
 
+@section('meta_title', $seo->meta_title ?? 'Medicare')
+@section('meta_description', $seo->meta_description ?? '')
+@section('meta_keywords', $seo->meta_keywords ?? '')
+
 @section('front-content')
 <!--============== START SLIDER SECTION ===============-->
 <section class="slider-section">

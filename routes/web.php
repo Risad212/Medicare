@@ -7,6 +7,11 @@ use App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\Settings\GeneralSettingController;
 use App\Http\Controllers\Settings\HomeSettingController;
+use App\Http\Controllers\Settings\AboutSettingController;
+use App\Http\Controllers\Settings\ServiceSettingController;
+use App\Http\Controllers\Settings\DoctorSettingController;
+use App\Http\Controllers\Settings\BlogSettingController;
+use App\Http\Controllers\Settings\ContactSettingController;
 
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
@@ -27,8 +32,6 @@ use App\Http\Controllers\Frontend\BlogCommentController;
 use App\Http\Controllers\Frontend\ContactController as FrontContactController;
 
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Frontend Routes
@@ -39,9 +42,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 
-Route::get('/service', function () {
-    return view('frontend.service');
-})->name('service');
+Route::get('/service', function () {return view('frontend.service');})->name('service');
 
 Route::get('/doctor', [FrontendDoctorController::class, 'index'])->name('doctor');
 
@@ -51,7 +52,7 @@ Route::get('/blog', [FrontBlogController::class, 'index'])->name('blog');
 
 Route::get('/blog/{slug}', [FrontBlogController::class, 'show'])->name('blog.show');
 
-Route::get('/contact', function () { return view('frontend.contact'); })->name('contact');
+Route::get('/contact', [FrontContactController::class, 'index'])->name('contact');
 
 Route::get('/appointment', [FrontAppointmentController::class, 'index'])->name('appointment');
 
@@ -94,6 +95,46 @@ Route::get('/admin/settings/home', [HomeSettingController::class, 'home'])
 Route::post('/admin/settings/home', [HomeSettingController::class, 'update'])
     ->name('settings.home.update');
 
+
+/*
+|--------------------------------------------------------------------------
+| About Settings Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/admin/settings/about', [AboutSettingController::class, 'about'])
+    ->name('settings.about');
+
+/*
+|--------------------------------------------------------------------------
+| Service Settings Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/admin/settings/service', [ServiceSettingController::class, 'service'])
+    ->name('settings.service');
+
+/*
+|--------------------------------------------------------------------------
+| Doctor Settings Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/admin/settings/doctor', [DoctorSettingController::class, 'doctor'])
+    ->name('settings.doctor');
+
+/*
+|--------------------------------------------------------------------------
+| Blog Settings Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/admin/settings/blog', [BlogSettingController::class, 'blog'])
+    ->name('settings.blog');
+
+/*
+|--------------------------------------------------------------------------
+| Contact Settings Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/admin/settings/contact', [ContactSettingController::class, 'contact'])
+    ->name('settings.contact');
 
 /*
 |--------------------------------------------------------------------------

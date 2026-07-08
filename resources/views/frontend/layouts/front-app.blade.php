@@ -2,11 +2,12 @@
 <html lang="en">
 
 <head>
-    <title>Medicare</title>
+    <title>@yield('meta_title', 'Medicare')</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Your description">
-    <meta name="keywords" content="Your keywords">
+    <meta name="description" content="@yield('meta_description', 'Your description')">
+    <meta name="keywords" content="@yield('meta_keywords', 'Your keywords')">
+    
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/owl.theme.default.min.css') }}">

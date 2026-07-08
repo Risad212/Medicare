@@ -10,7 +10,7 @@ use App\Models\SeoSetting;
 class HomeSettingController extends Controller
 {
     /**
-     * Home Setting Form UI Show
+     * Setting Form UI Show
      *
      * @return void
      */

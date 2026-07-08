@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\SeoSetting;
 
 class BlogController extends Controller
 {
@@ -29,9 +30,12 @@ class BlogController extends Controller
                             ->groupBy('category')
                             ->get();
         $tags        = Tag::latest()->get();
+
         $recentPosts = Blog::where('status', 1)->latest()->take(5)->get();
 
-        return view('frontend.blog', compact('blogs', 'categories', 'tags', 'recentPosts'));
+        $seo     = SeoSetting::where('page', 'blog')->first();
+
+        return view('frontend.blog', compact('blogs', 'categories', 'tags', 'recentPosts', 'seo'));
     }
 
     public function show($slug)

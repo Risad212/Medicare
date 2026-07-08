@@ -88,6 +88,11 @@
             <ul class="treeview-menu">
                 <li><a class="treeview-item active" href="{{ route('settings.general') }}"><i class="icon bi bi-circle-fill"></i>General</a></li>
                 <li><a class="treeview-item active" href="{{ route('settings.home') }}"><i class="icon bi bi-circle-fill"></i>Home</a></li>
+                <li><a class="treeview-item active" href="{{ route('settings.about') }}"><i class="icon bi bi-circle-fill"></i>About</a></li>
+                <li><a class="treeview-item active" href="{{ route('settings.service') }}"><i class="icon bi bi-circle-fill"></i>Service</a></li>
+                <li><a class="treeview-item active" href="{{ route('settings.doctor') }}"><i class="icon bi bi-circle-fill"></i>Doctor</a></li>
+                <li><a class="treeview-item active" href="{{ route('settings.blog') }}"><i class="icon bi bi-circle-fill"></i>Blog</a></li>
+                <li><a class="treeview-item active" href="{{ route('settings.contact') }}"><i class="icon bi bi-circle-fill"></i>Contact</a></li>
             </ul>
         </li>
 

@@ -6,9 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Mail\ContactFormMail;
 use Illuminate\Support\Facades\Mail;
+use App\Models\SeoSetting;
 
 class ContactController extends Controller
 {
+    public function index()
+    {
+        $seo = SeoSetting::where('page', 'contact')->first();
+
+        return view('frontend.contact', compact('seo'));
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
