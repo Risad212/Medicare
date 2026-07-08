@@ -9,6 +9,11 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
+        @include('backend.components.seo-settings', [
+            'title' => 'Home',
+            'page' => 'home',
+        ])
+
         <form action="{{ route('settings.home.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
@@ -172,10 +177,7 @@
                 </div>
             </div>
         </form>
-       @include('backend.components.seo-settings', [
-            'title' => 'Home',
-            'page' => 'home',
-        ])
+       
     </div>
 </div>
 

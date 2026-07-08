@@ -7,7 +7,25 @@
 
         <div class="tile">
 
-            <h3 class="tile-title">All Doctors</h3>
+            <div class="tile-title-w-btn d-flex justify-content-between align-items-center mb-3">
+
+                <h3 class="tile-title mb-0">All Doctors</h3>
+
+                <form action="{{ route('admin.doctors.index') }}" method="GET" class="d-flex">
+                    <input type="text"
+                           name="search"
+                           style="width: 300px;"
+                           class="form-control me-2"
+                           placeholder="Search doctor..."
+                           value="{{ request('search') }}">
+
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+                </form>
+
+            </div>
+
 
             @if(session('success'))
                 <div class="alert alert-success">
@@ -39,60 +57,38 @@
                     @forelse($doctors as $doctor)
 
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
 
+                        <td>{{ $loop->iteration }}</td>
 
                         <td>
                             @if($doctor->image)
-
-                                <img src="{{ asset('storage/'.$doctor->image) }}"
-                                     width="80">
-
+                                <img src="{{ asset('storage/'.$doctor->image) }}" width="80">
                             @else
-
                                 No Image
-
                             @endif
                         </td>
 
+                        <td>{{ $doctor->name }}</td>
 
-                        <td>
-                            {{ $doctor->name }}
-                        </td>
+                        <td>{{ $doctor->department }}</td>
 
+                        <td>{{ $doctor->specialist }}</td>
 
-                        <td>
-                            {{ $doctor->department }}
-                        </td>
+                        <td>{{ $doctor->phone }}</td>
 
 
                         <td>
-                            {{ $doctor->specialist }}
+                            @if($doctor->status == 1)
+                                <span class="status-active">
+                                    Active
+                                </span>
+                            @else
+                                <span class="status-inactive">
+                                    Inactive
+                                </span>
+                            @endif
                         </td>
 
-
-                        <td>
-                            {{ $doctor->phone }}
-                        </td>
-
-
-                        <td>
-
-                        @if($doctor->status == 1)
-
-                            <span class="status-active">
-                                Active
-                            </span>
-
-                        @else
-
-                            <span class="status-inactive">
-                                Inactive
-                            </span>
-
-                        @endif
-
-                        </td>
 
                         <td>
 
@@ -120,9 +116,7 @@
 
                             </form>
 
-
                         </td>
-
 
                     </tr>
 
@@ -130,18 +124,15 @@
                     @empty
 
                     <tr>
-
                         <td colspan="8" class="text-center">
                             No doctors found.
                         </td>
-
                     </tr>
 
                     @endforelse
 
 
                     </tbody>
-
 
                 </table>
 
