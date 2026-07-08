@@ -16,12 +16,9 @@
                            name="search"
                            style="width: 300px;"
                            class="form-control me-2"
+                           id="doctorSearch"
                            placeholder="Search doctor..."
                            value="{{ request('search') }}">
-
-                    <button type="submit" class="btn btn-primary">
-                        Search
-                    </button>
                 </form>
 
             </div>
@@ -62,31 +59,54 @@
 
                         <td>
                             @if($doctor->image)
-                                <img src="{{ asset('storage/'.$doctor->image) }}" width="80">
+
+                                <img src="{{ asset('storage/'.$doctor->image) }}"
+                                     width="80">
+
                             @else
+
                                 No Image
+
                             @endif
                         </td>
 
-                        <td>{{ $doctor->name }}</td>
 
-                        <td>{{ $doctor->department }}</td>
-
-                        <td>{{ $doctor->specialist }}</td>
-
-                        <td>{{ $doctor->phone }}</td>
+                        <td>
+                            {{ $doctor->name }}
+                        </td>
 
 
                         <td>
+                            {{ $doctor->department }}
+                        </td>
+
+
+                        <td>
+                            {{ $doctor->specialist }}
+                        </td>
+
+
+                        <td>
+                            {{ $doctor->phone }}
+                        </td>
+
+
+                        <td>
+
                             @if($doctor->status == 1)
+
                                 <span class="status-active">
                                     Active
                                 </span>
+
                             @else
+
                                 <span class="status-inactive">
                                     Inactive
                                 </span>
+
                             @endif
+
                         </td>
 
 
@@ -116,6 +136,7 @@
 
                             </form>
 
+
                         </td>
 
                     </tr>
@@ -124,9 +145,11 @@
                     @empty
 
                     <tr>
+
                         <td colspan="8" class="text-center">
                             No doctors found.
                         </td>
+
                     </tr>
 
                     @endforelse
@@ -134,8 +157,15 @@
 
                     </tbody>
 
+
                 </table>
 
+            </div>
+
+
+            {{-- Pagination --}}
+            <div class="mt-3 doctor-pagination">
+                {{ $doctors->links() }}
             </div>
 
         </div>

@@ -14,11 +14,15 @@ class DoctorController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-       $doctors = Doctor::all();
+            $doctors = Doctor::when($request->search, function ($query) use ($request) {
+            $query->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('department', 'like', '%'.$request->search.'%')
+                ->orWhere('specialist', 'like', '%'.$request->search.'%');
+        })->paginate(10);
 
-      return view('backend.doctors.index', compact('doctors'));
+        return view('backend.doctors.index', compact('doctors'));
     }
 
     /**

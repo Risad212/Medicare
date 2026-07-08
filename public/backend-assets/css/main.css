@@ -14069,7 +14069,7 @@ textarea.form-control-lg {
 .tile .tile-title {
   margin-top: 0;
   margin-bottom: 20px;
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 .tile .tile-title-w-btn {
   display: -webkit-box;
@@ -14920,4 +14920,18 @@ textarea.form-control-lg {
 
 .comment{
   background: #D97706;
+}
+
+.doctor-pagination svg {
+    width: 26px;
+    height: 26px;
+}
+
+.doctor-pagination nav {
+    display: flex;
+    justify-content: center;
+}
+
+.doctor-pagination .pagination {
+    margin-bottom: 0;
 }

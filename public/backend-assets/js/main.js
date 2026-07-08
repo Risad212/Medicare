@@ -1,21 +1,42 @@
 (function () {
-	"use strict";
+    "use strict";
 
-	var treeviewMenu = $('.app-menu');
+    var treeviewMenu = $('.app-menu');
 
-	// Toggle Sidebar
-	$('[data-toggle="sidebar"]').click(function(event) {
-		event.preventDefault();
-		$('.app').toggleClass('sidenav-toggled');
-	});
+    // Toggle Sidebar Menu
+    $('[data-toggle="sidebar"]').click(function (event) {
+        event.preventDefault();
+        $('.app').toggleClass('sidenav-toggled');
+    });
 
-	// Activate sidebar treeview toggle
-	$("[data-toggle='treeview']").click(function(event) {
-		event.preventDefault();
-		if(!$(this).parent().hasClass('is-expanded')) {
-			treeviewMenu.find("[data-toggle='treeview']").parent().removeClass('is-expanded');
-		}
-		$(this).parent().toggleClass('is-expanded');
-	});
+
+    // Sidebar Treeview Expand/Collapse
+    $("[data-toggle='treeview']").click(function (event) {
+        event.preventDefault();
+
+        if (!$(this).parent().hasClass('is-expanded')) {
+            treeviewMenu.find("[data-toggle='treeview']")
+                .parent()
+                .removeClass('is-expanded');
+        }
+
+        $(this).parent().toggleClass('is-expanded');
+    });
+
+
+    // Doctor Search - Live AJAX Search
+    $('#doctorSearch').on('keyup', function () {
+        let search = $(this).val();
+        $.ajax({
+            url: "{{ route('admin.doctors.index') }}",
+            type: "GET",
+            data: {
+                search: search
+            },
+            success: function (data) {
+                $('#doctor-list').html(data);
+            }
+        });
+    });
 
 })();
