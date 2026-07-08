@@ -38,7 +38,7 @@
 
 ### Clone Project
 ```
-git clone https://your-repo-url.git
+git clone https://github.com/Risad212/Medicare.git
 cd your-project
 ```
 

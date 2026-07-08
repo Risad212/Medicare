@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\HomeSetting;
+use App\Models\SeoSetting;
 
 class HomeSettingController extends Controller
 {
@@ -16,8 +17,12 @@ class HomeSettingController extends Controller
     public function home()
     {
         $homeSetting = HomeSetting::first();
+        $seo = SeoSetting::where('page', 'home')->first();
 
-       return view('backend.settings.home', compact('homeSetting'));
+       return view('backend.settings.home', compact(
+            'homeSetting',
+            'seo'
+        ));
     }
 
     /**

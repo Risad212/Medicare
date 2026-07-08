@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CategoryController as AdminBlogCategoryController;
 use App\Http\Controllers\Admin\TagController as AdminBlogTagController;
 use App\Http\Controllers\Admin\BlogCommentController as AdminBlogCommentController;
+use App\Http\Controllers\Admin\SeoSettingController;
 
 
 use App\Http\Controllers\Frontend\HomeController;
@@ -92,6 +93,15 @@ Route::get('/admin/settings/home', [HomeSettingController::class, 'home'])
 
 Route::post('/admin/settings/home', [HomeSettingController::class, 'update'])
     ->name('settings.home.update');
+
+
+/*
+|--------------------------------------------------------------------------
+| Seo Settings Routes
+|--------------------------------------------------------------------------
+*/
+Route::post('/admin/seo-settings', [SeoSettingController::class, 'update'])
+    ->name('admin.seo-settings.update');
 
 
 /*

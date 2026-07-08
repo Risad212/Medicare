@@ -83,7 +83,7 @@
                 <h3 class="title">Counter Up Section</h3>
             </div>
 
-       <div class="tile-body">
+         <div class="tile-body">
 
         <!-- 1 -->
         <div class="row mb-2">
@@ -171,9 +171,11 @@
                     </button>
                 </div>
             </div>
-
         </form>
-
+       @include('backend.components.seo-settings', [
+            'title' => 'Home',
+            'page' => 'home',
+        ])
     </div>
 </div>
 
