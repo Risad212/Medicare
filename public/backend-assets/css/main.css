@@ -14922,16 +14922,19 @@ textarea.form-control-lg {
   background: #D97706;
 }
 
-.doctor-pagination svg {
+/**
+ Table Pagination
+*/
+.table-pagination svg {
     width: 26px;
     height: 26px;
 }
 
-.doctor-pagination nav {
+.table-pagination nav {
     display: flex;
     justify-content: center;
 }
 
-.doctor-pagination .pagination {
+.table-pagination .pagination {
     margin-bottom: 0;
 }

@@ -39,4 +39,22 @@
         });
     });
 
+     // Appointment Search - Live AJAX Search
+    $('#appointmentSearch').on('keyup', function () {
+
+        let search = $(this).val();
+
+        $.ajax({
+            url: "{{ route('admin.appointments.index') }}",
+            type: "GET",
+            data: {
+                search: search
+            },
+            success: function (data) {
+                $('#appointment-list').html(data);
+            }
+        });
+
+    });
+
 })();

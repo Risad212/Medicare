@@ -12,9 +12,21 @@ class AppointmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+   public function index(Request $request)
     {
-        $appointments = Appointment::with('doctor')->latest()->get();
+        $appointments = Appointment::with('doctor')
+            ->when($request->search, function ($query) use ($request) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('patient_name', 'like', '%'.$request->search.'%')
+                    ->orWhere('phone', 'like', '%'.$request->search.'%')
+                    ->orWhereHas('doctor', function ($doctor) use ($request) {
+                        $doctor->where('name', 'like', '%'.$request->search.'%');
+                    });
+                });
+            })
+            ->latest()
+            ->paginate(3)
+            ->withQueryString();
 
         return view('backend.appointments.index', compact('appointments'));
     }
