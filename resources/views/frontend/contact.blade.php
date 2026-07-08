@@ -31,7 +31,7 @@
                         </span>
                         <div class="content">
                             <h4 class="title">Location</h4>
-                            <span>29 Nicolas str, New York,987597-50</span>
+                            <span>{{ $setting->address }}</span>
                         </div>
                     </div>
                     <div class="single-info">
@@ -49,7 +49,7 @@
                         </span>
                         <div class="content">
                             <h4 class="title">Phones</h4>
-                            <span>0(800) 890-90-620</span>
+                            <span>{{$setting->phone}}</span>
                         </div>
                     </div>
                     <div class="single-info">
@@ -67,7 +67,7 @@
                         </span>
                         <div class="content">
                             <h4 class="title">Email</h4>
-                            <span>info@medicare.com</span>
+                            <span>{{$setting->email}}</span>
                         </div>
                     </div>
                     <div class="single-info">
@@ -88,47 +88,69 @@
                         </span>
                         <div class="content">
                             <h4 class="title">Working Hours</h4>
-                            <span>Sat - Thu
-                                8:00 AM - 11:00 PM</span>
+                            <span>{{ $setting->working_hours }}</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="form">
-                    <form class="mt-3">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <input type="text" id="con_name" placeholder="Your Name">
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <input type="email" id="con_email" placeholder="Email Address">
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <input type="number" id="con_phone" placeholder="Phone Number">
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <input type="text" id="con_subject" placeholder="Subject">
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="mb-3">
-                                    <div class="form-floating">
-                                        <textarea placeholder="Write Message" id="con_message"
-                                            style="height: 150px"></textarea>
-                                    </div>
-                                </div>
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                   <form action="{{ route('contact.submit') }}" method="POST">
+                    @csrf
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <input type="text" name="name" placeholder="Your Name">
                             </div>
                         </div>
-                        <button type="submit" class="form-button">Send Message</button>
-                    </form>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <input type="email" name="email" placeholder="Email Address">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <input type="number" name="phone" placeholder="Phone Number">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <input type="text" name="subject" placeholder="Subject">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <textarea 
+                                    name="message" 
+                                    placeholder="Write Message"
+                                    style="height: 150px">
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="form-button">
+                        Send Message
+                    </button>
+                </form>
                 </div>
             </div>
         </div>

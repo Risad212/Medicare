@@ -23,6 +23,7 @@ use App\Http\Controllers\Frontend\BlogController as FrontBlogController;
 use App\Http\Controllers\Frontend\DoctorController as FrontendDoctorController;
 use App\Http\Controllers\Frontend\AppointmentController as FrontAppointmentController;
 use App\Http\Controllers\Frontend\BlogCommentController;
+use App\Http\Controllers\Frontend\ContactController as FrontContactController;
 
 
 
@@ -150,3 +151,10 @@ Route::resource('/admin/comments', AdminBlogCommentController::class)
 Route::resource('/admin/appointments', AdminAppointmentController::class)->names('admin.appointments');
 
 
+/*
+|--------------------------------------------------------------------------
+| Mail Routes
+|--------------------------------------------------------------------------
+*/
+Route::post('/contact-submit', [FrontContactController::class, 'store'])
+    ->name('contact.submit');
