@@ -24,6 +24,7 @@
 - Secure admin login and logout
 - General settings (site name, logo, favicon, header address, working hours, social links, footer)
 - Home page settings (about section, counter up numbers)
+- SEO Setting (home, about, service, doctor, blog, contact)
 - Slider management (add, edit, delete — full CRUD)
 - Doctor management (add, edit, delete — full CRUD)
 - Blog management (add, edit, delete — full CRUD with Summernote rich text editor)
