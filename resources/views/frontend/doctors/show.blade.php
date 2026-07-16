@@ -138,8 +138,10 @@
                                     <label>Appointment Date</label>
                                     <div class="form-group">
                                         <input type="date"
-                                               name="date"
-                                               class="form-control appoiment-date">
+                                            name="date"
+                                            class="form-control appoiment-date"
+                                            min="{{ date('Y-m-d') }}"
+                                            value="{{ old('date') }}">
                                     </div>
                                 </div>
 

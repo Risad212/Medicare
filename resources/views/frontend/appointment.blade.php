@@ -71,7 +71,8 @@
 
                 <div class="mb-4">
                     <input type="date" name="date"
-                        value="{{ old('appointment_date') }}">
+                        min="{{ date('Y-m-d') }}"
+                        value="{{ old('date') }}">
                     @error('appointment_date') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 

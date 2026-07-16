@@ -4,34 +4,38 @@
 
 <div class="row">
     <div class="col-md-6 col-lg-3">
-        <div class="widget-small primary coloured-icon"><i class="icon bi bi-people fs-1"></i>
+        <div class="widget-small primary coloured-icon">
+            <i class="icon bi bi-people fs-1"></i>
             <div class="info">
-                <h4>Users</h4>
-                <p><b>5</b></p>
+                <h4>Doctors</h4>
+                <p><b>{{ $totalDoctors }}</b></p>
             </div>
         </div>
     </div>
     <div class="col-md-6 col-lg-3">
-        <div class="widget-small info coloured-icon"><i class="icon bi bi-heart fs-1"></i>
+        <div class="widget-small info coloured-icon">
+            <i class="icon bi bi-calendar-check fs-1"></i>
             <div class="info">
-                <h4>Likes</h4>
-                <p><b>25</b></p>
+                <h4>Appointments</h4>
+                <p><b>{{ $totalAppointments }}</b></p>
             </div>
         </div>
     </div>
     <div class="col-md-6 col-lg-3">
-        <div class="widget-small warning coloured-icon"><i class="icon bi bi-folder2 fs-1"></i>
+        <div class="widget-small warning coloured-icon">
+            <i class="icon bi bi-journal-text fs-1"></i>
             <div class="info">
-                <h4>Uploades</h4>
-                <p><b>10</b></p>
+                <h4>Blog Posts</h4>
+                <p><b>{{ $totalBlogs }}</b></p>
             </div>
         </div>
     </div>
     <div class="col-md-6 col-lg-3">
-        <div class="widget-small danger coloured-icon"><i class="icon bi bi-star fs-1"></i>
+        <div class="widget-small danger coloured-icon">
+            <i class="icon bi bi-chat-dots fs-1"></i>
             <div class="info">
-                <h4>Stars</h4>
-                <p><b>500</b></p>
+                <h4>Pending Comments</h4>
+                <p><b>{{ $pendingComments }}</b></p>
             </div>
         </div>
     </div>

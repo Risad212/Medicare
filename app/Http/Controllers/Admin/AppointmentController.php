@@ -25,7 +25,7 @@ class AppointmentController extends Controller
                 });
             })
             ->latest()
-            ->paginate(3)
+            ->paginate(10)
             ->withQueryString();
 
         return view('backend.appointments.index', compact('appointments'));
