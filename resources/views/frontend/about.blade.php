@@ -7,7 +7,7 @@
 @section('front-content')
 
 @include('frontend.components.breadcrumb', [
-    'title' => 'About Us'
+    'title' => $pageTitle ?? 'About Us'
 ])
 
 <!--========== About Hospital section ==========-->
@@ -24,13 +24,13 @@
 
                     <div class="first-img">
                         <img class="img-fluid"
-                            src="{{ asset('frontend-assets/media/about/about-1.jpg') }}"
+                            src="{{ asset($about->image_one ?? 'frontend-assets/media/about/about-1.jpg') }}"
                             alt="">
                     </div>
 
                     <div class="second-img">
                         <img class="img-fluid"
-                            src="{{ asset('frontend-assets/media/about/about-2.jpg') }}"
+                            src="{{ asset($about->image_two ?? 'frontend-assets/media/about/about-2.jpg') }}"
                             alt="">
                     </div>
 
@@ -40,26 +40,22 @@
             <div class="col-lg-6">
                 <div class="about-content">
 
-                    <h6 class="subtitle">about us</h6>
+                    <h6 class="subtitle">{{ $about->subtitle ?? 'about us' }}</h6>
 
                     <h2 class="title">
-                        Compassionate Care Exceptional Expertise
+                        {{ $about->title ?? 'Compassionate Care Exceptional Expertise' }}
                     </h2>
 
                     <span class="text">
-                        The field where technology meets humanity
+                        {{ $about->tagline ?? 'The field where technology meets humanity' }}
                     </span>
 
                     <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Saepe perferendis consectetur quis deleniti, at debitis
-                        earum illo tempore molestias in eaque, architecto
-                        reiciendis assumenda sapiente? Sit autem suscipit qui
-                        tenetur!
+                        {{ $about->description ?? 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe perferendis consectetur quis deleniti, at debitis earum illo tempore molestias in eaque, architecto reiciendis assumenda sapiente? Sit autem suscipit qui tenetur!' }}
                     </p>
 
                     <button class="about-btn">
-                        <a href="#">more info</a>
+                        <a href="{{ $about->button_url ?? '#' }}">{{ $about->button_text ?? 'more info' }}</a>
 
                         <svg xmlns="http://www.w3.org/2000/svg"
                             version="1.1"
@@ -112,12 +108,10 @@
                         </svg>
                     </div>
 
-                    <h4 class="title">Our Mission</h4>
+                    <h4 class="title">{{ $about->mission_title ?? 'Our Mission' }}</h4>
 
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                        Quis ipsum suspendisse.
+                        {{ $about->mission_description ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse.' }}
                     </p>
 
                 </div>
@@ -146,12 +140,10 @@
                         </svg>
                     </div>
 
-                    <h4 class="title">Our Planning</h4>
+                    <h4 class="title">{{ $about->planning_title ?? 'Our Planning' }}</h4>
 
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                        Quis ipsum suspendisse.
+                        {{ $about->planning_description ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse.' }}
                     </p>
 
                 </div>
@@ -180,12 +172,10 @@
                         </svg>
                     </div>
 
-                    <h4 class="title">Our Vision</h4>
+                    <h4 class="title">{{ $about->vision_title ?? 'Our Vision' }}</h4>
 
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                        Quis ipsum suspendisse.
+                        {{ $about->vision_description ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse.' }}
                     </p>
 
                 </div>

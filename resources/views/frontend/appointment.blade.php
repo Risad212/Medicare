@@ -7,7 +7,7 @@
 @section('front-content')
 
 @include('frontend.components.breadcrumb', [
-    'title' => 'Appoinment'
+    'title' => $pageTitle ?? 'Appointment'
 ])
 
 <!--========== Appoinment Section ==========-->
@@ -23,7 +23,7 @@
                 @csrf
 
                 <div class="mb-4">
-                    <input type="text" name="name" placeholder="Your Name"
+                    <input type="text" name="patient_name" placeholder="Your Name"
                         value="{{ old('patient_name') }}">
                     @error('patient_name') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -37,11 +37,15 @@
                 <div class="mb-4">
                     <select name="doctor_id">
                         <option value="">Select Doctor</option>
-                        @foreach($doctors as $doctor)
-                            <option value="{{ $doctor->id }}" {{ old('doctor_id') == $doctor->id ? 'selected' : '' }}>
-                                {{ $doctor->name }}
-                            </option>
-                        @endforeach
+                        @if(isset($doctors) && $doctors->count())
+                            @foreach($doctors as $doctor)
+                                <option value="{{ $doctor->id }}" {{ old('doctor_id') == $doctor->id ? 'selected' : '' }}>
+                                    {{ $doctor->name ?? 'Doctor' }}
+                                </option>
+                            @endforeach
+                        @else
+                            <option value="" disabled>No doctors available</option>
+                        @endif
                     </select>
                     @error('doctor_id') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -49,9 +53,9 @@
                 <div class="mb-4">
                     <select name="visit_type">
                         <option value="">Visit Type</option>
-                        <option value="1">First Visit</option>
-                        <option value="2">Second Visit</option>
-                        <option value="3">Report Review</option>
+                        <option value="1" {{ old('visit_type') == '1' ? 'selected' : '' }}>First Visit</option>
+                        <option value="2" {{ old('visit_type') == '2' ? 'selected' : '' }}>Second Visit</option>
+                        <option value="3" {{ old('visit_type') == '3' ? 'selected' : '' }}>Report Review</option>
                     </select>
                 </div>
 
@@ -63,16 +67,16 @@
                 <div class="mb-4">
                     <select name="gender">
                         <option value="">Select Gender</option>
-                        <option value="1">Male</option>
-                        <option value="2">Female</option>
-                        <option value="3">Other</option>
+                        <option value="1" {{ old('gender') == '1' ? 'selected' : '' }}>Male</option>
+                        <option value="2" {{ old('gender') == '2' ? 'selected' : '' }}>Female</option>
+                        <option value="3" {{ old('gender') == '3' ? 'selected' : '' }}>Other</option>
                     </select>
                 </div>
 
                 <div class="mb-4">
-                    <input type="date" name="date"
+                    <input type="date" name="appointment_date"
                         min="{{ date('Y-m-d') }}"
-                        value="{{ old('date') }}">
+                        value="{{ old('appointment_date') }}">
                     @error('appointment_date') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 

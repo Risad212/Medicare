@@ -7,7 +7,7 @@
 @section('front-content')
 
 @include('frontend.components.breadcrumb', [
-    'title' => 'Our Services'
+    'title' => $pageTitle ?? 'Our Services'
 ])
 
 <!--========== Services Section ==========-->
@@ -25,7 +25,7 @@
             <div class="col-lg-6">
                 <div class="emargency-image">
                     <img class="img-fluid"
-                        src="{{ asset('frontend-assets/media/service/emargency.jpg') }}"
+                        src="{{ asset($service->emergency_image ?? 'frontend-assets/media/service/emargency.jpg') }}"
                         alt="">
                 </div>
             </div>
@@ -33,17 +33,14 @@
             <div class="col-lg-6">
                 <div class="emargency-content">
 
-                    <h5 class="subtitle">Emergency Treatment</h5>
+                    <h5 class="subtitle">{{ $service->emergency_subtitle ?? 'Emergency Treatment' }}</h5>
 
                     <h2 class="title">
-                        Emergency? For any Help Contact Us Now
+                        {{ $service->emergency_title ?? 'Emergency? For any Help Contact Us Now' }}
                     </h2>
 
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore 
-                        magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel 
-                        facilisis. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has 
-                        been the industry's standard dummy text
+                        {{ $service->emergency_description ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text' }}
                     </p>
 
                     <div class="emarency-wrap">
@@ -64,7 +61,7 @@
 
                             <div>
                                 <span>Call Now</span>
-                                <h5>+821-456-789</h5>
+                                <h5>{{ $service->emergency_phone ?? '+821-456-789' }}</h5>
                             </div>
                         </div>
 
@@ -91,7 +88,7 @@
 
                             <div>
                                 <span>Mail Us</span>
-                                <h5>hello@info.com</h5>
+                                <h5>{{ $service->emergency_email ?? 'hello@info.com' }}</h5>
                             </div>
                         </div>
 
@@ -108,8 +105,8 @@
 <section class="prevention-section">
     <div class="container">
         <div class="title-head">
-            <span class="subtitle">Prevention</span>
-            <h3 class="title">How To Protect Yourself</h3>
+            <span class="subtitle">{{ $service->prevention_subtitle ?? 'Prevention' }}</span>
+            <h3 class="title">{{ $service->prevention_title ?? 'How To Protect Yourself' }}</h3>
         </div>
         <div class="row gx-4">
             <div class="col-lg-6 col-md-12">
@@ -129,9 +126,8 @@
                         </svg>
                     </span>
                     <div class="content">
-                        <h4 class="title">Wash Your Hands</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua.
-                            ipsum utislen consectetur</p>
+                        <h4 class="title">{{ $service->prevention_1_title ?? 'Wash Your Hands' }}</h4>
+                        <p>{{ $service->prevention_1_desc ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua. ipsum utislen consectetur' }}</p>
                     </div>
                 </div>
                 <div class="single-prevention">
@@ -281,9 +277,8 @@
                         </svg>
                     </span>
                     <div class="content">
-                        <h4 class="title">Stay At Home</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua.
-                            ipsum utislen consectetur</p>
+                        <h4 class="title">{{ $service->prevention_2_title ?? 'Stay At Home' }}</h4>
+                        <p>{{ $service->prevention_2_desc ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua. ipsum utislen consectetur' }}</p>
                     </div>
                 </div>
                 <div class="single-prevention">
@@ -447,9 +442,8 @@
                         </svg>
                     </span>
                     <div class="content">
-                        <h4 class="title">Avoid Close Contact</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua.
-                            ipsum utislen consectetur</p>
+                        <h4 class="title">{{ $service->prevention_3_title ?? 'Avoid Close Contact' }}</h4>
+                        <p>{{ $service->prevention_3_desc ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua. ipsum utislen consectetur' }}</p>
                     </div>
                 </div>
                 <div class="single-prevention">
@@ -495,9 +489,8 @@
                         </svg>
                     </span>
                     <div class="content">
-                        <h4 class="title">Don’t Touch Face</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua.
-                            ipsum utislen consectetur</p>
+                        <h4 class="title">{{ $service->prevention_4_title ?? 'Don’t Touch Face' }}</h4>
+                        <p>{{ $service->prevention_4_desc ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua. ipsum utislen consectetur' }}</p>
                     </div>
                 </div>
             </div>
@@ -586,9 +579,8 @@
                         </svg>
                     </span>
                     <div class="content">
-                        <h4 class="title">Use Face Mask</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua.
-                            ipsum utislen consectetur</p>
+                        <h4 class="title">{{ $service->prevention_5_title ?? 'Use Face Mask' }}</h4>
+                        <p>{{ $service->prevention_5_desc ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua. ipsum utislen consectetur' }}</p>
                     </div>
                 </div>
                 <div class="single-prevention">
@@ -679,9 +671,8 @@
                         </svg>
                     </span>
                     <div class="content">
-                        <h4 class="title">Use Hand Sanitizer</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua.
-                            ipsum utislen consectetur</p>
+                        <h4 class="title">{{ $service->prevention_6_title ?? 'Use Hand Sanitizer' }}</h4>
+                        <p>{{ $service->prevention_6_desc ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua. ipsum utislen consectetur' }}</p>
                     </div>
                 </div>
                 <div class="single-prevention">
@@ -697,9 +688,8 @@
                         </svg>
                     </span>
                     <div class="content">
-                        <h4 class="title">Washing Hands</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua.
-                            ipsum utislen consectetur</p>
+                        <h4 class="title">{{ $service->prevention_7_title ?? 'Washing Hands' }}</h4>
+                        <p>{{ $service->prevention_7_desc ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua. ipsum utislen consectetur' }}</p>
                     </div>
                 </div>
                 <div class="single-prevention">
@@ -718,9 +708,8 @@
                         </svg>
                     </span>
                     <div class="content">
-                        <h4 class="title">Use Your Gloves</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua.
-                            ipsum utislen consectetur</p>
+                        <h4 class="title">{{ $service->prevention_8_title ?? 'Use Your Gloves' }}</h4>
+                        <p>{{ $service->prevention_8_desc ?? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor aliqua. ipsum utislen consectetur' }}</p>
                     </div>
                 </div>
             </div>

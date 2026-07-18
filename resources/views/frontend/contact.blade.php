@@ -4,12 +4,11 @@
 @section('meta_description', $seo->meta_description ?? '')
 @section('meta_keywords', $seo->meta_keywords ?? '')
 
-
 @section('front-content')
 
 <!--========== BreadCamb Section ==========-->
 @include('frontend.components.breadcrumb', [
-    'title' => 'Contact Us'
+    'title' => $pageTitle ?? 'Contact Us'
 ])
 
 <!--========== Contact Section ==========-->
@@ -36,7 +35,7 @@
                         </span>
                         <div class="content">
                             <h4 class="title">Location</h4>
-                            <span>{{ $setting->address }}</span>
+                            <span>{{ $setting->address ?? '' }}</span>
                         </div>
                     </div>
                     <div class="single-info">
@@ -54,7 +53,7 @@
                         </span>
                         <div class="content">
                             <h4 class="title">Phones</h4>
-                            <span>{{$setting->phone}}</span>
+                            <span>{{ $setting->phone ?? '' }}</span>
                         </div>
                     </div>
                     <div class="single-info">
@@ -72,7 +71,7 @@
                         </span>
                         <div class="content">
                             <h4 class="title">Email</h4>
-                            <span>{{$setting->email}}</span>
+                            <span>{{ $setting->email ?? '' }}</span>
                         </div>
                     </div>
                     <div class="single-info">
@@ -93,7 +92,7 @@
                         </span>
                         <div class="content">
                             <h4 class="title">Working Hours</h4>
-                            <span>{{ $setting->working_hours }}</span>
+                            <span>{{ $setting->working_hours ?? '' }}</span>
                         </div>
                     </div>
                 </div>

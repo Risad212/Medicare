@@ -1,29 +1,39 @@
 @extends('frontend.layouts.front-app')
 
-@section('meta_title', $seo->meta_title ?? 'Medicare')
-@section('meta_description', $seo->meta_description ?? '')
-@section('meta_keywords', $seo->meta_keywords ?? '')
+@section('meta_title')
+    {{ $seo->meta_title ?? 'Medicare' }}
+@endsection
+
+@section('meta_description')
+    {{ $seo->meta_description ?? '' }}
+@endsection
+
+@section('meta_keywords')
+    {{ $seo->meta_keywords ?? '' }}
+@endsection
 
 @section('front-content')
 <!--============== START SLIDER SECTION ===============-->
 <section class="slider-section">
     <div class="carousel-single-item owl-carousel owl-theme">
 
-        @foreach($sliders as $slider)
-        <div class="single-slider" style="background-image: url('{{ asset('storage/' . $slider->bg_image) }}');">
-            <div class="slider-overlay">
-                <div class="container">
-                    <div class="title">
-                        <h2>{{ $slider->title }}</h2>
-                        <p>{{ $slider->description }}</p>
-                        <div class="btn-title-home">
-                            <a href="#" class="btn-title">{{ $slider->button_text }}</a>
+        @if(isset($sliders) && $sliders->count())
+            @foreach($sliders as $slider)
+            <div class="single-slider" style="background-image: url('{{ asset('storage/' . ($slider->bg_image ?? '')) }}');">
+                <div class="slider-overlay">
+                    <div class="container">
+                        <div class="title">
+                            <h2>{{ $slider->title ?? '' }}</h2>
+                            <p>{{ $slider->description ?? '' }}</p>
+                            <div class="btn-title-home">
+                                <a href="#" class="btn-title">{{ $slider->button_text ?? 'Read More' }}</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        @endforeach
+            @endforeach
+        @endif
 
     </div>
 </section>
@@ -103,15 +113,15 @@
                 <div class="sotry-content">
 
                     <h3 class="title">
-                        {{ $homeSetting->about_title }}
+                        {{ $homeSetting->about_title ?? '' }}
                     </h3>
 
                     <p class="mb-2">
-                        {{ $homeSetting->about_description }}
+                        {{ $homeSetting->about_description ?? '' }}
                     </p>
 
                     <a class="about-btn" href="{{ route('about') }}">
-                        {{ $homeSetting->about_button_text }}
+                        {{ $homeSetting->about_button_text ?? 'Read More' }}
                     </a>
 
                 </div>
@@ -123,11 +133,11 @@
                 <div class="col-6">
 
                     <div class="single-thumb">
-                        <img class="lazy img-fluid" src="{{ asset('storage/'.$homeSetting->about_image_one) }}" alt="">
+                        <img class="lazy img-fluid" src="{{ asset('storage/'.($homeSetting->about_image_one ?? '')) }}" alt="">
                     </div>
 
                     <div class="single-thumb">
-                        <img class="lazy img-fluid" src="{{ asset('storage/'.$homeSetting->about_image_two) }}" alt="">
+                        <img class="lazy img-fluid" src="{{ asset('storage/'.($homeSetting->about_image_two ?? '')) }}" alt="">
                     </div>
 
                 </div>
@@ -135,7 +145,7 @@
                 <div class="col-6">
 
                     <div class="single-thumb">
-                        <img class="lazy img-fluid" src="{{ asset('storage/'.$homeSetting->about_image_three) }}" alt="">
+                        <img class="lazy img-fluid" src="{{ asset('storage/'.($homeSetting->about_image_three ?? '')) }}" alt="">
                     </div>
 
                 </div>
@@ -174,8 +184,8 @@
                         </svg>
                     </span>
 
-                    <h3 class="count">{{ $homeSetting->counter_one_number }}</h3>
-                    <h6>{{ $homeSetting->counter_one_text }}</h6>
+                    <h3 class="count">{{ $homeSetting->counter_one_number ?? 0 }}</h3>
+                    <h6>{{ $homeSetting->counter_one_text ?? '' }}</h6>
 
                 </div>
             </div>
@@ -192,8 +202,8 @@
                         </svg>
                     </span>
 
-                    <h3 class="count">{{ $homeSetting->counter_two_number }}</h3>
-                    <h6>{{ $homeSetting->counter_two_text }}</h6>
+                    <h3 class="count">{{ $homeSetting->counter_two_number ?? 0 }}</h3>
+                    <h6>{{ $homeSetting->counter_two_text ?? '' }}</h6>
 
                 </div>
             </div>
@@ -218,8 +228,8 @@
                      </svg>
                     </span>
 
-                    <h3 class="count">{{ $homeSetting->counter_three_number }}</h3>
-                    <h6>{{ $homeSetting->counter_three_text }}</h6>
+                    <h3 class="count">{{ $homeSetting->counter_three_number ?? 0 }}</h3>
+                    <h6>{{ $homeSetting->counter_three_text ?? '' }}</h6>
 
                 </div>
             </div>
@@ -248,8 +258,8 @@
                      </svg>
                     </span>
 
-                    <h3 class="count">{{ $homeSetting->counter_four_number }}</h3>
-                    <h6>{{ $homeSetting->counter_four_text }}</h6>
+                    <h3 class="count">{{ $homeSetting->counter_four_number ?? 0 }}</h3>
+                    <h6>{{ $homeSetting->counter_four_text ?? '' }}</h6>
 
                 </div>
             </div>
