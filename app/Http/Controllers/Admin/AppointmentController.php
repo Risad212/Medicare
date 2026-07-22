@@ -12,7 +12,7 @@ class AppointmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function index(Request $request)
+    public function index(Request $request)
     {
         $appointments = Appointment::with('doctor')
             ->when($request->search, function ($query) use ($request) {
@@ -74,4 +74,5 @@ class AppointmentController extends Controller
 
         return back()->with('success', 'Appointment deleted successfully!');
     }
+
 }

@@ -44,6 +44,7 @@
                             <th>Phone</th>
                             <th>Visit Type</th>
                             <th>Date</th>
+                            <th>Time Slot</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -107,19 +108,20 @@
                                 {{ $appointment->appointment_date }}
                             </td>
 
+                            <td>
+                                {{ $appointment->time }}
+                            </td>
+
 
                             <td>
                                 @if($appointment->status == 0)
-                                    <span class="badge bg-warning">
-                                        Pending
-                                    </span>
+                                    <span class="badge bg-warning">Pending</span>
+                                @elseif($appointment->status == 1)
+                                    <span class="badge bg-info">Approved</span>
                                 @else
-                                    <span class="badge bg-success">
-                                        Completed
-                                    </span>
+                                    <span class="badge bg-success">Completed</span>
                                 @endif
                             </td>
-
 
                             <td>
 

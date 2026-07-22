@@ -19,11 +19,21 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form action="{{ route('appointment.store') }}" method="POST">
                 @csrf
 
                 <div class="mb-4">
-                    <input type="text" name="patient_name" placeholder="Your Name"
+                    <input type="text" name="name" placeholder="Your Name"
                         value="{{ old('patient_name') }}">
                     @error('patient_name') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -35,7 +45,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <select name="doctor_id">
+                    <select name="doctor_id" id="doctor_id">
                         <option value="">Select Doctor</option>
                         @if(isset($doctors) && $doctors->count())
                             @foreach($doctors as $doctor)
@@ -74,10 +84,24 @@
                 </div>
 
                 <div class="mb-4">
-                    <input type="date" name="appointment_date"
+                    <input type="date" name="date" id="appointment_date"
                         min="{{ date('Y-m-d') }}"
                         value="{{ old('appointment_date') }}">
                     @error('appointment_date') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="mb-4">
+                    <select name="time" id="time_slot">
+                        <option value="">Select Time Slot</option>
+                        @if(isset($timeSlots) && $timeSlots->count())
+                            @foreach($timeSlots as $slot)
+                                <option value="{{ $slot->time }}" {{ old('time') == $slot->time ? 'selected' : '' }}>
+                                    {{ $slot->time }}
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                    @error('time') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="text-center">

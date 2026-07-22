@@ -127,7 +127,8 @@
                 <i class="treeview-indicator bi bi-chevron-right"></i>
             </a>
             <ul class="treeview-menu">
-                <li><a class="treeview-item active" href="{{ route('admin.appointments.index') }}"><i class="icon bi bi-circle-fill"></i>All Appoinment</a></li>
+                <li><a class="treeview-item" href="{{ route('admin.appointments.index') }}"><i class="icon bi bi-circle-fill"></i>All Appoinments</a></li>
+                <li><a class="treeview-item" href="{{ route('admin.time-slots.index') }}"><i class="icon bi bi-circle-fill"></i>Time Slots</a></li>
             </ul>
         </li>
 

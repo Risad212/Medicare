@@ -73,17 +73,19 @@
                     </div>
 
                     <div class="col-lg-6 mb-2">
-                        <label class="mb-2">Status</label>
-                        <select name="status" class="form-control">
-                            <option value="0" {{ $appointment->status == 0 ? 'selected' : '' }}>
-                                Pending
-                            </option>
-
-                            <option value="1" {{ $appointment->status == 1 ? 'selected' : '' }}>
-                                Completed
-                            </option>
-                        </select>
-                    </div>
+                    <label class="mb-2">Status</label>
+                    <select name="status" class="form-control">
+                        <option value="0" {{ $appointment->status == 0 ? 'selected' : '' }}>
+                            Pending
+                        </option>
+                        <option value="1" {{ $appointment->status == 1 ? 'selected' : '' }}>
+                            Approved
+                        </option>
+                        <option value="2" {{ $appointment->status == 2 ? 'selected' : '' }}>
+                            Completed
+                        </option>
+                    </select>
+                </div>
 
                 </div>
 

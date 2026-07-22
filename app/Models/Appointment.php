@@ -15,6 +15,7 @@ class Appointment extends Model
         'phone',
         'visit_type',
         'appointment_date',
+        'time',
         'status',
     ];
 

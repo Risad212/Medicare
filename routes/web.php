@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\CategoryController as AdminBlogCategoryController
 use App\Http\Controllers\Admin\TagController as AdminBlogTagController;
 use App\Http\Controllers\Admin\BlogCommentController as AdminBlogCommentController;
 use App\Http\Controllers\Admin\SeoSettingController;
+use App\Http\Controllers\Admin\TimeSlotController;
+
 
 
 use App\Http\Controllers\Frontend\HomeController;
@@ -200,6 +202,14 @@ Route::resource('/admin/comments', AdminBlogCommentController::class)
 |--------------------------------------------------------------------------
 */
 Route::resource('/admin/appointments', AdminAppointmentController::class)->names('admin.appointments');
+
+
+/*
+|--------------------------------------------------------------------------
+| Time Slot Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('/admin/time-slots', TimeSlotController::class)->names('admin.time-slots');
 
 
 /*
