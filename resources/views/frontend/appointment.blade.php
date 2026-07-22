@@ -33,7 +33,7 @@
                 @csrf
 
                 <div class="mb-4">
-                    <input type="text" name="name" placeholder="Your Name"
+                    <input type="text" name="patient_name" placeholder="Your Name"
                         value="{{ old('patient_name') }}">
                     @error('patient_name') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
@@ -83,25 +83,20 @@
                     </select>
                 </div>
 
+                {{-- Date input --}}
                 <div class="mb-4">
-                    <input type="date" name="date" id="appointment_date"
+                    <input type="date" name="appointment_date" id="appointment_date"
                         min="{{ date('Y-m-d') }}"
-                        value="{{ old('appointment_date') }}">
-                    @error('appointment_date') <small class="text-danger">{{ $message }}</small> @enderror
+                        value="{{ old('date') }}">
+                    @error('date') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
+                {{-- Time Slot dropdown --}}
                 <div class="mb-4">
-                    <select name="time" id="time_slot">
-                        <option value="">Select Time Slot</option>
-                        @if(isset($timeSlots) && $timeSlots->count())
-                            @foreach($timeSlots as $slot)
-                                <option value="{{ $slot->time }}" {{ old('time') == $slot->time ? 'selected' : '' }}>
-                                    {{ $slot->time }}
-                                </option>
-                            @endforeach
-                        @endif
+                    <select name="time_slot_id" id="time_slot_id">
+                        <option value="">Select Date & Doctor First</option>
                     </select>
-                    @error('time') <small class="text-danger">{{ $message }}</small> @enderror
+                    @error('time_slot_id') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="text-center">
@@ -112,5 +107,9 @@
         </div>
     </div>
 </section>
+
+<script>
+    var getSlotsUrl = "{{ route('get.slots') }}";
+</script>
 
 @endsection

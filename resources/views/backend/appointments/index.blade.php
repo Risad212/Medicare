@@ -108,10 +108,7 @@
                                 {{ $appointment->appointment_date }}
                             </td>
 
-                            <td>
-                                {{ $appointment->time }}
-                            </td>
-
+                             <td>{{ $appointment->timeSlot->time ?? 'N/A' }}</td>
 
                             <td>
                                 @if($appointment->status == 0)

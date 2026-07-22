@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Doctor;
+use App\Models\TimeSlot;
 
 class Appointment extends Model
 {
@@ -15,7 +16,7 @@ class Appointment extends Model
         'phone',
         'visit_type',
         'appointment_date',
-        'time',
+        'time_slot_id',
         'status',
     ];
 
@@ -25,5 +26,13 @@ class Appointment extends Model
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
+    }
+
+    /**
+     * Time Slot
+     */
+    public function timeSlot()
+    {
+        return $this->belongsTo(TimeSlot::class);
     }
 }

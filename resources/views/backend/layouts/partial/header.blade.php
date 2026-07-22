@@ -71,10 +71,11 @@
 <!-- Sidebar menu-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 <aside class="app-sidebar">
-    <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="User Image">
+    <div class="app-sidebar__user">
+        <img class="app-sidebar__user-avatar" src="{{ asset('backend-assets/images/admin.webp') }}" alt="User Image" />
         <div>
-            <p class="app-sidebar__user-name">John Doe</p>
-            <p class="app-sidebar__user-designation">Frontend Developer</p>
+            <p class="app-sidebar__user-name">Admin</p>
+            <p class="app-sidebar__user-designation">Hospital Admin</p>
         </div>
     </div>
     <ul class="app-menu">

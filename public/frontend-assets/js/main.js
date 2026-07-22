@@ -158,5 +158,39 @@
     });
 
 
+    /*===========================================
+      AJAX: Load available time slots for a doctor & date
+    ===========================================*/
+    function loadSlots() {
+        let date = $('#appointment_date').val();
+        let doctor_id = $('#doctor_id').val();
+
+        $.ajax({
+            url: getSlotsUrl,
+            type: 'GET',
+            data: { date: date, doctor_id: doctor_id },
+            success: function (response) {
+                let options = '<option value="">Select Time</option>';
+                response.slots.forEach(function (slot) {
+                    let booked = response.bookedSlotIds.includes(slot.id);
+                    if (booked) {
+                        options += `<option value="${slot.id}" disabled>${slot.time} (Booked)</option>`;
+                    } else {
+                        options += `<option value="${slot.id}">${slot.time}</option>`;
+                    }
+                });
+                $('#time_slot_id').html(options);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        loadSlots();
+    });
+
+    $('#appointment_date').on('change', loadSlots);
+    $('#doctor_id').on('change', loadSlots);
+
+
 })(jQuery);
 

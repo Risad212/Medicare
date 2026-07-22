@@ -23,8 +23,6 @@ use App\Http\Controllers\Admin\BlogCommentController as AdminBlogCommentControll
 use App\Http\Controllers\Admin\SeoSettingController;
 use App\Http\Controllers\Admin\TimeSlotController;
 
-
-
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\BlogController as FrontBlogController;
@@ -59,6 +57,8 @@ Route::get('/contact', [FrontContactController::class, 'index'])->name('contact'
 Route::get('/appointment', [FrontAppointmentController::class, 'index'])->name('appointment');
 
 Route::post('/appointment', [FrontAppointmentController::class, 'store'])->name('appointment.store');
+
+Route::get('/get-available-slots', [FrontAppointmentController::class, 'getAvailableSlots'])->name('get.slots');
 
 Route::post('/blog/{blog_id}/comment', [BlogCommentController::class, 'store'])->name('blog.comment.store');
 
