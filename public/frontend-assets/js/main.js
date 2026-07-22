@@ -159,7 +159,7 @@
 
 
     /*===========================================
-      AJAX: Load available time slots for a doctor & date
+      AJAX: Load available time slots for a doctor & date For Apoinment Page
     ===========================================*/
     function loadSlots() {
         let date = $('#appointment_date').val();
@@ -190,6 +190,56 @@
 
     $('#appointment_date').on('change', loadSlots);
     $('#doctor_id').on('change', loadSlots);
+
+    /*===========================================
+      AJAX: Load available time slots for a specific doctor (doctor details page)
+    ===========================================*/
+    function loadDoctorSlots() {
+        var doctorId = document.querySelector('input[name="doctor_id"]').value;
+        var date     = document.getElementById('appointment_date').value;
+        var slotSelect = document.getElementById('time_slot');
+
+        if (!doctorId || !date) {
+            slotSelect.innerHTML = '<option value="">Select Time Slot</option>';
+            return;
+        }
+
+        // Build the URL with query parameters
+        var url = getSlotsUrl + '?doctor_id=' + encodeURIComponent(doctorId) + '&date=' + encodeURIComponent(date);
+
+        fetch(url)
+            .then(function(response) {
+                if (!response.ok) throw new Error('Network error');
+                return response.json();
+            })
+            .then(function(data) {
+                var options = '<option value="">Select Time Slot</option>';
+                var slots = data.slots;
+                var bookedIds = data.bookedSlotIds;
+
+                slots.forEach(function(slot) {
+                    var isBooked = bookedIds.includes(slot.id);
+                    options += '<option value="' + slot.id + '"' +
+                               (isBooked ? ' disabled' : '') + '>' +
+                               slot.time + (isBooked ? ' (Booked)' : '') +
+                               '</option>';
+                });
+
+                slotSelect.innerHTML = options;
+            })
+            .catch(function(error) {
+                console.error('Error fetching slots:', error);
+            });
+    }
+
+    // Attach event to the date input
+    document.getElementById('appointment_date').addEventListener('change', loadDoctorSlots);
+
+    // If a date is already picked (e.g., after form validation), load immediately
+    if (document.getElementById('appointment_date').value) {
+        loadDoctorSlots();
+    }
+
 
 
 })(jQuery);

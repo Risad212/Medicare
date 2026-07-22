@@ -21,4 +21,5 @@ class DoctorController extends Controller
         $doctor = Doctor::findOrFail($id);
         return view('frontend.doctors.show', compact('doctor'));
     }
+
 }

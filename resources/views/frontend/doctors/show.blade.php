@@ -138,10 +138,21 @@
                                     <label>Appointment Date</label>
                                     <div class="form-group">
                                         <input type="date"
-                                            name="date"
-                                            class="form-control appoiment-date"
+                                            name="appointment_date"
+                                            class="form-control"
+                                            id="appointment_date"
                                             min="{{ date('Y-m-d') }}"
                                             value="{{ old('date') }}">
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <label>Time Slot</label>
+                                    <div class="form-group">
+                                        <select name="time_slot_id" id="time_slot" class="form-control">
+                                            <option value="">Select Time Slot</option>
+                                        </select>
+                                        @error('time_slot_id') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
@@ -162,5 +173,7 @@
         </div>
     </div>
 </section>
-
+<script>
+    var getSlotsUrl = "{{ route('get.slots') }}";
+</script>
 @endsection

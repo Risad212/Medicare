@@ -109,7 +109,7 @@
 </section>
 
 <script>
-    var getSlotsUrl = "{{ route('get.slots') }}";
+    const getSlotsUrl = "{{ route('get.slots') }}";
 </script>
 
 @endsection
