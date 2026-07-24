@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Doctor;
+use App\Models\Department;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,8 +22,9 @@ class DoctorController extends Controller
                 ->orWhere('department', 'like', '%'.$request->search.'%')
                 ->orWhere('specialist', 'like', '%'.$request->search.'%');
         })->paginate(10);
+        $departments = Department::where('status', 1)->get();
 
-        return view('backend.doctors.index', compact('doctors'));
+        return view('backend.doctors.index', compact('doctors', 'departments'));
     }
 
     /**
@@ -30,7 +32,8 @@ class DoctorController extends Controller
      */
     public function create()
     {
-      return view('backend.doctors.create');
+      $departments = Department::where('status', 1)->get();
+      return view('backend.doctors.create', compact('departments'));
     }
 
     /**
@@ -65,9 +68,10 @@ class DoctorController extends Controller
      */
     public function edit(string $id)
     {
-         $doctor = Doctor::findOrFail($id);
-
-        return view('backend.doctors.edit', compact('doctor'));
+         $doctor      = Doctor::findOrFail($id);
+         $departments = Department::where('status', 1)->get();
+         
+        return view('backend.doctors.edit', compact('doctor', 'departments'));
     }
 
     /**
@@ -102,9 +106,7 @@ class DoctorController extends Controller
 
         $doctor->update($data);
 
-        return redirect()
-                ->route('admin.doctors.index')
-                ->with('success','Doctor updated successfully!');
+        return back()->with('success', 'Doctor updated successfully!');
     }
 
     /**

@@ -49,11 +49,15 @@
 
                             <div class="form-group mb-2">
                                 <label class="mb-2">Department</label>
-
-                                <input type="text"
-                                       name="department"
-                                       class="form-control"
-                                       placeholder="Cardiology">
+                                <select name="department" class="form-control">
+                                    <option value="">Select Department</option>
+                                    @foreach($departments as $department)
+                                        <option value="{{ $department->name }}"
+                                            {{ old('department') == $department->name ? 'selected' : '' }}>
+                                            {{ $department->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
 

@@ -111,6 +111,18 @@
 
         <li class="treeview">
             <a class="app-menu__item" href="#" data-toggle="treeview">
+                <i class="app-menu__icon bi bi-building"></i>
+                <span class="app-menu__label">Departments</span>
+                <i class="treeview-indicator bi bi-chevron-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a class="treeview-item" href="{{ route('admin.departments.index') }}"><i class="icon bi bi-circle-fill"></i>Department List</a></li>
+                <li><a class="treeview-item" href="{{ route('admin.departments.create') }}"><i class="icon bi bi-circle-fill"></i>Add Department</a></li>
+            </ul>
+        </li>
+
+        <li class="treeview">
+            <a class="app-menu__item" href="#" data-toggle="treeview">
                 <i class="app-menu__icon bi bi-person-badge"></i>
                 <span class="app-menu__label">Doctors</span>
                 <i class="treeview-indicator bi bi-chevron-right"></i>

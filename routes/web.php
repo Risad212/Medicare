@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 use App\Http\Controllers\Admin\DoctorController as AdminDoctorController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\DepartmentController as AdminDepartmentController;
 use App\Http\Controllers\Admin\CategoryController as AdminBlogCategoryController;
 use App\Http\Controllers\Admin\TagController as AdminBlogTagController;
 use App\Http\Controllers\Admin\BlogCommentController as AdminBlogCommentController;
@@ -161,6 +162,13 @@ Route::resource('/admin/sliders', SliderController::class)->names('admin.sliders
 |--------------------------------------------------------------------------
 */
 Route::resource('/admin/doctors', AdminDoctorController::class)->names('admin.doctors');
+
+/*
+|--------------------------------------------------------------------------
+| Department Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('/admin/departments', AdminDepartmentController::class)->names('admin.departments');
 
 
 /*
