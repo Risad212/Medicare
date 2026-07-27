@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Doctor;
-use App\Models\Department;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Doctor;
+use App\Models\Department;
+use App\Models\User;
+
 
 
 class DoctorController extends Controller
@@ -40,22 +43,29 @@ class DoctorController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-          $request->validate([
-            'name'  => 'required',
-            'image' => 'nullable|image',
-          ]);
+     {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'image'    => 'nullable|image|max:2048',
+        ]);
 
-        $data = $request->except('image');
+        // Create User first
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => 'doctor',
+        ]);
 
-        // create slug
-        $data['slug'] = Str::slug($request->name);
+        // Doctor data
+        $data            = $request->except(['image', 'password', 'email', '_token']);
+        $data['slug']    = Str::slug($request->name) . '-' . uniqid();
+        $data['user_id'] = $user->id;
 
-        // upload image
-        if($request->hasFile('image')){
-            $data['image'] = $request->file('image')
-            ->store('doctors','public');
-
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('doctors', 'public');
         }
 
         Doctor::create($data);
@@ -78,36 +88,43 @@ class DoctorController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-         $doctor = Doctor::findOrFail($id);
+        {
+            $doctor = Doctor::findOrFail($id);
 
+            $request->validate([
+                'name'  => 'required',
+                'email' => 'required|email|unique:users,email,' . $doctor->user_id,
+                'image' => 'nullable|image',
+            ]);
 
-        $request->validate([
-            'name'  => 'required',
-            'image' => 'nullable|image',
-        ]);
+            // Update User
+            if ($doctor->user_id) {
+                $userData = [
+                    'name'  => $request->name,
+                    'email' => $request->email,
+                ];
 
+                if ($request->filled('password')) {
+                    $userData['password'] = Hash::make($request->password);
+                }
 
-        $data = $request->except('image');
-
-
-        $data['slug'] = Str::slug($request->name);
-
-        if($request->hasFile('image')){
-
-            if($doctor->image){
-                Storage::disk('public')->delete($doctor->image);
-
+                User::where('id', $doctor->user_id)->update($userData);
             }
 
-            $data['image'] = $request->file('image')
-                                    ->store('doctors','public');
+            $data         = $request->except(['image', 'password', 'email', '_token']);
+            $data['slug'] = Str::slug($request->name);
+
+            if ($request->hasFile('image')) {
+                if ($doctor->image) {
+                    Storage::disk('public')->delete($doctor->image);
+                }
+                $data['image'] = $request->file('image')->store('doctors', 'public');
+            }
+
+            $doctor->update($data);
+
+            return back()->with('success', 'Doctor updated successfully!');
         }
-
-        $doctor->update($data);
-
-        return back()->with('success', 'Doctor updated successfully!');
-    }
 
     /**
      * Remove the specified resource from storage.

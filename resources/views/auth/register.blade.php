@@ -17,7 +17,7 @@
 
     <section class="login-content">
         <div class="logo">
-            <h1>Vali</h1>
+            <h1>Medicare Hospital</h1>
         </div>
         <div class="login-box register-box">
             <form class="login-form" method="POST" action="{{ route('register') }}">
@@ -70,6 +70,20 @@
                         name="password_confirmation"
                         placeholder="Confirm Password"
                         required autocomplete="new-password">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">REGISTER AS</label>
+                    <select name="role" class="form-control" required>
+                        <option value="">Select Role</option>
+                        <option value="patient">Patient</option>
+                    </select>
+
+                    @error('role')
+                        <span class="invalid-feedback d-block">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
 
                 <div class="mb-3 btn-container d-grid">

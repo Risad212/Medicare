@@ -24,6 +24,8 @@ use App\Http\Controllers\Admin\BlogCommentController as AdminBlogCommentControll
 use App\Http\Controllers\Admin\SeoSettingController;
 use App\Http\Controllers\Admin\TimeSlotController;
 
+use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
+
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\BlogController as FrontBlogController;
@@ -31,6 +33,161 @@ use App\Http\Controllers\Frontend\DoctorController as FrontendDoctorController;
 use App\Http\Controllers\Frontend\AppointmentController as FrontAppointmentController;
 use App\Http\Controllers\Frontend\BlogCommentController;
 use App\Http\Controllers\Frontend\ContactController as FrontContactController;
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Backend / Admin Routes
+|--------------------------------------------------------------------------
+*/
+
+Auth::routes();
+
+
+
+Route::middleware(['auth', 'admin'])->group(function () {
+
+
+   Route::get('/admin', [AdminController::class, 'index'])->name('admin.home');
+  
+    /*
+    |--------------------------------------------------------------------------
+    | General Settings Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/admin/settings/general', [GeneralSettingController::class, 'general'])->name('settings.general');
+
+    Route::post('/admin/settings/general', [GeneralSettingController::class, 'update'])->name('settings.general.update');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Home Settings Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/admin/settings/home', [HomeSettingController::class, 'home'])->name('settings.home');
+    
+    Route::post('/admin/settings/home', [HomeSettingController::class, 'update'])->name('settings.home.update');
+
+    /*
+    |--------------------------------------------------------------------------
+    | About Settings Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/admin/settings/about', [AboutSettingController::class, 'about'])->name('settings.about');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Service Settings Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/admin/settings/service', [ServiceSettingController::class, 'service'])->name('settings.service');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Doctor Settings Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/admin/settings/doctor', [DoctorSettingController::class, 'doctor'])->name('settings.doctor');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blog Settings Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/admin/settings/blog', [BlogSettingController::class, 'blog'])->name('settings.blog');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Contact Settings Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/admin/settings/contact', [ContactSettingController::class, 'contact'])->name('settings.contact');
+
+    /*
+    |--------------------------------------------------------------------------
+    | SEO Settings Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::post('/admin/seo-settings', [SeoSettingController::class, 'update'])->name('admin.seo-settings.update');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Slider Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('/admin/sliders', SliderController::class)->names('admin.sliders');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Doctors Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('/admin/doctors', AdminDoctorController::class)->names('admin.doctors');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Department Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('/admin/departments', AdminDepartmentController::class)->names('admin.departments');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blogs Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('/admin/blogs', AdminBlogController::class)->names('admin.blogs');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blog Category Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('/admin/blog/categories', AdminBlogCategoryController::class)->names('admin.categories');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blog Tag Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('/admin/blog/tags', AdminBlogTagController::class)->names('admin.tags');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blog Comment Routes Admin
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('/admin/comments', AdminBlogCommentController::class)
+        ->names('admin.comments')
+        ->only(['index', 'update', 'destroy']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Appointments Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('/admin/appointments', AdminAppointmentController::class)->names('admin.appointments');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Time Slot Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('/admin/time-slots', TimeSlotController::class)->names('admin.time-slots');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mail Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::post('/contact-submit', [FrontContactController::class, 'store'])->name('contact.submit');
+
+});
+
+Route::middleware(['auth', 'doctor'])->group(function () {
+    Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'index'])->name('doctor.dashboard');
+});
 
 
 /*
@@ -62,168 +219,3 @@ Route::post('/appointment', [FrontAppointmentController::class, 'store'])->name(
 Route::get('/get-available-slots', [FrontAppointmentController::class, 'getAvailableSlots'])->name('get.slots');
 
 Route::post('/blog/{blog_id}/comment', [BlogCommentController::class, 'store'])->name('blog.comment.store');
-
-/*
-|--------------------------------------------------------------------------
-| Backend / Admin Routes
-|--------------------------------------------------------------------------
-*/
-
-Auth::routes();
-
-Route::get('/admin', [AdminController::class, 'index'])
-    ->name('admin.home');
-
-
-/*
-|--------------------------------------------------------------------------
-| General Settings Routes
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/admin/settings/general', [GeneralSettingController::class, 'general'])
-    ->name('settings.general');
-
-Route::post('/admin/settings/general', [GeneralSettingController::class, 'update'])
-    ->name('settings.general.update');
-
-/*
-|--------------------------------------------------------------------------
-| Home Settings Routes
-|--------------------------------------------------------------------------
-*/
-Route::get('/admin/settings/home', [HomeSettingController::class, 'home'])
-    ->name('settings.home');
-
-Route::post('/admin/settings/home', [HomeSettingController::class, 'update'])
-    ->name('settings.home.update');
-
-
-/*
-|--------------------------------------------------------------------------
-| About Settings Routes
-|--------------------------------------------------------------------------
-*/
-Route::get('/admin/settings/about', [AboutSettingController::class, 'about'])
-    ->name('settings.about');
-
-/*
-|--------------------------------------------------------------------------
-| Service Settings Routes
-|--------------------------------------------------------------------------
-*/
-Route::get('/admin/settings/service', [ServiceSettingController::class, 'service'])
-    ->name('settings.service');
-
-/*
-|--------------------------------------------------------------------------
-| Doctor Settings Routes
-|--------------------------------------------------------------------------
-*/
-Route::get('/admin/settings/doctor', [DoctorSettingController::class, 'doctor'])
-    ->name('settings.doctor');
-
-/*
-|--------------------------------------------------------------------------
-| Blog Settings Routes
-|--------------------------------------------------------------------------
-*/
-Route::get('/admin/settings/blog', [BlogSettingController::class, 'blog'])
-    ->name('settings.blog');
-
-/*
-|--------------------------------------------------------------------------
-| Contact Settings Routes
-|--------------------------------------------------------------------------
-*/
-Route::get('/admin/settings/contact', [ContactSettingController::class, 'contact'])
-    ->name('settings.contact');
-
-/*
-|--------------------------------------------------------------------------
-| Seo Settings Routes
-|--------------------------------------------------------------------------
-*/
-Route::post('/admin/seo-settings', [SeoSettingController::class, 'update'])
-    ->name('admin.seo-settings.update');
-
-
-/*
-|--------------------------------------------------------------------------
-| Slider Routes
-|--------------------------------------------------------------------------
-*/
-Route::resource('/admin/sliders', SliderController::class)->names('admin.sliders');
-
-
-/*
-|--------------------------------------------------------------------------
-| Doctors Routes
-|--------------------------------------------------------------------------
-*/
-Route::resource('/admin/doctors', AdminDoctorController::class)->names('admin.doctors');
-
-/*
-|--------------------------------------------------------------------------
-| Department Routes
-|--------------------------------------------------------------------------
-*/
-Route::resource('/admin/departments', AdminDepartmentController::class)->names('admin.departments');
-
-
-/*
-|--------------------------------------------------------------------------
-| Blogs Routes
-|--------------------------------------------------------------------------
-*/
-Route::resource('/admin/blogs', AdminBlogController::class)->names('admin.blogs');
-
-
-/*
-|--------------------------------------------------------------------------
-| Blog Category Routes
-|--------------------------------------------------------------------------
-*/
-Route::resource('/admin/blog/categories', AdminBlogCategoryController::class)->names('admin.categories');
-
-
-/*
-|--------------------------------------------------------------------------
-| Blog Tag Routes
-|--------------------------------------------------------------------------
-*/
-Route::resource('/admin/blog/tags', AdminBlogTagController::class)->names('admin.tags');
-
-
-/*
-|--------------------------------------------------------------------------
-| Blog Comment Routes Admin
-|--------------------------------------------------------------------------
-*/
-Route::resource('/admin/comments', AdminBlogCommentController::class)
-    ->names('admin.comments')
-    ->only(['index', 'update', 'destroy']);
-
-/*
-|--------------------------------------------------------------------------
-| Appointments Routes
-|--------------------------------------------------------------------------
-*/
-Route::resource('/admin/appointments', AdminAppointmentController::class)->names('admin.appointments');
-
-
-/*
-|--------------------------------------------------------------------------
-| Time Slot Routes
-|--------------------------------------------------------------------------
-*/
-Route::resource('/admin/time-slots', TimeSlotController::class)->names('admin.time-slots');
-
-
-/*
-|--------------------------------------------------------------------------
-| Mail Routes
-|--------------------------------------------------------------------------
-*/
-Route::post('/contact-submit', [FrontContactController::class, 'store'])
-    ->name('contact.submit');

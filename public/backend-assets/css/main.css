@@ -13721,11 +13721,14 @@ textarea.form-control-lg {
 
 .app-sidebar__user-avatar {
   -webkit-box-flex: 0;
-      -ms-flex: 0 0 auto;
-          flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
   margin-right: 15px;
   max-width: 45px;
   height: auto;
+  height: 45px;
+  width: 45px;
+  object-fit: cover;
 }
 
 .app-sidebar__user-name {
@@ -14585,7 +14588,7 @@ textarea.form-control-lg {
 }
 
 .login-content .register-box{
-  min-height: 550px;
+  min-height: 630px;
 }
 
 .login-content .login-box .login-head {

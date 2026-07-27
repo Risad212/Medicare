@@ -97,7 +97,7 @@
                                     <div class="form-group">
                                         <input type="text"
                                                class="form-control"
-                                               name="name"
+                                               name="patient_name"
                                                placeholder="Enter patient name">
                                     </div>
                                 </div>

@@ -27,10 +27,10 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $totalDoctors        = Doctor::count();
-        $totalAppointments   = Appointment::count();
-        $totalBlogs          = Blog::count();
-        $pendingComments     = BlogComment::where('status', 0)->count();
+        $totalDoctors       = Doctor::count();
+        $totalAppointments  = Appointment::count();
+        $totalBlogs         = Blog::count();
+        $pendingComments    = BlogComment::where('status', 0)->count();
 
         return view('backend.home', compact(
             'totalDoctors',

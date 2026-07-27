@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\TimeSlot;
 

@@ -49,6 +49,7 @@
 
         </div>
 
+        @if($doctors->hasPages())
         <div class="pagination-wrap">
             <ul class="pagination-list">
 
@@ -83,7 +84,9 @@
 
             </ul>
         </div>
-        @else
+        @endif  
+
+        @else  
         <div class="text-center py-5">
             <p>{{ $noDoctorsMessage ?? 'No doctors found' }}</p>
         </div>

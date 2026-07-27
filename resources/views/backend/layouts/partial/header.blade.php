@@ -2,10 +2,6 @@
     <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
     <!-- Navbar Right Menu-->
     <ul class="app-nav">
-        <li class="app-search">
-            <input class="app-search__input" type="search" placeholder="Search">
-            <button class="app-search__button"><i class="bi bi-search"></i></button>
-        </li>
         <!--Notification Menu-->
         <li class="dropdown"><a class="app-nav__item" href="#" data-bs-toggle="dropdown" aria-label="Show notifications"><i class="bi bi-bell fs-5"></i></a>
             <ul class="app-notification dropdown-menu dropdown-menu-right">
@@ -72,28 +68,33 @@
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 <aside class="app-sidebar">
     <div class="app-sidebar__user">
-        <img class="app-sidebar__user-avatar" src="{{ asset('backend-assets/images/admin.webp') }}" alt="User Image" />
+        <img class="app-sidebar__user-avatar" src="{{ asset('backend-assets/images/admin.jpg') }}" alt="User Image" />
         <div>
-            <p class="app-sidebar__user-name">Admin</p>
-            <p class="app-sidebar__user-designation">Hospital Admin</p>
+            <p class="app-sidebar__user-name">{{ auth()->user()->name }}</p>
+            <p class="app-sidebar__user-designation">{{ ucfirst(auth()->user()->role ?? 'User') }}</p>
         </div>
     </div>
+
     <ul class="app-menu">
+
+        @if(auth()->user()->role === 'admin')
+
         <li><a class="app-menu__item active" href="{{ route('admin.home') }}"><i class="app-menu__icon bi bi-speedometer"></i><span class="app-menu__label">Dashboard</span></a></li>
-       <li class="treeview">
+
+        <li class="treeview">
             <a class="app-menu__item" href="#" data-toggle="treeview">
                 <i class="app-menu__icon bi bi-gear"></i>
                 <span class="app-menu__label">Settings</span>
                 <i class="treeview-indicator bi bi-chevron-right"></i>
             </a>
             <ul class="treeview-menu">
-                <li><a class="treeview-item active" href="{{ route('settings.general') }}"><i class="icon bi bi-circle-fill"></i>General</a></li>
-                <li><a class="treeview-item active" href="{{ route('settings.home') }}"><i class="icon bi bi-circle-fill"></i>Home</a></li>
-                <li><a class="treeview-item active" href="{{ route('settings.about') }}"><i class="icon bi bi-circle-fill"></i>About</a></li>
-                <li><a class="treeview-item active" href="{{ route('settings.service') }}"><i class="icon bi bi-circle-fill"></i>Service</a></li>
-                <li><a class="treeview-item active" href="{{ route('settings.doctor') }}"><i class="icon bi bi-circle-fill"></i>Doctor</a></li>
-                <li><a class="treeview-item active" href="{{ route('settings.blog') }}"><i class="icon bi bi-circle-fill"></i>Blog</a></li>
-                <li><a class="treeview-item active" href="{{ route('settings.contact') }}"><i class="icon bi bi-circle-fill"></i>Contact</a></li>
+                <li><a class="treeview-item" href="{{ route('settings.general') }}"><i class="icon bi bi-circle-fill"></i>General</a></li>
+                <li><a class="treeview-item" href="{{ route('settings.home') }}"><i class="icon bi bi-circle-fill"></i>Home</a></li>
+                <li><a class="treeview-item" href="{{ route('settings.about') }}"><i class="icon bi bi-circle-fill"></i>About</a></li>
+                <li><a class="treeview-item" href="{{ route('settings.service') }}"><i class="icon bi bi-circle-fill"></i>Service</a></li>
+                <li><a class="treeview-item" href="{{ route('settings.doctor') }}"><i class="icon bi bi-circle-fill"></i>Doctor</a></li>
+                <li><a class="treeview-item" href="{{ route('settings.blog') }}"><i class="icon bi bi-circle-fill"></i>Blog</a></li>
+                <li><a class="treeview-item" href="{{ route('settings.contact') }}"><i class="icon bi bi-circle-fill"></i>Contact</a></li>
             </ul>
         </li>
 
@@ -104,7 +105,7 @@
                 <i class="treeview-indicator bi bi-chevron-right"></i>
             </a>
             <ul class="treeview-menu">
-                <li><a class="treeview-item active" href="{{ route('admin.sliders.index') }}"><i class="icon bi bi-circle-fill"></i>All Slider</a></li>
+                <li><a class="treeview-item" href="{{ route('admin.sliders.index') }}"><i class="icon bi bi-circle-fill"></i>All Slider</a></li>
                 <li><a class="treeview-item" href="{{ route('admin.sliders.create') }}"><i class="icon bi bi-circle-fill"></i>Add New</a></li>
             </ul>
         </li>
@@ -128,7 +129,7 @@
                 <i class="treeview-indicator bi bi-chevron-right"></i>
             </a>
             <ul class="treeview-menu">
-                <li><a class="treeview-item active" href="{{ route('admin.doctors.index') }}"><i class="icon bi bi-circle-fill"></i>All Doctor</a></li>
+                <li><a class="treeview-item" href="{{ route('admin.doctors.index') }}"><i class="icon bi bi-circle-fill"></i>All Doctor</a></li>
                 <li><a class="treeview-item" href="{{ route('admin.doctors.create') }}"><i class="icon bi bi-circle-fill"></i>Add New</a></li>
             </ul>
         </li>
@@ -152,14 +153,24 @@
                 <i class="treeview-indicator bi bi-chevron-right"></i>
             </a>
             <ul class="treeview-menu">
-                <li><a class="treeview-item active" href="{{ route('admin.blogs.index') }}"><i class="icon bi bi-circle-fill"></i>All Blog</a></li>
-                <li><a class="treeview-item active" href="{{ route('admin.blogs.create') }}"><i class="icon bi bi-circle-fill"></i>Add New</a></li>
+                <li><a class="treeview-item" href="{{ route('admin.blogs.index') }}"><i class="icon bi bi-circle-fill"></i>All Blog</a></li>
+                <li><a class="treeview-item" href="{{ route('admin.blogs.create') }}"><i class="icon bi bi-circle-fill"></i>Add New</a></li>
                 <li><a class="treeview-item" href="{{ route('admin.categories.index') }}"><i class="icon bi bi-circle-fill"></i>Categories</a></li>
                 <li><a class="treeview-item" href="{{ route('admin.tags.index') }}"><i class="icon bi bi-circle-fill"></i>Tags</a></li>
                 <li><a class="treeview-item" href="{{ route('admin.comments.index') }}"><i class="icon bi bi-circle-fill"></i>Comments</a></li>
             </ul>
         </li>
-        
+
+        @elseif(auth()->user()->role === 'doctor')
+
+        <li>
+            <a class="app-menu__item active" href="{{ route('doctor.dashboard') }}">
+                <i class="app-menu__icon bi bi-speedometer"></i>
+                <span class="app-menu__label">Dashboard</span>
+            </a>
+        </li>
+        @endif
+
     </ul>
 </aside>
 
