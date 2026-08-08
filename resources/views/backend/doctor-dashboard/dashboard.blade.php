@@ -77,7 +77,7 @@
                                 @elseif($appointment->status == 1)
                                     <span class="badge bg-info">Approved</span>
                                 @else
-                                    <span class="badge bg-success">Complete</span>
+                                    <span class="badge bg-success">Completed</span>
                                 @endif
                             </td>
                         </tr>

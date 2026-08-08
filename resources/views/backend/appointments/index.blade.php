@@ -111,14 +111,14 @@
                              <td>{{ $appointment->timeSlot->time ?? 'N/A' }}</td>
 
                             <td>
-                                @if($appointment->status == 0)
-                                    <span class="badge bg-warning">Pending</span>
-                                @elseif($appointment->status == 1)
-                                    <span class="badge bg-info">Approved</span>
-                                @else
-                                    <span class="badge bg-success">Completed</span>
-                                @endif
-                            </td>
+                            @if($appointment->status == 0)
+                                <span class="badge badge-warning" style="background-color: #ffc107; color: #000; padding: 5px 10px;">Pending</span>
+                            @elseif($appointment->status == 1)
+                                <span class="badge badge-success" style="background-color: #28a745; color: #fff; padding: 5px 10px;">Confirmed</span>
+                            @else
+                                <span class="badge badge-danger" style="background-color: #dc3545; color: #fff; padding: 5px 10px;">Cancelled</span>
+                            @endif
+                        </td>
 
                             <td>
 

@@ -170,6 +170,21 @@
                 <span class="app-menu__label">Dashboard</span>
             </a>
         </li>
+
+        <li>
+            <a class="app-menu__item" href="{{ route('doctor.appointments') }}">
+                <i class="app-menu__icon bi bi-calendar-check"></i>
+                <span class="app-menu__label">Appointments</span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="app-menu__item" href="{{ route('doctor.profile.edit') }}">
+                <i class="app-menu__icon bi bi-person"></i>
+                <span class="app-menu__label">Profile</span>
+            </a>
+        </li>
+
         @endif
 
     </ul>

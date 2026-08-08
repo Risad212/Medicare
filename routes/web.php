@@ -188,11 +188,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 Route::middleware(['auth', 'doctor'])->group(function () {
 
-    Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'index'])->name('doctor.dashboard');
+    Route::get('/doctor/dashboard',                  [DoctorDashboardController::class, 'index'])->name('doctor.dashboard');
 
-    Route::get('/doctor/profile',   [DoctorDashboardProfileController::class, 'edit'])->name('doctor.profile.edit');
+    Route::get('/doctor/profile',                    [DoctorDashboardProfileController::class, 'edit'])->name('doctor.profile.edit');
 
-    Route::put('/doctor/profile',   [DoctorDashboardProfileController::class, 'update'])->name('doctor.profile.update');
+    Route::put('/doctor/profile',                    [DoctorDashboardProfileController::class, 'update'])->name('doctor.profile.update');
+
+    Route::get('/doctor/appointments',               [DoctorDashboardController::class, 'appointments'])->name('doctor.appointments');
+
+    Route::put('/doctor/appointments/{appointment}', [DoctorDashboardController::class, 'updateStatus'])->name('doctor.appointments.update');
+
 });
 
 
@@ -202,26 +207,26 @@ Route::middleware(['auth', 'doctor'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/',                        [HomeController::class, 'index'])->name('home');
 
-Route::get('/about', [AboutController::class, 'index'])->name('about');
+Route::get('/about',                   [AboutController::class, 'index'])->name('about');
 
-Route::get('/service', function () {return view('frontend.service');})->name('service');
+Route::get('/service',                 function () {return view('frontend.service');})->name('service');
 
-Route::get('/doctor', [FrontendDoctorController::class, 'index'])->name('doctor');
+Route::get('/doctor',                  [FrontendDoctorController::class, 'index'])->name('doctor');
 
-Route::get('/doctor/{id}', [FrontendDoctorController::class, 'show'])->name('doctor.show');
+Route::get('/doctor/{id}',             [FrontendDoctorController::class, 'show'])->name('doctor.show');
 
-Route::get('/blog', [FrontBlogController::class, 'index'])->name('blog');
+Route::get('/blog',                    [FrontBlogController::class, 'index'])->name('blog');
 
-Route::get('/blog/{slug}', [FrontBlogController::class, 'show'])->name('blog.show');
+Route::get('/blog/{slug}',             [FrontBlogController::class, 'show'])->name('blog.show');
 
-Route::get('/contact', [FrontContactController::class, 'index'])->name('contact');
+Route::get('/contact',                 [FrontContactController::class, 'index'])->name('contact');
 
-Route::get('/appointment', [FrontAppointmentController::class, 'index'])->name('appointment');
+Route::get('/appointment',             [FrontAppointmentController::class, 'index'])->name('appointment');
 
-Route::post('/appointment', [FrontAppointmentController::class, 'store'])->name('appointment.store');
+Route::post('/appointment',            [FrontAppointmentController::class, 'store'])->name('appointment.store');
 
-Route::get('/get-available-slots', [FrontAppointmentController::class, 'getAvailableSlots'])->name('get.slots');
+Route::get('/get-available-slots',     [FrontAppointmentController::class, 'getAvailableSlots'])->name('get.slots');
 
 Route::post('/blog/{blog_id}/comment', [BlogCommentController::class, 'store'])->name('blog.comment.store');
