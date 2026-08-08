@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\SeoSettingController;
 use App\Http\Controllers\Admin\TimeSlotController;
 
 use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
+use App\Http\Controllers\Doctor\DoctorProfileController as DoctorDashboardProfileController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AboutController;
@@ -43,7 +44,6 @@ use App\Http\Controllers\Frontend\ContactController as FrontContactController;
 */
 
 Auth::routes();
-
 
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -185,8 +185,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 });
 
+
 Route::middleware(['auth', 'doctor'])->group(function () {
+
     Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'index'])->name('doctor.dashboard');
+
+    Route::get('/doctor/profile',   [DoctorDashboardProfileController::class, 'edit'])->name('doctor.profile.edit');
+
+    Route::put('/doctor/profile',   [DoctorDashboardProfileController::class, 'update'])->name('doctor.profile.update');
 });
 
 

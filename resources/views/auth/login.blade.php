@@ -47,7 +47,7 @@
                     <div class="utility">
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox"><span class="label-text">Stay Signed in</span>
+                                <input class="form-check-input" name="remember" type="checkbox"><span class="label-text">Stay Signed in</span>
                             </label>
                         </div>
                         <p class="semibold-text mb-2"><a href="#" data-toggle="flip">Forgot Password ?</a></p>

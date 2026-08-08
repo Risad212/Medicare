@@ -317,7 +317,7 @@ input:-webkit-autofill:focus {
   transition: 0.4s;
 }
 
-.header .navbar-nav .nav-item:last-child .nav-link::after {
+.header .navbar-nav .unset-cross .nav-link::after {
   content: unset;
 }
 
@@ -325,9 +325,15 @@ input:-webkit-autofill:focus {
   width: 70%;
 }
 
+@media (max-width: 768px){
+  .header .navbar-nav .nav-item:last-child {
+    margin-top: 10px;
+  }
+}
+
 .nav-button a {
   background: var(--primary-color);
-  padding: 10px 25px !important;
+  padding: 7px 20px !important;
   color: #fff !important;
   border: 2px solid var(--primary-color);
   transition: 0.4s;
