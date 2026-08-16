@@ -25,12 +25,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Order</label>
-                        <input type="number" name="order" class="form-control"
-                            value="{{ old('order', $timeSlot->order) }}">
-                    </div>
-
-                    <div class="form-group">
                         <label>Status</label><br>
                         <input type="checkbox" name="status" value="1"
                             {{ $timeSlot->status ? 'checked' : '' }}> Active

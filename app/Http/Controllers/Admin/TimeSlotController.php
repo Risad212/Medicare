@@ -37,7 +37,6 @@ class TimeSlotController extends Controller
         TimeSlot::create([
             'time'   => $request->time,
             'status' => $request->has('status') ? 1 : 0,
-            'order'  => $request->order ?? 0,
         ]);
 
         return back()->with('success', 'Time slot added successfully!');
@@ -63,7 +62,6 @@ class TimeSlotController extends Controller
         $timeSlot->update([
             'time'   => $request->time,
             'status' => $request->has('status') ? 1 : 0,
-            'order'  => $request->order ?? 0,
         ]);
 
         return back()->with('success', 'Time slot updated successfully!');
