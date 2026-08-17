@@ -8,21 +8,10 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
+     * Default redirect after login.
      *
      * @var string
      */
@@ -30,8 +19,6 @@ class LoginController extends Controller
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -40,18 +27,22 @@ class LoginController extends Controller
     }
 
     /**
-     * Handle role based redirect after login.
-     * Admin   → /admin
-     * Doctor  → /doctor/dashboard
+     * Handle role-based redirect after login.
      */
     protected function authenticated(Request $request, $user)
     {
         if ($user->role === 'admin') {
-            return redirect('/admin');
-        } elseif ($user->role === 'doctor') {
-            return redirect('/doctor/dashboard');
+            return redirect()->route('admin.home');
         }
-        
-        return redirect('/');
+
+        if ($user->role === 'doctor') {
+            return redirect()->route('doctor.dashboard');
+        }
+
+        if ($user->role === 'patient') {
+            return redirect()->route('profile');
+        }
+
+        return redirect()->route('home');
     }
 }

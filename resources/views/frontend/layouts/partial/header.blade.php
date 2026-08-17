@@ -155,17 +155,25 @@
                         <a class="nav-link" href="{{ route('contact') }}">Contact</a>
                     </li>
 
-                    <li class="nav-item nav-button unset-cross me-2">
+                    <li class="nav-item nav-button unset-cross me-2 mb-2 mb-md-0">
                         <a class="nav-link" href="{{ route('appointment') }}">
                             Appointment
                         </a>
                     </li>
 
-                    <li class="nav-item nav-button unset-cross">
+                    <li class="nav-item nav-button unset-cross me-2">
                         <a class="nav-link" href="{{ route('login') }}">
                             Login
                         </a>
                     </li>
+
+                    @auth
+                        <li class="nav-item nav-button unset-cross">
+                            <a class="nav-link" href="{{ route('profile') }}">
+                                My Profile
+                            </a>
+                        </li>
+                    @endauth
 
                 </ul>
             </div>

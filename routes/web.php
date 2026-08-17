@@ -14,17 +14,17 @@ use App\Http\Controllers\Settings\BlogSettingController;
 use App\Http\Controllers\Settings\ContactSettingController;
 
 use App\Http\Controllers\Admin\SliderController;
-use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
-use App\Http\Controllers\Admin\DoctorController as AdminDoctorController;
-use App\Http\Controllers\Admin\BlogController as AdminBlogController;
-use App\Http\Controllers\Admin\DepartmentController as AdminDepartmentController;
-use App\Http\Controllers\Admin\CategoryController as AdminBlogCategoryController;
-use App\Http\Controllers\Admin\TagController as AdminBlogTagController;
-use App\Http\Controllers\Admin\BlogCommentController as AdminBlogCommentController;
+use App\Http\Controllers\Admin\AppointmentController  as AdminAppointmentController;
+use App\Http\Controllers\Admin\DoctorController       as AdminDoctorController;
+use App\Http\Controllers\Admin\BlogController         as AdminBlogController;
+use App\Http\Controllers\Admin\DepartmentController   as AdminDepartmentController;
+use App\Http\Controllers\Admin\CategoryController     as AdminBlogCategoryController;
+use App\Http\Controllers\Admin\TagController          as AdminBlogTagController;
+use App\Http\Controllers\Admin\BlogCommentController  as AdminBlogCommentController;
 use App\Http\Controllers\Admin\SeoSettingController;
 use App\Http\Controllers\Admin\TimeSlotController;
 
-use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
+use App\Http\Controllers\Doctor\DashboardController     as DoctorDashboardController;
 use App\Http\Controllers\Doctor\DoctorProfileController as DoctorDashboardProfileController;
 
 use App\Http\Controllers\Frontend\HomeController;
@@ -34,7 +34,7 @@ use App\Http\Controllers\Frontend\DoctorController as FrontendDoctorController;
 use App\Http\Controllers\Frontend\AppointmentController as FrontAppointmentController;
 use App\Http\Controllers\Frontend\BlogCommentController;
 use App\Http\Controllers\Frontend\ContactController as FrontContactController;
-
+use App\Http\Controllers\Frontend\ProfileController as FrontProfileController;
 
 
 /*
@@ -44,7 +44,6 @@ use App\Http\Controllers\Frontend\ContactController as FrontContactController;
 */
 
 Auth::routes();
-
 
 Route::middleware(['auth', 'admin'])->group(function () {
 
@@ -230,3 +229,11 @@ Route::post('/appointment',            [FrontAppointmentController::class, 'stor
 Route::get('/get-available-slots',     [FrontAppointmentController::class, 'getAvailableSlots'])->name('get.slots');
 
 Route::post('/blog/{blog_id}/comment', [BlogCommentController::class, 'store'])->name('blog.comment.store');
+
+Route::middleware('auth')->group(function () {
+
+  Route::get('/profile', [FrontProfileController::class, 'index'])->name('profile');
+  
+  Route::put('/profile', [FrontProfileController::class, 'update'])->name('profile.update');
+
+});

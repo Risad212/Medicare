@@ -301,7 +301,7 @@ input:-webkit-autofill:focus {
   color: #2c2d3f;
   text-transform: capitalize;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 13px;
   padding: 25px 15px;
   position: relative;
 }
@@ -333,7 +333,7 @@ input:-webkit-autofill:focus {
 
 .nav-button a {
   background: var(--primary-color);
-  padding: 7px 20px !important;
+  padding: 6px 15px !important;
   color: #fff !important;
   border: 2px solid var(--primary-color);
   transition: 0.4s;
