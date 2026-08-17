@@ -236,4 +236,6 @@ Route::middleware('auth')->group(function () {
   
   Route::put('/profile', [FrontProfileController::class, 'update'])->name('profile.update');
 
+  Route::patch('/appointment/{appointment}/cancel', [FrontAppointmentController::class, 'cancel'])->middleware('auth')->name('appointment.cancel');
+
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -14,9 +15,14 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
-        return view('frontend.profile.index', compact('user'));
+        $appointments = Appointment::with('timeSlot')
+            ->where('phone', $user->phone)
+            ->latest()
+            ->get();
+
+        return view('frontend.profile.index', compact('user', 'appointments'));
     }
 
     /**

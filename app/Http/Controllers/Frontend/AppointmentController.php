@@ -65,4 +65,18 @@ class AppointmentController extends Controller
             'bookedSlotIds' => $bookedSlotIds
         ]);
     }
+
+    public function cancel(Appointment $appointment)
+    {
+        // Make sure patient can only cancel their own appointment
+        if ($appointment->phone !== auth()->user()->phone) {
+            abort(403);
+        }
+
+        $appointment->update([
+            'status' => 2,
+        ]);
+
+        return back()->with('success', 'Appointment cancelled successfully.');
+    }
 }

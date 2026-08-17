@@ -2,7 +2,7 @@
 
 @section('meta_title', 'My Profile')
 @section('meta_description', 'Manage your patient profile')
-@section('meta_keywords', 'patient profile, medicare')
+@section('meta_keywords', 'patient profile, appointments, medicare')
 
 @section('front-content')
 
@@ -13,14 +13,13 @@
 <section class="patient-profile py-5">
     <div class="container">
 
-        {{-- Success Message --}}
+        {{-- Messages --}}
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
         @endif
 
-        {{-- Validation Errors --}}
         @if($errors->any())
             <div class="alert alert-danger">
                 <ul class="mb-0">
@@ -31,405 +30,472 @@
             </div>
         @endif
 
-        <div class="row g-4">
+        {{-- Tabs --}}
+        <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
 
-            {{-- =========================
-                Patient Information
-            ========================== --}}
-            <div class="col-lg-4">
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link active"
+                    id="profile-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#profile"
+                    type="button"
+                    role="tab">
+                    My Profile
+                </button>
+            </li>
 
-                <div class="card border-0 shadow-sm text-center p-4">
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link"
+                    id="appointments-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#appointments"
+                    type="button"
+                    role="tab">
+                    My Appointments
+                </button>
+            </li>
 
-                    {{-- Profile Image --}}
-                    @if($user->profile_image)
+        </ul>
 
-                        <img
-                            src="{{ asset('storage/' . $user->profile_image) }}"
-                            alt="{{ $user->name }}"
-                            class="rounded-circle mx-auto mb-3"
-                            style="width: 110px; height: 110px; object-fit: cover;"
-                        >
+        {{-- Tab Content --}}
+        <div class="tab-content" id="profileTabsContent">
 
-                    @else
+            {{-- ================= PROFILE ================= --}}
+            <div
+                class="tab-pane fade show active"
+                id="profile"
+                role="tabpanel">
 
-                        <div
-                            class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3"
-                            style="width: 110px; height: 110px;"
-                        >
-                            <span class="fs-1 text-muted">
-                                {{ strtoupper(substr($user->name, 0, 1)) }}
-                            </span>
+                <div class="row g-4">
+
+                    {{-- Patient Info --}}
+                    <div class="col-lg-4">
+
+                        <div class="card border-0 shadow-sm text-center p-4">
+
+                            @if($user->profile_image)
+
+                                <img
+                                    src="{{ asset('storage/' . $user->profile_image) }}"
+                                    alt="{{ $user->name }}"
+                                    class="rounded-circle mx-auto mb-3"
+                                    style="width:110px;height:110px;object-fit:cover;">
+
+                            @else
+
+                                <div
+                                    class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3"
+                                    style="width:110px;height:110px;">
+
+                                    <span class="fs-1 text-muted">
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    </span>
+
+                                </div>
+
+                            @endif
+
+                            <h4 class="mb-1">
+                                {{ $user->name }}
+                            </h4>
+
+                            <p class="text-muted mb-4">
+                                Patient
+                            </p>
+
+                            <div class="text-start">
+
+                                <p class="mb-3">
+                                    <strong>Email:</strong><br>
+                                    <span class="text-muted">
+                                        {{ $user->email }}
+                                    </span>
+                                </p>
+
+                                <p class="mb-3">
+                                    <strong>Phone:</strong><br>
+                                    <span class="text-muted">
+                                        {{ $user->phone ?? 'Not added' }}
+                                    </span>
+                                </p>
+
+                                <p class="mb-0">
+                                    <strong>Blood Group:</strong><br>
+                                    <span class="text-muted">
+                                        {{ $user->blood_group ?? 'Not added' }}
+                                    </span>
+                                </p>
+
+                            </div>
+
+                            <form
+                                action="{{ route('logout') }}"
+                                method="POST"
+                                class="mt-4">
+
+                                @csrf
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-danger w-100">
+                                    Logout
+                                </button>
+
+                            </form>
+
                         </div>
-
-                    @endif
-
-                    {{-- Patient Name --}}
-                    <h4 class="mb-1">
-                        {{ $user->name }}
-                    </h4>
-
-                    {{-- Role --}}
-                    <p class="text-muted mb-4">
-                        Patient
-                    </p>
-
-                    {{-- Patient Information --}}
-                    <div class="text-start">
-
-                        <p class="mb-3">
-                            <strong>Email:</strong><br>
-                            <span class="text-muted">
-                                {{ $user->email }}
-                            </span>
-                        </p>
-
-                        <p class="mb-3">
-                            <strong>Phone:</strong><br>
-                            <span class="text-muted">
-                                {{ $user->phone ?? 'Not added' }}
-                            </span>
-                        </p>
-
-                        <p class="mb-0">
-                            <strong>Blood Group:</strong><br>
-                            <span class="text-muted">
-                                {{ $user->blood_group ?? 'Not added' }}
-                            </span>
-                        </p>
 
                     </div>
 
-                    {{-- Logout --}}
-                    <form
-                        action="{{ route('logout') }}"
-                        method="POST"
-                        class="mt-4"
-                    >
-                        @csrf
 
-                        <button
-                            type="submit"
-                            class="btn btn-outline-danger w-100"
-                        >
-                            Logout
-                        </button>
+                    {{-- Edit Profile --}}
+                    <div class="col-lg-8">
 
-                    </form>
+                        <div class="card border-0 shadow-sm">
+
+                            <div class="card-header bg-white py-3">
+                                <h4 class="mb-0">
+                                    Personal Information
+                                </h4>
+                            </div>
+
+                            <div class="card-body p-4">
+
+                                <form
+                                    action="{{ route('profile.update') }}"
+                                    method="POST"
+                                    enctype="multipart/form-data">
+
+                                    @csrf
+                                    @method('PUT')
+
+                                    <div class="row">
+
+                                        {{-- Name --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">
+                                                Full Name
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                class="form-control @error('name') is-invalid @enderror"
+                                                value="{{ old('name', $user->name) }}"
+                                                required>
+
+                                            @error('name')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+
+
+                                        {{-- Email --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">
+                                                Email
+                                            </label>
+
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                class="form-control @error('email') is-invalid @enderror"
+                                                value="{{ old('email', $user->email) }}"
+                                                required>
+
+                                            @error('email')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+
+
+                                        {{-- Phone --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">
+                                                Phone
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="phone"
+                                                class="form-control"
+                                                value="{{ old('phone', $user->phone) }}">
+                                        </div>
+
+
+                                        {{-- DOB --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">
+                                                Date of Birth
+                                            </label>
+
+                                            <input
+                                                type="date"
+                                                name="date_of_birth"
+                                                class="form-control"
+                                                value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}">
+                                        </div>
+
+
+                                        {{-- Gender --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">
+                                                Gender
+                                            </label>
+
+                                            <select name="gender" class="form-select">
+
+                                                <option value="">
+                                                    Select Gender
+                                                </option>
+
+                                                <option
+                                                    value="male"
+                                                    {{ old('gender', $user->gender) === 'male' ? 'selected' : '' }}>
+                                                    Male
+                                                </option>
+
+                                                <option
+                                                    value="female"
+                                                    {{ old('gender', $user->gender) === 'female' ? 'selected' : '' }}>
+                                                    Female
+                                                </option>
+
+                                                <option
+                                                    value="other"
+                                                    {{ old('gender', $user->gender) === 'other' ? 'selected' : '' }}>
+                                                    Other
+                                                </option>
+
+                                            </select>
+                                        </div>
+
+
+                                        {{-- Blood Group --}}
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">
+                                                Blood Group
+                                            </label>
+
+                                            <select name="blood_group" class="form-select">
+
+                                                <option value="">
+                                                    Select Blood Group
+                                                </option>
+
+                                                @foreach([
+                                                    'A+', 'A-',
+                                                    'B+', 'B-',
+                                                    'AB+', 'AB-',
+                                                    'O+', 'O-'
+                                                ] as $group)
+
+                                                    <option
+                                                        value="{{ $group }}"
+                                                        {{ old('blood_group', $user->blood_group) === $group ? 'selected' : '' }}>
+                                                        {{ $group }}
+                                                    </option>
+
+                                                @endforeach
+
+                                            </select>
+                                        </div>
+
+
+                                        {{-- Address --}}
+                                        <div class="col-12 mb-3">
+                                            <label class="form-label">
+                                                Address
+                                            </label>
+
+                                            <textarea
+                                                name="address"
+                                                rows="4"
+                                                class="form-control">{{ old('address', $user->address) }}</textarea>
+                                        </div>
+
+
+                                        {{-- Profile Image --}}
+                                        <div class="col-12 mb-4">
+                                            <label class="form-label">
+                                                Profile Photo
+                                            </label>
+
+                                            <input
+                                                type="file"
+                                                name="profile_image"
+                                                class="form-control"
+                                                accept="image/jpeg,image/png,image/webp">
+
+                                            <small class="text-muted">
+                                                JPG, PNG or WEBP. Maximum 2MB.
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary px-4">
+                                        Update Profile
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
 
-            {{-- =========================
-                Edit Profile
-            ========================== --}}
-            <div class="col-lg-8">
+            {{-- ================= APPOINTMENTS ================= --}}
+            <div
+                class="tab-pane fade"
+                id="appointments"
+                role="tabpanel">
 
                 <div class="card border-0 shadow-sm">
 
                     <div class="card-header bg-white py-3">
-
                         <h4 class="mb-0">
-                            Personal Information
+                            My Appointments
                         </h4>
-
                     </div>
 
-                    <div class="card-body p-4">
+                    <div class="card-body">
 
-                        <form
-                            action="{{ route('profile.update') }}"
-                            method="POST"
-                            enctype="multipart/form-data"
-                        >
+                        @if($appointments->count())
 
-                            @csrf
-                            @method('PUT')
+                            <div class="table-responsive">
 
-                            <div class="row">
+                                <table class="table table-hover align-middle">
 
-                                {{-- Full Name --}}
-                                <div class="col-md-6 mb-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Doctor</th>
+                                            <th>Date</th>
+                                            <th>Time Slot</th>
+                                            <th>Visit Type</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
 
-                                    <label
-                                        for="name"
-                                        class="form-label"
-                                    >
-                                        Full Name
-                                    </label>
+                                    <tbody>
 
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        id="name"
-                                        class="form-control @error('name') is-invalid @enderror"
-                                        value="{{ old('name', $user->name) }}"
-                                        required
-                                    >
+                                        @foreach($appointments as $appointment)
 
-                                    @error('name')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
+                                            <tr>
 
-                                </div>
+                                                {{-- Doctor --}}
+                                                <td>
+                                                    {{ $appointment->doctor->name ?? 'N/A' }}
+                                                </td>
 
+                                                {{-- Date --}}
+                                                <td>
+                                                    {{ $appointment->appointment_date
+                                                        ? \Carbon\Carbon::parse($appointment->appointment_date)->format('d M Y')
+                                                        : 'N/A'
+                                                    }}
+                                                </td>
 
-                                {{-- Email --}}
-                                <div class="col-md-6 mb-3">
+                                                {{-- Specific Time Slot --}}
+                                                <td>
+                                                    @if($appointment->timeSlot)
+                                                        {{ \Carbon\Carbon::parse($appointment->timeSlot->start_time)->format('h:i A') }}
+                                                        -
+                                                        {{ \Carbon\Carbon::parse($appointment->timeSlot->end_time)->format('h:i A') }}
+                                                    @else
+                                                        N/A
+                                                    @endif
+                                                </td>
 
-                                    <label
-                                        for="email"
-                                        class="form-label"
-                                    >
-                                        Email
-                                    </label>
+                                                {{-- Visit Type --}}
+                                                <td>
+                                                    {{ ucfirst($appointment->visit_type ?? 'N/A') }}
+                                                </td>
 
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        id="email"
-                                        class="form-control @error('email') is-invalid @enderror"
-                                        value="{{ old('email', $user->email) }}"
-                                        required
-                                    >
+                                                {{-- Status --}}
+                                                <td>
 
-                                    @error('email')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
+                                                    @if($appointment->status == 1)
 
-                                </div>
+                                                        <span class="badge bg-success">
+                                                            Confirmed
+                                                        </span>
 
+                                                    @else
 
-                                {{-- Phone --}}
-                                <div class="col-md-6 mb-3">
+                                                        <span class="badge bg-warning text-dark">
+                                                            Pending
+                                                        </span>
 
-                                    <label
-                                        for="phone"
-                                        class="form-label"
-                                    >
-                                        Phone
-                                    </label>
+                                                    @endif
 
-                                    <input
-                                        type="text"
-                                        name="phone"
-                                        id="phone"
-                                        class="form-control @error('phone') is-invalid @enderror"
-                                        value="{{ old('phone', $user->phone) }}"
-                                    >
+                                                </td>
 
-                                    @error('phone')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
+                                                <td>
+                                                    @if($appointment->status == 0)
+                                                        <form action="{{ route('appointment.cancel', $appointment->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('PATCH')
 
-                                </div>
+                                                            <button type="submit"
+                                                                    class="btn btn-sm btn-outline-danger"
+                                                                    onclick="return confirm('Are you sure you want to cancel this appointment?')">
+                                                                Cancel
+                                                            </button>
+                                                        </form>
+                                                    @elseif($appointment->status == 1)
+                                                        <span class="badge bg-success">Approved</span>
+                                                    @elseif($appointment->status == 2)
+                                                        <span class="badge bg-danger">Cancelled</span>
+                                                    @endif
+                                                </td>
 
-
-                                {{-- Date of Birth --}}
-                                <div class="col-md-6 mb-3">
-
-                                    <label
-                                        for="date_of_birth"
-                                        class="form-label"
-                                    >
-                                        Date of Birth
-                                    </label>
-
-                                    <input
-                                        type="date"
-                                        name="date_of_birth"
-                                        id="date_of_birth"
-                                        class="form-control @error('date_of_birth') is-invalid @enderror"
-                                        value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}"
-                                    >
-
-                                    @error('date_of_birth')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-
-                                </div>
-
-
-                                {{-- Gender --}}
-                                <div class="col-md-6 mb-3">
-
-                                    <label
-                                        for="gender"
-                                        class="form-label"
-                                    >
-                                        Gender
-                                    </label>
-
-                                    <select
-                                        name="gender"
-                                        id="gender"
-                                        class="form-select @error('gender') is-invalid @enderror"
-                                    >
-
-                                        <option value="">
-                                            Select Gender
-                                        </option>
-
-                                        <option
-                                            value="male"
-                                            {{ old('gender', $user->gender) === 'male' ? 'selected' : '' }}
-                                        >
-                                            Male
-                                        </option>
-
-                                        <option
-                                            value="female"
-                                            {{ old('gender', $user->gender) === 'female' ? 'selected' : '' }}
-                                        >
-                                            Female
-                                        </option>
-
-                                        <option
-                                            value="other"
-                                            {{ old('gender', $user->gender) === 'other' ? 'selected' : '' }}
-                                        >
-                                            Other
-                                        </option>
-
-                                    </select>
-
-                                    @error('gender')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-
-                                </div>
-
-
-                                {{-- Blood Group --}}
-                                <div class="col-md-6 mb-3">
-
-                                    <label
-                                        for="blood_group"
-                                        class="form-label"
-                                    >
-                                        Blood Group
-                                    </label>
-
-                                    <select
-                                        name="blood_group"
-                                        id="blood_group"
-                                        class="form-select @error('blood_group') is-invalid @enderror"
-                                    >
-
-                                        <option value="">
-                                            Select Blood Group
-                                        </option>
-
-                                        @foreach([
-                                            'A+',
-                                            'A-',
-                                            'B+',
-                                            'B-',
-                                            'AB+',
-                                            'AB-',
-                                            'O+',
-                                            'O-'
-                                        ] as $group)
-
-                                            <option
-                                                value="{{ $group }}"
-                                                {{ old('blood_group', $user->blood_group) === $group ? 'selected' : '' }}
-                                            >
-                                                {{ $group }}
-                                            </option>
+                                            </tr>
 
                                         @endforeach
 
-                                    </select>
+                                    </tbody>
 
-                                    @error('blood_group')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-
-                                </div>
-
-
-                                {{-- Address --}}
-                                <div class="col-12 mb-3">
-
-                                    <label
-                                        for="address"
-                                        class="form-label"
-                                    >
-                                        Address
-                                    </label>
-
-                                    <textarea
-                                        name="address"
-                                        id="address"
-                                        rows="4"
-                                        class="form-control @error('address') is-invalid @enderror"
-                                    >{{ old('address', $user->address) }}</textarea>
-
-                                    @error('address')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-
-                                </div>
-
-
-                                {{-- Profile Image --}}
-                                <div class="col-12 mb-4">
-
-                                    <label
-                                        for="profile_image"
-                                        class="form-label"
-                                    >
-                                        Profile Photo
-                                    </label>
-
-                                    <input
-                                        type="file"
-                                        name="profile_image"
-                                        id="profile_image"
-                                        class="form-control @error('profile_image') is-invalid @enderror"
-                                        accept="image/jpeg,image/png,image/webp"
-                                    >
-
-                                    @error('profile_image')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-
-                                    <small class="text-muted">
-                                        JPG, PNG or WEBP. Maximum 2MB.
-                                    </small>
-
-                                </div>
+                                </table>
 
                             </div>
 
+                        @else
 
-                            {{-- Update Button --}}
-                            <button
-                                type="submit"
-                                class="btn btn-primary px-4"
-                            >
-                                Update Profile
-                            </button>
+                            <div class="text-center py-5">
 
-                        </form>
+                                <h5>
+                                    No Appointments Found
+                                </h5>
+
+                                <p class="text-muted">
+                                    You haven't booked any appointments yet.
+                                </p>
+
+                                <a
+                                    href="{{ route('appointment') }}"
+                                    class="btn btn-primary">
+                                    Book Appointment
+                                </a>
+
+                            </div>
+
+                        @endif
 
                     </div>
 

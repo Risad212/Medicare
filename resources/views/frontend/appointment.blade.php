@@ -63,9 +63,18 @@
                 <div class="mb-4">
                     <select name="visit_type">
                         <option value="">Visit Type</option>
-                        <option value="1" {{ old('visit_type') == '1' ? 'selected' : '' }}>First Visit</option>
-                        <option value="2" {{ old('visit_type') == '2' ? 'selected' : '' }}>Second Visit</option>
-                        <option value="3" {{ old('visit_type') == '3' ? 'selected' : '' }}>Report Review</option>
+
+                        <option value="First Visit" {{ old('visit_type') == 'First Visit' ? 'selected' : '' }}>
+                            First Visit
+                        </option>
+
+                        <option value="Second Visit" {{ old('visit_type') == 'Second Visit' ? 'selected' : '' }}>
+                            Second Visit
+                        </option>
+
+                        <option value="Report Review" {{ old('visit_type') == 'Report Review' ? 'selected' : '' }}>
+                            Report Review
+                        </option>
                     </select>
                 </div>
 
