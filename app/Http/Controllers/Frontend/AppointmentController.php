@@ -22,16 +22,17 @@ class AppointmentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'doctor_id'     => 'required',
-            'patient_name'  => 'required',
-            'phone'         => 'required',
-            'visit_type'    => 'required',
+            'doctor_id'        => 'required',
+            'patient_name'     => 'required',
+            'phone'            => 'required',
+            'visit_type'       => 'required',
             'appointment_date' => 'required|date',
-            'time_slot_id'  => 'required|exists:time_slots,id',   
-            'gender'        => 'required',
+            'time_slot_id'     => 'required|exists:time_slots,id',   
+            'gender'           => 'required',
         ]);
 
         Appointment::create([
+            'user_id'          => auth()->id(),
             'doctor_id'        => $request->doctor_id,
             'patient_name'     => $request->patient_name,
             'age'              => $request->age,
@@ -68,8 +69,7 @@ class AppointmentController extends Controller
 
     public function cancel(Appointment $appointment)
     {
-        // Make sure patient can only cancel their own appointment
-        if ($appointment->phone !== auth()->user()->phone) {
+        if ($appointment->user_id !== auth()->id()) {
             abort(403);
         }
 

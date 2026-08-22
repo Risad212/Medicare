@@ -17,12 +17,15 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        $appointments = Appointment::with('timeSlot')
-            ->where('phone', $user->phone)
+        $appointments = Appointment::with(['doctor', 'timeSlot'])
+            ->where('user_id', $user->id)
             ->latest()
             ->get();
 
-        return view('frontend.profile.index', compact('user', 'appointments'));
+        return view(
+            'frontend.profile.index',
+            compact('user', 'appointments')
+        );
     }
 
     /**
@@ -33,13 +36,13 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20',
+            'name'          => 'required|string|max:255',
+            'email'         => 'required|email|max:255|unique:users,email,' . $user->id,
+            'phone'         => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
-            'gender' => 'nullable|in:male,female,other',
-            'blood_group' => 'nullable|string|max:10',
-            'address' => 'nullable|string|max:1000',
+            'gender'        => 'nullable|in:male,female,other',
+            'blood_group'   => 'nullable|string|max:10',
+            'address'       => 'nullable|string|max:1000',
             'profile_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
