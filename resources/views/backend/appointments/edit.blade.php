@@ -68,6 +68,11 @@
                     </div>
 
                     <div class="col-lg-6 mb-2">
+                        <label class="mb-2">Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ $appointment->email }}">
+                    </div>
+
+                    <div class="col-lg-6 mb-2">
                         <label class="mb-2">Appointment Date</label>
                         <input type="date" name="date" class="form-control" value="{{ $appointment->appointment_date }}">
                     </div>
@@ -83,6 +88,9 @@
                         </option>
                         <option value="2" {{ $appointment->status == 2 ? 'selected' : '' }}>
                             Completed
+                        </option>
+                        <option value="3" {{ $appointment->status == 3 ? 'selected' : '' }}>
+                            Cancelled
                         </option>
                     </select>
                 </div>

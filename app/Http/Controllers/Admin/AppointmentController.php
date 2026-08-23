@@ -55,6 +55,7 @@ class AppointmentController extends Controller
             'age' => $request->age,
             'gender' => $request->gender,
             'phone' => $request->phone,
+            'email' => $request->email,
             'visit_type' => $request->visit_type,
             'appointment_date' => $request->date,
             'status' => $request->status,

@@ -42,6 +42,7 @@
                             <th>Age</th>
                             <th>Gender</th>
                             <th>Phone</th>
+                            <th>Email</th>
                             <th>Visit Type</th>
                             <th>Date</th>
                             <th>Time Slot</th>
@@ -91,6 +92,11 @@
                             <td>
                                 {{ $appointment->phone }}
                             </td>
+
+                             <td>
+                                {{ $appointment->email ?? 'N/A' }}
+                            </td>
+
 
 
                             <td>

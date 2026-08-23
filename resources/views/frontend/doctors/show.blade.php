@@ -135,6 +135,17 @@
                                 </div>
 
                                 <div class="col-lg-6">
+                                    <label>Email</label>
+                                    <div class="form-group">
+                                        <input type="email"
+                                               class="form-control"
+                                               name="email"
+                                               placeholder="Your email (for cancellation link)">
+                                        @error('email') <small class="text-danger">{{ $message }}</small> @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
                                     <label>Appointment Date</label>
                                     <div class="form-group">
                                         <input type="date"
