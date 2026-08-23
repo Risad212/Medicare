@@ -45,6 +45,12 @@
                 </div>
 
                 <div class="mb-4">
+                    <input type="email" name="email" placeholder="Your Email (for cancellation link)"
+                        value="{{ old('email') }}">
+                    @error('email') <small class="text-danger">{{ $message }}</small> @enderror
+                </div>
+
+                <div class="mb-4">
                     <select name="doctor_id" id="doctor_id">
                         <option value="">Select Doctor</option>
                         @if(isset($doctors) && $doctors->count())

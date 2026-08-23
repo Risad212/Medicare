@@ -325,7 +325,7 @@ input:-webkit-autofill:focus {
   width: 70%;
 }
 
-@media (max-width: 768px){
+@media (max-width: 768px) {
   .header .navbar-nav .nav-item:last-child {
     margin-top: 10px;
   }
@@ -864,8 +864,8 @@ input:-webkit-autofill:focus {
   margin-left: 0;
 }
 
-.no-gutters > .col,
-.no-gutters > [class*="col-"] {
+.no-gutters>.col,
+.no-gutters>[class*="col-"] {
   padding-right: 0;
   padding-left: 0;
 }
@@ -992,14 +992,13 @@ input:-webkit-autofill:focus {
     padding: 50px 0;
   }
 }
+
 /*================================================
              COUNTER SECTION
 ==================================================*/
 #counter {
-  background-image: linear-gradient(
-      rgba(41, 41, 41, 0.752),
-      rgba(29, 29, 29, 0.73)
-    ),
+  background-image: linear-gradient(rgba(41, 41, 41, 0.752),
+      rgba(29, 29, 29, 0.73)),
     url("../media/home/counter-bg.webp");
   background-size: cover;
   background-repeat: no-repeat;
@@ -1486,7 +1485,7 @@ input:-webkit-autofill:focus {
   transition: all 500ms;
 }
 
-.deparment-list .item:last-child{
+.deparment-list .item:last-child {
   border-bottom: none;
 }
 
@@ -1619,6 +1618,7 @@ input:-webkit-autofill:focus {
 }
 
 @-webkit-keyframes scroll_effects {
+
   from,
   to {
     -webkit-transform: translateY(20px);
@@ -1632,6 +1632,7 @@ input:-webkit-autofill:focus {
 }
 
 @keyframes scroll_effects {
+
   from,
   to {
     -webkit-transform: translateY(20px);
@@ -2218,6 +2219,7 @@ input:-webkit-autofill:focus {
 .appoinment-page {
   padding: 50px 0;
 }
+
 .appoinment-page .form-wrap {
   background: #e2f4f1;
   padding: 50px;
@@ -2236,6 +2238,7 @@ input:-webkit-autofill:focus {
   border: none;
   text-transform: capitalize;
 }
+
 .appoinment-page .form-wrap .appoinment-btn {
   background: var(--primary-color);
   padding: 12px 40px;
@@ -2247,16 +2250,19 @@ input:-webkit-autofill:focus {
   border: 2px solid var(--primary-color);
   transition: 0.4s;
 }
+
 .appoinment-page .form-wrap .appoinment-btn:hover {
   background: transparent;
   color: var(--primary-color);
 }
+
 @media only screen and (max-width: 768px) {
   .appoinment-page .form-wrap {
     width: 100%;
     padding: 25px;
   }
 }
+
 /*================================================
      Blog Details Page 
 ==================================================*/
@@ -2268,12 +2274,14 @@ input:-webkit-autofill:focus {
   margin-top: 12px;
   margin-bottom: 7px;
 }
+
 .blog-details .blog-title-info .blog-title {
   font-weight: 600;
   margin-bottom: 13px;
   margin-top: 25px;
   font-size: 25px;
 }
+
 .blog-details .blog-left .blog-meta-info .meta-list {
   display: flex;
 }
@@ -2314,11 +2322,13 @@ input:-webkit-autofill:focus {
   justify-content: center;
   cursor: pointer;
 }
+
 .blog-details .blog-left .social-list .social-item svg {
   width: 22px;
   height: 22px;
   fill: #000;
 }
+
 .blog-details .blog-left .comment-section .comment-title {
   line-height: 34px;
   padding-bottom: 30px;
@@ -2326,10 +2336,12 @@ input:-webkit-autofill:focus {
   font-size: 22px;
   font-weight: 700;
 }
+
 .blog-details .blog-left .comment-section .single-comment .comment-author {
   font-weight: 600;
   font-size: 18px;
 }
+
 .blog-details .blog-left .comment-section .single-comment {
   margin-bottom: 25px;
 }
@@ -2375,9 +2387,11 @@ input:-webkit-autofill:focus {
   border-width: 1px 0 0;
   border-color: #eaeaea;
 }
+
 .comment-form-wrap .title {
   font-weight: 600;
 }
+
 .comment-form-wrap form input,
 textarea {
   padding: 12px 20px;
@@ -2410,6 +2424,7 @@ textarea {
   position: relative;
   margin-bottom: 20px;
 }
+
 .blog-right .widget_search .search-form label {
   display: block;
 }
@@ -2451,10 +2466,12 @@ textarea {
   padding: 0;
   border-radius: 0 4px 4px 0;
 }
+
 .blog-right .search-submit svg {
   width: 20px;
   height: 20px;
 }
+
 .blog-right .recent-post {
   border: 1px solid #eaeaea;
   border-radius: 4px;
@@ -2731,4 +2748,137 @@ textarea {
 
 .doctor-details .default-btn {
   margin-top: 15px;
+}
+
+/*================================================
+     Appointment Cancel Page (mc-cancel-*)
+==================================================*/
+.mc-cancel-wrapper {
+    max-width: 650px;
+    margin: 60px auto;
+    padding: 0 15px;
+}
+
+.mc-cancel-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.mc-cancel-header {
+    background: #0f766e;
+    padding: 25px;
+    text-align: center;
+}
+
+.mc-cancel-header-title {
+    color: #ffffff;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.mc-cancel-body {
+    padding: 30px;
+}
+
+.mc-cancel-lead {
+    font-size: 16px;
+    color: #374151;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.mc-cancel-table {
+    width: 100%;
+    font-size: 15px;
+    color: #374151;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+}
+
+.mc-cancel-table td {
+    padding: 8px 4px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.mc-cancel-table-label {
+    font-weight: bold;
+    width: 40%;
+}
+
+.mc-cancel-status {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.mc-cancel-status-pending   { background: #f59e0b; }
+.mc-cancel-status-approved  { background: #16a34a; }
+.mc-cancel-status-completed { background: #0284c7; }
+.mc-cancel-status-cancelled { background: #dc2626; }
+
+.mc-cancel-actions {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.mc-cancel-btn {
+    display: inline-block;
+    background: #dc2626;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 32px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.mc-cancel-btn:hover {
+    background: #b91c1c;
+    color: #ffffff;
+}
+
+.mc-cancel-btn-disabled {
+    display: inline-block;
+    background: #9ca3af;
+    color: #ffffff;
+    padding: 12px 32px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.mc-cancel-note {
+    margin-top: 18px;
+    font-size: 13px;
+    color: #6b7280;
+    text-align: center;
+}
+
+.mc-cancel-alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.mc-cancel-alert-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.mc-cancel-alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
 }

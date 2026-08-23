@@ -16,6 +16,8 @@ class Appointment extends Model
         'age',
         'gender',
         'phone',
+        'email',
+        'cancellation_token',
         'visit_type',
         'appointment_date',
         'time_slot_id',

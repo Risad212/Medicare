@@ -239,3 +239,6 @@ Route::middleware('auth')->group(function () {
   Route::patch('/appointment/{appointment}/cancel', [FrontAppointmentController::class, 'cancel'])->middleware('auth')->name('appointment.cancel');
 
 });
+Route::get('/appointment/cancel/{token}', [FrontAppointmentController::class, 'showCancelByToken'])->name('appointment.cancel-page');
+
+Route::put('/appointment/cancel/{token}', [FrontAppointmentController::class, 'cancelByToken'])->name('appointment.cancel-by-token');
