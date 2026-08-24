@@ -81,6 +81,10 @@
 
                             <td>
 
+                               <a href="{{ route('admin.patients.show', $patient->id) }}"
+                                  class="btn btn-sm btn-info">
+                                    View
+                                </a>
                                 <a href="{{ route('admin.patients.edit', $patient->id) }}"
                                    class="btn btn-sm btn-primary">
                                     Edit
