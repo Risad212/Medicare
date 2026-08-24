@@ -147,6 +147,17 @@
             </ul>
         </li>
 
+         <li class="treeview">
+            <a class="app-menu__item" href="#" data-toggle="treeview">
+                <i class="app-menu__icon bi bi-person-heart"></i>
+                <span class="app-menu__label">Patients</span>
+                <i class="treeview-indicator bi bi-chevron-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a class="treeview-item" href="{{ route('admin.patients.index') }}"><i class="icon bi bi-circle-fill"></i>All Patient</a></li>
+            </ul>
+        </li>
+
         <li class="treeview">
             <a class="app-menu__item" href="#" data-toggle="treeview">
                 <i class="app-menu__icon bi bi-journal-text"></i>

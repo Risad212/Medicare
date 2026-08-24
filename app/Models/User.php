@@ -43,4 +43,12 @@ class User extends Authenticatable
             'date_of_birth' => 'date',
         ];
     }
+
+    /**
+     * All appointments booked by this user (as a patient).
+     */
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }

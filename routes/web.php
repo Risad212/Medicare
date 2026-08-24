@@ -15,6 +15,7 @@ use App\Http\Controllers\Settings\ContactSettingController;
 
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\AppointmentController  as AdminAppointmentController;
+use App\Http\Controllers\Admin\PatientController      as AdminPatientController;
 use App\Http\Controllers\Admin\DoctorController       as AdminDoctorController;
 use App\Http\Controllers\Admin\BlogController         as AdminBlogController;
 use App\Http\Controllers\Admin\DepartmentController   as AdminDepartmentController;
@@ -167,6 +168,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::resource('/admin/appointments', AdminAppointmentController::class)->names('admin.appointments');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Patients Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource('/admin/patients', AdminPatientController::class)
+        ->names('admin.patients');
 
     /*
     |--------------------------------------------------------------------------
