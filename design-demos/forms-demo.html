@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCare admin — Forms demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  .mx{--bg:#fafafa;--card:#fff;--line:#e4e4e7;--line2:#f0f0f2;--ink:#18181b;--ink2:#3f3f46;--mut:#71717a;--faint:#a1a1aa;
+    --teal:#0b8f74;--teal-dk:#0a7c63;--teal-bright:#05d3b0;--teal-wash:#e6faf5;
+    --amber-t:#92400e;--amber-bg:#fef3c7;
+    --red:#dc2626;--red-bg:#fef2f2;
+    --r:12px;--sh:0 1px 2px rgba(24,24,27,.05),0 6px 18px rgba(24,24,27,.05);
+    --disp:"Fraunces",Georgia,serif;--body:"Public Sans",-apple-system,"Segoe UI",sans-serif;
+    background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;
+    max-width:1180px;margin:0 auto;padding:28px 30px 120px}
+  .mx *{box-sizing:border-box}
+  .mx-mods{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .mx-mods button{font-family:var(--body);font-size:13px;font-weight:600;color:var(--ink2);background:var(--card);
+    border:1px solid var(--line);border-radius:20px;padding:8px 16px;cursor:pointer}
+  .mx-mods button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+  .mx-kicker{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-dk);margin:0 0 6px}
+  .mx-title{font-family:var(--disp);font-size:38px;font-weight:700;letter-spacing:-.02em;line-height:1.05;margin:0}
+  .mx-title em{font-style:normal;color:var(--teal)}
+  .mx-sub{color:var(--mut);margin:8px 0 22px;max-width:600px}
+  .mx-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
+  @media(max-width:900px){.mx-grid{grid-template-columns:1fr}}
+  /* left summary card */
+  .mx-side{background:var(--ink);color:#fff;border-radius:var(--r);padding:22px;position:sticky;top:16px;box-shadow:var(--sh)}
+  .mx-side .k{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#a1a1aa}
+  .mx-side h2{font-family:var(--disp);font-size:24px;margin:6px 0 4px;letter-spacing:-.01em}
+  .mx-side p{font-size:13px;color:#d4d4d8;margin:0 0 16px}
+  .mx-avbig{width:64px;height:64px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;margin-bottom:14px}
+  .mx-steps{list-style:none;margin:0;padding:14px 0 0;border-top:1px solid #3f3f46;display:flex;flex-direction:column;gap:10px}
+  .mx-steps li{display:flex;gap:10px;align-items:center;font-size:13px;color:#d4d4d8}
+  .mx-steps li.done{color:#fff}
+  .mx-steps .n{width:22px;height:22px;border-radius:50%;border:1px solid #52525b;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:0 0 22px}
+  .mx-steps li.done .n{background:var(--teal-bright);border-color:var(--teal-bright);color:#052e26}
+  /* form sections */
+  .mx-sec{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+  .mx-sec-hd{padding:15px 20px;border-bottom:1px solid var(--line2);display:flex;align-items:baseline;gap:12px;background:#fcfcfd}
+  .mx-sec-hd .no{font-family:var(--disp);font-size:20px;color:var(--teal)}
+  .mx-sec-hd h3{font-size:15px;font-weight:700;margin:0}
+  .mx-sec-hd p{font-size:12px;color:var(--mut);margin:0 0 0 auto}
+  .mx-sec-bd{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+  @media(max-width:640px){.mx-sec-bd{grid-template-columns:1fr}}
+  .mx-f{display:flex;flex-direction:column;gap:6px}
+  .mx-f.full{grid-column:1/-1}
+  .mx-f label{font-size:12px;font-weight:700;letter-spacing:.03em;color:var(--ink2)}
+  .mx-f label i{font-style:normal;color:var(--red)}
+  .mx-f input,.mx-f select,.mx-f textarea{font-family:var(--body);font-size:14px;color:var(--ink);border:1px solid var(--line);
+    border-radius:9px;padding:10px 12px;background:#fff;outline:none;width:100%}
+  .mx-f input:focus,.mx-f select:focus,.mx-f textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-wash)}
+  .mx-f .hint{font-size:12px;color:var(--mut)}
+  .mx-f.err input,.mx-f.err select{border-color:var(--red);background:var(--red-bg)}
+  .mx-f .msg{font-size:12px;color:var(--red);font-weight:600;display:none}
+  .mx-f.err .msg{display:block}
+  /* segmented status */
+  .mx-seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .mx-seg button{flex:1;font-family:var(--body);font-size:13px;font-weight:700;padding:10px;border:0;background:#fff;color:var(--mut);cursor:pointer}
+  .mx-seg button+button{border-left:1px solid var(--line)}
+  .mx-seg button.on{background:var(--ink);color:#fff}
+  .mx-seg button.on.go{background:var(--teal)}
+  /* dropzone */
+  .mx-drop{border:1.5px dashed var(--line);border-radius:10px;padding:22px;text-align:center;color:var(--mut);cursor:pointer;transition:border-color .15s,background .15s}
+  .mx-drop:hover,.mx-drop.over{border-color:var(--teal);background:var(--teal-wash)}
+  .mx-drop b{color:var(--teal-dk)}
+  .mx-drop img{max-width:120px;border-radius:8px;margin-top:10px;display:none}
+  /* sticky action bar */
+  .mx-actions{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
+    border-top:1px solid var(--line);padding:12px 30px;display:flex;gap:10px;justify-content:flex-end;align-items:center;z-index:5}
+  .mx-actions .dirty{font-size:13px;color:var(--mut);margin-right:auto}
+  .mx-btn{font-family:var(--body);font-size:14px;font-weight:700;border-radius:10px;padding:11px 22px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink2)}
+  .mx-btn.pri{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:var(--sh)}
+  .mx-btn.pri:hover{background:var(--teal-dk)}
+  .mx-btn:disabled{opacity:.5;cursor:default}
+  /* toast */
+  .mx-toast{position:fixed;bottom:76px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:#fff;font-size:14px;font-weight:600;
+    border-radius:10px;padding:12px 22px;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;z-index:6}
+  .mx-toast.show{opacity:1;transform:translate(-50%,0)}
+  .mx-note{margin-top:16px;font-size:12px;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="mx">
+  <div class="mx-mods" id="mods"></div>
+  <p class="mx-kicker" id="kicker"></p>
+  <h1 class="mx-title" id="title"></h1>
+  <p class="mx-sub" id="sub"></p>
+
+  <div class="mx-grid">
+    <aside class="mx-side">
+      <div class="mx-avbig" id="sideAv">DR</div>
+      <div class="k">Currently editing</div>
+      <h2 id="sideName">—</h2>
+      <p id="sideMeta">—</p>
+      <ul class="mx-steps" id="steps"></ul>
+    </aside>
+
+    <div id="form"></div>
+  </div>
+
+  <p class="mx-note">Demo — static mock fields mirroring the real forms. Real build keeps server-side validation; JS here only previews the interaction.</p>
+</div>
+
+<div class="mx-actions">
+  <span class="dirty" id="dirty">No unsaved changes</span>
+  <button class="mx-btn" onclick="toast('Discarded (demo)') " type="button">Discard</button>
+  <button class="mx-btn pri" id="saveBtn" type="button">Save changes</button>
+</div>
+<div class="mx-toast" id="toast">Saved</div>
+
+<script>
+const field = (label, req, inner, hint='', full=false) => `
+  <div class="mx-f${full?' full':''}" data-req="${req?1:0}">
+    <label>${label}${req?' <i>*</i>':''}</label>${inner}
+    ${hint?`<span class="hint">${hint}</span>`:''}<span class="msg">This field is required.</span>
+  </div>`;
+const inp = (ph='', val='') => `<input value="${val}" placeholder="${ph}">`;
+const sel = opts => `<select>${opts.map(o=>`<option>${o}</option>`).join('')}</select>`;
+const area = (ph='', rows=3) => `<textarea rows="${rows}" placeholder="${ph}"></textarea>`;
+const seg = (id, opts, on=0) => `<div class="mx-seg" id="${id}">${opts.map((o,i)=>`<button type="button" class="${i===on?'on go':''}">${o}</button>`).join('')}</div>`;
+const drop = () => `<div class="mx-drop" id="dz"><b>Drop an image here</b> or click to browse<br><span style="font-size:12px">JPG · PNG · WEBP · max 2 MB</span><br><img id="dzPrev" alt="preview"></div><input type="file" id="dzFile" accept="image/*" hidden>`;
+
+const MODULES = {
+  doctor: {kicker:'MediCare · Staff record', title:'Doctor <em>profile</em>', sub:'Identity, credentials and booking status. Changes apply on save — nothing goes live early.',
+    av:'DR', name:'Dr. Ayesha Rahman', meta:'Cardiology · Interventional · Active',
+    steps:['Identity','Credentials','Availability'],
+    sections:[
+      ['01','Identity','Who this doctor is on the roster.', field('Full name',1,inp('e.g. Dr. Ayesha Rahman','Dr. Ayesha Rahman'))+field('Phone',1,inp('+880 …','01711-000111'))+field('Department',1,sel(['Cardiology','Orthopedics','Pediatrics','Neurology','Dermatology']))+field('Specialist',0,inp('e.g. Interventional','Interventional'))],
+      ['02','Credentials','Degrees, photo and public bio.', field('Degree',0,inp('MBBS, MD','MBBS, MD'))+field('Photo',0,drop())+field('Services & bio',0,area('One-line bio…'),'',true)],
+      ['03','Booking status','Whether patients can book this doctor.', field('Status',0,seg('st',['Active','Inactive']))+field('Availability note',0,inp('e.g. Sat–Thu, 9am–2pm'))]
+    ]},
+  appointment: {kicker:'MediCare · Front desk', title:'Book <em>appointment</em>', sub:'Patient, doctor and slot. Double-booked slots are refused automatically.',
+    av:'AP', name:'New booking', meta:'Draft · not saved yet',
+    steps:['Patient','Schedule','Visit'],
+    sections:[
+      ['01','Patient','Who is coming in.', field('Patient name',1,inp('Full name'))+field('Phone',1,inp('01XXXXXXXXX'))+field('Email',0,inp('name@mail.com'))+field('Age / Gender',0,`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input placeholder="Age"><select><option>Male</option><option>Female</option><option>Other</option></select></div>`)],
+      ['02','Schedule','Doctor, day and time.', field('Doctor',1,sel(['Dr. Ayesha Rahman — Cardiology','Dr. Tanvir Hasan — Orthopedics','Dr. Nusrat Jahan — Pediatrics']))+field('Date',1,'<input type="date" value="2026-09-13">')+field('Time slot',1,sel(['10:00 AM — open','11:00 AM — open','02:00 PM — 1 left']))],
+      ['03','Visit','Type and state.', field('Visit type',1,seg('vt',['First Visit','Second Visit','Report Review']))+field('Status',0,seg('st2',['Pending','Confirmed']))]
+    ]},
+  patient: {kicker:'MediCare · Records', title:'Patient <em>record</em>', sub:'Contact and clinical basics. Linked visits stay untouched.',
+    av:'PT', name:'Rahim Uddin', meta:'6 visits · Active since 2023',
+    steps:['Contact','Clinical'],
+    sections:[
+      ['01','Contact','How to reach them.', field('Full name',1,inp('','Rahim Uddin'))+field('Phone',1,inp('','01711-223344'))+field('Email',1,inp('','rahim@example.com'))+field('Address',0,area('House, road, area…',2), '', true)],
+      ['02','Clinical','Basics for the chart.', field('Date of birth',0,'<input type="date" value="1988-04-12">')+field('Gender',0,sel(['Male','Female','Other']))+field('Blood group',0,sel(['A+','A-','B+','B-','O+','O-','AB+','AB-']))+field('Status',0,seg('st',['Active','Inactive']))]
+    ]},
+  blog: {kicker:'MediCare · Publishing', title:'Blog <em>post</em>', sub:'Patient education. Drafts stay private until published.',
+    av:'BL', name:'Untitled post', meta:'Draft · not published',
+    steps:['Content','Meta'],
+    sections:[
+      ['01','Content','The article itself.', field('Title',1,inp('e.g. 5 Early Signs of Heart Disease'))+field('Cover image',0,drop())+field('Body',1,area('Write for patients, not doctors…',6),'',true)],
+      ['02','Meta','How it is filed and found.', field('Category',1,sel(['Cardiology','Pediatrics','Orthopedics','Neurology']))+field('Tags',0,inp('heart, prevention'))+field('Excerpt',0,area('One sentence for listings…',2),'',true)+field('Status',0,seg('st',['Draft','Published']))]
+    ]},
+  department: {kicker:'MediCare · Structure', title:'Depart<em>ment</em>', sub:'A clinical unit: head, capacity and visibility.',
+    av:'DP', name:'Cardiology', meta:'18 doctors · Active',
+    steps:['Profile','Visibility'],
+    sections:[
+      ['01','Profile','Name and description.', field('Name',1,inp('','Cardiology'))+field('Head of department',0,sel(['Dr. Ayesha Rahman','Dr. Tanvir Hasan']))+field('Description',0,area('What this unit covers…',3),'',true)],
+      ['02','Visibility','Whether it appears on the site.', field('Status',0,seg('st',['Active','Inactive']))+field('Order note',0,inp('Shown in site order'))]
+    ]}
+};
+
+let mod = 'doctor';
+const $ = id => document.getElementById(id);
+
+function render(){
+  const m = MODULES[mod];
+  $('kicker').textContent = m.kicker;
+  $('title').innerHTML = m.title;
+  $('sub').textContent = m.sub;
+  $('sideAv').textContent = m.av;
+  $('sideName').textContent = m.name;
+  $('sideMeta').textContent = m.meta;
+  $('mods').innerHTML = Object.keys(MODULES).map(k=>`<button data-m="${k}" class="${k===mod?'on':''}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('');
+  $('steps').innerHTML = m.steps.map((s,i)=>`<li class="${i===0?'done':''}"><span class="n">${i===0?'✓':i+1}</span>${s}</li>`).join('');
+  $('form').innerHTML = m.sections.map(s=>`
+    <section class="mx-sec"><div class="mx-sec-hd"><span class="no">${s[0]}</span><h3>${s[1]}</h3><p>${s[2]}</p></div>
+    <div class="mx-sec-bd">${s[3]}</div></section>`).join('');
+  document.querySelectorAll('#mods button').forEach(b=>b.onclick=()=>{mod=b.dataset.m;$('dirty').textContent='No unsaved changes';render();});
+  document.querySelectorAll('.mx-seg').forEach(seg=>seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    seg.querySelectorAll('button').forEach(x=>x.classList.remove('on','go'));b.classList.add('on','go');touched();
+  }));
+  document.querySelectorAll('#form input,#form select,#form textarea').forEach(el=>{
+    el.addEventListener('input',()=>{el.closest('.mx-f').classList.remove('err');touched();});
+  });
+  const dz=$('dz'), fi=$('dzFile');
+  if(dz){ dz.onclick=()=>fi.click();
+    dz.ondragover=e=>{e.preventDefault();dz.classList.add('over');};
+    dz.ondragleave=()=>dz.classList.remove('over');
+    dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');preview(e.dataTransfer.files[0]);};
+    fi.onchange=()=>preview(fi.files[0]);
+  }
+}
+function preview(f){
+  if(!f||!f.type.startsWith('image/'))return;
+  const r=new FileReader();
+  r.onload=e=>{const img=$('dzPrev');img.src=e.target.result;img.style.display='block';};
+  r.readAsDataURL(f);touched();
+}
+function touched(){
+  $('dirty').textContent='● Unsaved changes';
+  document.querySelectorAll('.mx-steps li').forEach((li,i)=>{if(i>0){li.classList.add('done');li.querySelector('.n').textContent='✓';}});
+}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+$('saveBtn').onclick=()=>{
+  let bad=0;
+  document.querySelectorAll('#form .mx-f[data-req="1"]').forEach(f=>{
+    const el=f.querySelector('input,select,textarea');
+    const empty=!el||!el.value.trim();
+    f.classList.toggle('err',empty);
+    if(empty)bad++;
+  });
+  if(bad){toast(`${bad} required field${bad>1?'s':''} missing`);return;}
+  $('dirty').textContent='No unsaved changes';
+  toast('Saved — “'+MODULES[mod].name+'” updated');
+};
+render();
+</script>
+</body>
+</html>

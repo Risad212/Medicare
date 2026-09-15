@@ -19,4 +19,16 @@ class ForgotPasswordController extends Controller
     */
 
     use SendsPasswordResetEmails;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        // Password-reset emails cost mail quota and leak nothing on their own,
+        // but the endpoint must not be callable in a tight loop (mail bombing).
+        $this->middleware('throttle:6,1')->only('sendResetLinkEmail');
+    }
 }

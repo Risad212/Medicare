@@ -128,7 +128,7 @@
             </div>
 
             <div class="col-12 col-lg-6">
-            <div class="row no-gutters">
+            <div class="row g-0">
 
                 <div class="col-6">
 

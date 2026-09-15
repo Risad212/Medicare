@@ -15,6 +15,7 @@ class TagController extends Controller
     public function index()
     {
         $tags = Tag::latest()->get();
+
         return view('backend.tags.index', compact('tags'));
     }
 
@@ -57,7 +58,7 @@ class TagController extends Controller
     public function update(Request $request, Tag $tag)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name,' . $tag->id,
+            'name' => 'required|string|max:255|unique:tags,name,'.$tag->id,
         ]);
 
         $tag->update([
@@ -74,6 +75,7 @@ class TagController extends Controller
     public function destroy(Tag $tag)
     {
         $tag->delete();
+
         return back()->with('success', 'Tag deleted successfully!');
     }
 }

@@ -33,7 +33,7 @@
             </tr>
             <tr>
                 <td style="font-weight: bold;">Visit Type:</td>
-                <td>{{ $appointment->visit_type }}</td>
+                <td>{{ $appointment->visit_type_label }}</td>
             </tr>
         </table>
 

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Doctor;
 use App\Models\Appointment;
 use App\Models\Blog;
 use App\Models\BlogComment;
+use App\Models\Doctor;
+use App\Models\LabOrder;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Support\Carbon;
 
 class AdminController extends Controller
 {
@@ -23,20 +25,114 @@ class AdminController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
     public function index()
     {
-        $totalDoctors       = Doctor::count();
-        $totalAppointments  = Appointment::count();
-        $totalBlogs         = Blog::count();
-        $pendingComments    = BlogComment::where('status', 0)->count();
+        $totalDoctors = Doctor::count();
+        $totalAppointments = Appointment::count();
+        $totalBlogs = Blog::count();
+        $pendingComments = BlogComment::where('status', 0)->count();
+
+        $pendingAppointments = Appointment::where('status', 0)->count();
+        $confirmedAppointments = Appointment::where('status', 1)->count();
+        $completedAppointments = Appointment::where('status', 2)->count();
+        $cancelledAppointments = Appointment::where('status', 3)->count();
+        $todayAppointments = Appointment::whereDate('appointment_date', now()->toDateString())->count();
+        $activeDoctorsToday = Doctor::whereHas('appointments', function ($q) {
+            $q->whereDate('appointment_date', now()->toDateString());
+        })->count();
+
+        // Last 7 days of bookings (oldest -> newest) for the trend sparkline.
+        $weekByDay = Appointment::where('appointment_date', '>=', now()->subDays(6)->toDateString())
+            ->where('appointment_date', '<=', now()->toDateString())
+            ->get(['appointment_date'])
+            ->groupBy(fn ($a) => Carbon::parse($a->appointment_date)->toDateString());
+        $weekTrend = collect(range(6, 0))->map(
+            fn ($d) => $weekByDay->get(now()->subDays($d)->toDateString(), collect())->count()
+        )->values()->all();
+
+        // Pending first so the morning queue surfaces what needs action,
+        // then newest within each group.
+        $recentAppointments = Appointment::with(['doctor', 'timeSlot'])
+            ->orderByRaw('CASE WHEN status = 0 THEN 0 ELSE 1 END')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        $topDoctors = Doctor::withCount('appointments as appointment_count')
+            ->orderByDesc('appointment_count')
+            ->take(4)
+            ->get();
+
+        $recentComments = BlogComment::with('blog')
+            ->where('status', 0)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        // ---------- Analytics ----------
+
+        $completedLabOrders = LabOrder::where('status', 'completed');
+
+        $revenueAllTime = (float) $completedLabOrders->clone()->sum('total');
+        $revenueThisMonth = (float) $completedLabOrders->clone()
+            ->whereBetween('created_at', [now()->startOfMonth(), now()])
+            ->sum('total');
+        $labOrdersThisMonth = LabOrder::whereBetween('created_at', [now()->startOfMonth(), now()])->count();
+        $labOrdersPending = LabOrder::where('status', 'pending')->count();
+
+        // Last 6 months of appointments vs lab orders (oldest -> newest).
+        $appointmentsByMonth = Appointment::where('created_at', '>=', now()->subMonths(5)->startOfMonth())
+            ->get(['created_at'])
+            ->groupBy(fn ($a) => $a->created_at->format('Y-m'));
+        $labOrdersByMonth = LabOrder::where('created_at', '>=', now()->subMonths(5)->startOfMonth())
+            ->get(['created_at'])
+            ->groupBy(fn ($o) => $o->created_at->format('Y-m'));
+
+        $monthlyAppointments = collect(range(5, 0))->map(
+            fn ($i) => $appointmentsByMonth->get(now()->subMonths($i)->format('Y-m'), collect())->count()
+        )->values()->all();
+
+        $monthlyLabOrders = collect(range(5, 0))->map(
+            fn ($i) => $labOrdersByMonth->get(now()->subMonths($i)->format('Y-m'), collect())->count()
+        )->values()->all();
+
+        $monthLabels = collect(range(5, 0))->map(
+            fn ($i) => now()->subMonths($i)->format('M')
+        )->values()->all();
+
+        // Per-doctor load: non-cancelled bookings, most booked first.
+        $doctorLoad = Doctor::withCount(['appointments as appointment_count' => function ($q) {
+            $q->where('status', '!=', 3);
+        }])
+            ->orderByDesc('appointment_count')
+            ->take(6)
+            ->get();
 
         return view('backend.home', compact(
             'totalDoctors',
             'totalAppointments',
             'totalBlogs',
-            'pendingComments'
+            'pendingComments',
+            'pendingAppointments',
+            'confirmedAppointments',
+            'completedAppointments',
+            'cancelledAppointments',
+            'todayAppointments',
+            'activeDoctorsToday',
+            'weekTrend',
+            'recentAppointments',
+            'topDoctors',
+            'recentComments',
+            'revenueAllTime',
+            'revenueThisMonth',
+            'labOrdersThisMonth',
+            'labOrdersPending',
+            'monthlyAppointments',
+            'monthlyLabOrders',
+            'monthLabels',
+            'doctorLoad'
         ));
     }
 }

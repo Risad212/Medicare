@@ -16,7 +16,7 @@ class ContactSettingController extends Controller
     {
         $seo = SeoSetting::where('page', 'contact')->first();
 
-       return view('backend.settings.contact', compact(
+        return view('backend.settings.contact', compact(
             'seo'
         ));
     }

@@ -2,111 +2,118 @@
 
 @section('content')
 
-<div class="row">
-    <div class="col-md-12">
+<div class="mc-head">
+    <div>
+        <p class="mc-kicker">MediCare · Front desk</p>
+        <h1 class="mc-title">Edit appoint<em>ment</em></h1>
+        <p class="mc-sub">{{ $appointment->patient_name }} · {{ $appointment->doctor->name ?? 'N/A' }} · {{ $appointment->appointment_date }}</p>
+    </div>
+</div>
 
-        <div class="tile">
-            <h3 class="tile-title">Edit Appointment</h3>
+@if(session('success'))
+    <div class="mb-3 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
+@endif
 
-             @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
+<form action="{{ route('admin.appointments.update', $appointment->id) }}" method="POST">
+    @csrf
+    @method('PUT')
 
-            <form action="{{ route('admin.appointments.update', $appointment->id) }}" method="POST">
-                @csrf
-                @method('PUT')
+    <div class="mc-grid">
+        <aside class="mc-side">
+            <div class="mc-avbig">{{ strtoupper(implode('', array_slice(array_map(fn($w) => mb_substr($w, 0, 1), explode(' ', $appointment->patient_name)), 0, 2))) }}</div>
+            <div class="k">Currently editing</div>
+            <h2>{{ $appointment->patient_name }}</h2>
+            <p>{{ $appointment->timeSlot->time ?? 'N/A' }} · {{ $appointment->visit_type_label }}</p>
+            <ul class="mc-steps">
+                <li><span class="n">1</span>Schedule</li>
+                <li><span class="n">2</span>Patient</li>
+                <li><span class="n">3</span>State</li>
+            </ul>
+        </aside>
 
-                <div class="row">
-
-                    <div class="col-lg-6 mb-2">
-                        <label class="mb-2">Doctor</label>
-                        <select name="doctor_id" class="form-control">
+        <div>
+            <section class="mc-sec">
+                <div class="mc-sec-hd"><span class="no">01</span><h3>Schedule</h3><p>Doctor, day and type.</p></div>
+                <div class="mc-sec-bd">
+                    <div class="mc-f">
+                        <label>Doctor</label>
+                        <select name="doctor_id" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal">
                             @foreach($doctors as $doctor)
-
-                                <option value="{{ $doctor->id }}"
-                                    {{ $appointment->doctor_id == $doctor->id ? 'selected' : '' }}>
-                                    {{ $doctor->name }}
-                                </option>
-
+                                <option value="{{ $doctor->id }}" {{ $appointment->doctor_id == $doctor->id ? 'selected' : '' }}>{{ $doctor->name }}</option>
                             @endforeach
                         </select>
                     </div>
-
-                    <div class="col-lg-6 mb-2">
-                        <label class="mb-2">Visit Type</label>
-                        <select name="visit_type" class="form-control">
+                    <div class="mc-f">
+                        <label>Visit Type</label>
+                        <select name="visit_type" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal">
                             <option value="1" {{ $appointment->visit_type == 1 ? 'selected' : '' }}>First Visit</option>
                             <option value="2" {{ $appointment->visit_type == 2 ? 'selected' : '' }}>Second Visit</option>
                             <option value="3" {{ $appointment->visit_type == 3 ? 'selected' : '' }}>Report Review</option>
                         </select>
                     </div>
-
-                    <div class="col-lg-6 mb-2">
-                        <label class="mb-2">Patient Name</label>
-                        <input type="text" name="name" class="form-control" value="{{ $appointment->patient_name }}">
+                    <div class="mc-f">
+                        <label>Appointment Date</label>
+                        <input type="date" name="date" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal" value="{{ $appointment->appointment_date }}">
                     </div>
-
-                    <div class="col-lg-6 mb-2">
-                        <label class="mb-2">Age</label>
-                        <input type="number" name="age" class="form-control" value="{{ $appointment->age }}">
+                    <div class="mc-f">
+                        <label>Time Slot</label>
+                        <input type="text" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink opacity-60 outline-none" value="{{ $appointment->timeSlot->time ?? 'N/A' }}" disabled>
+                        <span class="mc-hint">The slot itself isn't editable here — cancel and re-book to move it.</span>
                     </div>
+                </div>
+            </section>
 
-                    <div class="col-lg-6 mb-2">
-                        <label class="mb-2">Gender</label>
-                        <select name="gender" class="form-control">
+            <section class="mc-sec">
+                <div class="mc-sec-hd"><span class="no">02</span><h3>Patient</h3><p>Who is coming in.</p></div>
+                <div class="mc-sec-bd">
+                    <div class="mc-f">
+                        <label>Patient Name</label>
+                        <input type="text" name="name" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal" value="{{ $appointment->patient_name }}">
+                    </div>
+                    <div class="mc-f">
+                        <label>Phone</label>
+                        <input type="text" name="phone" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal" value="{{ $appointment->phone }}">
+                    </div>
+                    <div class="mc-f">
+                        <label>Age</label>
+                        <input type="number" name="age" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal" value="{{ $appointment->age }}">
+                    </div>
+                    <div class="mc-f">
+                        <label>Gender</label>
+                        <select name="gender" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal">
                             <option value="1" {{ $appointment->gender == 1 ? 'selected' : '' }}>Male</option>
                             <option value="2" {{ $appointment->gender == 2 ? 'selected' : '' }}>Female</option>
                             <option value="3" {{ $appointment->gender == 3 ? 'selected' : '' }}>Other</option>
                         </select>
                     </div>
-
-                    <div class="col-lg-6 mb-2">
-                        <label class="mb-2">Phone</label>
-                        <input type="text" name="phone" class="form-control" value="{{ $appointment->phone }}">
+                    <div class="mc-f full">
+                        <label>Email</label>
+                        <input type="email" name="email" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal" value="{{ $appointment->email }}">
                     </div>
+                </div>
+            </section>
 
-                    <div class="col-lg-6 mb-2">
-                        <label class="mb-2">Email</label>
-                        <input type="email" name="email" class="form-control" value="{{ $appointment->email }}">
+            <section class="mc-sec">
+                <div class="mc-sec-hd"><span class="no">03</span><h3>State</h3><p>Where this booking stands.</p></div>
+                <div class="mc-sec-bd">
+                    <div class="mc-f">
+                        <label>Status</label>
+                        <select name="status" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal">
+                            <option value="0" {{ $appointment->status == 0 ? 'selected' : '' }}>Pending</option>
+                            <option value="1" {{ $appointment->status == 1 ? 'selected' : '' }}>Approved</option>
+                            <option value="2" {{ $appointment->status == 2 ? 'selected' : '' }}>Completed</option>
+                            <option value="3" {{ $appointment->status == 3 ? 'selected' : '' }}>Cancelled</option>
+                        </select>
                     </div>
-
-                    <div class="col-lg-6 mb-2">
-                        <label class="mb-2">Appointment Date</label>
-                        <input type="date" name="date" class="form-control" value="{{ $appointment->appointment_date }}">
-                    </div>
-
-                    <div class="col-lg-6 mb-2">
-                    <label class="mb-2">Status</label>
-                    <select name="status" class="form-control">
-                        <option value="0" {{ $appointment->status == 0 ? 'selected' : '' }}>
-                            Pending
-                        </option>
-                        <option value="1" {{ $appointment->status == 1 ? 'selected' : '' }}>
-                            Approved
-                        </option>
-                        <option value="2" {{ $appointment->status == 2 ? 'selected' : '' }}>
-                            Completed
-                        </option>
-                        <option value="3" {{ $appointment->status == 3 ? 'selected' : '' }}>
-                            Cancelled
-                        </option>
-                    </select>
                 </div>
+            </section>
 
-                </div>
-
-                <div class="mt-3">
-                    <button type="submit" class="btn btn-success">Update Appointment</button>
-                    <a href="{{ route('admin.appointments.index') }}" class="btn btn-secondary">Back</a>
-                </div>
-
-            </form>
-
+            <div class="mc-formacts">
+                <button type="submit" class="mc-btn">Update appointment</button>
+                <a href="{{ route('admin.appointments.index') }}" class="mc-btn ghost">Back</a>
+            </div>
         </div>
-
     </div>
-</div>
+</form>
 
 @endsection

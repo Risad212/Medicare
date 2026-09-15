@@ -13,21 +13,19 @@ class SeoSettingController extends Controller
      */
     public function update(Request $request)
     {
-        $request->validate([
-            'page' => 'required|string',
+        $validated = $request->validate([
+            'page' => 'required|string|in:home,about,service,doctor,blog,contact',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string',
         ]);
 
-        $data = $request->except('_token');
-
-        $seoSetting = SeoSetting::where('page', $request->page)->first();
+        $seoSetting = SeoSetting::where('page', $validated['page'])->first();
 
         if ($seoSetting) {
-            $seoSetting->update($data);
+            $seoSetting->update($validated);
         } else {
-            SeoSetting::create($data);
+            SeoSetting::create($validated);
         }
 
         return back()->with('seo_success', 'SEO settings updated successfully.');

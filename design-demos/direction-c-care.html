@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>MediCare — Today's Care · Admin</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --paper:#FAFAF7; --paper-2:#F3F1EA; --card:#FFFFFF; --ink:#2A2721; --ink-soft:#5C574C;
+    --ink-faint:#8A8474; --line:#E6E1D4; --teal:#05d3b0; --teal-deep:#0A5C4E; --teal-wash:#DDF7F0;
+    --amber:#9A6B0A; --amber-dot:#C98A04; --green:#0E7A5F; --grey:#6E6A5E; --red:#B3261E;
+  }
+  html{background:var(--paper-2)}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Helvetica,Arial,sans-serif;
+    background:var(--paper); color:var(--ink); font-size:14px; line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:Georgia,Charter,"Bitstream Charter","Sitka Text",Cambria,"Times New Roman",serif}
+  .shell{width:1440px;min-height:900px;margin:0 auto;display:flex;background:var(--paper)}
+  /* ---- sidebar ---- */
+  .side{width:216px;flex:0 0 216px;background:#F1EEE5;border-right:1px solid var(--line);
+    padding:26px 18px;display:flex;flex-direction:column;gap:6px}
+  .brand{display:flex;align-items:center;gap:10px;padding:2px 8px 20px}
+  .brand-mark{width:34px;height:34px;border-radius:11px;background:var(--teal);color:#08332B;
+    font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;letter-spacing:-.5px}
+  .brand-name{font-size:17px;font-weight:700;letter-spacing:-.2px}
+  .brand-sub{font-size:12px;color:var(--ink-soft);line-height:1.3}
+  .nav-label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);padding:12px 10px 6px}
+  .nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink-soft);
+    font-size:14px;padding:8px 10px;border-radius:10px;line-height:1.4}
+  .nav a .glyph{width:8px;height:8px;border-radius:50%;border:2px solid #C9C3B2;flex:0 0 8px}
+  .nav a.on{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:650}
+  .nav a.on .glyph{background:var(--teal);border-color:var(--teal-deep)}
+  .side-foot{margin-top:auto;border-top:1px solid var(--line);padding:14px 10px 2px;font-size:12px;color:var(--ink-soft);line-height:1.6}
+  /* ---- main ---- */
+  .main{flex:1;padding:30px 34px 30px;max-width:1224px}
+  .toprow{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+  .eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-deep);font-weight:700;margin-bottom:6px}
+  h1.greet{font-size:40px;line-height:1.12;font-weight:500;letter-spacing:-.5px}
+  h1.greet em{font-style:italic}
+  .dateline{margin-top:8px;font-size:14px;color:var(--ink-soft)}
+  .dateline strong{color:var(--ink)}
+  .actions{display:flex;gap:10px;flex:0 0 auto;padding-top:8px}
+  .btn{font-size:14px;font-weight:650;border-radius:14px;padding:11px 18px;text-decoration:none;display:inline-block;line-height:1.3}
+  .btn-solid{background:var(--teal);color:#08332B;border:1px solid #04B89C}
+  .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  /* stat sentence strip */
+  .dayline{margin:22px 0 20px;background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:16px 22px;display:flex;gap:0}
+  .stat{flex:1;padding:2px 22px;border-left:1px solid var(--line)}
+  .stat:first-child{border-left:none;padding-left:2px}
+  .stat .num{font-size:34px;line-height:1.1;font-weight:500}
+  .stat .cap{font-size:14px;color:var(--ink-soft);margin-top:2px}
+  .stat .cap b{color:var(--ink)}
+  .stat .mini{font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .confbar{height:7px;border-radius:99px;background:#ECE7D8;margin-top:8px;overflow:hidden}
+  .confbar i{display:block;height:100%;width:65%;background:var(--teal);border-radius:99px}
+  /* columns */
+  .cols{display:flex;gap:22px;align-items:flex-start}
+  .col-day{flex:1.35;min-width:0}
+  .col-side{flex:1;min-width:0;display:flex;flex-direction:column;gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+  .q{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--teal-deep);font-weight:750;margin-bottom:2px}
+  h2.h-serif{font-size:24px;font-weight:500;letter-spacing:-.3px;line-height:1.25;margin-bottom:4px}
+  .lede{font-size:14px;color:var(--ink-soft);margin-bottom:14px}
+  /* timeline */
+  .timeline{list-style:none;position:relative;margin-top:6px;padding-left:84px}
+  .timeline::before{content:"";position:absolute;left:66px;top:10px;bottom:10px;width:2px;background:var(--line);border-radius:2px}
+  .t-item{position:relative;padding:12px 14px 12px 18px;border:1px solid var(--line);border-radius:14px;margin-bottom:12px;background:#fff}
+  .t-item.now{border-color:var(--teal-deep);box-shadow:0 0 0 3px var(--teal-wash)}
+  .t-rail{position:absolute;left:-84px;top:14px;width:66px;text-align:right;font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .t-dot{position:absolute;left:-23px;top:18px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--teal);z-index:1}
+  .t-dot.pending{border-color:var(--amber-dot)}
+  .t-dot.cancelled{border-color:#B9B4A6;background:#ECE9DE}
+  .t-dot.done{border-color:var(--green);background:var(--teal-wash)}
+  .t-name{font-size:15px;font-weight:700}
+  .t-name .age{font-weight:400;color:var(--ink-soft);font-size:13px}
+  .t-sent{font-size:14px;color:var(--ink);margin:1px 0 6px}
+  .t-meta{font-size:13px;color:var(--ink-soft)}
+  .t-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
+  .status{font-size:13px;color:var(--ink);display:inline-flex;align-items:center;gap:7px}
+  .status i{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .s-pending i{background:var(--amber-dot)} .s-confirmed i{background:var(--teal)}
+  .s-completed i{background:var(--green)} .s-cancelled i{background:#B9B4A6}
+  .open{font-size:13px;color:var(--teal-deep);font-weight:700;text-decoration:none}
+  .open:hover{text-decoration:underline}
+  .yesterday{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+  .yesterday .lbl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px}
+  /* side cards */
+  .call-row{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+  .call-row:first-of-type{border-top:none}
+  .avatar{width:36px;height:36px;border-radius:50%;flex:0 0 36px;display:flex;align-items:center;justify-content:center;
+    font-weight:750;font-size:14px;color:#08332B;background:var(--teal-wash);border:1px solid #BDE9DC}
+  .avatar.amber{background:#FBF0D3;border-color:#EBD48A;color:#5F4304}
+  .call-row p{font-size:14px}
+  .call-row .sub{font-size:13px;color:var(--ink-soft)}
+  .tag{display:inline-block;font-size:12px;font-weight:700;color:var(--amber);background:#FBF0D3;
+    border:1px solid #EBD48A;border-radius:99px;padding:1px 9px;margin-left:6px;vertical-align:1px}
+  .duty{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+  .duty:first-of-type{border-top:none}
+  .duty .who{flex:1;min-width:0}
+  .duty .who b{font-size:14px}
+  .duty .who span{display:block;font-size:13px;color:var(--ink-soft)}
+  .pill{font-size:12px;font-weight:700;border-radius:99px;padding:3px 10px;white-space:nowrap}
+  .pill.on{background:var(--teal-wash);color:var(--teal-deep);border:1px solid #9ADFCF}
+  .pill.off{background:#EFEEE8;color:var(--grey);border:1px solid var(--line)}
+  .bar-row{display:grid;grid-template-columns:92px 1fr 30px;gap:10px;align-items:center;padding:7px 0;font-size:14px}
+  .bar-row .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft)}
+  .track{height:10px;background:#EFEBDD;border-radius:99px;overflow:hidden}
+  .track i{display:block;height:100%;border-radius:99px}
+  .q-text{font-size:14px;padding:10px 0;border-top:1px solid var(--line)}
+  .q-text:first-of-type{border-top:none}
+  .q-text blockquote{font-size:15px;line-height:1.55}
+  .q-text cite{display:block;font-style:normal;font-size:13px;color:var(--ink-soft);margin-top:2px}
+  .cta{display:inline-block;margin-top:12px;font-size:14px;font-weight:700;color:#08332B;background:var(--teal);
+    border:1px solid #04B89C;border-radius:12px;padding:9px 16px;text-decoration:none}
+  .note{font-size:12px;color:var(--ink-soft);margin-top:14px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><div class="brand-mark">M</div><div><div class="brand-name">MediCare</div><div class="brand-sub">Clinic care desk</div></div></div>
+    <div class="nav-label">Care menu</div>
+    <nav class="nav">
+      <a href="#" class="on"><span class="glyph"></span>Dashboard</a>
+      <a href="#"><span class="glyph"></span>Doctors</a>
+      <a href="#"><span class="glyph"></span>Appointments</a>
+      <a href="#"><span class="glyph"></span>Patients</a>
+      <a href="#"><span class="glyph"></span>Time Slots</a>
+      <a href="#"><span class="glyph"></span>Blogs</a>
+      <a href="#"><span class="glyph"></span>Comments</a>
+      <a href="#"><span class="glyph"></span>Departments</a>
+      <a href="#"><span class="glyph"></span>Settings</a>
+    </nav>
+    <div class="side-foot">Morning shift · front desk<br>132 visits on the books.</div>
+  </aside>
+
+  <main class="main">
+    <div class="toprow">
+      <div>
+        <div class="eyebrow">Thursday at the clinic</div>
+        <h1 class="greet serif">Good morning, <em>Admin.</em></h1>
+        <p class="dateline">Thursday, September 10, 2026 &middot; <strong>9 appointments today</strong> &middot; 2 still need a confirmation call</p>
+      </div>
+      <div class="actions"><a class="btn btn-solid" href="#">Add doctor</a><a class="btn btn-ghost" href="#">View appointments &rarr;</a></div>
+    </div>
+
+    <section class="dayline" aria-label="Clinic at a glance">
+      <div class="stat"><div class="num serif">24</div><div class="cap"><b>Doctors</b> across 6 departments</div><div class="mini">4 on duty today</div></div>
+      <div class="stat"><div class="num serif">132</div><div class="cap"><b>Appointments</b> in total &middot; 65% confirmed</div><div class="mini">12 pending &middot; 86 confirmed &middot; 28 completed &middot; 6 cancelled</div><div class="confbar"><i></i></div></div>
+      <div class="stat"><div class="num serif">48</div><div class="cap"><b>Blog posts</b> published</div><div class="mini">Patient education library</div></div>
+      <div class="stat"><div class="num serif">5</div><div class="cap"><b>Pending comments</b> to moderate</div><div class="mini">3 shown below</div></div>
+    </section>
+
+    <div class="cols">
+      <section class="card col-day" aria-label="Who is coming today">
+        <div class="q">Who is coming today?</div>
+        <h2 class="h-serif serif">The day, as people arrive.</h2>
+        <p class="lede">Follow the morning down the timeline. Two arrivals still need a kind confirmation call.</p>
+        <ol class="timeline">
+          <li class="t-item now">
+            <span class="t-rail">10:00 AM</span><span class="t-dot pending"></span>
+            <div class="t-name">Rahim Uddin <span class="age">&middot; 45 yrs &middot; +880 1711-000001</span></div>
+            <p class="t-sent">Rahim is waiting on confirmation for 10:00 with Dr. Ayesha Khan, Cardiology, Sep 10.</p>
+            <div class="t-row"><span class="status s-pending"><i></i>Pending &mdash; please call to confirm</span><a class="open" href="#">Open &rarr;</a></div>
+          </li>
+          <li class="t-item">
+            <span class="t-rail">10:30 AM</span><span class="t-dot"></span>
+            <div class="t-name">Fatema Begum <span class="age">&middot; 32 yrs &middot; +880 1711-000002</span></div>
+            <p class="t-sent">Fatema is confirmed for 10:30 with Dr. Tanvir Hasan, Orthopedics, Sep 10.</p>
+            <div class="t-row"><span class="status s-confirmed"><i></i>Confirmed</span><a class="open" href="#">Open &rarr;</a></div>
+          </li>
+          <li class="t-item">
+            <span class="t-rail">11:00 AM</span><span class="t-dot"></span>
+            <div class="t-name">Karim Sheikh <span class="age">&middot; 58 yrs &middot; +880 1711-000003</span></div>
+            <p class="t-sent">Karim is confirmed for 11:00 with Dr. Ayesha Khan, Cardiology, Sep 10.</p>
+            <div class="t-row"><span class="status s-confirmed"><i></i>Confirmed</span><a class="open" href="#">Open &rarr;</a></div>
+          </li>
+          <li class="t-item">
+            <span class="t-rail">11:30 AM</span><span class="t-dot pending"></span>
+            <div class="t-name">Salma Khatun <span class="age">&middot; 27 yrs &middot; +880 1711-000006</span></div>
+            <p class="t-sent">Salma is waiting on confirmation for 11:30 with Dr. Rafiq Ahmed, Neurology, Sep 10.</p>
+            <div class="t-row"><span class="status s-pending"><i></i>Pending &mdash; please call to confirm</span><a class="open" href="#">Open &rarr;</a></div>
+          </li>
+        </ol>
+        <div class="yesterday">
+          <div class="lbl">Yesterday, settled</div>
+          <ol class="timeline" style="margin-top:0">
+            <li class="t-item">
+              <span class="t-rail">03:30 PM</span><span class="t-dot cancelled"></span>
+              <div class="t-name">Jamal Hossain <span class="age">&middot; 51 yrs &middot; +880 1711-000005</span></div>
+              <p class="t-sent">Jamal&rsquo;s visit with Dr. Tanvir Hasan, Orthopedics, Sep 09 was cancelled.</p>
+              <div class="t-row"><span class="status s-cancelled"><i></i>Cancelled</span><a class="open" href="#">Open &rarr;</a></div>
+            </li>
+            <li class="t-item">
+              <span class="t-rail">04:00 PM</span><span class="t-dot done"></span>
+              <div class="t-name">Nasrin Akter <span class="age">&middot; 39 yrs &middot; +880 1711-000004</span></div>
+              <p class="t-sent">Nasrin saw Dr. Farhana Islam, Pediatrics, Sep 09 &mdash; visit done.</p>
+              <div class="t-row"><span class="status s-completed"><i></i>Completed</span><a class="open" href="#">Open &rarr;</a></div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <div class="col-side">
+        <section class="card" aria-label="Who needs a confirmation call">
+          <div class="q">Who needs a confirmation call?</div>
+          <h2 class="h-serif serif">Two calls before 10.</h2>
+          <div class="call-row"><div class="avatar amber">R</div><div><p><b>Rahim Uddin</b><span class="tag">Call first</span></p><p class="sub">10:00 AM &middot; Dr. Ayesha Khan &middot; Pending</p></div></div>
+          <div class="call-row"><div class="avatar amber">S</div><div><p><b>Salma Khatun</b><span class="tag">Call first</span></p><p class="sub">11:30 AM &middot; Dr. Rafiq Ahmed &middot; Pending</p></div></div>
+          <div class="card" style="border-style:dashed;margin-top:12px;padding:14px 16px;background:#FCFBF7" aria-label="Appointments by status">
+            <div class="q">The queue, honestly counted</div>
+            <div class="bar-row"><span>Pending</span><span class="track"><i style="width:14%;background:#C98A04"></i></span><span class="n">12</span></div>
+            <div class="bar-row"><span>Confirmed</span><span class="track"><i style="width:100%;background:#05d3b0"></i></span><span class="n">86</span></div>
+            <div class="bar-row"><span>Completed</span><span class="track"><i style="width:33%;background:#0E7A5F"></i></span><span class="n">28</span></div>
+            <div class="bar-row"><span>Cancelled</span><span class="track"><i style="width:7%;background:#B9B4A6"></i></span><span class="n">6</span></div>
+          </div>
+        </section>
+
+        <section class="card" aria-label="Who is on duty">
+          <div class="q">Who is on duty?</div>
+          <h2 class="h-serif serif">Familiar faces today.</h2>
+          <div class="duty"><div class="avatar">A</div><div class="who"><b>Dr. Ayesha Khan</b><span>Cardiology &middot; 42 appts</span></div><span class="pill on">On duty</span></div>
+          <div class="duty"><div class="avatar">T</div><div class="who"><b>Dr. Tanvir Hasan</b><span>Orthopedics &middot; 38 appts</span></div><span class="pill on">On duty</span></div>
+          <div class="duty"><div class="avatar">F</div><div class="who"><b>Dr. Farhana Islam</b><span>Pediatrics &middot; 31 appts</span></div><span class="pill on">On duty</span></div>
+          <div class="duty"><div class="avatar" style="background:#EFEEE8;border-color:var(--line);color:var(--grey)">R</div><div class="who"><b>Dr. Rafiq Ahmed</b><span>Neurology &middot; 21 appts</span></div><span class="pill off">Off duty</span></div>
+        </section>
+
+        <section class="card" aria-label="What are patients asking">
+          <div class="q">What are patients asking?</div>
+          <h2 class="h-serif serif">Listening in.</h2>
+          <div class="q-text"><blockquote>&ldquo;What are the visiting hours on Friday?&rdquo;</blockquote><cite>Hasan on &ldquo;5 Tips for Heart Health&rdquo;</cite></div>
+          <div class="q-text"><blockquote>&ldquo;Is Dr. Khan available tomorrow?&rdquo;</blockquote><cite>Mim on &ldquo;Understanding Diabetes&rdquo;</cite></div>
+          <div class="q-text"><blockquote>&ldquo;Great article, very helpful.&rdquo;</blockquote><cite>Arif on &ldquo;Child Vaccination Guide&rdquo;</cite></div>
+          <a class="cta" href="#">Moderate comments</a>
+          <p class="note">2 more comments waiting &middot; 5 pending in total.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

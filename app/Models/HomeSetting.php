@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class HomeSetting extends Model
 {
-        protected $fillable = [
+    protected $fillable = [
         'about_title',
         'about_description',
         'about_button_text',

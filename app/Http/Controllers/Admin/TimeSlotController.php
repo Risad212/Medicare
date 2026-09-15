@@ -14,6 +14,7 @@ class TimeSlotController extends Controller
     public function index()
     {
         $timeSlots = TimeSlot::orderBy('time')->get();
+
         return view('backend.timeslots.index', compact('timeSlots'));
     }
 
@@ -35,7 +36,7 @@ class TimeSlotController extends Controller
         ]);
 
         TimeSlot::create([
-            'time'   => $request->time,
+            'time' => $request->time,
             'status' => $request->has('status') ? 1 : 0,
         ]);
 
@@ -56,11 +57,11 @@ class TimeSlotController extends Controller
     public function update(Request $request, TimeSlot $timeSlot)
     {
         $request->validate([
-            'time' => 'required|string|unique:time_slots,time,' . $timeSlot->id,
+            'time' => 'required|string|unique:time_slots,time,'.$timeSlot->id,
         ]);
 
         $timeSlot->update([
-            'time'   => $request->time,
+            'time' => $request->time,
             'status' => $request->has('status') ? 1 : 0,
         ]);
 
@@ -73,6 +74,7 @@ class TimeSlotController extends Controller
     public function destroy(TimeSlot $timeSlot)
     {
         $timeSlot->delete();
+
         return back()->with('success', 'Time slot deleted successfully!');
     }
 }

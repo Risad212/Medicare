@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('age')->nullable();
             $table->tinyInteger('gender');
             $table->string('phone');
-            $table->tinyInteger('visit_type'); 
+            $table->tinyInteger('visit_type');
             $table->date('appointment_date');
 
             $table->tinyInteger('status')->default(0);

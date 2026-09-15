@@ -14,6 +14,7 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::latest()->get();
+
         return view('backend.departments.index', compact('departments'));
     }
 
@@ -35,9 +36,9 @@ class DepartmentController extends Controller
         ]);
 
         Department::create([
-            'name'        => $request->name,
+            'name' => $request->name,
             'description' => $request->description,
-            'status'      => $request->has('status') ? 1 : 0,
+            'status' => $request->has('status') ? 1 : 0,
         ]);
 
         return back()->with('success', 'Department added successfully!');
@@ -57,13 +58,13 @@ class DepartmentController extends Controller
     public function update(Request $request, Department $department)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:departments,name,' . $department->id,
+            'name' => 'required|string|max:255|unique:departments,name,'.$department->id,
         ]);
 
         $department->update([
-            'name'        => $request->name,
+            'name' => $request->name,
             'description' => $request->description,
-            'status'      => $request->has('status') ? 1 : 0,
+            'status' => $request->has('status') ? 1 : 0,
         ]);
 
         return back()->with('success', 'Department updated successfully!');
@@ -75,6 +76,7 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         $department->delete();
+
         return back()->with('success', 'Department deleted successfully!');
     }
 }

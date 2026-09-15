@@ -1,66 +1,77 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <div class="tile">
-            <div class="tile-title-w-btn">
-                <h3 class="tile-title">All Departments</h3>
-                <a href="{{ route('admin.departments.create') }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-plus"></i> Add New
-                </a>
-            </div>
 
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($departments as $department)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $department->name }}</td>
-                            <td>{{ Str::limit($department->description, 50) }}</td>
-                            <td>
-                                @if($department->status)
-                                    <span class="status-active">Active</span>
-                                @else
-                                    <span class="status-inactive">Inactive</span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('admin.departments.edit', $department->id) }}" class="btn btn-sm btn-info">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-                                <form action="{{ route('admin.departments.destroy', $department->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="text-center">No departments found.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="mc-head">
+    <div>
+        <p class="mc-kicker">MediCare · Structure</p>
+        <h1 class="mc-title">Depart<em>ments</em></h1>
+        <p class="mc-sub">Clinical units, their load, and availability.</p>
+    </div>
+    <div class="mc-head-acts">
+        <a href="{{ route('admin.departments.create') }}" class="mc-btn"><i class="bi bi-plus-lg"></i> Add department</a>
     </div>
 </div>
+
+@if(session('success'))
+    <div class="mb-4 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
+@endif
+
+<div class="mc-ecg"><span>Live register</span><svg viewBox="0 0 400 22" preserveAspectRatio="none"><polyline points="0,11 60,11 70,11 76,11 82,3 88,19 94,11 150,11 160,11 166,11 172,4 178,18 184,11 260,11 400,11" fill="none" stroke="#05d3b0" stroke-width="1.6"/></svg><span>{{ $departments->count() }} records</span></div>
+
+<div class="mc-card">
+    <div class="table-responsive">
+        <table class="mc-tbl">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Department</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @forelse($departments as $department)
+                @php
+                    $initials = implode('', array_slice(array_map(fn($w) => mb_substr($w, 0, 1), explode(' ', $department->name)), 0, 2));
+                    $av = ['t', 'a', 'b', 'r', ''][$loop->index % 5];
+                @endphp
+                <tr>
+                    <td class="mc-idx">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</td>
+                    <td>
+                        <div class="mc-who">
+                            <span class="mc-av b">{{ strtoupper($initials) }}</span>
+                            <span><b>{{ $department->name }}</b></span>
+                        </div>
+                    </td>
+                    <td>{{ Str::limit($department->description, 60) ?: '–' }}</td>
+                    <td>
+                        @if($department->status)
+                            <span class="mc-pill p-active"><i></i>Active</span>
+                        @else
+                            <span class="mc-pill p-inactive"><i></i>Inactive</span>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="mc-acts">
+                            <a href="{{ route('admin.departments.edit', $department->id) }}" class="mc-btn sm dark"><i class="bi bi-pencil"></i> Edit</a>
+                            <form action="{{ route('admin.departments.destroy', $department->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="mc-btn sm danger-ghost"><i class="bi bi-trash"></i> Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5"><div class="mc-empty"><b>Nothing on this chart</b>No departments found. Add the first unit to structure the clinic.</div></td>
+                </tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
 @endsection

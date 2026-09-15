@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-   public function up()
+    public function up()
     {
         Schema::table('blogs', function (Blueprint $table) {
             $table->string('category')->nullable()->after('author');

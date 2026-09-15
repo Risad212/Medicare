@@ -16,7 +16,7 @@ class ServiceSettingController extends Controller
     {
         $seo = SeoSetting::where('page', 'service')->first();
 
-       return view('backend.settings.service', compact(
+        return view('backend.settings.service', compact(
             'seo'
         ));
     }

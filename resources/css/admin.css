@@ -1,0 +1,259 @@
+@import "tailwindcss";
+
+/* ============================================================
+   MediCare admin — Tailwind v4 design system
+   Migrating the Vali (Bootstrap) + mc-* skin to one utility system.
+   Brand voice: "clinical calm" — teal #0b8f74 / bright #05d3b0,
+   zinc greys, Fraunces display + Public Sans body.
+   ============================================================ */
+
+@theme {
+    /* Brand */
+    --color-teal: #0b8f74;
+    --color-teal-dk: #0a7c63;
+    --color-bright: #05d3b0;
+    --color-wash: #e6faf5;
+
+    /* Ink / neutral scale */
+    --color-ink: #18181b;
+    --color-ink-2: #3f3f46;
+    --color-mut: #71717a;
+    --color-faint: #a1a1aa;
+    --color-panel: #fafafa;
+    --color-card: #ffffff;
+    --color-line: #e4e4e7;
+    --color-line-2: #f0f0f2;
+
+    /* Status */
+    --color-amber: #d97706;
+    --color-amber-dot: #d97706;
+    --color-amber-t: #92400e;
+    --color-amber-bg: #fef3c7;
+    --color-green: #03695c;
+    --color-green-t: #03695c;
+    --color-green-bg: #dcf7ef;
+    --color-grey: #52525b;
+    --color-grey-t: #52525b;
+    --color-grey-bg: #f1f1f3;
+    --color-red: #dc2626;
+    --color-red-t: #991b1b;
+    --color-red-bg: #fef2f2;
+    --color-blue: #1d4ed8;
+    --color-blue-t: #1d4ed8;
+    --color-blue-bg: #eff6ff;
+
+    /* Type */
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --default-font-family: var(--font-body);
+
+    /* Elevation */
+    --shadow-card: 0 1px 2px rgb(24 24 27 / 0.05), 0 6px 18px rgb(24 24 27 / 0.05);
+}
+
+@layer base {
+    body {
+        font-family: var(--font-body);
+        background-color: var(--color-panel);
+        color: var(--color-ink);
+        font-size: 14px;
+    }
+}
+
+@layer components {
+    /* ---- Page header ---- */
+    .mc-kicker { @apply text-xs font-bold uppercase tracking-widest text-teal-dk; }
+    .mc-title     { @apply font-display text-[34px] font-bold leading-[1.05] tracking-tight text-ink; }
+    .mc-title em  { @apply not-italic text-teal; }
+    .mc-sub       { @apply mt-2 max-w-[620px] text-mut; }
+    .mc-head      { @apply mb-1.5 flex flex-wrap items-end gap-4; }
+    .mc-head-acts { @apply flex flex-wrap gap-2.5 pb-0.5; }
+
+    /* ---- Card ---- */
+    .mc-card { @apply overflow-hidden rounded-xl border border-line bg-card shadow-card; }
+    .mc-card + .mc-card { @apply mt-4; }
+
+    /* ---- Calls-to-action ---- */
+    .mc-btn {
+        @apply inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[10px] border border-teal bg-teal px-5 py-2.5 font-body text-[14px] font-bold text-white shadow-card no-underline;
+    }
+    .mc-btn:hover { @apply border-teal-dk bg-teal-dk text-white no-underline; }
+    .mc-btn.ghost { @apply border-line bg-card text-ink shadow-none; }
+    .mc-btn.ghost:hover { @apply border-teal-dk text-teal-dk; }
+    .mc-btn.dark { @apply border-ink bg-ink; }
+    .mc-btn.dark:hover { @apply border-teal-dk bg-teal-dk text-white; }
+    .mc-btn.sm { @apply rounded-lg px-3 py-1.5 text-xs; }
+    .mc-btn.danger-ghost { @apply border-line bg-card text-red shadow-none; }
+    .mc-btn.danger-ghost:hover { @apply border-red text-red; }
+
+    /* ---- Toolbar ---- */
+    .mc-bar {
+        @apply mb-3.5 flex flex-wrap items-center gap-2.5 rounded-xl border border-line bg-card p-3 shadow-card;
+    }
+    .mc-search {
+        @apply flex min-w-[200px] flex-1 items-center gap-2 rounded-lg border border-line bg-white px-3;
+    }
+    .mc-search:focus-within { @apply border-teal; }
+    .mc-search input { @apply w-full bg-transparent py-2.5 font-body text-[14px] text-ink outline-none; }
+
+    /* ---- Data table ---- */
+    .mc-tbl   { @apply mb-0 w-full border-collapse text-[14px]; }
+    .mc-tbl th { @apply whitespace-nowrap border-b border-line bg-[#fcfcfd] px-4.5 py-2.5 text-left text-[11px] font-bold uppercase tracking-wider text-mut; }
+    .mc-tbl td { @apply border-b border-line-2 bg-card px-4.5 py-3 align-middle; }
+    .mc-tbl tbody tr { @apply transition-colors duration-150; }
+    .mc-tbl tbody tr:hover td { @apply bg-wash; }
+    .mc-tbl tbody tr:last-child td { @apply border-b-0; }
+    .mc-idx { @apply font-display text-[19px] font-normal tabular-nums text-faint; }
+    .mc-num { @apply tabular-nums font-semibold; }
+    .mc-acts { @apply flex flex-wrap justify-end gap-1.5; }
+    .mc-who   { @apply flex min-w-[160px] items-center gap-2.5; }
+    .mc-who b { @apply block text-[14px] text-ink; }
+    .mc-who .mc-sub2 { @apply text-xs text-mut; }
+    .mc-av { @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-grey-bg text-[13px] font-bold text-ink-2; }
+    .mc-av img { @apply h-full w-full rounded-full object-cover; }
+    .mc-av.t { @apply bg-teal text-white; }
+    .mc-av.a { @apply bg-amber-dot text-white; }
+    .mc-av.b { @apply bg-blue-t text-white; }
+    .mc-av.r { @apply bg-[#dc2626] text-white; }
+
+    .mc-empty { @apply py-11 text-center text-mut; }
+    .mc-empty b { @apply mb-1.5 block font-display text-[22px] font-bold text-ink; }
+    .mc-pg { @apply flex flex-wrap items-center justify-between gap-3 border-t border-line-2 px-4.5 py-3 text-[13px] text-mut; }
+
+    /* ---- Status pills ---- */
+    .mc-pill { @apply inline-flex items-center gap-1.75 whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold; }
+    .mc-pill i { @apply h-1.5 w-1.5 rounded-full bg-current font-normal; }
+    .p-pending { @apply bg-amber-bg text-amber-t; }
+    .p-confirmed, .p-active, .p-published, .p-paid, .p-completed { @apply bg-green-bg text-green-t; }
+    .p-cancelled, .p-inactive, .p-draft, .p-void { @apply bg-grey-bg text-grey-t; }
+    .p-urgent, .p-overdue { @apply bg-red-bg text-red-t; }
+    .p-info { @apply bg-blue-bg text-blue-t; }
+    .p-low { @apply border border-amber-bg text-amber-t; }
+
+    /* ---- Forms ---- */
+    .mc-grid { @apply grid grid-cols-[300px_1fr] items-start gap-4; }
+    .mc-side { @apply sticky top-4 rounded-xl bg-ink p-5 text-white shadow-card; }
+    .mc-side .k { @apply text-[11px] font-bold uppercase tracking-wider text-[#a1a1aa]; }
+    .mc-side h2 { @apply mb-1 mt-1.5 font-display text-2xl font-bold tracking-tight text-white; }
+    .mc-side p { @apply mb-4 text-[13px] text-[#d4d4d8]; }
+    .mc-avbig { @apply mb-3.5 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-teal text-[22px] font-bold; }
+    .mc-avbig img { @apply h-full w-full object-cover; }
+    .mc-steps { @apply mt-0 flex list-none flex-col gap-2.5 border-t border-[#3f3f46] p-0 pt-3.5; }
+    .mc-steps li { @apply flex items-center gap-2.5 text-[13px] text-[#d4d4d8]; }
+    .mc-steps .n { @apply flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border border-[#52525b] text-[11px] font-bold; }
+
+    .mc-sec { @apply mb-4 overflow-hidden rounded-xl border border-line bg-card shadow-card; }
+    .mc-sec-hd { @apply flex items-baseline gap-2.5 border-b border-line-2 bg-[#fcfcfd] px-4.5 py-3.5; }
+    .mc-sec-hd .no { @apply font-display text-xl font-bold text-teal; }
+    .mc-sec-hd h3 { @apply m-0 text-[15px] font-bold; }
+    .mc-sec-hd p { @apply m-0 ml-auto text-xs text-mut; }
+    .mc-sec-bd { @apply grid grid-cols-2 gap-x-4 gap-y-3.5 p-4.5; }
+    .mc-f { @apply flex flex-col gap-1.5; }
+    .mc-f.full { @apply col-span-2; }
+    .mc-f > label { @apply text-xs font-bold tracking-wide text-ink-2; }
+    .mc-f > label .req { @apply text-[#dc2626] not-italic; }
+    .mc-f input[type="text"], .mc-f input[type="email"], .mc-f input[type="password"],
+    .mc-f input[type="number"], .mc-f input[type="date"], .mc-f input[type="tel"],
+    .mc-f input[type="url"], .mc-f input[type="file"], .mc-f select, .mc-f textarea,
+    .mc-bar input[type="text"], .mc-bar input[type="search"], .mc-bar select,
+    .mc-sec-bd .form-control, .mc-sec-bd .form-select, .mc-bar .form-control,
+    .mc-bar .form-select {
+        @apply w-full rounded-lg border border-line bg-white px-3 py-2.5 font-body text-[14px] text-ink outline-none;
+    }
+    .mc-f input:focus, .mc-f select:focus, .mc-f textarea:focus,
+    .mc-sec-bd .form-control:focus, .mc-sec-bd .form-select:focus {
+        @apply border-teal;
+        box-shadow: 0 0 0 3px var(--color-wash);
+    }
+    .mc-sec-bd .form-control.is-invalid, .mc-sec-bd .form-select.is-invalid { @apply border-[#dc2626]; }
+    .mc-hint { @apply text-xs text-mut; }
+    .mc-check {
+        @apply flex cursor-pointer items-center gap-2.5 rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] font-semibold;
+    }
+    .mc-check input { @apply h-[17px] w-[17px] accent-teal; }
+    .mc-imgprev { @apply max-w-[220px] rounded-lg border border-line; }
+    .mc-formacts { @apply mt-0.5 flex flex-wrap gap-2.5; }
+
+    /* ---- Misc ---- */
+    .mc-note { @apply text-xs text-mut; }
+    .mc-alert { @apply rounded-lg text-[14px]; }
+    .mc-ecg { @apply my-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-faint; }
+}
+
+/* ============================================================
+   Layout — sidebar, header, content shell
+   -----------------------------------------------------------
+   main.js toggles body.sidenav-toggled (hamburger) and
+   body.is-expanded on .mc-treeview <li> elements.
+   ============================================================ */
+
+/* ---- Sidebar shell ---- */
+.mc-sidebar {
+    @apply fixed inset-y-0 left-0 z-20 w-[240px] overflow-y-auto border-r border-line bg-white pt-[68px] shadow-card transition-[left] duration-300 ease-in-out;
+}
+.mc-sidebar::-webkit-scrollbar { width: 5px; }
+.mc-sidebar::-webkit-scrollbar-thumb { background: var(--color-line-2); border-radius: 5px; }
+@media (max-width: 1023.98px) {
+    .mc-sidebar { left: -240px; }
+}
+@media print { .mc-sidebar { display: none; } }
+
+.mc-sidebar-overlay {
+    @apply fixed inset-0 z-10 hidden bg-black/20 backdrop-blur-[1px];
+}
+
+/* ---- Header ---- */
+.mc-header {
+    @apply fixed inset-x-0 top-0 z-30 flex h-[56px] items-center justify-between bg-teal-dk px-5 text-white;
+}
+@media (min-width: 1024px) {
+    .mc-header { padding-left: 0; }
+}
+@media print { .mc-header { display: none; } }
+
+/* ---- Content shell ---- */
+.mc-content {
+    @apply min-h-screen transition-[margin] duration-300 ease-in-out p-5;
+}
+@media (min-width: 1024px) {
+    .mc-content { margin-left: 240px; padding: 28px 32px 60px; }
+}
+
+/* ---- Toggle states (driven by main.js sidenav-toggled) ---- */
+@media (min-width: 1024px) {
+    body.sidenav-toggled .mc-content { margin-left: 0; }
+    body.sidenav-toggled .mc-sidebar { left: -240px; }
+}
+@media (max-width: 1023.98px) {
+    body.sidenav-toggled .mc-sidebar { left: 0; }
+    body.sidenav-toggled .mc-sidebar-overlay { @apply block; }
+    body.sidenav-toggled .mc-content { margin-left: 0; }
+}
+
+/* ---- Sidebar nav items ---- */
+.mc-nav { @apply flex flex-col gap-0.5 px-3 pb-10; }
+.mc-nav__group { @apply mt-5 mb-1.5 px-4 text-[11px] font-bold uppercase tracking-[0.08em] text-faint; }
+.mc-nav__item {
+    @apply flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-medium text-ink-2 transition-colors duration-150 hover:bg-line-2 hover:text-ink;
+}
+.mc-nav__item.active { @apply bg-wash text-teal-dk font-bold; }
+.mc-nav__item .mc-nav-icon { @apply h-5 w-5 shrink-0 text-mut; }
+.mc-nav__item.active .mc-nav-icon { @apply text-teal-dk; }
+.mc-nav__badge {
+    @apply ml-auto rounded-full bg-red-bg px-2 py-0.5 text-[11px] font-bold tabular-nums text-red-t;
+}
+
+/* Treeview expand/collapse (main.js toggles .is-expanded on parent <li>) */
+.mc-treeview > ul { @apply hidden; }
+.mc-treeview.is-expanded > ul { @apply block; }
+.mc-treeview > a .mc-chevron { @apply ml-auto h-3 w-3 rotate-0 text-faint transition-transform duration-200; }
+.mc-treeview.is-expanded > a .mc-chevron { @apply rotate-90; }
+.mc-treeview-item { @apply flex items-center gap-2.5 rounded-lg px-3 py-2 pl-10 text-[13px] text-ink-2 transition-colors duration-150 hover:bg-line-2 hover:text-ink no-underline; }
+.mc-treeview-item.active { @apply bg-wash text-teal-dk font-bold; }
+.mc-treeview-item .mc-dot { @apply h-1.5 w-1.5 shrink-0 rounded-full bg-current; }
+
+/* ---- User block in sidebar ---- */
+.mc-sidebar-user { @apply flex items-center gap-2.5 px-4 pb-4 pt-4; }
+.mc-sidebar-user-avatar { @apply h-9 w-9 shrink-0 rounded-full border border-line bg-wash object-cover; }
+.mc-sidebar-user-name { @apply m-0 truncate text-[14px] font-bold text-ink; }
+.mc-sidebar-user-role { @apply m-0 truncate text-[12px] text-mut; }

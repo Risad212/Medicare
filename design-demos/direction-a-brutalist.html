@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>MediCare — Ops Board / Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0 !important}
+:root{--teal:#05d3b0;--teal-dark:#046b5a;--ink:#000;--paper:#fff;--rule:#000;--amber:#9a6200;--amber-bg:#fdf0d3;--green:#046b5a;--green-bg:#d7f5ec;--grey:#5a5a5a;--grey-bg:#ececec;--red:#c8102e;}
+html{background:#d8d8d8}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.4;color:#000;background:#fff;max-width:1440px;margin:0 auto;min-height:900px;display:flex;-webkit-font-smoothing:antialiased}
+a{color:#000;text-decoration:underline;text-decoration-color:var(--teal);text-decoration-thickness:3px;text-underline-offset:3px;font-weight:700}
+a:hover{background:var(--teal);color:#000;text-decoration-color:#000}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.kicker .tick{display:inline-block;width:10px;height:10px;background:var(--teal);margin-right:8px;vertical-align:baseline}
+/* SIDEBAR */
+.sidebar{width:212px;flex:0 0 212px;background:#000;color:#fff;display:flex;flex-direction:column}
+.brand{padding:18px 16px 14px;border-bottom:1px solid #333}
+.brand .kicker{color:var(--teal);font-size:11px}
+.brand h1{font-family:Georgia,"Times New Roman",Times,serif;font-weight:900;font-size:30px;letter-spacing:-.03em;line-height:1;margin-top:4px}
+.brand h1 span{color:var(--teal)}
+.brand p{font-size:12px;color:#bbb;margin-top:4px}
+.sidebar nav{flex:1}
+.sidebar nav a{display:flex;justify-content:space-between;align-items:center;color:#fff;text-decoration:none;font-size:13px;font-weight:700;padding:11px 16px;border-bottom:1px solid #2a2a2a;text-transform:uppercase;letter-spacing:.06em}
+.sidebar nav a:hover{background:var(--teal);color:#000}
+.sidebar nav a.on{background:#fff;color:#000;box-shadow:inset 6px 0 0 var(--teal)}
+.sidebar nav a .n{font-size:12px;font-weight:800;background:transparent;border:1px solid currentColor;padding:0 6px;line-height:18px}
+.sidebar nav a .n.red{background:var(--red);border-color:var(--red);color:#fff}
+.side-foot{padding:14px 16px;border-top:1px solid #333;font-size:12px;color:#bbb}
+.side-foot strong{color:#fff}
+/* MAIN */
+.main{flex:1;min-width:0;background:#fff}
+.masthead{border-bottom:1px solid #000;padding:12px 28px 0}
+.mast-row{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.date-line{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.date-line b{background:#000;color:#fff;padding:2px 8px;margin-left:8px}
+.actions{display:flex;gap:0;border:1px solid #000}
+.actions a{padding:10px 18px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;text-decoration:none}
+.actions a+a{border-left:1px solid #000}
+.actions a.solid{background:#000;color:#fff;text-decoration:none}
+.actions a.solid:hover{background:var(--teal);color:#000}
+.actions a.line:hover{background:var(--teal);color:#000}
+h2.giant{font-family:Georgia,"Times New Roman",Times,serif;font-weight:900;font-size:clamp(64px,7.2vw,112px);line-height:.88;letter-spacing:-.045em;margin:10px 0 6px}
+h2.giant em{font-style:normal;background:var(--teal);padding:0 12px}
+.dek{display:flex;align-items:baseline;gap:18px;border-top:1px solid #000;border-bottom:1px solid #000;padding:8px 0;margin-bottom:0}
+.dek p{font-size:14px}
+.dek p strong{font-size:14px}
+.dek .flag{margin-left:auto;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+/* CENSUS */
+.census{display:grid;grid-template-columns:1.1fr 1.6fr 1fr 1fr;border-bottom:1px solid #000}
+.cell{padding:12px 20px 14px;border-right:1px solid #000;position:relative}
+.cell:last-child{border-right:0}
+.cell .num{font-family:Georgia,Times,serif;font-weight:900;font-size:72px;line-height:.95;letter-spacing:-.05em}
+.cell .num small{font-size:20px;letter-spacing:0;vertical-align:super}
+.cell .cap{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
+.cell .sub{font-size:12px;color:#222;margin-top:2px}
+.cell .bar-mini{height:8px;background:#000;margin-top:8px;position:relative}
+.cell .bar-mini i{position:absolute;left:0;top:0;bottom:0;background:var(--teal)}
+.cell.appts .num{font-size:84px}
+.appt-mix{font-size:12px;font-weight:700;margin-top:6px;letter-spacing:.02em}
+.appt-mix s{text-decoration:none;border-bottom:3px solid var(--teal)}
+.red-dot{display:inline-block;width:8px;height:8px;background:var(--red);margin-right:6px}
+/* LEDGER */
+.ledger-head{display:flex;align-items:center;gap:16px;padding:12px 28px 10px}
+.ledger-head h3{font-family:Georgia,Times,serif;font-weight:900;font-size:34px;letter-spacing:-.03em;line-height:1}
+.ledger-head .kicker{margin-bottom:4px;display:block}
+.ledger-head .right{margin-left:auto;font-size:12px;font-weight:700}
+table.ledger{width:100%;border-collapse:collapse;border-top:1px solid #000;border-bottom:1px solid #000;font-size:14px}
+table.ledger th{font-size:12px;text-transform:uppercase;letter-spacing:.12em;text-align:left;padding:8px 12px 8px 28px;border-bottom:1px solid #000;background:#f4f4f4}
+table.ledger th+th,table.ledger td+td{padding-left:12px}
+table.ledger td{padding:9px 12px;border-bottom:1px solid #000;vertical-align:middle}
+table.ledger tr:last-child td{border-bottom:0}
+table.ledger tr:hover td{background:#f6fffd}
+.pt{display:flex;gap:10px;align-items:center}
+.av{width:32px;height:32px;flex:0 0 32px;border-radius:50% !important;border:1.5px solid #000;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;background:#fff}
+.av.t{background:#000;color:#fff}
+.pt b{display:block;font-size:14px}
+.pt span{display:block;font-size:12px;color:#333}
+.dr b{display:block;font-size:14px}
+.dr span{display:block;font-size:12px;color:#333}
+.slot b{display:block}
+.slot span{font-size:12px;color:#333}
+.badge{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid #000;padding:2px 8px;white-space:nowrap}
+.badge.pending{color:var(--amber);border-color:var(--amber);background:var(--amber-bg)}
+.badge.confirmed{color:var(--green);border-color:var(--green);background:var(--green-bg)}
+.badge.completed{color:#000;border-color:#000;background:var(--teal)}
+.badge.cancelled{color:var(--grey);border-color:var(--grey);background:var(--grey-bg)}
+.open-link{font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+/* LOWER GRID */
+.lower{display:grid;grid-template-columns:1.15fr 1fr 1.1fr;border-bottom:1px solid #000}
+.col{padding:14px 20px 16px;border-right:1px solid #000}
+.col:last-child{border-right:0}
+.col h4{font-family:Georgia,Times,serif;font-size:24px;font-weight:900;letter-spacing:-.02em;line-height:1;margin:4px 0 12px}
+.barrow{margin-bottom:12px}
+.barrow .lab{display:flex;justify-content:space-between;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.barrow .track{height:18px;border:1.5px solid #000;background:#fff;position:relative}
+.barrow .fill{position:absolute;left:0;top:0;bottom:0}
+.barrow small{font-size:12px;color:#333}
+.doc{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #000}
+.doc:last-child{border-bottom:1px solid #000}
+.doc .who{flex:1}
+.doc .who b{font-size:14px}
+.doc .who span{display:block;font-size:12px;color:#333}
+.dot{width:10px;height:10px;flex:0 0 10px}
+.dot.on{background:var(--teal);border:1px solid #000}
+.dot.off{background:#fff;border:1px solid #000}
+.st{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.st.on{color:var(--teal-dark)}
+.st.off{color:var(--grey)}
+.cmt{border-top:1px solid #000;padding:8px 0}
+.cmt:last-of-type{border-bottom:1px solid #000}
+.cmt q{font-family:Georgia,Times,serif;font-size:15px;font-weight:700;quotes:"“" "”";display:block}
+.cmt p{font-size:12px;margin-top:2px}
+.cta{display:inline-block;margin-top:12px;background:#000;color:#fff;text-decoration:none;text-transform:uppercase;letter-spacing:.06em;font-size:13px;padding:10px 16px}
+.cta:hover{background:var(--teal);color:#000}
+.cta.red{background:var(--red);color:#fff}
+.cta.red:hover{background:#000;color:#fff}
+.footer{display:flex;justify-content:space-between;padding:10px 28px;font-size:12px;color:#333;font-weight:600}
+.footer b{color:#000}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand"><div class="kicker">Medicare · Hospital OS</div><h1>MEDI<span>CARE</span></h1><p>Admin ops board · v3.0</p></div>
+  <nav>
+    <a href="#" class="on">Dashboard <span class="n">→</span></a>
+    <a href="#">Doctors <span class="n">24</span></a>
+    <a href="#">Appointments <span class="n">132</span></a>
+    <a href="#">Patients <span class="n">—</span></a>
+    <a href="#">Time Slots <span class="n">—</span></a>
+    <a href="#">Blogs <span class="n">48</span></a>
+    <a href="#">Comments <span class="n red">5</span></a>
+    <a href="#">Departments <span class="n">6</span></a>
+    <a href="#">Settings <span class="n">→</span></a>
+  </nav>
+  <div class="side-foot"><strong>Front desk</strong> · Dhaka<br>Offline file · 1440 × 900</div>
+</aside>
+<div class="main">
+  <div class="masthead">
+    <div class="mast-row">
+      <div class="date-line"><span class="kicker"><span class="tick"></span>Ops board — Thursday, September 10, 2026</span></div>
+      <div class="actions"><a href="#" class="line">+ Add doctor</a><a href="#" class="solid">View appointments ↓</a></div>
+    </div>
+    <h2 class="gigantic giant">Good morning, <em>Admin.</em></h2>
+    <div class="dek">
+      <p><strong>Thursday, September 10, 2026 · 9 appointments today.</strong> Morning rush: 2 pending approvals, 5 comments need moderation.</p>
+      <span class="flag"><span class="red-dot"></span>Action required: 7 items</span>
+    </div>
+  </div>
+  <section class="census">
+    <div class="cell"><div class="num">24</div><div class="cap">Doctors</div><div class="sub">across 6 departments</div><div class="bar-mini"><i style="width:80%"></i></div></div>
+    <div class="cell appts"><div class="num">132<small> total</small></div><div class="cap">Appointments</div><div class="appt-mix"><s>12 pending</s> · 86 confirmed · 28 completed · 6 cancelled · <strong>65% confirmed</strong></div></div>
+    <div class="cell"><div class="num">48</div><div class="cap">Blog posts</div><div class="sub">published &amp; live</div><div class="bar-mini"><i style="width:48%"></i></div></div>
+    <div class="cell"><div class="num">5</div><div class="cap"><span class="red-dot"></span>Pending comments</div><div class="sub">needs moderation — <a href="#">Moderate</a></div></div>
+  </section>
+  <div class="ledger-head">
+    <div><span class="kicker"><span class="tick"></span>Section 03 — The ledger</span><h3>Recent appointments.</h3></div>
+    <div class="right">6 latest rows · ruled like the register book · <a href="#">Open full ledger →</a></div>
+  </div>
+  <table class="ledger">
+    <thead><tr><th>Patient</th><th>Doctor / Dept</th><th>Date · Slot</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <tr><td><div class="pt"><span class="av">R</span><div><b>Rahim Uddin</b><span>+880 1712-440981 · 45y</span></div></div></td><td><div class="dr"><b>Dr. Ayesha Khan</b><span>Cardiology</span></div></td><td><div class="slot"><b>Sep 10</b><span>10:00 AM</span></div></td><td><span class="badge pending">Pending</span></td><td><a class="open-link" href="#">Open →</a></td></tr>
+      <tr><td><div class="pt"><span class="av">F</span><div><b>Fatema Begum</b><span>+880 1813-229174 · 32y</span></div></div></td><td><div class="dr"><b>Dr. Tanvir Hasan</b><span>Orthopedics</span></div></td><td><div class="slot"><b>Sep 10</b><span>10:30 AM</span></div></td><td><span class="badge confirmed">Confirmed</span></td><td><a class="open-link" href="#">Open →</a></td></tr>
+      <tr><td><div class="pt"><span class="av">K</span><div><b>Karim Sheikh</b><span>+880 1914-883205 · 51y</span></div></div></td><td><div class="dr"><b>Dr. Ayesha Khan</b><span>Cardiology</span></div></td><td><div class="slot"><b>Sep 10</b><span>11:00 AM</span></div></td><td><span class="badge confirmed">Confirmed</span></td><td><a class="open-link" href="#">Open →</a></td></tr>
+      <tr><td><div class="pt"><span class="av t">N</span><div><b>Nasrin Akter</b><span>+880 1611-509342 · 28y</span></div></td><td><div class="dr"><b>Dr. Farhana Islam</b><span>Pediatrics</span></div></td><td><div class="slot"><b>Sep 09</b><span>04:00 PM</span></div></td><td><span class="badge completed">Completed</span></td><td><a class="open-link" href="#">Open →</a></td></tr>
+      <tr><td><div class="pt"><span class="av">J</span><div><b>Jamal Hossain</b><span>+880 1512-776018 · 60y</span></div></td><td><div class="dr"><b>Dr. Tanvir Hasan</b><span>Orthopedics</span></div></td><td><div class="slot"><b>Sep 09</b><span>03:30 PM</span></div></td><td><span class="badge cancelled">Cancelled</span></td><td><a class="open-link" href="#">Open →</a></td></tr>
+      <tr><td><div class="pt"><span class="av">S</span><div><b>Salma Khatun</b><span>+880 1719-334562 · 37y</span></div></div></td><td><div class="dr"><b>Dr. Rafiq Ahmed</b><span>Neurology</span></div></td><td><div class="slot"><b>Sep 10</b><span>11:30 AM</span></div></td><td><span class="badge pending">Pending</span></td><td><a class="open-link" href="#">Open →</a></td></tr>
+    </tbody>
+  </table>
+  <section class="lower">
+    <div class="col">
+      <span class="kicker"><span class="tick"></span>Section 04 — Mix</span>
+      <h4>Appointments by status.</h4>
+      <div class="barrow"><div class="lab"><span>Pending</span><span>12</span></div><div class="track"><div class="fill" style="width:14%;background:#c98a00"></div></div><small>9% of 132</small></div>
+      <div class="barrow"><div class="lab"><span>Confirmed</span><span>86</span></div><div class="track"><div class="fill" style="width:100%;background:#05d3b0"></div></div><small>65% of 132</small></div>
+      <div class="barrow"><div class="lab"><span>Completed</span><span>28</span></div><div class="track"><div class="fill" style="width:33%;background:#000"></div></div><small>21% of 132</small></div>
+      <div class="barrow"><div class="lab"><span>Cancelled</span><span>6</span></div><div class="track"><div class="fill" style="width:7%;background:#8a8a8a"></div></div><small>5% of 132</small></div>
+    </div>
+    <div class="col">
+      <span class="kicker"><span class="tick"></span>Section 05 — Roster</span>
+      <h4>Doctors on duty.</h4>
+      <div class="doc"><span class="av">A</span><div class="who"><b>Dr. Ayesha Khan</b><span>Cardiology · 42 appts</span></div><span class="st on"><span class="dot on" style="display:inline-block;vertical-align:middle"></span> Active</span></div>
+      <div class="doc"><span class="av">T</span><div class="who"><b>Dr. Tanvir Hasan</b><span>Orthopedics · 38 appts</span></div><span class="st on"><span class="dot on" style="display:inline-block;vertical-align:middle"></span> Active</span></div>
+      <div class="doc"><span class="av">F</span><div class="who"><b>Dr. Farhana Islam</b><span>Pediatrics · 31 appts</span></div><span class="st on"><span class="dot on" style="display:inline-block;vertical-align:middle"></span> Active</span></div>
+      <div class="doc"><span class="av">R</span><div class="who"><b>Dr. Rafiq Ahmed</b><span>Neurology · 21 appts</span></div><span class="st off"><span class="dot off" style="display:inline-block;vertical-align:middle"></span> Off duty</span></div>
+    </div>
+    <div class="col">
+      <span class="kicker"><span class="tick"></span>Section 06 — Inbox</span>
+      <h4>Pending comments (5).</h4>
+      <div class="cmt"><q>What are the visiting hours on Friday?</q><p><strong>Hasan</strong> on <a href="#">5 Tips for Heart Health</a></p></div>
+      <div class="cmt"><q>Is Dr. Khan available tomorrow?</q><p><strong>Mim</strong> on <a href="#">Understanding Diabetes</a></p></div>
+      <div class="cmt"><q>Great article, very helpful.</q><p><strong>Arif</strong> on <a href="#">Child Vaccination Guide</a></p></div>
+      <a class="cta red" href="#">Moderate comments →</a>
+    </div>
+  </section>
+  <div class="footer"><span><b>RULE No.1</b> — status is the only colour on this sheet.</span><span>Set in system type · teal #05d3b0 · red = action only</span></div>
+</div>
+</body>
+</html>

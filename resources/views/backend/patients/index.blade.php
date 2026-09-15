@@ -2,136 +2,86 @@
 
 @section('content')
 
-<div class="row">
-    <div class="col-md-12">
+<div class="mc-head">
+    <div>
+        <p class="mc-kicker">MediCare · Records</p>
+        <h1 class="mc-title">Pati<em>ents</em></h1>
+        <p class="mc-sub">Registered patients and how active their care is.</p>
+    </div>
+    <div class="mc-head-acts">
+        <a href="{{ route('admin.patients.create') }}" class="mc-btn"><i class="bi bi-plus-lg"></i> Add patient</a>
+        <a href="{{ route('admin.exports.patients') }}" class="mc-btn ghost"><i class="bi bi-download"></i> Export CSV</a>
+    </div>
+</div>
 
-        <div class="tile">
+@if(session('success'))
+    <div class="mb-3 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
+@endif
 
-            <div class="tile-title-w-btn d-flex justify-content-between align-items-center mb-3">
+<div class="mc-ecg"><span>Live register</span><svg viewBox="0 0 400 22" preserveAspectRatio="none"><polyline points="0,11 60,11 70,11 76,11 82,3 88,19 94,11 150,11 160,11 166,11 172,4 178,18 184,11 260,11 400,11" fill="none" stroke="#05d3b0" stroke-width="1.6"/></svg><span>{{ $patients->total() }} records</span></div>
 
-                <h3 class="tile-title mb-0">All Patients</h3>
+<div class="mc-bar">
+    <form action="{{ route('admin.patients.index') }}" method="GET" class="mc-search flex-1">
+        <i class="bi bi-search text-faint"></i>
+        <input type="text" name="search" placeholder="Search patient…" value="{{ request('search') }}" autocomplete="off">
+    </form>
+</div>
 
-                <form action="{{ route('admin.patients.index') }}" method="GET" class="d-flex">
-                    <input type="text"
-                           name="search"
-                           style="width: 300px;"
-                           class="form-control me-2"
-                           placeholder="Search patient..."
-                           value="{{ request('search') }}">
-                </form>
-
-            </div>
-
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <div class="table-responsive">
-
-                <table class="table table-bordered">
-
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Gender</th>
-                            <th>Date of Birth</th>
-                            <th>Registered</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                    @forelse($patients as $key => $patient)
-
-                        <tr>
-
-                            <td>
-                                {{ $patients->firstItem() + $key }}
-                            </td>
-
-                            <td>
-                                {{ $patient->name }}
-                            </td>
-
-                            <td>
-                                {{ $patient->email }}
-                            </td>
-
-                            <td>
-                                {{ $patient->phone ?? 'N/A' }}
-                            </td>
-
-                            <td>
-                                {{ $patient->gender ? ucfirst($patient->gender) : 'N/A' }}
-                            </td>
-
-                            <td>
-                                {{ $patient->date_of_birth ?? 'N/A' }}
-                            </td>
-
-                            <td>
-                                {{ $patient->created_at->format('Y-m-d') }}
-                            </td>
-
-                            <td>
-
-                               <a href="{{ route('admin.patients.show', $patient->id) }}"
-                                  class="btn btn-sm btn-info">
-                                    View
-                                </a>
-                                <a href="{{ route('admin.patients.edit', $patient->id) }}"
-                                   class="btn btn-sm btn-primary">
-                                    Edit
-                                </a>
-
-                                <form action="{{ route('admin.patients.destroy', $patient->id) }}"
-                                      method="POST"
-                                      style="display:inline;">
-
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button type="submit"
-                                            class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Are you sure you want to delete this patient?')">
-                                        Delete
-                                    </button>
-
-                                </form>
-
-                            </td>
-
-                        </tr>
-
-                    @empty
-
-                        <tr>
-                            <td colspan="8" class="text-center">
-                                No patients found.
-                            </td>
-                        </tr>
-
-                    @endforelse
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-            {{-- Pagination --}}
-            <div class="mt-3 table-pagination">
-                {{ $patients->links() }}
-            </div>
-
-        </div>
-
+<div class="mc-card">
+    <div class="table-responsive">
+        <table class="mc-tbl">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Patient</th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>Date of birth</th>
+                    <th>Registered</th>
+                    <th class="text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            @forelse($patients as $key => $patient)
+                @php
+                    $initials = implode('', array_slice(array_map(fn($w) => mb_substr($w, 0, 1), explode(' ', $patient->name)), 0, 2));
+                    $av = ['t', 'a', 'b', 'r', ''][$key % 5];
+                @endphp
+                <tr>
+                    <td class="mc-idx">{{ $patients->firstItem() + $key }}</td>
+                    <td>
+                        <div class="mc-who">
+                            <span class="mc-av {{ $av }}">{{ strtoupper($initials) }}</span>
+                            <span><b>{{ $patient->name }}</b><span class="mc-sub2">{{ $patient->email }}</span></span>
+                        </div>
+                    </td>
+                    <td class="mc-num">{{ $patient->phone ?? 'N/A' }}</td>
+                    <td>{{ $patient->gender ? ucfirst($patient->gender) : 'N/A' }}</td>
+                    <td class="mc-num">{{ $patient->date_of_birth ?? 'N/A' }}</td>
+                    <td class="mc-num">{{ $patient->created_at->format('Y-m-d') }}</td>
+                    <td>
+                        <div class="mc-acts">
+                            <a href="{{ route('admin.patients.show', $patient->id) }}" class="mc-btn sm">View</a>
+                            <a href="{{ route('admin.patients.edit', $patient->id) }}" class="mc-btn sm dark">Edit</a>
+                            <form action="{{ route('admin.patients.destroy', $patient->id) }}" method="POST" >
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="mc-btn sm danger-ghost" onclick="return confirm('Are you sure you want to delete this patient?')">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7"><div class="mc-empty"><b>Nothing on this chart</b>No patients found.</div></td>
+                </tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
+    <div class="mc-pg">
+        <span>Showing {{ $patients->firstItem() ?? 0 }}–{{ $patients->lastItem() ?? 0 }} of {{ $patients->total() }}</span>
+        {{ $patients->links() }}
     </div>
 </div>
 

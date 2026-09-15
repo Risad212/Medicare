@@ -9,17 +9,17 @@ use App\Models\SeoSetting;
 class DoctorController extends Controller
 {
     public function index()
-      {
-        $doctors = Doctor::latest()->paginate(12);
-        $seo     = SeoSetting::where('page', 'doctor')->first();
+    {
+        $doctors = Doctor::where('status', 1)->latest()->paginate(12);
+        $seo = SeoSetting::where('page', 'doctor')->first();
 
         return view('frontend.doctor', compact('doctors', 'seo'));
-     }
+    }
 
     public function show($id)
     {
-        $doctor = Doctor::findOrFail($id);
+        $doctor = Doctor::where('id', $id)->where('status', 1)->firstOrFail();
+
         return view('frontend.doctors.show', compact('doctor'));
     }
-
 }

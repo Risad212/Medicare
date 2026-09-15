@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('button_text')->nullable();
             $table->string('bg_image')->nullable();
             $table->timestamps();
-       });
+        });
     }
 
     /**

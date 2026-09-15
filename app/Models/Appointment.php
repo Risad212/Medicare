@@ -3,9 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Doctor;
-use App\Models\TimeSlot;
-use App\Models\User;
 
 class Appointment extends Model
 {
@@ -22,7 +19,26 @@ class Appointment extends Model
         'appointment_date',
         'time_slot_id',
         'status',
+        'reminder_sent_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'appointment_date' => 'date:Y-m-d',
+        ];
+    }
+
+    public const VISIT_TYPES = [
+        1 => 'First Visit',
+        2 => 'Second Visit',
+        3 => 'Report Review',
+    ];
+
+    public function getVisitTypeLabelAttribute(): string
+    {
+        return self::VISIT_TYPES[(int) $this->visit_type] ?? 'N/A';
+    }
 
     /**
      * Appointment belongs to a User

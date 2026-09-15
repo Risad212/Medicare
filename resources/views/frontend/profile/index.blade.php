@@ -57,6 +57,18 @@
                 </button>
             </li>
 
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link"
+                    id="lab-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#lab-reports"
+                    type="button"
+                    role="tab">
+                    My Lab Reports
+                </button>
+            </li>
+
         </ul>
 
         {{-- Tab Content --}}
@@ -86,12 +98,10 @@
                             @else
 
                                 <div
-                                    class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3"
-                                    style="width:110px;height:110px;">
+                                    class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                                    style="width:110px;height:110px;background:linear-gradient(135deg,#05d3b0 0%,#049f84 100%);color:#fff;font-size:2.75rem;font-weight:800;box-shadow:0 10px 24px rgba(5,211,176,.35);border:4px solid #d6f5ef;">
 
-                                    <span class="fs-1 text-muted">
-                                        {{ strtoupper(substr($user->name, 0, 1)) }}
-                                    </span>
+                                    {{ $user->name ? strtoupper(mb_substr($user->name, 0, 1)) : '?' }}
 
                                 </div>
 
@@ -129,6 +139,12 @@
                                 </p>
 
                             </div>
+
+                            <a
+                                href="{{ route('profile.blood-requests') }}"
+                                class="btn btn-outline-primary w-100 mb-2">
+                                My Blood Requests
+                            </a>
 
                             <form
                                 action="{{ route('logout') }}"
@@ -413,18 +429,20 @@
 
                                                 {{-- Specific Time Slot --}}
                                                 <td>
-                                                    @if($appointment->timeSlot)
-                                                        {{ \Carbon\Carbon::parse($appointment->timeSlot->start_time)->format('h:i A') }}
-                                                        -
-                                                        {{ \Carbon\Carbon::parse($appointment->timeSlot->end_time)->format('h:i A') }}
-                                                    @else
-                                                        N/A
-                                                    @endif
+                                                    {{ $appointment->timeSlot->time ?? 'N/A' }}
                                                 </td>
 
                                                 {{-- Visit Type --}}
                                                 <td>
-                                                    {{ ucfirst($appointment->visit_type ?? 'N/A') }}
+                                                    @if($appointment->visit_type == 1)
+                                                        First Visit
+                                                    @elseif($appointment->visit_type == 2)
+                                                        Second Visit
+                                                    @elseif($appointment->visit_type == 3)
+                                                        Report Review
+                                                    @else
+                                                        N/A
+                                                    @endif
                                                 </td>
 
                                                 {{-- Status --}}
@@ -434,6 +452,18 @@
 
                                                         <span class="badge bg-success">
                                                             Confirmed
+                                                        </span>
+
+                                                    @elseif($appointment->status == 2)
+
+                                                        <span class="badge" style="background:#05d3b0;color:#fff">
+                                                            Completed
+                                                        </span>
+
+                                                    @elseif($appointment->status == 3)
+
+                                                        <span class="badge bg-secondary">
+                                                            Cancelled
                                                         </span>
 
                                                     @else
@@ -461,7 +491,9 @@
                                                     @elseif($appointment->status == 1)
                                                         <span class="badge bg-success">Approved</span>
                                                     @elseif($appointment->status == 2)
-                                                        <span class="badge bg-danger">Cancelled</span>
+                                                        <span class="badge" style="background:#05d3b0;color:#fff">Completed</span>
+                                                    @elseif($appointment->status == 3)
+                                                        <span class="badge bg-secondary">Cancelled</span>
                                                     @endif
                                                 </td>
 
@@ -500,6 +532,103 @@
                     </div>
 
                 </div>
+
+            </div>
+
+            {{-- ================= LAB REPORTS ================= --}}
+            <div
+                class="tab-pane fade"
+                id="lab-reports"
+                role="tabpanel">
+
+                @if($labOrders->count())
+
+                    @foreach($labOrders as $labOrder)
+
+                        <div class="card border-0 shadow-sm mb-4">
+
+                            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">
+                                    Lab Request #{{ $labOrder->id }}
+                                    <span class="text-muted fw-normal">
+                                        &middot; {{ $labOrder->created_at->format('d M Y') }}
+                                    </span>
+                                </h6>
+                                @if($labOrder->status === 'pending')
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                @elseif($labOrder->status === 'in-progress')
+                                    <span class="badge bg-info text-dark">In Progress</span>
+                                @elseif($labOrder->status === 'completed')
+                                    <span class="badge bg-success">Completed</span>
+                                @else
+                                    <span class="badge bg-secondary">Cancelled</span>
+                                @endif
+                            </div>
+
+                            <div class="card-body">
+
+                                <p class="mb-2">
+                                    <strong>Requested by:</strong>
+                                    {{ $labOrder->doctor->name ?? 'N/A' }}
+                                    @if($labOrder->note)
+                                        <br><span class="text-muted small">{{ $labOrder->note }}</span>
+                                    @endif
+                                </p>
+
+                                <div class="mb-3">
+                                    @foreach($labOrder->items as $item)
+                                        <span class="badge me-1" style="background:#05d3b0;color:#fff;">{{ $item->test->name ?? 'Removed test' }}</span>
+                                    @endforeach
+                                </div>
+
+                                <div class="text-end mb-3">
+                                    <a href="{{ route('profile.lab-orders.pdf', $labOrder->id) }}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-file-earmark-pdf"></i> Report PDF
+                                    </a>
+                                </div>
+
+                                @if($labOrder->reports->count())
+                                    <h6 class="mt-3 mb-2">Results</h6>
+                                    @foreach($labOrder->reports as $report)
+                                        <div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2">
+                                            <div>
+                                                <strong>{{ $report->report_name }}</strong>
+                                                @if($report->notes)
+                                                    <div class="text-muted small">{{ $report->notes }}</div>
+                                                @endif
+                                            </div>
+                                            <a href="{{ route('profile.lab-reports.download', $report->id) }}" class="btn btn-sm btn-primary">
+                                                <i class="bi bi-download"></i> Download
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <p class="text-muted mb-0 small">
+                                        Results not available yet.
+                                    </p>
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    @endforeach
+
+                @else
+
+                    <div class="text-center py-5">
+
+                        <h5>
+                            No Lab Reports Found
+                        </h5>
+
+                        <p class="text-muted">
+                            When a doctor orders lab tests for you, the results will appear here.
+                        </p>
+
+                    </div>
+
+                @endif
 
             </div>
 

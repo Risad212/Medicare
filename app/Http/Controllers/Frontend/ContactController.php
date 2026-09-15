@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Mail\ContactFormMail;
-use Illuminate\Support\Facades\Mail;
 use App\Models\SeoSetting;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {

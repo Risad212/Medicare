@@ -1,61 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Vali is a responsive and free dashboard theme/template built with Bootstrap 5, SASS and PUG.js.">
-    <!-- Twitter meta-->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:site" content="@pratikborsadiya">
-    <meta property="twitter:creator" content="@pratikborsadiya">
-    <!-- Open Graph Meta-->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Vali Admin">
-    <meta property="og:title" content="">
-    <meta property="og:url" content="http://pratikborsadiya.in/vali-admin">
-    <meta property="og:image" content="http://pratikborsadiya.in/blog/vali-admin/hero-social.png">
-    <meta property="og:description" content="Vali is a responsive and free dashboard theme/template built with Bootstrap 5, SASS and PUG.js.">
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'Laravel') }} — Admin</title>
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- SUMMERNOTE CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('backend-assets/css/main.css') }}">
+    <!-- Summernote (WYSIWYG editor) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs5.min.css">
 
-    <!-- Font-icon css-->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Tailwind v4 admin theme -->
+    @vite(['resources/css/admin.css'])
 </head>
 
-<body class="app sidebar-mini">
+<body class="app bg-panel text-ink antialiased">
+
     @includeIf('backend.layouts.partial.header')
 
-    <main class="app-content">
-        <div class="app-title">
-            <div>
-                <h1><i class="bi bi-speedometer"></i> Dashboard</h1>
-                <p>A free and open source Bootstrap 5 admin template</p>
-            </div>
-            <ul class="app-breadcrumb breadcrumb">
-                <li class="breadcrumb-item"><i class="bi bi-house-door fs-6"></i></li>
-                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-            </ul>
-        </div>
-
+    <main id="mc-content" class="mc-content bg-panel">
         @yield('content')
     </main>
 
-
-    <!-- Essential javascripts for application to work-->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="{{ asset('backend-assets/js/bootstrap.min.js') }}"></script>
+    <!-- jQuery (kept for main.js search filters + Summernote) -->
+    <script src="{{ asset('backend-assets/js/jquery-3.7.0.min.js') }}"></script>
+    <!-- Bootstrap 5 JS (dropdowns, modals, tabs) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- Main (sidebar toggle, treeview expand, page search filters) -->
     <script src="{{ asset('backend-assets/js/main.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <!-- Summernote -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs5.min.js"></script>
 </body>
 
 </html>

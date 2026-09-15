@@ -34,16 +34,17 @@ class PatientController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'phone'    => 'nullable|string|max:20',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|string|max:20',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         $validated['password'] = bcrypt($validated['password']);
-        $validated['role'] = 'patient';
 
-        User::create($validated);
+        $user = new User($validated);
+        $user->role = 'patient';
+        $user->save();
 
         return redirect()
             ->route('admin.patients.index')
@@ -81,8 +82,8 @@ class PatientController extends Controller
             ->findOrFail($id);
 
         $validated = $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $patient->id,
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$patient->id,
             'phone' => 'nullable|string|max:20',
         ]);
 

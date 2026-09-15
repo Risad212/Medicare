@@ -16,7 +16,7 @@ class AboutSettingController extends Controller
     {
         $seo = SeoSetting::where('page', 'about')->first();
 
-       return view('backend.settings.about', compact(
+        return view('backend.settings.about', compact(
             'seo'
         ));
     }

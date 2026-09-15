@@ -13,14 +13,26 @@ use Illuminate\Support\Str;
 class BlogController extends Controller
 {
     /**
+     * Allowed rich-text tags stripped of every attribute, including the
+     * event-handler ones (onclick, onerror, ...) that strip_tags leaves in
+     * place and which would otherwise render as stored XSS on the blog page.
+     */
+    private function sanitizeBlogHtml(string $html): string
+    {
+        $html = strip_tags($html, '<p><br><b><strong><i><em><ul><ol><li>');
+
+        return preg_replace('/\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html) ?? $html;
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-       
-        $blogs      = Blog::latest()->get();
+
+        $blogs = Blog::latest()->get();
         $categories = Category::latest()->get();
-        $tags       = Tag::latest()->get();
+        $tags = Tag::latest()->get();
 
         return view('backend.blogs.index', compact('blogs', 'categories', 'tags'));
     }
@@ -31,7 +43,8 @@ class BlogController extends Controller
     public function create()
     {
         $categories = Category::latest()->get();
-        $tags       = Tag::latest()->get();
+        $tags = Tag::latest()->get();
+
         return view('backend.blogs.create', compact('categories', 'tags'));
     }
 
@@ -42,11 +55,23 @@ class BlogController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'excerpt' => 'nullable|string|max:500',
+            'content' => 'required|string|max:10000',
+            'order' => 'nullable|integer',
+            'category' => 'nullable|string|max:100',
+            'tags' => 'nullable|string|max:255',
         ]);
 
-        $data = $request->only(['title', 'excerpt', 'content', 'order']);
-        $data['slug']   = Str::slug($request->title) . '-' . uniqid();
+        $data = $request->only(['title', 'excerpt', 'content', 'order', 'category', 'tags']);
+        // Strip dangerous tags/attributes while allowing basic formatting - XSS prevention
+        if (isset($data['content'])) {
+            $data['content'] = $this->sanitizeBlogHtml($data['content']);
+        }
+        if (isset($data['excerpt'])) {
+            $data['excerpt'] = strip_tags($data['excerpt']);
+        }
+        $data['slug'] = Str::slug($request->title).'-'.uniqid();
         $data['status'] = $request->has('status') ? 1 : 0;
         $data['author'] = auth()->user()->name;
 
@@ -73,7 +98,8 @@ class BlogController extends Controller
     public function edit(Blog $blog)
     {
         $categories = Category::latest()->get();
-        $tags       = Tag::latest()->get();
+        $tags = Tag::latest()->get();
+
         return view('backend.blogs.edit', compact('blog', 'categories', 'tags'));
     }
 
@@ -84,15 +110,26 @@ class BlogController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'excerpt' => 'nullable|string|max:500',
+            'content' => 'required|string|max:10000',
+            'order' => 'nullable|integer',
+            'category' => 'nullable|string|max:100',
+            'tags' => 'nullable|string|max:255',
         ]);
 
         $data = $request->only(['title', 'excerpt', 'content', 'order', 'category', 'tags']);
+        if (isset($data['content'])) {
+            $data['content'] = $this->sanitizeBlogHtml($data['content']);
+        }
+        if (isset($data['excerpt'])) {
+            $data['excerpt'] = strip_tags($data['excerpt']);
+        }
         $data['status'] = $request->has('status') ? 1 : 0;
 
         if ($request->hasFile('image')) {
             if ($blog->image) {
-                Storage::delete('public/' . $blog->image);
+                Storage::disk('public')->delete($blog->image);
             }
             $data['image'] = $request->file('image')->store('blogs', 'public');
         }
@@ -108,7 +145,7 @@ class BlogController extends Controller
     public function destroy(Blog $blog)
     {
         if ($blog->image) {
-            Storage::delete('public/' . $blog->image);
+            Storage::disk('public')->delete($blog->image);
         }
         $blog->delete();
 

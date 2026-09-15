@@ -12,6 +12,7 @@ class SliderController extends Controller
     public function index()
     {
         $sliders = Slider::latest()->get();
+
         return view('backend.sliders.index', compact('sliders'));
     }
 
@@ -54,7 +55,7 @@ class SliderController extends Controller
 
         if ($request->hasFile('bg_image')) {
             if ($slider->bg_image) {
-                Storage::delete('public/' . $slider->bg_image);
+                Storage::delete('public/'.$slider->bg_image);
             }
             $data['bg_image'] = $request->file('bg_image')->store('sliders', 'public');
         }
@@ -62,17 +63,17 @@ class SliderController extends Controller
         $slider->update($data);
 
         return redirect()->route('admin.sliders.index')
-                          ->with('success', 'Slider updated successfully!');
+            ->with('success', 'Slider updated successfully!');
     }
 
     public function destroy(Slider $slider)
     {
         if ($slider->bg_image) {
-            Storage::delete('public/' . $slider->bg_image);
+            Storage::delete('public/'.$slider->bg_image);
         }
         $slider->delete();
 
         return redirect()->route('admin.sliders.index')
-                          ->with('success', 'Slider deleted successfully!');
+            ->with('success', 'Slider deleted successfully!');
     }
 }

@@ -16,7 +16,7 @@ class DoctorSettingController extends Controller
     {
         $seo = SeoSetting::where('page', 'doctor')->first();
 
-       return view('backend.settings.doctor', compact(
+        return view('backend.settings.doctor', compact(
             'seo'
         ));
     }

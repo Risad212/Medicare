@@ -70,18 +70,19 @@
                     <select name="visit_type">
                         <option value="">Visit Type</option>
 
-                        <option value="First Visit" {{ old('visit_type') == 'First Visit' ? 'selected' : '' }}>
+                        <option value="1" {{ old('visit_type') == '1' ? 'selected' : '' }}>
                             First Visit
                         </option>
 
-                        <option value="Second Visit" {{ old('visit_type') == 'Second Visit' ? 'selected' : '' }}>
+                        <option value="2" {{ old('visit_type') == '2' ? 'selected' : '' }}>
                             Second Visit
                         </option>
 
-                        <option value="Report Review" {{ old('visit_type') == 'Report Review' ? 'selected' : '' }}>
+                        <option value="3" {{ old('visit_type') == '3' ? 'selected' : '' }}>
                             Report Review
                         </option>
                     </select>
+                    @error('visit_type') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 <div class="mb-4">
@@ -102,8 +103,8 @@
                 <div class="mb-4">
                     <input type="date" name="appointment_date" id="appointment_date"
                         min="{{ date('Y-m-d') }}"
-                        value="{{ old('date') }}">
-                    @error('date') <small class="text-danger">{{ $message }}</small> @enderror
+                        value="{{ old('appointment_date') }}">
+                    @error('appointment_date') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
                 {{-- Time Slot dropdown --}}

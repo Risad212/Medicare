@@ -8,6 +8,21 @@
     <link rel="stylesheet" type="text/css" href="{{asset('backend-assets/css/main.css')}}">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <title>Login - Vali Admin</title>
+    <style>
+        /* Auto-height login box: theme pins forms absolute in a 430px box,
+           which clips taller content (Google button). Let the box grow. */
+        .login-content .login-box { min-height: 0; }
+        .login-content .login-box .login-form,
+        .login-content .login-box .forget-form {
+            position: static;
+            opacity: 1;
+            transform: none;
+        }
+        .login-content .login-box .forget-form { display: none; }
+        .login-content .login-box.flipped { min-height: 0; }
+        .login-content .login-box.flipped .login-form { display: none; opacity: 1; transform: none; }
+        .login-content .login-box.flipped .forget-form { display: block; opacity: 1; transform: none; }
+    </style>
 </head>
 
 <body>
@@ -50,12 +65,23 @@
                                 <input class="form-check-input" name="remember" type="checkbox"><span class="label-text">Stay Signed in</span>
                             </label>
                         </div>
-                        <p class="semibold-text mb-2"><a href="#" data-toggle="flip">Forgot Password ?</a></p>
+                        <p class="semibold-text mb-2"><a href="#" data-bs-toggle="flip">Forgot Password ?</a></p>
                     </div>
                 </div>
                 <div class="mb-3 btn-container d-grid">
-                    <button class="btn btn-primary btn-block"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>SIGN IN</button>
+                    <button class="btn btn-primary w-100"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>SIGN IN</button>
                 </div>
+
+                <div class="text-center my-2">
+                    <span class="text-muted small">— or —</span>
+                </div>
+                <div class="mb-3 d-grid">
+                    <a href="{{ route('auth.google.redirect') }}" class="btn btn-outline-danger w-100">
+                        <i class="bi bi-google me-2"></i>Continue with Google
+                    </a>
+                    <small class="text-muted text-center mt-1" style="font-size: 0.75rem;">For patients — auto-creates patient account</small>
+                </div>
+
                 <div class="mb-3 mt-2 text-center">
                     <p class="semibold-text mb-0">Don't have an account? <a href="{{ route('register') }}">Register</a></p>
                 </div>
@@ -75,10 +101,10 @@
                     @enderror
                 </div>
                 <div class="mb-3 btn-container d-grid">
-                    <button class="btn btn-primary btn-block"><i class="bi bi-unlock me-2 fs-5"></i>Send Password Reset Link</button>
+                    <button class="btn btn-primary w-100"><i class="bi bi-unlock me-2 fs-5"></i>Send Password Reset Link</button>
                 </div>
                 <div class="mb-3 mt-3">
-                    <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="bi bi-chevron-left me-1"></i> Back to Login</a></p>
+                    <p class="semibold-text mb-0"><a href="#" data-bs-toggle="flip"><i class="bi bi-chevron-left me-1"></i> Back to Login</a></p>
                 </div>
             </form>
 
@@ -86,10 +112,10 @@
     </section>
 
     <script src="{{ asset('backend-assets/js/jquery-3.7.0.min.js') }}"></script>
-    <script src="{{ asset('backend-assets/js/bootstrap.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="{{ asset('backend-assets/js/main.js') }}"></script>
     <script type="text/javascript">
-        $('.login-content [data-toggle="flip"]').click(function() {
+        $('.login-content [data-bs-toggle="flip"]').click(function() {
             $('.login-box').toggleClass('flipped');
             return false;
         });
