@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Invoice;
 use App\Models\LabOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\Concerns\CreatesModels;
 use Tests\TestCase;
 
@@ -68,5 +70,36 @@ class AdminDashboardTest extends TestCase
             ->assertOk()
             ->assertSee('Monthly trends')
             ->assertSee('appointments today');
+    }
+
+    public function test_admin_home_shows_invoice_revenue_kpis(): void
+    {
+        Invoice::create([
+            'invoice_no' => 'INV-'.Str::random(6),
+            'patient_name' => 'Paid Patient',
+            'subtotal' => 100.00,
+            'total' => 100.00,
+            'status' => 'paid',
+            'paid_at' => now(),
+        ]);
+
+        Invoice::create([
+            'invoice_no' => 'INV-'.Str::random(6),
+            'patient_name' => 'Pending Patient',
+            'subtotal' => 50.00,
+            'total' => 50.00,
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($this->makeAdmin())
+            ->get(route('admin.home'))
+            ->assertOk()
+            ->assertSee('Invoice revenue')
+            ->assertSee('Collected this month')
+            ->assertSee('$100.00')
+            ->assertSee('Collected all time')
+            ->assertSee('Outstanding')
+            ->assertSee('$50.00')
+            ->assertSee('Unpaid invoices');
     }
 }

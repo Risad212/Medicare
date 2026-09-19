@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Mail\AppointmentReminderMail;
 use App\Models\Appointment;
 use App\Services\AppointmentNotifier;
+use App\Services\PatientNotifier;
+use App\Services\StaffNotifier;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
@@ -27,11 +29,21 @@ class SendAppointmentReminders extends Command
         foreach ($appointments as $appointment) {
             $email = AppointmentNotifier::recipient($appointment);
 
+            // Doctor gets an in-app heads-up for tomorrow's visit too.
+            StaffNotifier::appointmentReminder($appointment);
+
+            // Patient's own account (if linked) gets the in-app reminder.
+            PatientNotifier::appointmentReminder($appointment);
+
             if ($email) {
                 Mail::to($email)->queue(new AppointmentReminderMail($appointment));
                 // Quiet: marking sent must not fire ActivityLogObserver::updated noise.
                 $appointment->forceFill(['reminder_sent_at' => now()])->saveQuietly();
                 $sent++;
+            } elseif ($appointment->user_id || $appointment->doctor?->user_id) {
+                // In-app reminder was delivered to at least one account;
+                // stamp so tomorrow's run does not repeat it.
+                $appointment->forceFill(['reminder_sent_at' => now()])->saveQuietly();
             }
         }
 

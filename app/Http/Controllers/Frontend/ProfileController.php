@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\LabOrder;
 use App\Models\LabReport;
+use App\Models\Prescription;
 use App\Services\PdfService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,9 +40,19 @@ class ProfileController extends Controller
             ->latest()
             ->get();
 
+        $prescriptions = Prescription::with(['doctor', 'items'])
+            ->where(function ($query) use ($user) {
+                $query->where('patient_user_id', $user->id);
+                if (! empty($user->email_verified_at) && ! empty($user->email)) {
+                    $query->orWhere('email', $user->email);
+                }
+            })
+            ->latest()
+            ->get();
+
         return view(
             'frontend.profile.index',
-            compact('user', 'appointments', 'labOrders')
+            compact('user', 'appointments', 'labOrders', 'prescriptions')
         );
     }
 
@@ -115,5 +126,23 @@ class ProfileController extends Controller
         $order->load(['items.test', 'doctor', 'reports']);
 
         return $pdf->stream('pdf.lab-order-result', ['order' => $order], 'lab-order-'.$order->id.'-report.pdf');
+    }
+
+    /**
+     * Stream a printable PDF of one of the patient's prescriptions.
+     */
+    public function downloadPrescriptionPdf(Prescription $prescription, PdfService $pdf)
+    {
+        $user = Auth::user();
+
+        $emailTrusted = ! empty($user->email_verified_at) && ! empty($user->email);
+        $ownsPrescription = $prescription->patient_user_id === $user->id
+            || ($emailTrusted && $prescription->email === $user->email);
+
+        abort_unless($ownsPrescription, 403, 'You do not have access to this prescription.');
+
+        $prescription->load(['items', 'doctor', 'appointment.timeSlot']);
+
+        return $pdf->stream('pdf.prescription', ['prescription' => $prescription], 'prescription-'.$prescription->id.'.pdf');
     }
 }

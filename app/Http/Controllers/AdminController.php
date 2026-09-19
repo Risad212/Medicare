@@ -6,7 +6,9 @@ use App\Models\Appointment;
 use App\Models\Blog;
 use App\Models\BlogComment;
 use App\Models\Doctor;
+use App\Models\Invoice;
 use App\Models\LabOrder;
+use App\Models\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Carbon;
 
@@ -31,6 +33,7 @@ class AdminController extends Controller
     {
         $totalDoctors = Doctor::count();
         $totalAppointments = Appointment::count();
+        $totalPatients = User::where('role', 'patient')->count();
         $totalBlogs = Blog::count();
         $pendingComments = BlogComment::where('status', 0)->count();
 
@@ -82,6 +85,15 @@ class AdminController extends Controller
         $labOrdersThisMonth = LabOrder::whereBetween('created_at', [now()->startOfMonth(), now()])->count();
         $labOrdersPending = LabOrder::where('status', 'pending')->count();
 
+        // Invoice revenue: only "paid" invoices count as collected; "pending"
+        // invoices are outstanding. Filters mirror InvoiceController's statuses.
+        $invoicePaidThisMonth = (float) Invoice::where('status', 'paid')
+            ->whereBetween('paid_at', [now()->startOfMonth(), now()])
+            ->sum('total');
+        $invoicePaidAllTime = (float) Invoice::where('status', 'paid')->sum('total');
+        $invoiceOutstanding = (float) Invoice::where('status', 'pending')->sum('total');
+        $invoicesPendingCount = Invoice::where('status', 'pending')->count();
+
         // Last 6 months of appointments vs lab orders (oldest -> newest).
         $appointmentsByMonth = Appointment::where('created_at', '>=', now()->subMonths(5)->startOfMonth())
             ->get(['created_at'])
@@ -110,9 +122,71 @@ class AdminController extends Controller
             ->take(6)
             ->get();
 
+        // Welly stat: hospital earning = collected invoices + completed lab revenue.
+        $hospitalEarning = (float) (Invoice::where('status', 'paid')->sum('total'))
+            + (float) (LabOrder::where('status', 'completed')->sum('total'));
+
+        // Welly schedule rail: upcoming non-cancelled bookings grouped by day.
+        $upcomingSchedule = Appointment::with(['doctor', 'timeSlot'])
+            ->where('status', '!=', 3)
+            ->where('appointment_date', '>=', now()->toDateString())
+            ->orderBy('appointment_date')
+            ->take(9)
+            ->get()
+            ->groupBy(fn ($a) => Carbon::parse($a->appointment_date)->format('l, F jS'));
+
+        // Patient Percentage tabs: real status breakdowns per range
+        // (Daily = today, Weekly = last 7 days, Monthly = last 30 days).
+        $rangeStats = collect([
+            'daily' => [now()->toDateString(), now()->toDateString()],
+            'weekly' => [now()->subDays(6)->toDateString(), now()->toDateString()],
+            'monthly' => [now()->subDays(29)->toDateString(), now()->toDateString()],
+        ])->mapWithKeys(function ($range, $key) {
+            [$from, $to] = $range;
+            $rows = Appointment::whereBetween('appointment_date', [$from, $to])->get(['status']);
+            $total = max(1, $rows->count());
+            $pending = $rows->where('status', 0)->count();
+            $recovered = $rows->where('status', 2)->count();
+            $treating = $rows->where('status', 1)->count();
+
+            return [$key => [
+                'total' => $rows->count(),
+                'new' => round($pending / $total * 100),
+                'recovered' => round($recovered / $total * 100),
+                'treating' => round($treating / $total * 100),
+            ]];
+        })->all();
+
+        // Schedule calendar: browsable month (?cal=YYYY-MM) with real booking dots.
+        $calMonth = now()->startOfMonth();
+        $calParam = request('cal');
+        if (is_string($calParam) && preg_match('/^\d{4}-\d{2}$/', $calParam)) {
+            try {
+                $parsed = Carbon::createFromFormat('Y-m', $calParam)->startOfMonth();
+                if ($parsed && abs($parsed->diffInMonths(now()->startOfMonth())) <= 24) {
+                    $calMonth = $parsed;
+                }
+            } catch (\Exception $e) {
+            }
+        }
+        $calBookings = Appointment::where('status', '!=', 3)
+            ->whereBetween('appointment_date', [
+                $calMonth->copy()->startOfMonth()->toDateString(),
+                $calMonth->copy()->endOfMonth()->toDateString(),
+            ])
+            ->get(['appointment_date'])
+            ->groupBy(fn ($a) => Carbon::parse($a->appointment_date)->toDateString())
+            ->map->count();
+
         return view('backend.home', compact(
             'totalDoctors',
             'totalAppointments',
+            'totalPatients',
+            'hospitalEarning',
+            'upcomingSchedule',
+            'rangeStats',
+            'calMonth',
+            'calBookings',
             'totalBlogs',
             'pendingComments',
             'pendingAppointments',
@@ -129,6 +203,10 @@ class AdminController extends Controller
             'revenueThisMonth',
             'labOrdersThisMonth',
             'labOrdersPending',
+            'invoicePaidThisMonth',
+            'invoicePaidAllTime',
+            'invoiceOutstanding',
+            'invoicesPendingCount',
             'monthlyAppointments',
             'monthlyLabOrders',
             'monthLabels',

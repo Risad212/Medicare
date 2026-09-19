@@ -8,7 +8,9 @@ use App\Models\LabOrder;
 use App\Models\LabOrderItem;
 use App\Models\LabReport;
 use App\Services\LabReportService;
+use App\Services\PatientNotifier;
 use App\Services\PdfService;
+use App\Services\StaffNotifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -70,6 +72,10 @@ class LabOrderController extends Controller
             if ($email) {
                 Mail::to($email)->queue(new LabResultReadyMail($order->load(['items.test', 'doctor', 'user'])));
             }
+
+            StaffNotifier::labResultReady($order, (int) auth()->id());
+
+            PatientNotifier::labResultReady($order);
         }
 
         return back()->with('success', 'Lab order status updated to '.ucwords(str_replace('-', ' ', $validated['status'])).'.');

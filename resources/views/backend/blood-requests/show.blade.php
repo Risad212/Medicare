@@ -18,6 +18,11 @@
                 @csrf
                 <button type="submit" class="mc-btn danger-ghost"><i class="bi bi-x-lg"></i> Reject</button>
             </form>
+            <form action="{{ route('admin.blood-requests.destroy', $request->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Permanently delete this pending request?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="mc-btn ghost"><i class="bi bi-trash"></i> Delete</button>
+            </form>
         @else
             <a href="{{ route('admin.blood-issues.create', $request->id) }}" class="mc-btn"><i class="bi bi-droplet-half"></i> Issue blood</a>
             @if(! in_array($request->status, ['fulfilled', 'rejected', 'cancelled']))

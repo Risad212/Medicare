@@ -20,7 +20,7 @@
     <div class="mb-3 rounded-lg bg-red-bg px-4 py-3 text-sm text-red-t">{{ session('error') }}</div>
 @endif
 
-<div class="mc-ecg"><span>Live register</span><svg viewBox="0 0 400 22" preserveAspectRatio="none"><polyline points="0,11 60,11 70,11 76,11 82,3 88,19 94,11 150,11 160,11 166,11 172,4 178,18 184,11 260,11 400,11" fill="none" stroke="#05d3b0" stroke-width="1.6"/></svg><span>{{ $requests->total() }} requests</span></div>
+<div class="mc-ecg"><span>Live register</span><span>{{ $requests->total() }} requests</span></div>
 
 <div class="mc-bar">
     <form action="{{ route('admin.blood-requests.index') }}" method="GET" class="mc-search" style="flex:1">

@@ -12,8 +12,10 @@ class DoctorController extends Controller
     {
         $doctors = Doctor::where('status', 1)->latest()->paginate(12);
         $seo = SeoSetting::where('page', 'doctor')->first();
+        $pageTitle = 'Our Doctors';
+        $noDoctorsMessage = 'No doctors found.';
 
-        return view('frontend.doctor', compact('doctors', 'seo'));
+        return view('frontend.doctor', compact('doctors', 'seo', 'pageTitle', 'noDoctorsMessage'));
     }
 
     public function show($id)

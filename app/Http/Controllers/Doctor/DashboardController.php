@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Services\AppointmentNotifier;
+use App\Services\PatientNotifier;
+use App\Services\StaffNotifier;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -62,6 +64,7 @@ class DashboardController extends Controller
         abort_if($appointment->doctor_id !== $doctor->id, 403, 'Unauthorized appointment access.');
 
         $wasAlreadyApproved = (int) $appointment->getOriginal('status') === 1;
+        $wasStatus = (int) $appointment->getOriginal('status');
 
         // Re-activating a cancelled booking must pass the same guards as a
         // full update: no double-book, and the slot must still be open.
@@ -100,6 +103,11 @@ class DashboardController extends Controller
 
         if ((int) $request->status === 1 && ! $wasAlreadyApproved) {
             app(AppointmentNotifier::class)->notifyApproved($appointment);
+        }
+
+        if ((int) $request->status !== $wasStatus) {
+            StaffNotifier::appointmentStatusChanged($appointment, (int) $request->status, (int) auth()->id());
+            PatientNotifier::appointmentStatusChanged($appointment, (int) $request->status);
         }
 
         return back()->with('success', 'Appointment status updated!');

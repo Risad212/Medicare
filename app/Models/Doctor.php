@@ -44,6 +44,11 @@ class Doctor extends Model
         return $this->hasMany(BloodRequest::class);
     }
 
+    public function prescriptions(): HasMany
+    {
+        return $this->hasMany(Prescription::class);
+    }
+
     public function schedules(): HasMany
     {
         return $this->hasMany(DoctorSchedule::class);

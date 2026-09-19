@@ -79,12 +79,16 @@ return new class extends Migration
             }
 
             foreach ($this->childForeignKeys() as $table => $onDelete) {
+                if (! Schema::hasTable($table) || ! Schema::hasColumn($table, 'appointment_id')) {
+                    continue; // created by a later migration — declares its own FK
+                }
+
                 if ($this->childConstraint($table, 'appointment_id')) {
                     continue;
                 }
 
-                Schema::table($table, function (Blueprint $table) {
-                    $table->foreign('appointment_id')
+                Schema::table($table, function (Blueprint $blueprint) use ($onDelete) {
+                    $blueprint->foreign('appointment_id')
                         ->references('id')
                         ->on('appointments')
                         ->onDelete($onDelete);

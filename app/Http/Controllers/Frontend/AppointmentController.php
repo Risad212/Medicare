@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Mail\AppointmentBookedMail;
 use App\Models\Appointment;
 use App\Models\Doctor;
+use App\Models\SeoSetting;
 use App\Models\TimeSlot;
+use App\Services\PatientNotifier;
+use App\Services\StaffNotifier;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -21,8 +24,9 @@ class AppointmentController extends Controller
     {
         $doctors = Doctor::where('status', 1)->get();
         $availableSlots = TimeSlot::where('status', 1)->orderBy('time')->get();
+        $seo = SeoSetting::where('page', 'appointment')->first();
 
-        return view('frontend.appointment', compact('doctors', 'availableSlots'));
+        return view('frontend.appointment', compact('doctors', 'availableSlots', 'seo'));
     }
 
     public function store(Request $request)
@@ -116,6 +120,12 @@ class AppointmentController extends Controller
             Mail::to($appointment->email)->queue(new AppointmentBookedMail($appointment));
         }
 
+        // In-app alert for staff (admins + the appointment's doctor).
+        StaffNotifier::appointmentBooked($appointment);
+
+        // In-app alert for the patient's own account (if they have one).
+        PatientNotifier::appointmentBooked($appointment);
+
         return back()->with('success', 'Appointment saved');
     }
 
@@ -194,6 +204,12 @@ class AppointmentController extends Controller
             'cancellation_token' => null,
         ]);
 
+        // Let staff know the slot is free again.
+        StaffNotifier::appointmentStatusChanged($appointment->refresh(), 3);
+
+        // Let the cancelling patient's account know (no-op for guests).
+        PatientNotifier::appointmentStatusChanged($appointment, 3);
+
         return back()->with('success', 'Appointment cancelled successfully.');
     }
 
@@ -232,6 +248,12 @@ class AppointmentController extends Controller
         }
 
         $appointment->update(['status' => 3, 'cancellation_token' => null]);
+
+        // Let staff know the slot is free again.
+        StaffNotifier::appointmentStatusChanged($appointment->refresh(), 3);
+
+        // In-app alert for a linked patient account (guests skip this).
+        PatientNotifier::appointmentStatusChanged($appointment, 3);
 
         return redirect()->route('appointment')->with('success', 'Your appointment has been cancelled.');
     }

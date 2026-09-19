@@ -10,11 +10,12 @@ class AdminMiddleware
 {
     /**
      * Handle an incoming request.
-     * Only admin role can access
+     * Legacy `admin` role always passes; staff users pass when they hold
+     * at least one RBAC permission (per-module `can:` gates decide the rest).
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role === 'admin') {
+        if (auth()->check() && auth()->user()->canAccessAdminPanel()) {
             return $next($request);
         }
 

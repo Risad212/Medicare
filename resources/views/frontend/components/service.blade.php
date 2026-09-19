@@ -1,3 +1,25 @@
+@php $serviceItems = $serviceItems ?? collect(); @endphp
+
+@if($serviceItems->isNotEmpty())
+    <div class="row gy-4">
+        @foreach($serviceItems as $item)
+            <div class="col-lg-4">
+                <div class="service-card">
+                    <span class="icon">
+                        @if(!empty($item->icon))
+                            <img src="{{ asset('storage/'.$item->icon) }}" alt="{{ $item->title }}" style="width:56px;height:56px;object-fit:contain;">
+                        @else
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9A5.4 5.4 0 0 1 12 6.3 5.4 5.4 0 0 1 21.6 12c-2.1 4.4-9.6 9-9.6 9Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                        @endif
+                    </span>
+                    <h3 class="title">{{ $item->title }}</h3>
+                    <p>{{ $item->description }}</p>
+                    <a class="card-btn" href="{{ $item->button_url ?: '#' }}">{{ $item->button_text ?: 'Read more' }}</a>
+                </div>
+            </div>
+        @endforeach
+    </div>
+@else
    <div class="row gy-4">
             <div class="col-lg-4">
                 <div class="service-card">
@@ -149,3 +171,4 @@
                 </div>
             </div>
         </div>
+@endif

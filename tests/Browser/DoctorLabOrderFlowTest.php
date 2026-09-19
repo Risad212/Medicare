@@ -25,7 +25,7 @@ class DoctorLabOrderFlowTest extends DuskTestCase
                 ->check('.test-checkbox')
                 ->press('Create Lab Request')
                 ->waitForText('Lab order created successfully.')
-                ->assertSee('Lab Request #1');
+                ->assertSee('Lab request #1');
         });
     }
 }

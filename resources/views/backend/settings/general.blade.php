@@ -70,6 +70,11 @@
                 <label>YouTube</label>
                 <input name="youtube" class="form-control" value="{{ $setting->youtube ?? '' }}">
             </div>
+            <div class="mc-f full">
+                <label>Google Map Embed URL</label>
+                <textarea name="map_embed_url" class="form-control" rows="2" placeholder="https://www.google.com/maps/embed?pb=...">{{ $setting->map_embed_url ?? '' }}</textarea>
+                <span class="mc-hint">Paste the src from Google Maps → Share → Embed a map. Shown on the Contact page.</span>
+            </div>
         </div>
     </section>
 

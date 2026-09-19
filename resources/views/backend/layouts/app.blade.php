@@ -38,6 +38,28 @@
     <script src="{{ asset('backend-assets/js/main.js') }}"></script>
     <!-- Summernote -->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs5.min.js"></script>
+
+    <!-- Notification bell: poll unread count every 60s -->
+    <script>
+        (function () {
+            var badge = document.getElementById('mc-notif-badge');
+            if (!badge) return;
+            var url = '{{ route('notifications.unread-count') }}';
+            function refresh() {
+                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
+                    .then(function (r) { return r.ok ? r.json() : null; })
+                    .then(function (data) {
+                        if (!data) return;
+                        var n = parseInt(data.count, 10) || 0;
+                        badge.textContent = n > 99 ? '99+' : n;
+                        badge.style.display = n > 0 ? '' : 'none';
+                    })
+                    .catch(function () {});
+            }
+            refresh();
+            setInterval(refresh, 60000);
+        })();
+    </script>
 </body>
 
 </html>

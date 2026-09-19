@@ -2,112 +2,318 @@
 
 @section('content')
 @php
-  $hour = (int) now()->format('G');
-  $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
-  $deptCount = $topDoctors->pluck('department')->filter()->unique()->count();
-  $confirmPct = round($confirmedAppointments / max(1, $totalAppointments) * 100);
+  use Illuminate\Support\Carbon;
   $statusTotal = max(1, $pendingAppointments + $confirmedAppointments + $completedAppointments + $cancelledAppointments);
-  $barW = function ($n) use ($statusTotal) { return max(0, round($n / $statusTotal * 100)); };
-  $maxTrend = max(1, max($weekTrend));
-  $barH = fn ($n) => $maxTrend > 0 ? max(4, round($n / $maxTrend * 20)) : 4;
-  $needLabel = $pendingAppointments == 1 ? '1 need' : $pendingAppointments . ' need';
+  $pctNew = round($pendingAppointments / $statusTotal * 100);
+  $pctRec = round($completedAppointments / $statusTotal * 100);
+  $pctTreat = round($confirmedAppointments / $statusTotal * 100);
   $maxAppt = max(1, max($monthlyAppointments));
   $maxLab = max(1, max($monthlyLabOrders));
   $maxDocLoad = max(1, $doctorLoad->max('appointment_count') ?? 0);
+
+  $calStart = $calMonth->copy()->startOfWeek(Carbon::SUNDAY);
+  $calCells = collect(range(0, 41))->map(fn ($i) => $calStart->copy()->addDays($i));
+  $todayStr = now()->toDateString();
+  $calPrev = $calMonth->copy()->subMonth()->format('Y-m');
+  $calNext = $calMonth->copy()->addMonth()->format('Y-m');
+
+  $pctNew = $rangeStats['weekly']['new'];
+  $pctRec = $rangeStats['weekly']['recovered'];
+  $pctTreat = $rangeStats['weekly']['treating'];
+  $donut = "conic-gradient(from -90deg, #c2a15a 0 {$pctNew}%, #0b8f74 {$pctNew}% " . ($pctNew + $pctRec) . "%, #2f353f " . ($pctNew + $pctRec) . "% 100%)";
 @endphp
 
-<div class="space-y-5">
+<div class="space-y-4">
 
-  {{-- ===== Page header ===== --}}
-  <div class="flex flex-wrap items-start justify-between gap-4">
+  {{-- ===== Welly page header ===== --}}
+  <div class="flex flex-wrap items-start justify-between gap-3">
     <div>
-      <h1 class="font-display text-[30px] font-bold leading-[1.15] tracking-tight text-ink">{{ $greeting }}, {{ auth()->user()->name }}</h1>
-      <p class="mt-1 text-[14px] text-mut">{{ now()->format('l, F j, Y') }} · <strong class="text-ink">{{ $todayAppointments }} appointments today</strong></p>
+      <h1 class="welly-title">Dashboard</h1>
+      <p class="welly-subtitle">Hospital Admin Dashboard Template · {{ $todayAppointments }} appointments today</p>
     </div>
-    <div class="flex flex-wrap gap-2.5 pt-1.5">
-      <a href="{{ route('admin.doctors.create') }}" class="mc-btn">Add doctor</a>
-      <a href="{{ route('admin.appointments.index') }}" class="mc-btn ghost">View appointments</a>
+    <div class="flex flex-wrap gap-2.5 pt-1">
+      <a href="{{ route('admin.appointments.create') }}" class="mc-btn sm"><i class="bi bi-plus-lg"></i> Book appointment</a>
+      <a href="{{ route('admin.doctors.create') }}" class="welly-outline-btn"><i class="bi bi-person-plus"></i> Add doctor</a>
     </div>
   </div>
 
-  {{-- ===== Metric cards ===== --}}
-  <section class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-    <div class="mc-card p-4 lg:p-5">
-      <p class="text-[12px] font-semibold uppercase tracking-wider text-mut">Doctors</p>
-      <p class="mt-1.5 font-display text-[30px] font-bold tabular-nums tracking-tight text-ink">{{ $totalDoctors }} <span class="text-[13px] font-normal text-mut">across {{ $deptCount ?: 0 }} departments</span></p>
-      <p class="text-[13px] text-ink-2">{{ $activeDoctorsToday }} on duty today</p>
-      <div class="mt-2.5 flex items-end gap-0.5">
-        @foreach($topDoctors->take(8) as $doc)
-          <i class="block w-full rounded-sm bg-line {{ $loop->last ? 'bg-ink-2' : '' }}" style="height:{{ max(4, min(22, 5 + $doc->appointment_count)) }}px"></i>
-        @endforeach
-        @for($i = 0; $i < max(0, 8 - $topDoctors->count()); $i++)
-          <i class="block w-full rounded-sm bg-line"></i>
-        @endfor
+  {{-- ===== 4 stat cards (gold baseline like screenshot) ===== --}}
+  <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="welly-stat">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="welly-stat-num">{{ $todayAppointments }}</p>
+          <p class="welly-stat-label">Appointment</p>
+        </div>
+        <span class="welly-stat-icon"><i class="bi bi-calendar-date"></i></span>
       </div>
     </div>
-
-    <div class="mc-card p-4 lg:p-5">
-      <p class="text-[12px] font-semibold uppercase tracking-wider text-mut">Appointments</p>
-      <p class="mt-1.5 font-display text-[30px] font-bold tabular-nums tracking-tight text-ink">{{ $totalAppointments }} <span class="text-[13px] font-normal text-mut">· {{ $confirmPct }}% confirmed</span></p>
-      <p class="text-[13px] text-ink-2">
-        @if($pendingAppointments > 0)<span class="font-bold text-red">{{ $needLabel }} confirmation →</span>@else No pending appointments @endif
-      </p>
-      <div class="mt-2.5 flex items-end gap-0.5">
-        @foreach($weekTrend as $i => $n)
-          <i class="block w-full rounded-sm bg-line {{ $i === count($weekTrend) - 1 ? 'bg-ink-2' : '' }}" style="height:{{ $barH($n) }}px"></i>
-        @endforeach
+    <div class="welly-stat">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="welly-stat-num">{{ number_format($totalPatients) }}</p>
+          <p class="welly-stat-label">Total Patient</p>
+        </div>
+        <span class="welly-stat-icon"><i class="bi bi-heart"></i></span>
       </div>
     </div>
-
-    <div class="mc-card p-4 lg:p-5">
-      <p class="text-[12px] font-semibold uppercase tracking-wider text-mut">Lab tests</p>
-      <p class="mt-1.5 font-display text-[30px] font-bold tabular-nums tracking-tight text-ink">{{ \App\Models\LabTest::count() }}</p>
-      <p class="text-[13px] text-ink-2"><a href="{{ route('admin.lab-tests.index') }}" class="font-bold text-teal-dk no-underline hover:underline">Manage catalog →</a></p>
-      <div class="mt-2.5 flex items-end gap-0.5">
-        <i class="block w-full rounded-sm bg-line" style="height:10px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:12px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:11px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:14px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:13px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:16px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:15px"></i>
-        <i class="block w-full rounded-sm bg-ink-2" style="height:18px"></i>
+    <div class="welly-stat">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="welly-stat-num">{{ $totalDoctors }}</p>
+          <p class="welly-stat-label">Total Doctor</p>
+        </div>
+        <span class="welly-stat-icon"><i class="bi bi-person-badge"></i></span>
       </div>
     </div>
-
-    <div class="mc-card p-4 lg:p-5">
-      <p class="text-[12px] font-semibold uppercase tracking-wider text-mut">Blog posts</p>
-      <p class="mt-1.5 font-display text-[30px] font-bold tabular-nums tracking-tight text-ink">{{ $totalBlogs }}</p>
-      <p class="text-[13px] text-ink-2">Published and live</p>
-      <div class="mt-2.5 flex items-end gap-0.5">
-        <i class="block w-full rounded-sm bg-line" style="height:10px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:12px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:11px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:14px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:13px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:16px"></i>
-        <i class="block w-full rounded-sm bg-line" style="height:15px"></i>
-        <i class="block w-full rounded-sm bg-ink-2" style="height:18px"></i>
+    <div class="welly-stat">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="welly-stat-num">${{ number_format($hospitalEarning, 0) }}</p>
+          <p class="welly-stat-label">Hospital Earning</p>
+        </div>
+        <span class="welly-stat-icon"><i class="bi bi-coin"></i></span>
       </div>
     </div>
   </section>
 
-  {{-- ===== Main grid ===== --}}
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_336px] items-start">
+  {{-- ===== Patient Percentage + Appointment Schedule ===== --}}
+  <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
 
-    {{-- Left column --}}
-    <div class="flex flex-col gap-4">
-
-      {{-- Today's appointments --}}
-      <section class="mc-card">
-        <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-[18px] py-3.5">
-          <div>
-            <h2 class="text-[16px] font-bold tracking-tight text-ink">Today's appointments</h2>
-            <p class="mt-0.5 text-[12px] text-mut">Pending first · latest bookings across all doctors</p>
-          </div>
-          <a href="{{ route('admin.appointments.index') }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">View all {{ $totalAppointments }} →</a>
+    {{-- Patient Percentage --}}
+    <section class="welly-card">
+      <div class="welly-card-hd">
+        <h2 class="welly-card-title">Patient Percentage</h2>
+        <div class="welly-tabs" role="tablist">
+          @foreach(['daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly'] as $key => $label)
+            <button type="button" class="welly-tab {{ $key === 'weekly' ? 'on' : '' }}" data-welly-tab="{{ $key }}"
+              data-total="{{ $rangeStats[$key]['total'] }}" data-new="{{ $rangeStats[$key]['new'] }}"
+              data-recovered="{{ $rangeStats[$key]['recovered'] }}" data-treating="{{ $rangeStats[$key]['treating'] }}">{{ $label }}</button>
+          @endforeach
         </div>
-        <div class="overflow-x-auto">
+      </div>
+      <div class="px-5 pb-5 pt-3">
+        <div class="flex items-center justify-between gap-3 rounded-lg bg-line-2 px-4 py-3">
+          <div class="flex items-center gap-3">
+            <span class="flex h-11 w-11 items-center justify-center rounded-md bg-teal-dk text-[22px] text-white"><i class="bi bi-heart"></i></span>
+            <div>
+              <p class="m-0 text-[12px] text-mut">Total Patient</p>
+              <p class="m-0 text-[19px] font-extrabold tabular-nums text-teal-dk">{{ number_format($totalPatients) }}</p>
+            </div>
+          </div>
+          <div class="flex items-center">
+            @foreach($topDoctors->take(5) as $doc)
+              <span class="mc-av -ml-2 border-2 border-white {{ ['t','a','b','r',''][ $loop->index % 5 ] }}" title="{{ $doc->name }}">{{ $doc->name ? strtoupper(mb_substr($doc->name, 0, 1)) : '?' }}</span>
+            @endforeach
+          </div>
+        </div>
+
+        <div class="flex justify-center py-5">
+          <div id="welly-donut" class="relative h-[190px] w-[190px] rounded-full" style="background:{{ $donut }}">
+            <div class="absolute inset-[26px] rounded-full bg-white"></div>
+            <div class="absolute inset-[44px] rounded-full border-[10px] border-line-2 border-t-transparent"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="welly-legend"><span class="flex items-center gap-2.5"><i class="welly-bar bg-gold"></i><b id="welly-pct-new">{{ $pctNew }}%</b></span><span class="lbl">New Patient</span></div>
+          <div class="welly-legend"><span class="flex items-center gap-2.5"><i class="welly-bar bg-teal"></i><b id="welly-pct-recovered">{{ $pctRec }}%</b></span><span class="lbl">Recovered</span></div>
+          <div class="welly-legend"><span class="flex items-center gap-2.5"><i class="welly-bar bg-ink"></i><b id="welly-pct-treating">{{ $pctTreat }}%</b></span><span class="lbl">In Treatment</span></div>
+        </div>
+        <p class="mt-2 border-t border-line-2 pt-2 text-[12px] text-mut"><span id="welly-range-total">{{ $rangeStats['weekly']['total'] }} bookings in range</span> · {{ $totalAppointments }} total · {{ $pendingAppointments }} pending · {{ $cancelledAppointments }} cancelled</p>
+      </div>
+    </section>
+
+    {{-- Appointment Schedule --}}
+    <section class="welly-card">
+      <div class="welly-card-hd">
+        <h2 class="welly-card-title">Appointment Schedule</h2>
+        <a href="{{ route('admin.appointments.index') }}" class="welly-iconbtn !h-8 !w-8 !text-[16px]" aria-label="All appointments" title="All appointments"><i class="bi bi-three-dots-vertical"></i></a>
+      </div>
+      <div class="px-5 pb-5 pt-2">
+        <div class="flex items-center justify-between py-2">
+          <a href="{{ route('admin.home', ['cal' => $calPrev]) }}" class="welly-iconbtn !h-8 !w-8 !text-[15px]" aria-label="Previous month"><i class="bi bi-chevron-left"></i></a>
+          <p class="m-0 text-[14px] font-extrabold text-ink">{{ $calMonth->format('F Y') }}
+            @if(!$calMonth->isSameMonth(now()))
+              <a href="{{ route('admin.home') }}" class="ml-1 text-[12px] font-bold text-teal-dk no-underline hover:underline">Today</a>
+            @endif
+          </p>
+          <a href="{{ route('admin.home', ['cal' => $calNext]) }}" class="welly-iconbtn !h-8 !w-8 !text-[15px]" aria-label="Next month"><i class="bi bi-chevron-right"></i></a>
+        </div>
+        <div class="welly-cal">
+          @foreach(['Su','Mo','Tu','We','Th','Fr','Sa'] as $dow)
+            <span class="dow">{{ $dow }}</span>
+          @endforeach
+          @foreach($calCells as $day)
+            @php
+              $ds = $day->toDateString();
+              $cls = 'day';
+              if ($day->month !== $calMonth->month) $cls .= ' muted';
+              if ($ds === $todayStr) $cls .= ' today';
+              $hasBooking = $calBookings->get($ds, 0) > 0;
+            @endphp
+            <span class="{{ $cls }} relative">{{ $day->day }}@if($hasBooking)<i class="absolute bottom-0.5 h-1 w-1 rounded-full {{ $ds === $todayStr ? 'bg-white' : 'bg-teal' }}"></i>@endif</span>
+          @endforeach
+        </div>
+
+        <div class="mt-2">
+          @forelse($upcomingSchedule as $dayLabel => $items)
+            @foreach($items->take(2) as $a)
+              <div class="welly-sched">
+                <p class="welly-sched-day">{{ $dayLabel }}</p>
+                <div class="welly-sched-meta"><i class="bi bi-clock"></i> {{ $a->timeSlot->time ?? '—' }}</div>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="welly-sched-meta"><i class="bi bi-person"></i> {{ $a->doctor->name ?? '—' }} · {{ $a->patient_name }}</span>
+                  <span class="flex items-center gap-2">
+                    <form action="{{ route('admin.appointments.status', $a->id) }}" method="POST" class="m-0">
+                      @csrf @method('PATCH')
+                      <input type="hidden" name="status" value="1">
+                      <button class="border-0 bg-transparent p-0 text-[16px] text-teal hover:text-teal-dk" title="Approve"><i class="bi bi-check-circle"></i></button>
+                    </form>
+                    <form action="{{ route('admin.appointments.status', $a->id) }}" method="POST" class="m-0" onsubmit="return confirm('Cancel this appointment?')">
+                      @csrf @method('PATCH')
+                      <input type="hidden" name="status" value="3">
+                      <button class="border-0 bg-transparent p-0 text-[16px] text-red hover:text-red-t" title="Cancel"><i class="bi bi-x-circle"></i></button>
+                    </form>
+                  </span>
+                </div>
+              </div>
+            @endforeach
+          @empty
+            <p class="py-4 text-center text-[13px] text-mut">No upcoming appointments scheduled.</p>
+          @endforelse
+        </div>
+        <a href="{{ route('admin.appointments.index') }}" class="mt-1 block text-center text-[13px] font-bold text-teal-dk no-underline hover:underline">View all {{ $totalAppointments }} appointments →</a>
+      </div>
+    </section>
+  </div>
+
+  {{-- ===== Patient Overview ===== --}}
+  <section class="welly-card">
+    <div class="welly-card-hd">
+      <div>
+        <h2 class="welly-card-title">Patient Overview</h2>
+        <p class="m-0 mt-0.5 text-[12px] text-mut">Monthly trends · Appointments vs lab orders · last 6 months</p>
+      </div>
+      <a href="{{ route('admin.lab-orders.index') }}" class="welly-iconbtn !h-8 !w-8 !text-[16px]" aria-label="Lab orders" title="Lab orders"><i class="bi bi-three-dots"></i></a>
+    </div>
+    <div class="flex items-end gap-2 px-5 pb-1 pt-3">
+      @foreach($monthLabels as $i => $label)
+        <div class="flex flex-1 flex-col items-center gap-1.5">
+          <div class="flex items-end gap-1" style="height:110px">
+            <i class="block w-3 rounded-sm bg-teal" style="height:{{ max(4, round($monthlyAppointments[$i] / $maxAppt * 108)) }}px" title="{{ $monthlyAppointments[$i] }} appointments"></i>
+            <i class="block w-3 rounded-sm bg-gold" style="height:{{ max(4, round($monthlyLabOrders[$i] / $maxLab * 108)) }}px" title="{{ $monthlyLabOrders[$i] }} lab orders"></i>
+          </div>
+          <span class="text-[11px] text-mut">{{ $label }}</span>
+        </div>
+      @endforeach
+    </div>
+    <div class="flex gap-4 px-5 pb-4 pt-1 text-[12px] text-mut">
+      <span><i class="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm bg-teal align-[-1px]"></i>Appointments</span>
+      <span><i class="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm bg-gold align-[-1px]"></i>Lab orders</span>
+      <span class="ml-auto">Revenue this month: <strong class="text-ink">${{ number_format($revenueThisMonth, 2) }}</strong> · Outstanding invoices: <strong class="text-ink">${{ number_format($invoiceOutstanding, 2) }}</strong></span>
+    </div>
+  </section>
+
+  {{-- ===== Revenue (lab + invoices, Welly cards) ===== --}}
+  <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
+    <section class="welly-card">
+      <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
+        <div>
+          <h2 class="welly-card-title">Revenue</h2>
+          <p class="m-0 mt-0.5 text-[12px] text-mut">Lab orders &amp; invoices</p>
+        </div>
+        <a href="{{ route('admin.lab-orders.index', ['status' => 'completed']) }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">View completed →</a>
+      </div>
+      <div class="flex flex-wrap gap-x-8 gap-y-3 px-5 py-4">
+        <div>
+          <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">This month</p>
+          <p class="m-0 mt-1 text-[24px] font-extrabold tabular-nums tracking-tight text-ink">${{ number_format($revenueThisMonth, 2) }}</p>
+        </div>
+        <div>
+          <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">All time</p>
+          <p class="m-0 mt-1 text-[24px] font-extrabold tabular-nums tracking-tight text-ink">${{ number_format($revenueAllTime, 2) }}</p>
+        </div>
+        <div>
+          <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">Lab orders this month</p>
+          <p class="m-0 mt-1 text-[24px] font-extrabold tabular-nums tracking-tight text-ink">{{ $labOrdersThisMonth }}</p>
+        </div>
+        <div>
+          <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">Awaiting processing</p>
+          <p class="m-0 mt-1 text-[24px] font-extrabold tabular-nums tracking-tight text-ink">{{ $labOrdersPending }}</p>
+        </div>
+      </div>
+      <div class="border-t border-line-2 px-5 pb-4 pt-3">
+        <div class="flex items-center justify-between gap-2.5">
+          <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">Invoice revenue</p>
+          <a href="{{ route('admin.invoices.index') }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">View invoices →</a>
+        </div>
+        <div class="flex flex-wrap gap-x-8 gap-y-3 pt-2">
+          <div>
+            <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">Collected this month</p>
+            <p class="m-0 mt-1 text-[24px] font-extrabold tabular-nums tracking-tight text-ink">${{ number_format($invoicePaidThisMonth, 2) }}</p>
+          </div>
+          <div>
+            <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">Collected all time</p>
+            <p class="m-0 mt-1 text-[24px] font-extrabold tabular-nums tracking-tight text-ink">${{ number_format($invoicePaidAllTime, 2) }}</p>
+          </div>
+          <div>
+            <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">Outstanding</p>
+            <p class="m-0 mt-1 text-[24px] font-extrabold tabular-nums tracking-tight text-ink">${{ number_format($invoiceOutstanding, 2) }}</p>
+          </div>
+          <div>
+            <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">Unpaid invoices</p>
+            <p class="m-0 mt-1 text-[24px] font-extrabold tabular-nums tracking-tight text-ink">{{ $invoicesPendingCount }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="welly-card">
+      <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
+        <div>
+          <h2 class="welly-card-title">Appointments by status</h2>
+          <p class="m-0 mt-0.5 text-[12px] text-mut">{{ $totalAppointments }} total</p>
+        </div>
+      </div>
+      <div class="px-5 py-4">
+        @php $barW = fn ($n) => max(0, round($n / $statusTotal * 100)); @endphp
+        <div class="grid items-center gap-2.5 text-[14px] md:grid-cols-[88px_1fr_30px]">
+          <span class="text-ink-2">Pending</span>
+          <div class="h-2 overflow-hidden rounded bg-grey-bg"><i class="block h-full rounded bg-amber-dot" style="width:{{ $barW($pendingAppointments) }}%"></i></div>
+          <span class="text-right font-bold tabular-nums text-ink">{{ $pendingAppointments }}</span>
+        </div>
+        <div class="mt-2 grid items-center gap-2.5 text-[14px] md:grid-cols-[88px_1fr_30px]">
+          <span class="text-ink-2">Confirmed</span>
+          <div class="h-2 overflow-hidden rounded bg-grey-bg"><i class="block h-full rounded bg-teal" style="width:{{ $barW($confirmedAppointments) }}%"></i></div>
+          <span class="text-right font-bold tabular-nums text-ink">{{ $confirmedAppointments }}</span>
+        </div>
+        <div class="mt-2 grid items-center gap-2.5 text-[14px] md:grid-cols-[88px_1fr_30px]">
+          <span class="text-ink-2">Completed</span>
+          <div class="h-2 overflow-hidden rounded bg-grey-bg"><i class="block h-full rounded bg-bright" style="width:{{ $barW($completedAppointments) }}%"></i></div>
+          <span class="text-right font-bold tabular-nums text-ink">{{ $completedAppointments }}</span>
+        </div>
+        <div class="mt-2 grid items-center gap-2.5 text-[14px] md:grid-cols-[88px_1fr_30px]">
+          <span class="text-ink-2">Cancelled</span>
+          <div class="h-2 overflow-hidden rounded bg-grey-bg"><i class="block h-full rounded bg-faint" style="width:{{ $barW($cancelledAppointments) }}%"></i></div>
+          <span class="text-right font-bold tabular-nums text-ink">{{ $cancelledAppointments }}</span>
+        </div>
+      </div>
+      <p class="m-0 border-t border-line-2 px-5 py-2.5 text-[12px] text-mut">Book more from the front desk or review the pending queue.</p>
+    </section>
+  </div>
+
+  {{-- ===== Today's register + side rails (kept from previous dashboard, Welly cards) ===== --}}
+  <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-[1fr_340px]">
+    <section class="welly-card">
+      <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
+        <div>
+          <h2 class="welly-card-title">Today's appointments</h2>
+          <p class="m-0 mt-0.5 text-[12px] text-mut">Pending first · latest bookings across all doctors</p>
+        </div>
+        <a href="{{ route('admin.appointments.index') }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">View all {{ $totalAppointments }} →</a>
+      </div>
+      <div class="overflow-x-auto">
         <table class="mc-tbl w-full">
           <thead><tr><th>Patient</th><th>Doctor</th><th>Time</th><th>Status</th><th></th></tr></thead>
           <tbody>
@@ -127,7 +333,7 @@
                   <span class="text-[12px] text-mut">{{ $a->doctor->department ?? 'General' }}</span>
                 </td>
                 <td>
-                  {{ \Illuminate\Support\Carbon::parse($a->appointment_date)->format('M j') }}<br>
+                  {{ Carbon::parse($a->appointment_date)->format('M j') }}<br>
                   <span class="text-[12px] text-mut">{{ $a->timeSlot->time ?? '—' }}</span>
                 </td>
                 <td>
@@ -143,60 +349,19 @@
             @endforelse
           </tbody>
         </table>
-        </div>
-      </section>
+      </div>
+    </section>
 
-      {{-- Status breakdown --}}
-      <section class="mc-card">
-        <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-[18px] py-3.5">
-          <div>
-            <h2 class="text-[16px] font-bold tracking-tight text-ink">Appointments by status</h2>
-            <p class="mt-0.5 text-[12px] text-mut">{{ $totalAppointments }} total</p>
-          </div>
-        </div>
-        <div class="px-[18px] py-4">
-          <div class="grid items-center gap-2.5 text-[14px] md:grid-cols-[88px_1fr_30px]">
-            <span class="text-ink-2">Pending</span>
-            <div class="h-2 overflow-hidden rounded bg-grey-bg"><i class="block h-full rounded bg-amber-dot" style="width:{{ $barW($pendingAppointments) }}%"></i></div>
-            <span class="text-right font-bold tabular-nums text-ink">{{ $pendingAppointments }}</span>
-          </div>
-          <div class="mt-2 grid items-center gap-2.5 text-[14px] md:grid-cols-[88px_1fr_30px]">
-            <span class="text-ink-2">Confirmed</span>
-            <div class="h-2 overflow-hidden rounded bg-grey-bg"><i class="block h-full rounded bg-teal" style="width:{{ $barW($confirmedAppointments) }}%"></i></div>
-            <span class="text-right font-bold tabular-nums text-ink">{{ $confirmedAppointments }}</span>
-          </div>
-          <div class="mt-2 grid items-center gap-2.5 text-[14px] md:grid-cols-[88px_1fr_30px]">
-            <span class="text-ink-2">Completed</span>
-            <div class="h-2 overflow-hidden rounded bg-grey-bg"><i class="block h-full rounded bg-bright" style="width:{{ $barW($completedAppointments) }}%"></i></div>
-            <span class="text-right font-bold tabular-nums text-ink">{{ $completedAppointments }}</span>
-          </div>
-          <div class="mt-2 grid items-center gap-2.5 text-[14px] md:grid-cols-[88px_1fr_30px]">
-            <span class="text-ink-2">Cancelled</span>
-            <div class="h-2 overflow-hidden rounded bg-grey-bg"><i class="block h-full rounded bg-faint" style="width:{{ $barW($cancelledAppointments) }}%"></i></div>
-            <span class="text-right font-bold tabular-nums text-ink">{{ $cancelledAppointments }}</span>
-          </div>
-        </div>
-        <p class="border-t border-line-2 px-[18px] py-2 text-[12px] text-mut">
-          {{ $confirmPct }}% confirmed ·
-          @if($pendingAppointments > 0) {{ $pendingAppointments . ($pendingAppointments == 1 ? ' still needs' : ' still need') }} confirmation.@else all caught up.@endif
-        </p>
-      </section>
-
-    </div>
-
-    {{-- Right column --}}
     <div class="flex flex-col gap-4">
-
-      {{-- Doctors on duty --}}
-      <section class="mc-card">
-        <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-[18px] py-3.5">
+      <section class="welly-card">
+        <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
           <div>
-            <h2 class="text-[16px] font-bold tracking-tight text-ink">Doctors on duty</h2>
-            <p class="mt-0.5 text-[12px] text-mut">Top by appointment load</p>
+            <h2 class="welly-card-title">Doctors on duty</h2>
+            <p class="m-0 mt-0.5 text-[12px] text-mut">{{ $activeDoctorsToday }} on duty today</p>
           </div>
           <a href="{{ route('admin.doctors.index') }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">All {{ $totalDoctors }} →</a>
         </div>
-        <div class="px-[18px] pb-3 pt-1">
+        <div class="px-5 pb-3 pt-1">
           @forelse($topDoctors as $doc)
             <div class="flex items-center gap-2.5 border-b border-line-2 py-2.5 last:border-b-0">
               <div class="mc-av">{{ $doc->name ? strtoupper(mb_substr($doc->name, 0, 1)) : '?' }}</div>
@@ -204,7 +369,7 @@
                 <b class="block text-[14px] text-ink">{{ $doc->name }}</b>
                 <span class="text-[12px] text-mut">{{ $doc->department ?? 'General' }} · {{ $doc->appointment_count }} appts</span>
               </div>
-              <span class="ml-auto shrink-0 text-[12px] font-bold {{ $doc->status ? 'text-teal-dk' : 'text-faint' }}">&bull; {{ $doc->status ? 'Active' : 'Off duty' }}</span>
+              <span class="ml-auto shrink-0 text-[12px] font-bold {{ $doc->status ? 'text-teal-dk' : 'text-faint' }}">• {{ $doc->status ? 'Active' : 'Off duty' }}</span>
             </div>
           @empty
             <div class="py-3.5 text-[14px] text-mut">No doctors found. <a href="{{ route('admin.doctors.create') }}" class="font-bold text-teal-dk">Add one</a>.</div>
@@ -212,111 +377,78 @@
         </div>
       </section>
 
-      {{-- Pending comments --}}
-      <section class="mc-card">
-        <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-[18px] py-3.5">
+      <section class="welly-card">
+        <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
           <div>
-            <h2 class="text-[16px] font-bold tracking-tight text-ink">Pending comments</h2>
-            <p class="mt-0.5 text-[12px] text-mut">Awaiting moderation</p>
+            <h2 class="welly-card-title">Doctor load</h2>
+            <p class="m-0 mt-0.5 text-[12px] text-mut">Active bookings per doctor</p>
           </div>
         </div>
-        <div class="px-[18px] pb-4 pt-0.5">
+        <div class="px-5 py-4">
+          @forelse($doctorLoad as $doc)
+            <div class="grid items-center gap-3 text-[14px] md:grid-cols-[1fr_52px] {{ !$loop->last ? 'mb-2' : '' }}">
+              <div>
+                <b class="block text-ink">{{ $doc->name }}</b>
+                <div class="mt-1 h-2 overflow-hidden rounded bg-grey-bg"><i class="block h-full rounded bg-teal" style="width:{{ round($doc->appointment_count / $maxDocLoad * 100) }}%"></i></div>
+              </div>
+              <span class="text-right font-bold tabular-nums text-ink">{{ $doc->appointment_count }}</span>
+            </div>
+          @empty
+            <div class="py-3 text-[14px] text-mut">No doctors found.</div>
+          @endforelse
+        </div>
+      </section>
+
+      <section class="welly-card">
+        <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
+          <div>
+            <h2 class="welly-card-title">Pending comments</h2>
+            <p class="m-0 mt-0.5 text-[12px] text-mut">Awaiting moderation</p>
+          </div>
+        </div>
+        <div class="px-5 pb-2 pt-0.5">
           @forelse($recentComments as $c)
             <div class="border-b border-line-2 py-2.5 text-[14px] last:border-b-0">
-              <q class="block text-ink font-medium" quotes="“”">{{ \Illuminate\Support\Str::limit($c->comment, 90) }}</q>
+              <q class="block font-medium text-ink" quotes="“”">{{ \Illuminate\Support\Str::limit($c->comment, 90) }}</q>
               <span class="text-[12px] text-mut">{{ $c->name }} on "{{ $c->blog->title ?? '—' }}"</span>
             </div>
           @empty
             <div class="py-3.5 text-[14px] text-mut">No pending comments. All clear.</div>
           @endforelse
         </div>
-        <a class="block mx-[18px] mb-[18px] rounded-lg bg-ink text-center py-2 text-[14px] font-semibold text-white no-underline hover:bg-black" href="{{ route('admin.comments.index') }}">Moderate comments</a>
+        <a class="mx-5 mb-5 block rounded-lg bg-ink py-2 text-center text-[14px] font-semibold text-white no-underline hover:bg-black" href="{{ route('admin.comments.index') }}">Moderate comments</a>
       </section>
-
     </div>
   </div>
-
-  {{-- ===== Analytics ===== --}}
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-    <section class="mc-card">
-      <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-[18px] py-3.5">
-        <div>
-          <h2 class="text-[16px] font-bold tracking-tight text-ink">Monthly trends</h2>
-          <p class="mt-0.5 text-[12px] text-mut">Appointments vs lab orders · last 6 months</p>
-        </div>
-        <a href="{{ route('admin.lab-orders.index') }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">Lab orders →</a>
-      </div>
-      <div class="flex items-end gap-1.5 px-[18px] pt-3.5 pb-1.5">
-        @foreach($monthLabels as $i => $label)
-          <div class="flex flex-1 flex-col items-center gap-1">
-            <div class="flex items-end gap-0.5" style="height:90px">
-              <i class="block w-[9px] rounded-sm bg-teal" style="height:{{ max(3, round($monthlyAppointments[$i] / $maxAppt * 88)) }}px" title="{{ $monthlyAppointments[$i] }} appts"></i>
-              <i class="block w-[9px] rounded-sm bg-bright" style="height:{{ max(3, round($monthlyLabOrders[$i] / $maxLab * 88)) }}px" title="{{ $monthlyLabOrders[$i] }} lab orders"></i>
-            </div>
-            <span class="text-[11px] text-mut">{{ $label }}</span>
-          </div>
-        @endforeach
-      </div>
-      <div class="flex gap-3.5 px-[18px] pb-3 pt-1 text-[12px] text-mut">
-        <span><i class="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm bg-teal align-[-1px]"></i>Appointments</span>
-        <span><i class="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm bg-bright align-[-1px]"></i>Lab orders</span>
-      </div>
-    </section>
-
-    <section class="mc-card">
-      <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-[18px] py-3.5">
-        <div>
-          <h2 class="text-[16px] font-bold tracking-tight text-ink">Revenue</h2>
-          <p class="mt-0.5 text-[12px] text-mut">Completed lab orders</p>
-        </div>
-        <a href="{{ route('admin.lab-orders.index', ['status' => 'completed']) }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">View completed →</a>
-      </div>
-      <div class="flex flex-wrap gap-3 px-[18px] py-4">
-        <div>
-          <p class="text-[12px] font-semibold uppercase tracking-wider text-mut">This month</p>
-          <p class="mt-1 font-display text-[26px] font-bold tabular-nums tracking-tight text-ink">${{ number_format($revenueThisMonth, 2) }}</p>
-        </div>
-        <div>
-          <p class="text-[12px] font-semibold uppercase tracking-wider text-mut">All time</p>
-          <p class="mt-1 font-display text-[26px] font-bold tabular-nums tracking-tight text-ink">${{ number_format($revenueAllTime, 2) }}</p>
-        </div>
-        <div>
-          <p class="text-[12px] font-semibold uppercase tracking-wider text-mut">Lab orders this month</p>
-          <p class="mt-1 font-display text-[26px] font-bold tabular-nums tracking-tight text-ink">{{ $labOrdersThisMonth }}</p>
-        </div>
-        <div>
-          <p class="text-[12px] font-semibold uppercase tracking-wider text-mut">Awaiting processing</p>
-          <p class="mt-1 font-display text-[26px] font-bold tabular-nums tracking-tight text-ink">{{ $labOrdersPending }}</p>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  {{-- ===== Doctor load ===== --}}
-  <section class="mc-card">
-    <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-[18px] py-3.5">
-      <div>
-        <h2 class="text-[16px] font-bold tracking-tight text-ink">Doctor load</h2>
-        <p class="mt-0.5 text-[12px] text-mut">Active bookings per doctor (cancelled excluded)</p>
-      </div>
-      <a href="{{ route('admin.doctors.index') }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">All doctors →</a>
-    </div>
-    <div class="px-[18px] py-4">
-      @forelse($doctorLoad as $doc)
-        <div class="grid items-center gap-3 text-[14px] md:grid-cols-[180px_1fr_52px] {{ !$loop->last ? 'mb-2' : '' }}">
-          <div class="min-w-0">
-            <b class="block text-ink">{{ $doc->name }}</b>
-            <span class="text-[12px] text-mut">{{ $doc->department ?? 'General' }}</span>
-          </div>
-          <div class="h-2 overflow-hidden rounded bg-grey-bg"><i class="block h-full rounded bg-teal" style="width:{{ round($doc->appointment_count / $maxDocLoad * 100) }}%"></i></div>
-          <span class="text-right font-bold tabular-nums text-ink">{{ $doc->appointment_count }}</span>
-        </div>
-      @empty
-        <div class="py-3 text-[14px] text-mut">No doctors found.</div>
-      @endforelse
-    </div>
-  </section>
 
 </div>
+
+<script>
+  (function () {
+    var donut = document.getElementById('welly-donut');
+    var elNew = document.getElementById('welly-pct-new');
+    var elRec = document.getElementById('welly-pct-recovered');
+    var elTreat = document.getElementById('welly-pct-treating');
+    var elTotal = document.getElementById('welly-range-total');
+    if (!donut) return;
+    function paint(btn) {
+      var n = parseInt(btn.dataset.new, 10) || 0;
+      var r = parseInt(btn.dataset.recovered, 10) || 0;
+      var t = parseInt(btn.dataset.treating, 10) || 0;
+      donut.style.background = 'conic-gradient(from -90deg, #c2a15a 0 ' + n + '%, #0b8f74 ' + n + '% ' + (n + r) + '%, #2f353f ' + (n + r) + '% 100%)';
+      elNew.textContent = n + '%';
+      elRec.textContent = r + '%';
+      elTreat.textContent = t + '%';
+      elTotal.textContent = (parseInt(btn.dataset.total, 10) || 0) + ' bookings in range';
+    }
+    document.querySelectorAll('[data-welly-tab]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('[data-welly-tab]').forEach(function (b) { b.classList.remove('on'); });
+        btn.classList.add('on');
+        paint(btn);
+      });
+    });
+  })();
+</script>
 
 @endsection

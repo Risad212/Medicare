@@ -2,6 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\AboutSetting;
+use App\Models\SeoSetting;
+use App\Models\Service;
+use App\Models\ServiceSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\CreatesModels;
 use Tests\TestCase;
@@ -71,5 +75,88 @@ class FrontendTest extends TestCase
         $this->makeBlog(['title' => 'Visible Draft Only', 'status' => 0]);
 
         $this->get(route('blog'))->assertOk()->assertDontSee('Visible Draft Only');
+    }
+
+    public function test_home_blog_section_shows_published_and_hides_drafts(): void
+    {
+        $this->makeBlog(['title' => 'Homepage Featured Post', 'status' => 1]);
+        $this->makeBlog(['title' => 'Homepage Hidden Draft', 'status' => 0]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Homepage Featured Post')
+            ->assertDontSee('Homepage Hidden Draft');
+    }
+
+    public function test_service_page_renders_admin_seo(): void
+    {
+        SeoSetting::create([
+            'page' => 'service',
+            'meta_title' => 'Service Meta Title XYZ',
+        ]);
+
+        $this->get(route('service'))
+            ->assertOk()
+            ->assertSee('Service Meta Title XYZ');
+    }
+
+    public function test_appointment_page_renders_admin_seo(): void
+    {
+        SeoSetting::create([
+            'page' => 'appointment',
+            'meta_title' => 'Appointment Meta Title XYZ',
+        ]);
+
+        $this->get(route('appointment'))
+            ->assertOk()
+            ->assertSee('Appointment Meta Title XYZ');
+    }
+
+    public function test_doctor_list_shows_page_label(): void
+    {
+        $this->get(route('doctor'))
+            ->assertOk()
+            ->assertSee('Our Doctors');
+    }
+
+    public function test_about_page_renders_configured_content(): void
+    {
+        AboutSetting::create([
+            'title' => 'Configured About Title XYZ',
+            'mission_title' => 'Configured Mission XYZ',
+        ]);
+
+        $this->get(route('about'))
+            ->assertOk()
+            ->assertSee('Configured About Title XYZ')
+            ->assertSee('Configured Mission XYZ');
+    }
+
+    public function test_service_page_renders_configured_content_and_cards(): void
+    {
+        ServiceSetting::create([
+            'emergency_title' => 'Configured Emergency XYZ',
+            'prevention_1_title' => 'Configured Prevention XYZ',
+        ]);
+        Service::create([
+            'title' => 'Configured Service Card XYZ',
+            'description' => 'Card body.',
+            'status' => 1,
+        ]);
+
+        $this->get(route('service'))
+            ->assertOk()
+            ->assertSee('Configured Emergency XYZ')
+            ->assertSee('Configured Prevention XYZ')
+            ->assertSee('Configured Service Card XYZ');
+    }
+
+    public function test_home_renders_dynamic_service_cards(): void
+    {
+        Service::create(['title' => 'Home Service Card XYZ', 'status' => 1]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Home Service Card XYZ');
     }
 }

@@ -281,69 +281,53 @@
             <span class="subtitle">Our Blog</span>
             <h3 class="title">Recent Articles and News</h3>
         </div>
-        <div class="row g-5">
-            <div class="col-lg-6 col-md-12">
-                <div class="blog-left">
-                    <div class="img-wrapper">
-                        <a href="blog-details.html">
-                            <img class="img-fluid" src="{{ asset('frontend-assets/media/home/blog.jpeg') }}" alt="">
-                        </a>
-                        <div class="text-box">
-                            <h3>What is The Success rate of a root canel?</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-                                Aenean massa. Cum sociis natoque penatibus et.</p>
-                            <a href="blog-details.html" class="button">Read More</a>
+
+        @if(isset($recentBlogs) && $recentBlogs->count())
+            @php
+                $feature = $recentBlogs->first();
+                $sideBlogs = $recentBlogs->skip(1)->take(3);
+            @endphp
+            <div class="row g-5">
+                <div class="col-lg-6 col-md-12">
+                    <div class="blog-left">
+                        <div class="img-wrapper">
+                            <a href="{{ route('blog.show', $feature->slug) }}">
+                                <img class="img-fluid" src="{{ asset('storage/'.$feature->image) }}" alt="{{ $feature->title }}">
+                            </a>
+                            <div class="text-box">
+                                <h3>{{ $feature->title }}</h3>
+                                <p>{{ Str::limit($feature->excerpt, 140) }}</p>
+                                <a href="{{ route('blog.show', $feature->slug) }}" class="button">Read More</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6 col-md-12">
-                <div class="blog-right">
-                    <div class="row single-box">
-                        <div class="col-md-6 col-sm-12">
-                            <div class="img-wrapper">
-                                <a href="blog-details.html">
-                                    <img class="img-fluid" src="{{ asset('frontend-assets/media/home/blog2.jpg') }}" alt="">
-                                </a>
+                <div class="col-lg-6 col-md-12">
+                    <div class="blog-right">
+                        @foreach($sideBlogs as $blog)
+                            <div class="row single-box">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="img-wrapper">
+                                        <a href="{{ route('blog.show', $blog->slug) }}">
+                                            <img class="img-fluid" src="{{ asset('storage/'.$blog->image) }}" alt="{{ $blog->title }}">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <h3>{{ $blog->title }}</h3>
+                                    <p>{{ Str::limit($blog->excerpt, 90) }}</p>
+                                    <a href="{{ route('blog.show', $blog->slug) }}" class="button">Read More</a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 col-sm-12">
-                            <h3>What is The Success rate of a root canel?</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo...</p>
-                            <a href="blog-details.html" class="button">Read More</a>
-                        </div>
-                    </div>
-                    <div class="row single-box">
-                        <div class="col-md-6 col-sm-12">
-                            <div class="img-wrapper">
-                                <a href="blog-details.html">
-                                    <img class="img-fluid" src="{{ asset('frontend-assets/media/home/blog3.jpg') }}" alt="">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-12">
-                            <h3>How to handle your kids' mystery ailments?</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo...</p>
-                            <a href="blog-details.html" class="button">Read More</a>
-                        </div>
-                    </div>
-                    <div class="row single-box">
-                        <div class="col-md-6 col-sm-12">
-                            <div class="img-wrapper">
-                                <a href="blog-details.html">
-                                    <img class="img-fluid" src="{{ asset('frontend-assets/media/home/blog4.jpg') }}" alt="">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-12">
-                            <h3>How to help the cardiology department</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo...</p>
-                            <a href="blog-details.html" class="button">Read More</a>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
-        </div>
+        @else
+            <div class="text-center py-4">
+                <p>No articles published yet.</p>
+            </div>
+        @endif
     </div>
 </section>
 

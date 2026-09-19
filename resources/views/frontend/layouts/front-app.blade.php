@@ -33,6 +33,30 @@
     <script src="{{ asset('frontend-assets/js/daterangepicker.min.js') }}"></script>
     <script src="{{ asset('frontend-assets/js/moment.min.js') }}"></script>
     <script src="{{ asset('frontend-assets/js/main.js') }}"></script>
+
+    @auth
+    <!-- Patient notification bell: poll unread count every 60s -->
+    <script>
+        (function () {
+            var badge = document.getElementById('mc-patient-notif-badge');
+            if (!badge) return;
+            var url = '{{ route('notifications.unread-count') }}';
+            function refresh() {
+                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
+                    .then(function (r) { return r.ok ? r.json() : null; })
+                    .then(function (data) {
+                        if (!data) return;
+                        var n = parseInt(data.count, 10) || 0;
+                        badge.textContent = n > 99 ? '99+' : n;
+                        badge.style.display = n > 0 ? '' : 'none';
+                    })
+                    .catch(function () {});
+            }
+            refresh();
+            setInterval(refresh, 60000);
+        })();
+    </script>
+    @endauth
 </body>
 
 </html>

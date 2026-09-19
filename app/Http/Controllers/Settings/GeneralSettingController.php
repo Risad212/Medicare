@@ -35,6 +35,7 @@ class GeneralSettingController extends Controller
             'twitter' => 'nullable|url|max:500',
             'linkedin' => 'nullable|url|max:500',
             'youtube' => 'nullable|url|max:500',
+            'map_embed_url' => 'nullable|string|max:2000',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
             'footer_description' => 'nullable|string|max:1000',

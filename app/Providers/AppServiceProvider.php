@@ -14,6 +14,7 @@ use App\Models\GeneralSetting;
 use App\Models\LabOrder;
 use App\Models\LabReport;
 use App\Models\LabTest;
+use App\Models\Prescription;
 use App\Models\User;
 use App\Observers\ActivityLogObserver;
 use Illuminate\Pagination\Paginator;
@@ -63,6 +64,7 @@ class AppServiceProvider extends ServiceProvider
             BloodGroup::class,
             BloodRequest::class,
             BloodIssue::class,
+            Prescription::class,
         ];
 
         foreach ($models as $model) {

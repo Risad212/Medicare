@@ -9,6 +9,42 @@
 
 ---
 
+## Architecture (visual overview)
+
+Layered MVC — HTTP never touches the database directly; Blade never holds business logic:
+
+```mermaid
+flowchart TB
+    Browser["Browser (Blade + Tailwind + jQuery)"]
+    Routes["routes/web.php (all routes, middleware groups)"]
+    MW["Middleware (auth · admin · doctor · throttle)"]
+    Ctrl["Controllers (thin: validate → delegate → respond)"]
+    Svc["Services (logic + DB::transaction)"]
+    Models["Models (33 Eloquent models)"]
+    DB[("SQLite dev/test · MySQL prod")]
+
+    Browser --> Routes --> MW --> Ctrl --> Svc --> Models --> DB
+    Ctrl --> Browser
+```
+
+One `users` table, three roles — login redirects by role:
+
+```mermaid
+flowchart LR
+    Login["Login / Google OAuth"] --> Role{"users.role"}
+    Role -->|admin| Admin["/admin/* — Welly dashboard skin"]
+    Role -->|doctor| Doctor["/doctor/* — doctor panel"]
+    Role -->|patient| Patient["/profile — patient area"]
+
+    style Admin fill:#e6faf5,stroke:#0b8f74
+    style Doctor fill:#eff6ff,stroke:#1d4ed8
+    style Patient fill:#fef3c7,stroke:#d97706
+```
+
+> Full detail with ER diagram, request sequence, appointment + blood lifecycles, admin shell map and testing gates: **[docs/ARCHITECTURE-OVERVIEW.md](docs/ARCHITECTURE-OVERVIEW.md)** · extension rules: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**
+
+---
+
 ## Features — Complete
 
 ### Frontend (public + auth routes)
@@ -38,10 +74,10 @@
 
 **Frontend extras:** Responsive header (appointment CTA), breadcrumb, footer (departments/contact), `owl.carousel`, `daterangepicker`, `magnific-popup`, `counterup`, brand clients. Patient account: `Auth::routes` register/login + **Google OAuth** `GET /auth/google` (`auth.google.redirect`) → `GET /auth/google/callback` (`auth.google.callback`) via `laravel/socialite ^5.30` — auto-creates `patient`, links existing email, sets `email_verified_at`, stores `google_id/provider/avatar`, `password` nullable, preserves `role` (no escalation), redirects by role.
 
-### Admin Panel — Vali Admin + Bootstrap 5.3.2 via CDN (`admin` middleware)
+### Admin Panel — Welly skin, Tailwind v4 + Vite (`admin` middleware)
 | Method | URI | Name | Description |
 |--------|-----|------|-------------|
-| GET | `/admin` | `admin.home` | **Dashboard** Taste v2 bento: 4 stats (doctors/appointments/blogs/pendingComments with pending/confirmed/cancelled + `today` + progress), `8/4` recent Appointments table (patient avatar, doctor, date/timeSlot, status) + status bars + doctors on duty (`withCount`) + moderation card — brand `#05d3b0` |
+| GET | `/admin` | `admin.home` | **Dashboard** (Welly): 4 gold-trim stats (today's appointments / patients / doctors / earning), Patient Percentage donut with Daily/Weekly/Monthly real-data tabs, browsable booking calendar (`?cal=YYYY-MM`) + upcoming schedule with approve/cancel, Patient Overview 6-month bars, Revenue + Invoice KPIs, status bars, today's register, doctor load, pending comments |
 | GET/POST | `/admin/settings/general` | `settings.general` / `update` | Site name, logo (200x60), favicon (32x32), header address/hours/socials (facebook/twitter/linkedin/youtube), footer logo/phone/email/description/copyright |
 | GET/POST | `/admin/settings/home` | `settings.home` | Home about, counter numbers, etc. |
 | GET | `/admin/settings/about` | `settings.about` | About CMS |
@@ -103,6 +139,10 @@
 |--------|-----|------|-------------|
 | GET | `/admin/activity-logs` | `admin.activity-logs.index` | Audit trail — all Eloquent writes logged via `ActivityLogObserver` |
 | GET | `/admin/exports/{appointments,patients,lab-orders}` | `admin.exports.*` | CSV exports via `CsvExport` |
+| RESOURCE (except show) | `/admin/roles` | `admin.roles.*` | Roles CRUD + grouped permission matrix (`RoleService`, `can:roles.manage`); system roles protected |
+| GET/PUT | `/admin/users`, `/admin/users/{user}/edit` | `admin.users.*` | Staff & users register — primary role + RBAC role attach (`can:users.manage`, self-demote blocked) |
+
+**Access control (RBAC):** `roles` / `permissions` / `permission_role` / `role_user` tables + `Role`/`Permission` models; 15 module permissions (`*.manage`, `dashboard.view`, `activity-logs.view`) seeded by `RolePermissionSeeder` (admin/receptionist/lab-technician/pharmacist/doctor/patient defaults); Gates resolved lazily in `AuthServiceProvider` with legacy `admin` superuser bypass; every `/admin/*` route carries a `can:` gate and the sidebar/topbar hide ungranted modules via `@can`; `AdminMiddleware` admits `admin` role or any permission holder; staff logins land on `admin.home`.
 
 ### Doctor Panel (`doctor` middleware)
 | Method | URI | Name | Description |
@@ -123,10 +163,10 @@
 - `Auth::routes(['verify'=>false])` + `LoginController::authenticated()` role redirect `admin→admin.home`, `doctor→doctor.dashboard`, `patient→profile` → `home`
 - `RegisterController::validator` (`name,email,password confirmed`) + `create()` saves `role=patient` + `Hash::make`
 - Google OAuth `GoogleAuthController` handles `google_id` lookup → email link → new `patient` with `Hash::make(Str::random(32))`, `role` never overridden, `avatar` stored
-- Brand: frontend `--primary:#05d3b0` `topbar:#049f84` `social:#03856f` Poppins/Montserrat → admin `--bs-primary:#05d3b0` `#d6f5ef/#e6f9f5` tints header `#049f84` logo `#03856f` `bootstrap-icons 1.10.5` CDN `bootstrap.bundle 5.3.2` + `summernote-bs5` + local `jquery-3.7.0.min.js` + `main.js`
+- Brand: frontend `--primary:#05d3b0` `topbar:#049f84` `social:#03856f` Poppins/Montserrat → admin Welly skin (Tailwind v4 `@theme`: teal `#0b8f74`, gold `#c2a15a`, Fraunces + Public Sans, `resources/css/admin.css` via Vite) + `bootstrap-icons 1.10.5` CDN `bootstrap.bundle 5.3.2` + `summernote-bs5` + local `jquery-3.7.0.min.js` + `main.js`
 
 ### QA & Tech
-- PHPUnit 12 `sqlite :memory:` — **221 tests / 694 assertions green** (`composer run test`): auth/Google OAuth, appointments (family book, double-booking guard, cancel by token), blogs/comments, contact, lab orders/invoices, exports, patient lab reports, doctor flows, and **Blood Bank** (`tests/Feature/AdminBloodBankTest.php` — 14 tests: admin gating, group/donor/donation CRUD, oldest-bag reservation, insufficient/partial stock, issue flow + cross-request rejection, patient privacy, doctor scoping, expiry command, reports + CSV, donor eligibility)
+- PHPUnit 12 `sqlite :memory:` — **281 tests / 860 assertions green** (`composer run test`): auth/Google OAuth, appointments (family book, double-booking guard, cancel by token), admin dashboard analytics, blogs/comments, contact, lab orders/invoices, exports, patient lab reports, doctor flows, and **Blood Bank** (`tests/Feature/AdminBloodBankTest.php` — 14 tests: admin gating, group/donor/donation CRUD, oldest-bag reservation, insufficient/partial stock, issue flow + cross-request rejection, patient privacy, doctor scoping, expiry command, reports + CSV, donor eligibility)
 - E2E: **Laravel Dusk 5/5** (`composer run dusk`, own `database/dusk.sqlite`, port 8089)
 - `AppServiceProvider` guards `Schema::hasTable('general_settings')` + try/catch, `remove_order` migrations guard `hasColumn`
 - `composer audit: 0`, `php -l: clean`, Pint-formatted, `Route::throttle:10,1` on contact/appointment/comment/cancel, `#[Fillable]` allowlist on all models, no `{!! !!}` XSS

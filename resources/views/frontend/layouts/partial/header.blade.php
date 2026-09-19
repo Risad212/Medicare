@@ -168,6 +168,15 @@
                     </li>
 
                     @auth
+                        <li class="nav-item nav-button unset-cross me-2 mb-2 mb-md-0">
+                            <a class="nav-link position-relative" href="{{ route('notifications.index') }}" title="Notifications" aria-label="Notifications">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.918z"/>
+                                </svg>
+                                <span id="mc-patient-notif-badge" class="position-absolute badge rounded-pill bg-danger" style="top:2px; right:-2px; font-size:.6rem; display:none;">0</span>
+                            </a>
+                        </li>
+
                         <li class="nav-item nav-button unset-cross">
                             <a class="nav-link" href="{{ route('profile') }}">
                                 My Profile

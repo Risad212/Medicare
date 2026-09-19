@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\AboutSetting;
 use App\Models\GeneralSetting;
 use App\Models\SeoSetting;
+use App\Models\ServiceSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -26,6 +28,35 @@ class AdminSettingsTest extends TestCase
         $client->get(route('settings.doctor'))->assertOk();
         $client->get(route('settings.blog'))->assertOk();
         $client->get(route('settings.contact'))->assertOk();
+        $client->get(route('settings.appointment'))->assertOk();
+    }
+
+    public function test_general_settings_save_map_embed_url(): void
+    {
+        $this->actingAs($this->makeAdmin())
+            ->from(route('settings.general'))
+            ->post(route('settings.general.update'), [
+                'site_name' => 'MediCare',
+                'map_embed_url' => 'https://maps.example.com/embed?q=hospital',
+            ])->assertRedirect();
+
+        $this->assertDatabaseHas('general_settings', [
+            'map_embed_url' => 'https://maps.example.com/embed?q=hospital',
+        ]);
+    }
+
+    public function test_appointment_seo_settings_can_be_saved(): void
+    {
+        $this->actingAs($this->makeAdmin())
+            ->post(route('admin.seo-settings.update'), [
+                'page' => 'appointment',
+                'meta_title' => 'Book an Appointment',
+            ])->assertRedirect();
+
+        $this->assertDatabaseHas('seo_settings', [
+            'page' => 'appointment',
+            'meta_title' => 'Book an Appointment',
+        ]);
     }
 
     public function test_general_settings_are_created_and_updated(): void
@@ -66,6 +97,58 @@ class AdminSettingsTest extends TestCase
             'site_name' => 'MediCare Plus',
         ]);
         $this->assertSame(1, GeneralSetting::count());
+    }
+
+    public function test_about_settings_are_saved(): void
+    {
+        Storage::fake('public');
+
+        $this->actingAs($this->makeAdmin())
+            ->from(route('settings.about'))
+            ->post(route('settings.about.update'), [
+                'subtitle' => 'Who we are',
+                'title' => 'About Title XYZ',
+                'mission_title' => 'Our Mission',
+                'mission_description' => 'Mission text.',
+                'image_one' => UploadedFile::fake()->image('about1.jpg', 600, 400),
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('about_settings', [
+            'title' => 'About Title XYZ',
+            'mission_title' => 'Our Mission',
+        ]);
+
+        $about = AboutSetting::first();
+        $this->assertNotNull($about->image_one);
+        Storage::disk('public')->assertExists($about->image_one);
+    }
+
+    public function test_service_settings_are_saved(): void
+    {
+        Storage::fake('public');
+
+        $this->actingAs($this->makeAdmin())
+            ->from(route('settings.service'))
+            ->post(route('settings.service.update'), [
+                'emergency_title' => 'Emergency Now',
+                'emergency_phone' => '+8801700000000',
+                'prevention_1_title' => 'Wash hands',
+                'prevention_1_desc' => 'Use soap.',
+                'emergency_image' => UploadedFile::fake()->image('emergency.jpg', 600, 400),
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('service_settings', [
+            'emergency_title' => 'Emergency Now',
+            'prevention_1_title' => 'Wash hands',
+        ]);
+
+        $setting = ServiceSetting::first();
+        $this->assertNotNull($setting->emergency_image);
+        Storage::disk('public')->assertExists($setting->emergency_image);
     }
 
     public function test_general_settings_validate_urls(): void

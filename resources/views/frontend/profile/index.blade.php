@@ -69,6 +69,18 @@
                 </button>
             </li>
 
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link"
+                    id="prescriptions-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#prescriptions"
+                    type="button"
+                    role="tab">
+                    My Prescriptions
+                </button>
+            </li>
+
         </ul>
 
         {{-- Tab Content --}}
@@ -139,6 +151,12 @@
                                 </p>
 
                             </div>
+
+                            <a
+                                href="{{ route('notifications.index') }}"
+                                class="btn btn-outline-primary w-100 mb-2">
+                                My Notifications
+                            </a>
 
                             <a
                                 href="{{ route('profile.blood-requests') }}"
@@ -624,6 +642,108 @@
 
                         <p class="text-muted">
                             When a doctor orders lab tests for you, the results will appear here.
+                        </p>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+            {{-- ================= PRESCRIPTIONS ================= --}}
+            <div
+                class="tab-pane fade"
+                id="prescriptions"
+                role="tabpanel">
+
+                @if($prescriptions->count())
+
+                    @foreach($prescriptions as $prescription)
+
+                        <div class="card border-0 shadow-sm mb-4">
+
+                            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">
+                                    Prescription #{{ $prescription->id }}
+                                    <span class="text-muted fw-normal">
+                                        &middot; {{ $prescription->patient_name }}
+                                        &middot; {{ $prescription->created_at->format('d M Y') }}
+                                    </span>
+                                </h6>
+                                <a href="{{ route('profile.prescriptions.pdf', $prescription->id) }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-file-earmark-pdf"></i> Prescription PDF
+                                </a>
+                            </div>
+
+                            <div class="card-body">
+
+                                <p class="mb-2">
+                                    <strong>Prescribed by:</strong>
+                                    Dr. {{ $prescription->doctor->name ?? 'N/A' }}
+                                    @if($prescription->doctor?->specialist)
+                                        <span class="text-muted small">({{ $prescription->doctor->specialist }})</span>
+                                    @endif
+                                </p>
+
+                                <p class="mb-2">
+                                    <strong>Diagnosis:</strong>
+                                    {{ $prescription->diagnosis }}
+                                </p>
+
+                                @if($prescription->items->count())
+
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-sm align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>Medicine</th>
+                                                    <th>Dosage</th>
+                                                    <th>Frequency</th>
+                                                    <th>Duration</th>
+                                                    <th>Quantity</th>
+                                                    <th>Instructions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($prescription->items as $item)
+                                                    <tr>
+                                                        <td>{{ $item->medicine_name }}</td>
+                                                        <td>{{ $item->dosage ?? 'N/A' }}</td>
+                                                        <td>{{ $item->frequency ?? 'N/A' }}</td>
+                                                        <td>{{ $item->duration ?? 'N/A' }}</td>
+                                                        <td>{{ $item->quantity ?? 'N/A' }}</td>
+                                                        <td>{{ $item->instructions ?? 'N/A' }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                @endif
+
+                                @if($prescription->advice)
+                                    <p class="mb-0 text-muted small">
+                                        <strong>Advice:</strong>
+                                        {{ $prescription->advice }}
+                                    </p>
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    @endforeach
+
+                @else
+
+                    <div class="text-center py-5">
+
+                        <h5>
+                            No Prescriptions Found
+                        </h5>
+
+                        <p class="text-muted">
+                            When a doctor writes a prescription for you, it will appear here.
                         </p>
 
                     </div>

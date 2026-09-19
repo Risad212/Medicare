@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Department;
+use App\Models\Service;
 use App\Models\Slider;
 use App\Models\TimeSlot;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -82,6 +83,58 @@ class AdminContentTest extends TestCase
         $this->actingAs($this->makeAdmin())
             ->post(route('admin.time-slots.store'), ['time' => '10:00 AM'])
             ->assertSessionHasErrors('time');
+    }
+
+    public function test_admin_creates_updates_and_deletes_service(): void
+    {
+        Storage::fake('public');
+
+        $this->actingAs($this->makeAdmin())
+            ->from('/admin/services')
+            ->post(route('admin.services.store'), [
+                'title' => 'Heart transplants',
+                'description' => 'Card body.',
+                'button_text' => 'Read more',
+                'order' => 2,
+                'status' => 1,
+                'icon' => UploadedFile::fake()->image('icon.jpg', 128, 128),
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('success', 'Service added successfully!');
+
+        $service = Service::where('title', 'Heart transplants')->first();
+        $this->assertNotNull($service);
+        Storage::disk('public')->assertExists($service->icon);
+
+        $this->actingAs($this->makeAdmin())
+            ->put(route('admin.services.update', $service->id), ['title' => 'Heart care'])
+            ->assertSessionHas('success', 'Service updated successfully!');
+
+        $this->assertDatabaseHas('services', ['id' => $service->id, 'title' => 'Heart care']);
+
+        $this->actingAs($this->makeAdmin())
+            ->delete(route('admin.services.destroy', $service->id))
+            ->assertSessionHas('success', 'Service deleted successfully!');
+
+        $this->assertDatabaseMissing('services', ['id' => $service->id]);
+    }
+
+    public function test_service_title_is_required(): void
+    {
+        $this->actingAs($this->makeAdmin())
+            ->post(route('admin.services.store'), [])
+            ->assertSessionHasErrors('title');
+    }
+
+    public function test_service_admin_pages_load(): void
+    {
+        $service = Service::create(['title' => 'Cardiology Card', 'status' => 1]);
+
+        $client = $this->actingAs($this->makeAdmin());
+
+        $client->get(route('admin.services.index'))->assertOk();
+        $client->get(route('admin.services.create'))->assertOk();
+        $client->get(route('admin.services.edit', $service->id))->assertOk();
     }
 
     public function test_admin_creates_updates_and_deletes_slider(): void

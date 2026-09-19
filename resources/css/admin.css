@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
 /* ============================================================
-   MediCare admin — Tailwind v4 design system
-   Migrating the Vali (Bootstrap) + mc-* skin to one utility system.
-   Brand voice: "clinical calm" — teal #0b8f74 / bright #05d3b0,
-   zinc greys, Fraunces display + Public Sans body.
+   MediCare admin — Welly Hospital Dashboard skin (Tailwind v4)
+   Reference: design-demos/deshboard.jpg (Welly by DexignZone)
+   Voice: white sidebar + white topbar, soft grey content #f4f6fa,
+   teal #0b8f74 accents, champagne-gold #c2a15a underlines.
+   All legacy mc-* classes are kept so every CRUD view inherits
+   the Welly look without per-view rewrites.
    ============================================================ */
 
 @theme {
@@ -13,16 +15,18 @@
     --color-teal-dk: #0a7c63;
     --color-bright: #05d3b0;
     --color-wash: #e6faf5;
+    --color-gold: #c2a15a;
+    --color-gold-dk: #a98842;
 
     /* Ink / neutral scale */
-    --color-ink: #18181b;
+    --color-ink: #1a1d21;
     --color-ink-2: #3f3f46;
     --color-mut: #71717a;
     --color-faint: #a1a1aa;
-    --color-panel: #fafafa;
+    --color-panel: #f4f6fa;
     --color-card: #ffffff;
-    --color-line: #e4e4e7;
-    --color-line-2: #f0f0f2;
+    --color-line: #e9ebf0;
+    --color-line-2: #f1f2f6;
 
     /* Status */
     --color-amber: #d97706;
@@ -48,7 +52,7 @@
     --default-font-family: var(--font-body);
 
     /* Elevation */
-    --shadow-card: 0 1px 2px rgb(24 24 27 / 0.05), 0 6px 18px rgb(24 24 27 / 0.05);
+    --shadow-card: 0 1px 2px rgb(24 24 27 / 0.05), 0 8px 24px rgb(24 24 27 / 0.06);
 }
 
 @layer base {
@@ -61,17 +65,84 @@
 }
 
 @layer components {
-    /* ---- Page header ---- */
+    /* ---- Page header (legacy) ---- */
     .mc-kicker { @apply text-xs font-bold uppercase tracking-widest text-teal-dk; }
-    .mc-title     { @apply font-display text-[34px] font-bold leading-[1.05] tracking-tight text-ink; }
+    .mc-title     { @apply font-body text-[26px] font-bold leading-[1.15] tracking-tight text-ink; }
     .mc-title em  { @apply not-italic text-teal; }
-    .mc-sub       { @apply mt-2 max-w-[620px] text-mut; }
-    .mc-head      { @apply mb-1.5 flex flex-wrap items-end gap-4; }
+    .mc-sub       { @apply mt-1 max-w-[620px] text-[13px] text-mut; }
+    .mc-head      { @apply mb-4 flex flex-wrap items-end justify-between gap-4; }
     .mc-head-acts { @apply flex flex-wrap gap-2.5 pb-0.5; }
+
+    /* ---- Welly page title (screenshot: bold title + grey subtitle + outline btn) ---- */
+    .welly-title { @apply text-[26px] font-extrabold tracking-tight text-ink; }
+    .welly-subtitle { @apply mt-0.5 text-[13px] text-mut; }
+    .welly-outline-btn {
+        @apply inline-flex items-center gap-2 rounded-md border border-teal bg-white px-4 py-2 text-[13px] font-bold text-teal-dk no-underline shadow-none transition-colors hover:bg-wash;
+    }
 
     /* ---- Card ---- */
     .mc-card { @apply overflow-hidden rounded-xl border border-line bg-card shadow-card; }
     .mc-card + .mc-card { @apply mt-4; }
+    .welly-card { @apply overflow-hidden rounded-xl border border-line bg-white shadow-card; }
+    .welly-card-hd { @apply flex items-center justify-between gap-2.5 px-5 pb-1 pt-4; }
+    .welly-card-title { @apply text-[15px] font-extrabold tracking-tight text-ink; }
+
+    /* ---- Welly stat cards (white, gold baseline, teal icon) ---- */
+    .welly-stat { @apply relative overflow-hidden rounded-xl border border-line bg-white p-5 shadow-card; }
+    .welly-stat::after {
+        content: "";
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        height: 3px;
+        background: var(--color-gold);
+    }
+    .welly-stat-num { @apply text-[26px] font-extrabold tabular-nums tracking-tight text-ink; }
+    .welly-stat-label { @apply mt-0.5 text-[13px] text-mut; }
+    .welly-stat-icon { @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-wash text-[22px] text-teal; }
+
+    /* ---- Tabs (Patient Percentage: Daily/Weekly/Monthly) ---- */
+    .welly-tabs { @apply flex items-center gap-1 rounded-lg bg-line-2 p-1; }
+    .welly-tab { @apply rounded-md px-3 py-1.5 text-[12px] font-bold text-mut transition-colors hover:text-ink; }
+    .welly-tab.on { @apply bg-white text-teal-dk shadow-sm; }
+
+    /* ---- Donut legend ---- */
+    .welly-legend { @apply flex items-center justify-between gap-2 py-1 text-[14px]; }
+    .welly-legend b { @apply text-[17px] font-extrabold tabular-nums text-ink; }
+    .welly-legend span.lbl { @apply text-[13px] text-mut; }
+    .welly-bar { @apply inline-block h-4 w-1.5 rounded-full; }
+
+    /* ---- Mini calendar ---- */
+    .welly-cal { @apply grid grid-cols-7 gap-y-1 text-center text-[12px]; }
+    .welly-cal .dow { @apply pb-1 font-semibold text-mut; }
+    .welly-cal .day { @apply mx-auto flex h-7 w-9 items-center justify-center rounded-md text-ink-2; }
+    .welly-cal .day.muted { @apply text-faint; }
+    .welly-cal .day.today { @apply bg-gold font-bold text-white; }
+
+    /* ---- Schedule list ---- */
+    .welly-sched { @apply border-b border-line-2 py-2.5 last:border-b-0; }
+    .welly-sched-day { @apply text-[13px] font-extrabold text-ink; }
+    .welly-sched-meta { @apply mt-0.5 flex items-center gap-1.5 text-[12px] text-mut; }
+
+    /* ---- Topbar ---- */
+    .welly-iconbtn { @apply flex h-10 w-10 items-center justify-center rounded-lg text-[22px] text-ink-2 hover:bg-line-2; }
+    .welly-iconbox {
+        @apply relative flex h-10 w-10 items-center justify-center rounded-md border border-teal/40 bg-white text-[17px] text-ink-2 transition-colors hover:border-teal hover:text-teal-dk;
+    }
+    .welly-count {
+        @apply absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-sm bg-teal px-1 text-[10px] font-bold leading-4 text-white;
+    }
+    .welly-avatar-btn { @apply block h-10 w-10 overflow-hidden rounded-md border border-line bg-line-2; }
+    .welly-avatar-btn img { @apply h-full w-full object-cover; }
+
+    /* ---- Sidebar brand ---- */
+    .welly-brand { @apply flex items-center gap-2.5 px-5 pb-5 pt-5 no-underline; }
+    .welly-logo {
+        @apply flex h-9 w-9 items-center justify-center rounded-md bg-teal-dk text-[19px] font-extrabold text-white;
+    }
+    .welly-brand-name { @apply text-[22px] font-extrabold tracking-tight text-ink; }
+    .welly-mini-badge { @apply ml-1.5 rounded bg-red-bg px-1.5 py-0.5 text-[10px] font-bold text-red-t; }
+    .welly-side-foot { @apply px-5 pb-8 pt-4 text-[11px] leading-relaxed text-faint; }
+    .welly-side-foot-title { @apply m-0 text-[12px] font-bold text-ink-2; }
 
     /* ---- Calls-to-action ---- */
     .mc-btn {
@@ -103,7 +174,7 @@
     .mc-tbl tbody tr { @apply transition-colors duration-150; }
     .mc-tbl tbody tr:hover td { @apply bg-wash; }
     .mc-tbl tbody tr:last-child td { @apply border-b-0; }
-    .mc-idx { @apply font-display text-[19px] font-normal tabular-nums text-faint; }
+    .mc-idx { @apply font-body text-[15px] font-normal tabular-nums text-faint; }
     .mc-num { @apply tabular-nums font-semibold; }
     .mc-acts { @apply flex flex-wrap justify-end gap-1.5; }
     .mc-who   { @apply flex min-w-[160px] items-center gap-2.5; }
@@ -117,7 +188,7 @@
     .mc-av.r { @apply bg-[#dc2626] text-white; }
 
     .mc-empty { @apply py-11 text-center text-mut; }
-    .mc-empty b { @apply mb-1.5 block font-display text-[22px] font-bold text-ink; }
+    .mc-empty b { @apply mb-1.5 block font-body text-[22px] font-bold text-ink; }
     .mc-pg { @apply flex flex-wrap items-center justify-between gap-3 border-t border-line-2 px-4.5 py-3 text-[13px] text-mut; }
 
     /* ---- Status pills ---- */
@@ -134,7 +205,7 @@
     .mc-grid { @apply grid grid-cols-[300px_1fr] items-start gap-4; }
     .mc-side { @apply sticky top-4 rounded-xl bg-ink p-5 text-white shadow-card; }
     .mc-side .k { @apply text-[11px] font-bold uppercase tracking-wider text-[#a1a1aa]; }
-    .mc-side h2 { @apply mb-1 mt-1.5 font-display text-2xl font-bold tracking-tight text-white; }
+    .mc-side h2 { @apply mb-1 mt-1.5 font-body text-2xl font-bold tracking-tight text-white; }
     .mc-side p { @apply mb-4 text-[13px] text-[#d4d4d8]; }
     .mc-avbig { @apply mb-3.5 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-teal text-[22px] font-bold; }
     .mc-avbig img { @apply h-full w-full object-cover; }
@@ -144,7 +215,7 @@
 
     .mc-sec { @apply mb-4 overflow-hidden rounded-xl border border-line bg-card shadow-card; }
     .mc-sec-hd { @apply flex items-baseline gap-2.5 border-b border-line-2 bg-[#fcfcfd] px-4.5 py-3.5; }
-    .mc-sec-hd .no { @apply font-display text-xl font-bold text-teal; }
+    .mc-sec-hd .no { @apply font-body text-xl font-bold text-teal; }
     .mc-sec-hd h3 { @apply m-0 text-[15px] font-bold; }
     .mc-sec-hd p { @apply m-0 ml-auto text-xs text-mut; }
     .mc-sec-bd { @apply grid grid-cols-2 gap-x-4 gap-y-3.5 p-4.5; }
@@ -181,20 +252,17 @@
 }
 
 /* ============================================================
-   Layout — sidebar, header, content shell
-   -----------------------------------------------------------
-   main.js toggles body.sidenav-toggled (hamburger) and
-   body.is-expanded on .mc-treeview <li> elements.
+   Layout — Welly white sidebar + white topbar + grey content
+   main.js toggles body.sidenav-toggled and .is-expanded.
    ============================================================ */
 
-/* ---- Sidebar shell ---- */
 .mc-sidebar {
-    @apply fixed inset-y-0 left-0 z-20 w-[240px] overflow-y-auto border-r border-line bg-white pt-[68px] shadow-card transition-[left] duration-300 ease-in-out;
+    @apply fixed inset-y-0 left-0 z-20 w-[260px] overflow-y-auto border-r border-line bg-white transition-[left,margin] duration-300 ease-in-out;
 }
 .mc-sidebar::-webkit-scrollbar { width: 5px; }
-.mc-sidebar::-webkit-scrollbar-thumb { background: var(--color-line-2); border-radius: 5px; }
+.mc-sidebar::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 5px; }
 @media (max-width: 1023.98px) {
-    .mc-sidebar { left: -240px; }
+    .mc-sidebar { left: -260px; }
 }
 @media print { .mc-sidebar { display: none; } }
 
@@ -202,57 +270,66 @@
     @apply fixed inset-0 z-10 hidden bg-black/20 backdrop-blur-[1px];
 }
 
-/* ---- Header ---- */
 .mc-header {
-    @apply fixed inset-x-0 top-0 z-30 flex h-[56px] items-center justify-between bg-teal-dk px-5 text-white;
+    @apply fixed inset-x-0 top-0 z-30 flex h-[72px] items-center gap-1 border-b border-line bg-white px-4;
 }
 @media (min-width: 1024px) {
-    .mc-header { padding-left: 0; }
+    .mc-header { left: 260px; }
 }
 @media print { .mc-header { display: none; } }
 
-/* ---- Content shell ---- */
 .mc-content {
-    @apply min-h-screen transition-[margin] duration-300 ease-in-out p-5;
+    @apply min-h-screen transition-[margin] duration-300 ease-in-out p-4;
+    padding-top: 88px;
+    background: var(--color-panel);
 }
 @media (min-width: 1024px) {
-    .mc-content { margin-left: 240px; padding: 28px 32px 60px; }
+    .mc-content { margin-left: 260px; padding: 100px 28px 60px; }
 }
 
-/* ---- Toggle states (driven by main.js sidenav-toggled) ---- */
+/* Toggle states (driven by main.js sidenav-toggled) */
 @media (min-width: 1024px) {
     body.sidenav-toggled .mc-content { margin-left: 0; }
-    body.sidenav-toggled .mc-sidebar { left: -240px; }
+    body.sidenav-toggled .mc-header { left: 0; }
+    body.sidenav-toggled .mc-sidebar { left: -260px; }
 }
 @media (max-width: 1023.98px) {
-    body.sidenav-toggled .mc-sidebar { left: 0; }
+    body.sidenav-toggled .mc-sidebar { left: 0; box-shadow: var(--shadow-card); }
     body.sidenav-toggled .mc-sidebar-overlay { @apply block; }
     body.sidenav-toggled .mc-content { margin-left: 0; }
 }
 
-/* ---- Sidebar nav items ---- */
-.mc-nav { @apply flex flex-col gap-0.5 px-3 pb-10; }
+/* Sidebar nav items — Welly: teal icon, teal active w/ left gold rail */
+.mc-nav { @apply flex flex-col gap-0.5 px-3 pb-4; }
 .mc-nav__group { @apply mt-5 mb-1.5 px-4 text-[11px] font-bold uppercase tracking-[0.08em] text-faint; }
 .mc-nav__item {
-    @apply flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-medium text-ink-2 transition-colors duration-150 hover:bg-line-2 hover:text-ink;
+    @apply relative flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-medium text-ink-2 transition-colors duration-150 hover:bg-line-2 hover:text-ink;
 }
-.mc-nav__item.active { @apply bg-wash text-teal-dk font-bold; }
-.mc-nav__item .mc-nav-icon { @apply h-5 w-5 shrink-0 text-mut; }
+.mc-nav__item.active { @apply bg-wash font-bold text-teal-dk; }
+.mc-nav__item.active::before {
+    content: "";
+    position: absolute;
+    left: -12px; top: 8px; bottom: 8px;
+    width: 3px; border-radius: 3px;
+    background: var(--color-teal);
+}
+.mc-nav__item .mc-nav-icon { @apply h-5 w-5 shrink-0 text-[17px] text-teal; }
 .mc-nav__item.active .mc-nav-icon { @apply text-teal-dk; }
 .mc-nav__badge {
     @apply ml-auto rounded-full bg-red-bg px-2 py-0.5 text-[11px] font-bold tabular-nums text-red-t;
 }
 
 /* Treeview expand/collapse (main.js toggles .is-expanded on parent <li>) */
-.mc-treeview > ul { @apply hidden; }
-.mc-treeview.is-expanded > ul { @apply block; }
-.mc-treeview > a .mc-chevron { @apply ml-auto h-3 w-3 rotate-0 text-faint transition-transform duration-200; }
+.mc-treeview { list-style: none; }
+.mc-treeview > ul { @apply hidden flex-col gap-0.5 py-1 pl-9; }
+.mc-treeview.is-expanded > ul { @apply flex; }
+.mc-treeview > a .mc-chevron { @apply ml-auto text-[12px] text-faint transition-transform duration-200; }
 .mc-treeview.is-expanded > a .mc-chevron { @apply rotate-90; }
-.mc-treeview-item { @apply flex items-center gap-2.5 rounded-lg px-3 py-2 pl-10 text-[13px] text-ink-2 transition-colors duration-150 hover:bg-line-2 hover:text-ink no-underline; }
-.mc-treeview-item.active { @apply bg-wash text-teal-dk font-bold; }
-.mc-treeview-item .mc-dot { @apply h-1.5 w-1.5 shrink-0 rounded-full bg-current; }
+.mc-treeview-item { @apply flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-ink-2 transition-colors duration-150 hover:bg-line-2 hover:text-ink no-underline; }
+.mc-treeview-item.active { @apply bg-wash font-bold text-teal-dk; }
+.mc-treeview-item .mc-dot { @apply h-1.5 w-1.5 shrink-0 rounded-full bg-current opacity-60; }
 
-/* ---- User block in sidebar ---- */
+/* User block (legacy, kept for compat) */
 .mc-sidebar-user { @apply flex items-center gap-2.5 px-4 pb-4 pt-4; }
 .mc-sidebar-user-avatar { @apply h-9 w-9 shrink-0 rounded-full border border-line bg-wash object-cover; }
 .mc-sidebar-user-name { @apply m-0 truncate text-[14px] font-bold text-ink; }

@@ -14,7 +14,7 @@ class SeoSettingController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'page' => 'required|string|in:home,about,service,doctor,blog,contact',
+            'page' => 'required|string|in:home,about,service,doctor,blog,contact,appointment',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string',

@@ -7,6 +7,8 @@ use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\TimeSlot;
 use App\Services\AppointmentNotifier;
+use App\Services\PatientNotifier;
+use App\Services\StaffNotifier;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -113,6 +115,10 @@ class AppointmentController extends Controller
             return back()->withErrors($e->errors())->withInput();
         }
 
+        StaffNotifier::appointmentBooked($appointment);
+
+        PatientNotifier::appointmentBooked($appointment);
+
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Appointment created successfully!');
     }
@@ -150,6 +156,7 @@ class AppointmentController extends Controller
         $appointment = Appointment::findOrFail($id);
 
         $wasAlreadyApproved = (int) $appointment->getOriginal('status') === 1;
+        $wasStatus = (int) $appointment->getOriginal('status');
 
         // Guard: moving to a non-cancelled status must not double-book
         // the same doctor/date/slot (slot itself isn't editable here, so
@@ -220,6 +227,11 @@ class AppointmentController extends Controller
             app(AppointmentNotifier::class)->notifyApproved($appointment->refresh());
         }
 
+        if ((int) $validated['status'] !== $wasStatus) {
+            StaffNotifier::appointmentStatusChanged($appointment, (int) $validated['status'], (int) auth()->id());
+            PatientNotifier::appointmentStatusChanged($appointment, (int) $validated['status']);
+        }
+
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Appointment updated successfully!');
     }
@@ -236,6 +248,7 @@ class AppointmentController extends Controller
         $appointment = Appointment::findOrFail($id);
 
         $wasAlreadyApproved = (int) $appointment->getOriginal('status') === 1;
+        $wasStatus = (int) $appointment->getOriginal('status');
 
         // Re-activating a cancelled booking must pass the same guards as a
         // full update: no double-book, and the slot must still be open.
@@ -275,6 +288,11 @@ class AppointmentController extends Controller
 
         if ((int) $validated['status'] === 1 && ! $wasAlreadyApproved) {
             app(AppointmentNotifier::class)->notifyApproved($appointment->refresh());
+        }
+
+        if ((int) $validated['status'] !== $wasStatus) {
+            StaffNotifier::appointmentStatusChanged($appointment, (int) $validated['status'], (int) auth()->id());
+            PatientNotifier::appointmentStatusChanged($appointment, (int) $validated['status']);
         }
 
         return back()->with('success', 'Appointment status updated.');

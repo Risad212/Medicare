@@ -63,4 +63,12 @@ class Appointment extends Model
     {
         return $this->belongsTo(TimeSlot::class);
     }
+
+    /**
+     * Prescriptions issued from this visit.
+     */
+    public function prescriptions()
+    {
+        return $this->hasMany(Prescription::class);
+    }
 }
