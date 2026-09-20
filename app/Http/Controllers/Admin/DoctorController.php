@@ -110,6 +110,7 @@ class DoctorController extends Controller
             'department' => 'nullable|string|max:255',
             'specialist' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
+            'status' => 'nullable|in:0,1',
         ]);
 
         // Update User
@@ -127,7 +128,7 @@ class DoctorController extends Controller
                 User::where('id', $doctor->user_id)->update($userData);
             }
 
-            $data = $request->only(['name', 'degree', 'department', 'specialist', 'services', 'availability', 'phone']);
+            $data = $request->only(['name', 'degree', 'department', 'specialist', 'services', 'availability', 'phone', 'status']);
             if (isset($data['services'])) {
                 $data['services'] = strip_tags($data['services']);
             }

@@ -11,19 +11,19 @@
 </div>
 
 <div class="mc-bar">
-    <form action="{{ route('admin.activity-logs.index') }}" method="GET" class="flex flex-1 items-center gap-2.5">
-        <select name="action" class="rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal" onchange="this.form.submit()">
+    <form action="{{ route('admin.activity-logs.index') }}" method="GET" class="flex flex-1 flex-wrap items-center gap-2.5">
+        <div class="mc-search min-h-[42px] min-w-[200px]" style="flex: 7 1 0%">
+            <i class="bi bi-search text-faint"></i>
+            <input type="text" name="search" placeholder="Search by user..." value="{{ request('search') }}" autocomplete="off">
+        </div>
+        <select name="action" class="h-[42px] rounded-lg border border-line bg-white px-2.5 text-[13px] leading-none text-ink outline-none focus:border-teal" style="flex: 2 1 0%; min-width: 110px; max-width: 170px" onchange="this.form.submit()">
             <option value="">All actions</option>
             @foreach($availableActions as $action)
                 <option value="{{ $action }}" @selected(request('action') === $action)>{{ $action }}</option>
             @endforeach
         </select>
-        <div class="mc-search flex-1">
-            <i class="bi bi-search text-faint"></i>
-            <input type="text" name="search" placeholder="Search by user..." value="{{ request('search') }}" autocomplete="off">
-        </div>
         @if(request('search') || request('action'))
-            <a href="{{ route('admin.activity-logs.index') }}" class="mc-btn sm ghost">Clear</a>
+            <a href="{{ route('admin.activity-logs.index') }}" class="mc-btn sm ghost h-[42px] flex-none">Clear</a>
         @endif
     </form>
 </div>

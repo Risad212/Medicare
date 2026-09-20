@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Blog;
 use App\Models\Doctor;
 use App\Models\LabTest;
+use App\Models\Patient;
 use App\Models\TimeSlot;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -22,6 +23,15 @@ trait CreatesModels
     protected function makeAdmin(): User
     {
         return $this->makeUser(['role' => 'admin']);
+    }
+
+    protected function makePatient(array $overrides = []): Patient
+    {
+        return Patient::create(array_merge([
+            'name' => 'Sample Patient',
+            'email' => 'patient'.Str::random(6).'@example.com',
+            'phone' => '01711-111111',
+        ], $overrides));
     }
 
     protected function makeTimeSlot(array $overrides = []): TimeSlot

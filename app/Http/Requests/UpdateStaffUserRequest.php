@@ -8,7 +8,7 @@ class UpdateStaffUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('users.manage') ?? false;
+        return $this->user()?->role === 'admin';
     }
 
     /**
@@ -18,8 +18,6 @@ class UpdateStaffUserRequest extends FormRequest
     {
         return [
             'staff_role' => ['required', 'string', 'in:patient,doctor,admin,receptionist,lab-technician,pharmacist'],
-            'roles' => ['nullable', 'array'],
-            'roles.*' => ['integer', 'exists:roles,id'],
         ];
     }
 }

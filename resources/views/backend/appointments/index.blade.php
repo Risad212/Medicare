@@ -50,7 +50,7 @@
             @forelse($appointments as $key => $appointment)
                 @php
                     $initials = implode('', array_slice(array_map(fn($w) => mb_substr($w, 0, 1), explode(' ', $appointment->patient_name)), 0, 2));
-                    $av = ['t', 'a', 'b', 'r', ''][$key % 5];
+                    $av = ['t', 'a', 'b', 'r', ''][(int) $appointment->id % 5];
                     $statusMap = [0 => ['Pending', 'p-pending'], 1 => ['Confirmed', 'p-confirmed'], 2 => ['Completed', 'p-completed']];
                     [$statusLabel, $statusClass] = $statusMap[(int) $appointment->status] ?? ['Cancelled', 'p-cancelled'];
                 @endphp
@@ -76,7 +76,7 @@
                     <td class="mc-num">{{ $appointment->phone }}</td>
                     <td>{{ $appointment->email ?? 'N/A' }}</td>
                     <td>{{ $appointment->visit_type_label }}</td>
-                    <td class="mc-num">{{ $appointment->appointment_date }}</td>
+                    <td class="mc-num">{{ $appointment->appointment_date->format('d M Y') }}</td>
                     <td class="mc-num">{{ $appointment->timeSlot->time ?? 'N/A' }}</td>
                     <td><span class="mc-pill {{ $statusClass }}"><i></i>{{ $statusLabel }}</span></td>
                     <td>

@@ -154,6 +154,9 @@
     .mc-btn.dark { @apply border-ink bg-ink; }
     .mc-btn.dark:hover { @apply border-teal-dk bg-teal-dk text-white; }
     .mc-btn.sm { @apply rounded-lg px-3 py-1.5 text-xs; }
+    /* Toolbar controls share one height so search / select / buttons align. */
+    .mc-bar .mc-btn { @apply inline-flex min-h-[42px] items-center justify-center; }
+    .mc-bar select { @apply min-h-[42px]; }
     .mc-btn.danger-ghost { @apply border-line bg-card text-red shadow-none; }
     .mc-btn.danger-ghost:hover { @apply border-red text-red; }
 
@@ -162,10 +165,35 @@
         @apply mb-3.5 flex flex-wrap items-center gap-2.5 rounded-xl border border-line bg-card p-3 shadow-card;
     }
     .mc-search {
-        @apply flex min-w-[200px] flex-1 items-center gap-2 rounded-lg border border-line bg-white px-3;
+        @apply flex min-h-[42px] min-w-[200px] flex-1 items-center gap-2 rounded-lg border border-line bg-white px-3 transition-colors duration-150;
     }
-    .mc-search:focus-within { @apply border-teal; }
-    .mc-search input { @apply w-full bg-transparent py-2.5 font-body text-[14px] text-ink outline-none; }
+    .mc-search:focus-within {
+        @apply border-teal;
+        box-shadow: 0 0 0 3px rgb(11 143 116 / 0.12);
+        outline: none;
+    }
+    .mc-search > i { @apply shrink-0 text-[15px] text-faint; }
+    .mc-search input,
+    .mc-search input.form-control,
+    .mc-search input[type="text"],
+    .mc-search input[type="search"] {
+        @apply w-full bg-transparent py-2.5 font-body text-[14px] text-ink;
+        border: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+    .mc-search input:focus,
+    .mc-search input:focus-visible,
+    .mc-search input:focus-within {
+        border: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    .mc-search input::placeholder { @apply text-faint; opacity: 1; }
+    .mc-search input::-webkit-search-cancel-button,
+    .mc-search input::-webkit-search-decoration { -webkit-appearance: none; }
 
     /* ---- Data table ---- */
     .mc-tbl   { @apply mb-0 w-full border-collapse text-[14px]; }
@@ -190,6 +218,24 @@
     .mc-empty { @apply py-11 text-center text-mut; }
     .mc-empty b { @apply mb-1.5 block font-body text-[22px] font-bold text-ink; }
     .mc-pg { @apply flex flex-wrap items-center justify-between gap-3 border-t border-line-2 px-4.5 py-3 text-[13px] text-mut; }
+
+    /* ---- Pagination (AppServiceProvider uses Bootstrap pagination markup,
+       but Bootstrap CSS is not loaded in admin — style it in-brand here) ---- */
+    .mc-pg nav { display: flex; flex: 1; align-items: center; justify-content: flex-end; }
+    .mc-pg ul.pagination { display: flex; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .mc-pg li.page-item { display: inline-flex; }
+    .mc-pg a.page-link,
+    .mc-pg span.page-link {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 34px; height: 34px; margin: 0; padding: 0 10px;
+        background: #fff; border: 1px solid var(--color-line); border-radius: 9px;
+        color: var(--color-ink-2); font-size: 13px; font-weight: 700; line-height: 1;
+        text-decoration: none;
+    }
+    .mc-pg a.page-link:hover { border-color: var(--color-teal); color: var(--color-teal-dk); }
+    .mc-pg li.active span.page-link { background: var(--color-teal); border-color: var(--color-teal); color: #fff; }
+    .mc-pg li.disabled span.page-link { opacity: 0.4; cursor: not-allowed; }
+    .mc-pg .page-link .bi { font-size: 14px; line-height: 1; }
 
     /* ---- Status pills ---- */
     .mc-pill { @apply inline-flex items-center gap-1.75 whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold; }

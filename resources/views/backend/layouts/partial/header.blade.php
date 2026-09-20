@@ -33,30 +33,24 @@
 
     <div class="ml-auto flex items-center gap-2.5">
         @if(!$isDoctor)
-        @can('appointments.manage')
         <a href="{{ route('admin.appointments.index', ['status' => 0]) }}" class="welly-iconbox" title="Pending appointments">
             <i class="bi bi-bell"></i>
             @if($navCounts['pendingAppointments'] > 0)
                 <span class="welly-count">{{ $navCounts['pendingAppointments'] > 9 ? '9+' : $navCounts['pendingAppointments'] }}</span>
             @endif
         </a>
-        @endcan
-        @can('reviews.manage')
         <a href="{{ route('admin.comments.index') }}" class="welly-iconbox" title="Pending reviews">
             <i class="bi bi-chat-left-text"></i>
             @if($navCounts['pendingComments'] > 0)
                 <span class="welly-count">{{ $navCounts['pendingComments'] > 9 ? '9+' : $navCounts['pendingComments'] }}</span>
             @endif
         </a>
-        @endcan
-        @can('appointments.manage')
         <a href="{{ route('admin.appointments.index') }}" class="welly-iconbox" title="Today's appointments">
             <i class="bi bi-calendar-check"></i>
             @if($navCounts['todayAppointments'] > 0)
                 <span class="welly-count">{{ $navCounts['todayAppointments'] > 9 ? '9+' : $navCounts['todayAppointments'] }}</span>
             @endif
         </a>
-        @endcan
         @endif
         {{-- Kept for the notification poller in layouts/app.blade.php --}}
         <span id="mc-notif-badge" class="hidden" style="display:none">0</span>
@@ -87,13 +81,11 @@
                     </a>
                 </li>
                 @if(!$isDoctor)
-                @can('settings.manage')
                 <li>
                     <a class="flex items-center gap-2.5 px-4 py-2 text-ink-2 transition-colors hover:bg-line-2" href="{{ route('settings.general') }}">
                         <i class="bi bi-gear text-base text-mut"></i> Settings
                     </a>
                 </li>
-                @endcan
                 @endif
                 <li><hr class="my-1.5 border-line"></li>
                 <li>
@@ -149,7 +141,6 @@
     <nav class="mc-nav" aria-label="{{ $isDoctor ? 'Doctor' : 'Admin' }} navigation">
 
         @if(!$isDoctor)
-            @canany(['dashboard.view', 'patients.manage', 'doctors.manage', 'reviews.manage'])
             <li class="mc-treeview {{ request()->routeIs('admin.home', 'admin.patients.*', 'admin.doctors.*', 'admin.comments.*') ? 'is-expanded' : '' }}">
                 <a class="mc-nav__item {{ request()->routeIs('admin.home', 'admin.patients.*', 'admin.doctors.*', 'admin.comments.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="mc-nav-icon bi bi-speedometer2"></i>
@@ -157,10 +148,9 @@
                     <i class="mc-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul>
-                    @can('dashboard.view')<li><a class="mc-treeview-item {{ request()->routeIs('admin.home') ? 'active' : '' }}" href="{{ route('admin.home') }}"><span class="mc-dot"></span> Dashboard</a></li>@endcan
-                    @can('patients.manage')<li><a class="mc-treeview-item {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}" href="{{ route('admin.patients.index') }}"><span class="mc-dot"></span> Patients</a></li>@endcan
-                    @can('doctors.manage')<li><a class="mc-treeview-item {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}" href="{{ route('admin.doctors.index') }}"><span class="mc-dot"></span> Doctors</a></li>@endcan
-                    @can('reviews.manage')
+                    <li><a class="mc-treeview-item {{ request()->routeIs('admin.home') ? 'active' : '' }}" href="{{ route('admin.home') }}"><span class="mc-dot"></span> Dashboard</a></li>
+                    <li><a class="mc-treeview-item {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}" href="{{ route('admin.patients.index') }}"><span class="mc-dot"></span> Patients</a></li>
+                    <li><a class="mc-treeview-item {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}" href="{{ route('admin.doctors.index') }}"><span class="mc-dot"></span> Doctors</a></li>
                     <li>
                         <a class="mc-treeview-item {{ request()->routeIs('admin.comments.*') ? 'active' : '' }}" href="{{ route('admin.comments.index') }}"><span class="mc-dot"></span> Reviews
                             @if($navCounts['pendingComments'] > 0)
@@ -168,12 +158,9 @@
                             @endif
                         </a>
                     </li>
-                    @endcan
                 </ul>
             </li>
-            @endcanany
 
-            @can('appointments.manage')
             <li class="mc-treeview {{ request()->routeIs('admin.appointments.*', 'admin.time-slots.*') ? 'is-expanded' : '' }}">
                 <a class="mc-nav__item {{ request()->routeIs('admin.appointments.*', 'admin.time-slots.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="mc-nav-icon bi bi-calendar-check"></i>
@@ -189,9 +176,7 @@
                     <li><a class="mc-treeview-item {{ request()->routeIs('admin.time-slots.*') ? 'active' : '' }}" href="{{ route('admin.time-slots.index') }}"><span class="mc-dot"></span> Time Slots</a></li>
                 </ul>
             </li>
-            @endcan
 
-            @canany(['lab.manage', 'invoices.manage'])
             <li class="mc-treeview {{ request()->routeIs('admin.lab-tests.*', 'admin.lab-orders.*', 'admin.invoices.*') ? 'is-expanded' : '' }}">
                 <a class="mc-nav__item {{ request()->routeIs('admin.lab-tests.*', 'admin.lab-orders.*', 'admin.invoices.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="mc-nav-icon bi bi-clipboard2-pulse"></i>
@@ -199,24 +184,18 @@
                     <i class="mc-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul>
-                    @can('lab.manage')
                     <li><a class="mc-treeview-item {{ request()->routeIs('admin.lab-tests.index') ? 'active' : '' }}" href="{{ route('admin.lab-tests.index') }}"><span class="mc-dot"></span> Lab Tests</a></li>
                     <li><a class="mc-treeview-item {{ request()->routeIs('admin.lab-tests.create') ? 'active' : '' }}" href="{{ route('admin.lab-tests.create') }}"><span class="mc-dot"></span> Add Test</a></li>
                     <li><a class="mc-treeview-item {{ request()->routeIs('admin.lab-orders.*') ? 'active' : '' }}" href="{{ route('admin.lab-orders.index') }}"><span class="mc-dot"></span> Lab Orders</a></li>
-                    @endcan
-                    @can('invoices.manage')<li><a class="mc-treeview-item {{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}" href="{{ route('admin.invoices.index') }}"><span class="mc-dot"></span> Invoices</a></li>@endcan
+                    <li><a class="mc-treeview-item {{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}" href="{{ route('admin.invoices.index') }}"><span class="mc-dot"></span> Invoices</a></li>
                 </ul>
             </li>
-            @endcanany
 
-            @can('prescriptions.manage')
             <a class="mc-nav__item {{ request()->routeIs('admin.prescriptions.*') ? 'active' : '' }}" href="{{ route('admin.prescriptions.index') }}">
                 <i class="mc-nav-icon bi bi-capsule"></i>
                 <span>Prescriptions</span>
             </a>
-            @endcan
 
-            @can('bloodbank.manage')
             <li class="mc-treeview {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'is-expanded' : '' }}">
                 <a class="mc-nav__item {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="mc-nav-icon bi bi-droplet"></i>
@@ -234,9 +213,7 @@
                     <li><a class="mc-treeview-item {{ request()->routeIs('admin.bloodbank.reports') ? 'active' : '' }}" href="{{ route('admin.bloodbank.reports') }}"><span class="mc-dot"></span> Reports</a></li>
                 </ul>
             </li>
-            @endcan
 
-            @can('content.manage')
             <li class="mc-treeview {{ request()->routeIs('admin.departments.*', 'admin.services.*', 'admin.blogs.*', 'admin.categories.*', 'admin.tags.*', 'admin.sliders.*') ? 'is-expanded' : '' }}">
                 <a class="mc-nav__item {{ request()->routeIs('admin.departments.*', 'admin.services.*', 'admin.blogs.*', 'admin.categories.*', 'admin.tags.*', 'admin.sliders.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="mc-nav-icon bi bi-journal-text"></i>
@@ -252,9 +229,7 @@
                     <li><a class="mc-treeview-item {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}" href="{{ route('admin.sliders.index') }}"><span class="mc-dot"></span> Sliders</a></li>
                 </ul>
             </li>
-            @endcan
 
-            @can('settings.manage')
             <li class="mc-treeview {{ request()->routeIs('settings.*') ? 'is-expanded' : '' }}">
                 <a class="mc-nav__item {{ request()->routeIs('settings.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="mc-nav-icon bi bi-gear"></i>
@@ -272,28 +247,16 @@
                     <li><a class="mc-treeview-item {{ request()->routeIs('settings.appointment') ? 'active' : '' }}" href="{{ route('settings.appointment') }}"><span class="mc-dot"></span> Appointment</a></li>
                 </ul>
             </li>
-            @endcan
 
-            @canany(['roles.manage', 'users.manage'])
-            <li class="mc-treeview {{ request()->routeIs('admin.roles.*', 'admin.users.*') ? 'is-expanded' : '' }}">
-                <a class="mc-nav__item {{ request()->routeIs('admin.roles.*', 'admin.users.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
-                    <i class="mc-nav-icon bi bi-shield-check"></i>
-                    <span>Access Control</span>
-                    <i class="mc-chevron bi bi-chevron-right"></i>
-                </a>
-                <ul>
-                    @can('roles.manage')<li><a class="mc-treeview-item {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}"><span class="mc-dot"></span> Roles</a></li>@endcan
-                    @can('users.manage')<li><a class="mc-treeview-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}"><span class="mc-dot"></span> Staff &amp; Users</a></li>@endcan
-                </ul>
-            </li>
-            @endcanany
+            <a class="mc-nav__item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                <i class="mc-nav-icon bi bi-people"></i>
+                <span>Staff &amp; Users</span>
+            </a>
 
-            @can('activity-logs.view')
             <a class="mc-nav__item {{ request()->routeIs('admin.activity-logs.*') ? 'active' : '' }}" href="{{ route('admin.activity-logs.index') }}">
                 <i class="mc-nav-icon bi bi-list-check"></i>
                 <span>Activity Logs</span>
             </a>
-            @endcan
 
         @else
 

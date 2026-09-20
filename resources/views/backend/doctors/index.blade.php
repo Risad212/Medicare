@@ -17,6 +17,10 @@
     <div class="mb-3 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
 @endif
 
+@if(session('error'))
+    <div class="mb-3 rounded-lg bg-red-bg px-4 py-3 text-sm text-red-t">{{ session('error') }}</div>
+@endif
+
 <div class="mc-ecg"><span>Live register</span><span>{{ $doctors->total() }} records</span></div>
 
 <div class="mc-bar">
@@ -44,7 +48,7 @@
             @forelse($doctors as $doctor)
                 @php
                     $initials = implode('', array_slice(array_map(fn($w) => mb_substr($w, 0, 1), explode(' ', $doctor->name)), 0, 2));
-                    $av = ['t', 'a', 'b', 'r', ''][$loop->index % 5];
+                    $av = ['t', 'a', 'b', 'r', ''][(int) $doctor->id % 5];
                 @endphp
                 <tr>
                     <td class="mc-idx">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</td>

@@ -60,7 +60,7 @@
             @forelse($donors as $key => $donor)
                 @php
                     $initials = implode('', array_slice(array_map(fn($w) => mb_substr($w, 0, 1), explode(' ', $donor->name)), 0, 2));
-                    $av = ['t', 'a', 'b', 'r', ''][$key % 5];
+                    $av = ['t', 'a', 'b', 'r', ''][(int) $donor->id % 5];
                 @endphp
                 <tr>
                     <td class="mc-idx">{{ $donors->firstItem() + $key }}</td>

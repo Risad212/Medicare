@@ -19,11 +19,11 @@ use App\Models\LabOrderItem;
 use App\Models\LabTest;
 use App\Models\Prescription;
 use App\Models\PrescriptionItem;
-use App\Models\Role;
 use App\Models\Service;
 use App\Models\Slider;
 use App\Models\Tag;
 use App\Models\TimeSlot;
+use App\Models\User;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -96,9 +96,6 @@ class DemoDataSeeder extends Seeder
                 'name' => $name, 'email' => $email, 'password' => $password,
                 'role' => $role, 'phone' => '01'.rand(300000000, 399999999), 'email_verified_at' => now(),
             ]);
-            if ($rbac = Role::where('slug', $slug)->first()) {
-                $user->roles()->attach($rbac);
-            }
             $staff[] = $user;
         }
 

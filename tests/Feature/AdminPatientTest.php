@@ -11,16 +11,26 @@ class AdminPatientTest extends TestCase
     use CreatesModels;
     use RefreshDatabase;
 
-    public function test_index_lists_only_patients(): void
+    public function test_index_lists_patient_records(): void
     {
-        $this->makeUser(['name' => 'Visible Patient']);
-        $this->makeUser(['name' => 'Hidden Doctor', 'role' => 'doctor']);
+        $this->makePatient(['name' => 'Visible Patient']);
 
         $this->actingAs($this->makeAdmin())
             ->get(route('admin.patients.index'))
             ->assertOk()
-            ->assertSee('Visible Patient')
-            ->assertDontSee('Hidden Doctor');
+            ->assertSee('Visible Patient');
+    }
+
+    public function test_index_filters_by_search(): void
+    {
+        $this->makePatient(['name' => 'Searched Person', 'email' => 'searched@example.com']);
+        $this->makePatient(['name' => 'Other Person', 'email' => 'other@example.com']);
+
+        $this->actingAs($this->makeAdmin())
+            ->get(route('admin.patients.index', ['search' => 'Searched']))
+            ->assertOk()
+            ->assertSee('Searched Person')
+            ->assertDontSee('Other Person');
     }
 
     public function test_create_page_loads(): void
@@ -28,58 +38,54 @@ class AdminPatientTest extends TestCase
         $this->actingAs($this->makeAdmin())->get(route('admin.patients.create'))->assertOk();
     }
 
-    public function test_admin_creates_patient(): void
+    public function test_admin_creates_patient_record_without_account(): void
     {
         $this->actingAs($this->makeAdmin())
             ->post(route('admin.patients.store'), [
                 'name' => 'New Patient',
                 'email' => 'patient@example.com',
                 'phone' => '01711-333333',
-                'password' => 'secretpass',
-                'password_confirmation' => 'secretpass',
             ])
             ->assertRedirect(route('admin.patients.index'))
             ->assertSessionHas('success', 'Patient created successfully.');
 
-        $this->assertDatabaseHas('users', [
+        $this->assertDatabaseHas('patients', [
             'email' => 'patient@example.com',
-            'role' => 'patient',
             'phone' => '01711-333333',
+        ]);
+        $this->assertDatabaseMissing('users', [
+            'email' => 'patient@example.com',
         ]);
     }
 
-    public function test_admin_patient_store_requires_confirming_password(): void
+    public function test_admin_patient_store_requires_name(): void
     {
         $this->actingAs($this->makeAdmin())
             ->from(route('admin.patients.create'))
             ->post(route('admin.patients.store'), [
-                'name' => 'New Patient',
                 'email' => 'patient@example.com',
-                'password' => 'secretpass',
-            ])->assertSessionHasErrors('password');
+            ])->assertSessionHasErrors('name');
     }
 
     public function test_admin_shows_patient(): void
     {
-        $patient = $this->makeUser();
+        $patient = $this->makePatient();
 
         $this->actingAs($this->makeAdmin())
             ->get(route('admin.patients.show', $patient->id))
             ->assertOk();
     }
 
-    public function test_admin_cannot_show_non_patient_user(): void
+    public function test_admin_cannot_show_missing_patient(): void
     {
-        $doctorUser = $this->makeUser(['role' => 'doctor']);
-
         $this->actingAs($this->makeAdmin())
-            ->get(route('admin.patients.show', $doctorUser->id))
+            ->get(route('admin.patients.show', 9999))
             ->assertNotFound();
     }
 
     public function test_admin_updates_patient(): void
     {
-        $patient = $this->makeUser();
+        $patient = $this->makePatient();
 
         $this->actingAs($this->makeAdmin())
             ->put(route('admin.patients.update', $patient->id), [
@@ -90,7 +96,7 @@ class AdminPatientTest extends TestCase
             ->assertRedirect(route('admin.patients.index'))
             ->assertSessionHas('success', 'Patient updated successfully.');
 
-        $this->assertDatabaseHas('users', [
+        $this->assertDatabaseHas('patients', [
             'id' => $patient->id,
             'name' => 'Renamed Patient',
             'email' => 'renamed@example.com',
@@ -98,26 +104,17 @@ class AdminPatientTest extends TestCase
         ]);
     }
 
-    public function test_admin_deletes_patient(): void
+    public function test_admin_deletes_patient_record_but_keeps_user_account(): void
     {
-        $patient = $this->makeUser();
+        $patient = $this->makePatient(['email' => 'shared@example.com']);
+        $user = $this->makeUser(['email' => 'shared@example.com']);
 
         $this->actingAs($this->makeAdmin())
             ->delete(route('admin.patients.destroy', $patient->id))
             ->assertRedirect(route('admin.patients.index'))
             ->assertSessionHas('success', 'Patient deleted successfully.');
 
-        $this->assertDatabaseMissing('users', ['id' => $patient->id]);
-    }
-
-    public function test_role_scoped_delete_does_not_delete_doctor_user(): void
-    {
-        $doctorUser = $this->makeUser(['role' => 'doctor']);
-
-        $this->actingAs($this->makeAdmin())
-            ->delete(route('admin.patients.destroy', $doctorUser->id))
-            ->assertNotFound();
-
-        $this->assertDatabaseHas('users', ['id' => $doctorUser->id]);
+        $this->assertDatabaseMissing('patients', ['id' => $patient->id]);
+        $this->assertDatabaseHas('users', ['id' => $user->id]);
     }
 }

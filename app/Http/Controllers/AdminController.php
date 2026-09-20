@@ -8,7 +8,7 @@ use App\Models\BlogComment;
 use App\Models\Doctor;
 use App\Models\Invoice;
 use App\Models\LabOrder;
-use App\Models\User;
+use App\Models\Patient;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Carbon;
 
@@ -33,7 +33,7 @@ class AdminController extends Controller
     {
         $totalDoctors = Doctor::count();
         $totalAppointments = Appointment::count();
-        $totalPatients = User::where('role', 'patient')->count();
+        $totalPatients = Patient::count();
         $totalBlogs = Blog::count();
         $pendingComments = BlogComment::where('status', 0)->count();
 

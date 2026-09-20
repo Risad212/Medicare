@@ -45,7 +45,7 @@
     <form action="{{ route('admin.doctors.availability.update', $doctor->id) }}" method="POST">
         @csrf
         <div class="overflow-x-auto">
-            <table class="mc-tbl text-center">
+            <table class="mc-tbl text-left">
                 <thead>
                     <tr>
                         <th>Day</th>

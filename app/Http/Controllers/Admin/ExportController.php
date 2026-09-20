@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\LabOrder;
-use App\Models\User;
+use App\Models\Patient;
 use App\Services\CsvExport;
 
 class ExportController extends Controller
@@ -49,17 +49,16 @@ class ExportController extends Controller
     }
 
     /**
-     * Export all patients as a CSV file.
+     * Export all patient records as a CSV file.
      */
     public function patients(CsvExport $csv)
     {
-        $rows = User::where('role', 'patient')
-            ->latest()
+        $rows = Patient::latest()
             ->cursor()
             ->map(fn ($patient) => [
                 $patient->id,
                 $patient->name,
-                $patient->email,
+                $patient->email ?? 'N/A',
                 $patient->phone ?? 'N/A',
                 $patient->created_at->format('Y-m-d H:i:s'),
             ]);

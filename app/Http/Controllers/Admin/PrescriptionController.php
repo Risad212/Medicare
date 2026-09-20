@@ -60,6 +60,6 @@ class PrescriptionController extends Controller
     {
         $service->delete($prescription);
 
-        return back()->with('success', 'Prescription deleted successfully.');
+        return redirect()->route('admin.prescriptions.index')->with('success', 'Prescription deleted successfully.');
     }
 }

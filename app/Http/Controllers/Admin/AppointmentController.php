@@ -130,8 +130,13 @@ class AppointmentController extends Controller
     {
         $appointment = Appointment::findOrFail($id);
         $doctors = Doctor::where('status', 1)->get();
+        // Keep the current slot selectable even if it was deactivated.
+        $slots = TimeSlot::where('status', 1)
+            ->orWhere('id', $appointment->time_slot_id)
+            ->orderBy('id')
+            ->get();
 
-        return view('backend.appointments.edit', compact('appointment', 'doctors'));
+        return view('backend.appointments.edit', compact('appointment', 'doctors', 'slots'));
     }
 
     /**
@@ -150,21 +155,24 @@ class AppointmentController extends Controller
             // No after_or_equal:today here: admins must be able to finish or
             // correct past appointments (e.g. mark yesterday's visit completed).
             'date' => 'required|date',
+            'time_slot_id' => 'nullable|exists:time_slots,id',
             'status' => 'required|in:0,1,2,3',
         ]);
 
         $appointment = Appointment::findOrFail($id);
 
+        // Slot is editable here: fall back to the current slot when omitted.
+        $slotId = (int) ($validated['time_slot_id'] ?? $appointment->time_slot_id);
+
         $wasAlreadyApproved = (int) $appointment->getOriginal('status') === 1;
         $wasStatus = (int) $appointment->getOriginal('status');
 
         // Guard: moving to a non-cancelled status must not double-book
-        // the same doctor/date/slot (slot itself isn't editable here, so
-        // reuse the appointment's current time_slot_id).
+        // the same doctor/date/slot.
         if ((int) $validated['status'] !== 3) {
             $conflict = Appointment::where('doctor_id', $validated['doctor_id'])
                 ->where('appointment_date', $validated['date'])
-                ->where('time_slot_id', $appointment->time_slot_id)
+                ->where('time_slot_id', $slotId)
                 ->where('status', '!=', 3)
                 ->where('id', '!=', $appointment->id)
                 ->exists();
@@ -179,12 +187,13 @@ class AppointmentController extends Controller
             // compare normalised date strings instead of mixed types.
             $slotChanged = (int) $validated['doctor_id'] !== (int) $appointment->getOriginal('doctor_id')
                 || Carbon::parse($validated['date'])->toDateString()
-                    !== Carbon::parse($appointment->getOriginal('appointment_date'))->toDateString();
+                    !== Carbon::parse($appointment->getOriginal('appointment_date'))->toDateString()
+                || $slotId !== (int) $appointment->getOriginal('time_slot_id');
             $reActivating = (int) $appointment->getOriginal('status') === 3;
 
             if ($slotChanged || $reActivating) {
                 $doctor = Doctor::find($validated['doctor_id']);
-                if ($doctor && ! $doctor->openSlotIdsForDate($validated['date'])->contains((int) $appointment->time_slot_id)) {
+                if ($doctor && ! $doctor->openSlotIdsForDate($validated['date'])->contains($slotId)) {
                     return back()->withErrors([
                         'time_slot_id' => 'This slot is not available for the selected doctor on that date.',
                     ])->withInput();
@@ -193,7 +202,7 @@ class AppointmentController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($appointment, $validated) {
+            DB::transaction(function () use ($appointment, $validated, $slotId) {
                 $data = [
                     'doctor_id' => $validated['doctor_id'],
                     'patient_name' => $validated['name'],
@@ -203,6 +212,7 @@ class AppointmentController extends Controller
                     'email' => $validated['email'] ?? null,
                     'visit_type' => $validated['visit_type'],
                     'appointment_date' => $validated['date'],
+                    'time_slot_id' => $slotId,
                     'status' => $validated['status'],
                 ];
                 // Invalidate the emailed guest-cancel link once cancelled.

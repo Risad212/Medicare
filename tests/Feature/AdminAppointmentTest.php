@@ -140,6 +140,7 @@ class AdminAppointmentTest extends TestCase
             ->from(route('admin.appointments.edit', $target->id))
             ->put(route('admin.appointments.update', $target->id), $this->adminAppointmentPayload([
                 'doctor_id' => $doctor->id,
+                'time_slot_id' => $slot->id,
                 'date' => $date,
                 'status' => 1,
             ]))

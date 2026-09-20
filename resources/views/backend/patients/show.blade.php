@@ -6,7 +6,7 @@
     <div>
         <p class="mc-kicker">MediCare · Records</p>
         <h1 class="mc-title">Patient <em>details</em></h1>
-        <p class="mc-sub">Profile overview and appointment history.</p>
+        <p class="mc-sub">Profile overview and visits matched by email or phone.</p>
     </div>
     <div class="mc-head-acts">
         <a href="{{ route('admin.patients.edit', $patient->id) }}" class="mc-btn"><i class="bi bi-pencil"></i> Edit Patient</a>
@@ -32,7 +32,7 @@
             </div>
             <div>
                 <span class="text-xs font-bold uppercase tracking-wide text-mut">Date of Birth</span>
-                <p class="mt-1 text-ink">{{ $patient->date_of_birth ?? 'N/A' }}</p>
+                <p class="mt-1 text-ink">{{ $patient->date_of_birth?->format('d M Y') ?? 'N/A' }}</p>
             </div>
             <div>
                 <span class="text-xs font-bold uppercase tracking-wide text-mut">Gender</span>
@@ -54,7 +54,7 @@
             <h5 class="text-[15px] font-bold">Appointment History</h5>
         </div>
 
-        @if($patient->appointments->count())
+        @if($visits->count())
             <div class="overflow-x-auto">
                 <table class="mc-tbl">
                     <thead>
@@ -68,7 +68,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($patient->appointments as $key => $appointment)
+                        @foreach($visits as $key => $appointment)
                             <tr>
                                 <td class="mc-idx">{{ $key + 1 }}</td>
                                 <td>{{ $appointment->doctor->name ?? 'N/A' }}</td>

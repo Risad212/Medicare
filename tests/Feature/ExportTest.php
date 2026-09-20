@@ -29,7 +29,7 @@ class ExportTest extends TestCase
 
     public function test_patients_export_returns_csv(): void
     {
-        $this->makeUser(['name' => 'Export Patient', 'email' => 'export@example.com']);
+        $this->makePatient(['name' => 'Export Patient', 'email' => 'export@example.com']);
 
         $admin = $this->makeAdmin();
 

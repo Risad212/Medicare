@@ -15,20 +15,20 @@
 @endif
 
 <div class="mc-bar">
-    <form method="GET" action="{{ route('admin.invoices.index') }}" class="flex flex-1 items-center gap-2.5">
-        <div class="mc-search flex-1">
+    <form method="GET" action="{{ route('admin.invoices.index') }}" class="flex flex-1 flex-wrap items-center gap-2.5">
+        <div class="mc-search min-h-[42px] min-w-[200px]" style="flex: 7 1 0%">
             <i class="bi bi-search text-faint"></i>
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search invoice no / patient..." autocomplete="off">
         </div>
-        <select name="status" class="rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal">
+        <select name="status" class="h-[42px] rounded-lg border border-line bg-white px-2.5 text-[13px] leading-none text-ink outline-none focus:border-teal" style="flex: 2.5 1 0%; min-width: 120px">
             <option value="">All statuses</option>
             <option value="pending" @selected(request('status') === 'pending')>Pending</option>
             <option value="paid" @selected(request('status') === 'paid')>Paid</option>
             <option value="void" @selected(request('status') === 'void')>Void</option>
         </select>
-        <button type="submit" class="mc-btn sm"><i class="bi bi-search"></i> Filter</button>
+        <button type="submit" class="mc-btn sm h-[42px] whitespace-nowrap" style="flex: 0.5 1 0%; min-width: 96px"><i class="bi bi-search"></i> Filter</button>
         @if(request('search') || request('status'))
-            <a href="{{ route('admin.invoices.index') }}" class="mc-btn sm ghost">Reset</a>
+            <a href="{{ route('admin.invoices.index') }}" class="mc-btn sm ghost h-[42px] flex-none">Reset</a>
         @endif
     </form>
 </div>

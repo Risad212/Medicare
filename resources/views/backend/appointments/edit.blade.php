@@ -6,12 +6,20 @@
     <div>
         <p class="mc-kicker">MediCare · Front desk</p>
         <h1 class="mc-title">Edit appoint<em>ment</em></h1>
-        <p class="mc-sub">{{ $appointment->patient_name }} · {{ $appointment->doctor->name ?? 'N/A' }} · {{ $appointment->appointment_date }}</p>
+        <p class="mc-sub">{{ $appointment->patient_name }} · {{ $appointment->doctor->name ?? 'N/A' }} · {{ $appointment->appointment_date->format('d M Y') }}</p>
     </div>
 </div>
 
 @if(session('success'))
     <div class="mb-3 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
+@endif
+
+@if($errors->any())
+    <div class="mb-3 rounded-lg bg-red-bg px-4 py-3 text-sm text-red-t">
+        @foreach($errors->all() as $error)
+            <div>{{ $error }}</div>
+        @endforeach
+    </div>
 @endif
 
 <form action="{{ route('admin.appointments.update', $appointment->id) }}" method="POST">
@@ -53,12 +61,16 @@
                     </div>
                     <div class="mc-f">
                         <label>Appointment Date</label>
-                        <input type="date" name="date" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal" value="{{ $appointment->appointment_date }}">
+                        <input type="date" name="date" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal" value="{{ $appointment->appointment_date->format('Y-m-d') }}">
                     </div>
                     <div class="mc-f">
                         <label>Time Slot</label>
-                        <input type="text" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink opacity-60 outline-none" value="{{ $appointment->timeSlot->time ?? 'N/A' }}" disabled>
-                        <span class="mc-hint">The slot itself isn't editable here — cancel and re-book to move it.</span>
+                        <select name="time_slot_id" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal">
+                            @foreach($slots as $slot)
+                                <option value="{{ $slot->id }}" {{ $appointment->time_slot_id == $slot->id ? 'selected' : '' }}>{{ $slot->time }}</option>
+                            @endforeach
+                        </select>
+                        <span class="mc-hint">Changing the slot re-checks availability and double-booking.</span>
                     </div>
                 </div>
             </section>

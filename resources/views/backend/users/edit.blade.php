@@ -28,25 +28,9 @@
                         <option value="{{ $value }}" {{ old('staff_role', $user->role) === $value ? 'selected' : '' }}>{{ ucfirst($value) }}</option>
                     @endforeach
                 </select>
-                <span class="mc-hint">Staff values (receptionist, lab-technician, pharmacist) land on the admin panel when their RBAC roles grant a module. Switching a doctor away from “doctor” removes doctor-panel access.</span>
+                <span class="mc-hint">Admins land on the admin panel, doctors on the doctor panel, patients on their profile. Switching a doctor away from “doctor” removes doctor-panel access.</span>
                 @error('staff_role')<span class="mc-hint text-red">{{ $message }}</span>@enderror
             </div>
-        </div>
-    </div>
-
-    <div class="mc-sec">
-        <div class="mc-sec-hd"><span class="no">02</span><h3>RBAC roles</h3><p>{{ count($assigned) }} attached</p></div>
-        <div class="mc-sec-bd !grid-cols-1">
-            <div class="grid grid-cols-1 gap-2 md:grid-cols-2">
-                @foreach($roles as $role)
-                    <label class="mc-check">
-                        <input type="checkbox" name="roles[]" value="{{ $role->id }}"
-                            {{ in_array($role->id, old('roles', $assigned)) ? 'checked' : '' }}>
-                        <span>{{ $role->name }}<span class="mc-hint block">{{ $role->permissions_count }} permissions · {{ $role->description }}</span></span>
-                    </label>
-                @endforeach
-            </div>
-            @error('roles')<span class="mc-hint text-red">{{ $message }}</span>@enderror
         </div>
     </div>
 

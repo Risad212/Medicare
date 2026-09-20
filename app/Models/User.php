@@ -6,11 +6,9 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Schema;
 
 #[Fillable([
     'name',
@@ -105,73 +103,5 @@ class User extends Authenticatable
     public function prescriptions(): HasMany
     {
         return $this->hasMany(Prescription::class, 'patient_user_id');
-    }
-
-    /**
-     * RBAC roles held by this user.
-     *
-     * @return BelongsToMany<Role>
-     */
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class);
-    }
-
-    /**
-     * Super-admin bypass: legacy `admin` role always has every ability.
-     */
-    public function isSuperAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
-
-    /**
-     * Check a role by slug (checks RBAC roles, falls back to legacy column).
-     */
-    public function hasRole(string $slug): bool
-    {
-        if ($this->role === $slug) {
-            return true;
-        }
-
-        if (! Schema::hasTable('roles')) {
-            return false;
-        }
-
-        return $this->roles()->where('slug', $slug)->exists();
-    }
-
-    /**
-     * Check a permission slug through any held role.
-     */
-    public function hasPermission(string $slug): bool
-    {
-        if ($this->isSuperAdmin()) {
-            return true;
-        }
-
-        if (! Schema::hasTable('permissions')) {
-            return false;
-        }
-
-        return $this->roles()
-            ->whereHas('permissions', fn ($q) => $q->where('slug', $slug))
-            ->exists();
-    }
-
-    /**
-     * Staff gate for `/admin/*`: anyone holding at least one permission.
-     */
-    public function canAccessAdminPanel(): bool
-    {
-        if ($this->isSuperAdmin()) {
-            return true;
-        }
-
-        if (! Schema::hasTable('permissions')) {
-            return false;
-        }
-
-        return $this->roles()->whereHas('permissions')->exists();
     }
 }

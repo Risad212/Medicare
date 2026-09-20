@@ -24,7 +24,6 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(BloodGroupSeeder::class);
-        $this->call(RolePermissionSeeder::class);
         $this->call(DemoDataSeeder::class);
     }
 }

@@ -45,7 +45,7 @@
             @forelse($patients as $key => $patient)
                 @php
                     $initials = implode('', array_slice(array_map(fn($w) => mb_substr($w, 0, 1), explode(' ', $patient->name)), 0, 2));
-                    $av = ['t', 'a', 'b', 'r', ''][$key % 5];
+                    $av = ['t', 'a', 'b', 'r', ''][(int) $patient->id % 5];
                 @endphp
                 <tr>
                     <td class="mc-idx">{{ $patients->firstItem() + $key }}</td>

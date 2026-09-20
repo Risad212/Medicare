@@ -103,7 +103,7 @@
           </div>
           <div class="flex items-center">
             @foreach($topDoctors->take(5) as $doc)
-              <span class="mc-av -ml-2 border-2 border-white {{ ['t','a','b','r',''][ $loop->index % 5 ] }}" title="{{ $doc->name }}">{{ $doc->name ? strtoupper(mb_substr($doc->name, 0, 1)) : '?' }}</span>
+              <span class="mc-av -ml-2 border-2 border-white {{ ['t','a','b','r',''][ (int) $doc->id % 5 ] }}" title="{{ $doc->name }}">{{ $doc->name ? strtoupper(mb_substr($doc->name, 0, 1)) : '?' }}</span>
             @endforeach
           </div>
         </div>

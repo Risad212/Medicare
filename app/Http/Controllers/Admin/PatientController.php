@@ -3,17 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\PatientRequest;
+use App\Models\Appointment;
+use App\Models\Patient;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
 {
     /**
-     * Display a listing of patients.
+     * Display a listing of patient records (clinic register, not accounts).
      */
-    public function index()
+    public function index(Request $request)
     {
-        $patients = User::where('role', 'patient')
+        $search = $request->search ? str_replace(['%', '_'], ['\%', '\_'], $request->search) : null;
+        $patients = Patient::when($search, function ($query) use ($search) {
+            $query->where('name', 'like', '%'.$search.'%')
+                ->orWhere('email', 'like', '%'.$search.'%')
+                ->orWhere('phone', 'like', '%'.$search.'%');
+        })
             ->latest()
             ->paginate(10);
 
@@ -21,7 +28,7 @@ class PatientController extends Controller
     }
 
     /**
-     * Show the form for creating a new patient.
+     * Show the form for creating a new patient record (no login account).
      */
     public function create()
     {
@@ -29,22 +36,11 @@ class PatientController extends Controller
     }
 
     /**
-     * Store a newly created patient.
+     * Store a newly created patient record.
      */
-    public function store(Request $request)
+    public function store(PatientRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $validated['password'] = bcrypt($validated['password']);
-
-        $user = new User($validated);
-        $user->role = 'patient';
-        $user->save();
+        Patient::create($request->validated());
 
         return redirect()
             ->route('admin.patients.index')
@@ -52,42 +48,43 @@ class PatientController extends Controller
     }
 
     /**
-     * Display a specific patient.
+     * Display a specific patient with visits matched by email/phone.
      */
-    public function show(string $id)
+    public function show(Patient $patient)
     {
-        $patient = User::where('role', 'patient')
-            ->findOrFail($id);
+        $visits = collect();
 
-        return view('backend.patients.show', compact('patient'));
+        if ($patient->email || $patient->phone) {
+            $visits = Appointment::with(['doctor', 'timeSlot'])
+                ->where(function ($query) use ($patient) {
+                    if ($patient->email) {
+                        $query->orWhere('email', $patient->email);
+                    }
+                    if ($patient->phone) {
+                        $query->orWhere('phone', $patient->phone);
+                    }
+                })
+                ->latest()
+                ->get();
+        }
+
+        return view('backend.patients.show', compact('patient', 'visits'));
     }
 
     /**
-     * Show the form for editing a patient.
+     * Show the form for editing a patient record.
      */
-    public function edit(string $id)
+    public function edit(Patient $patient)
     {
-        $patient = User::where('role', 'patient')
-            ->findOrFail($id);
-
         return view('backend.patients.edit', compact('patient'));
     }
 
     /**
      * Update patient information.
      */
-    public function update(Request $request, string $id)
+    public function update(PatientRequest $request, Patient $patient)
     {
-        $patient = User::where('role', 'patient')
-            ->findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$patient->id,
-            'phone' => 'nullable|string|max:20',
-        ]);
-
-        $patient->update($validated);
+        $patient->update($request->validated());
 
         return redirect()
             ->route('admin.patients.index')
@@ -95,13 +92,10 @@ class PatientController extends Controller
     }
 
     /**
-     * Delete a patient.
+     * Delete a patient record (login accounts are never touched).
      */
-    public function destroy(string $id)
+    public function destroy(Patient $patient)
     {
-        $patient = User::where('role', 'patient')
-            ->findOrFail($id);
-
         $patient->delete();
 
         return redirect()

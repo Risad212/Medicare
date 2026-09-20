@@ -9,10 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      *
-     * Additive RBAC tables. The legacy `users.role` column is untouched —
-     * existing admin/doctor/patient flows keep working unchanged.
+     * Drops the RBAC tables (`roles`, `permissions`, `permission_role`,
+     * `role_user`). The legacy `users.role` column is untouched — access is
+     * driven by it via the `admin` / `doctor` route middleware.
      */
     public function up(): void
+    {
+        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('permission_role');
+        Schema::dropIfExists('permissions');
+        Schema::dropIfExists('roles');
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
@@ -44,16 +56,5 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->unique(['role_id', 'user_id']);
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('role_user');
-        Schema::dropIfExists('permission_role');
-        Schema::dropIfExists('permissions');
-        Schema::dropIfExists('roles');
     }
 };

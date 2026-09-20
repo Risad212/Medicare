@@ -15,11 +15,14 @@
 @endif
 
 <div class="mc-bar">
-    <form action="{{ route('admin.prescriptions.index') }}" method="GET" class="mc-search">
-        <input type="text" name="search" class="form-control form-control-sm" placeholder="Search by patient, phone or doctor..." value="{{ request('search') }}">
-        <button type="submit" class="mc-btn sm"><i class="bi bi-search"></i> Search</button>
+    <form action="{{ route('admin.prescriptions.index') }}" method="GET" class="flex flex-1 flex-wrap items-center gap-2.5">
+        <div class="mc-search min-h-[42px] min-w-[200px]" style="flex: 7 1 0%">
+            <i class="bi bi-search text-faint"></i>
+            <input type="text" name="search" placeholder="Search by patient, phone or doctor..." value="{{ request('search') }}" autocomplete="off">
+        </div>
+        <button type="submit" class="mc-btn sm h-[42px] whitespace-nowrap" style="flex: 0.5 1 0%; min-width: 96px"><i class="bi bi-search"></i> Search</button>
         @if(request('search'))
-            <a href="{{ route('admin.prescriptions.index') }}" class="mc-btn sm ghost">Clear</a>
+            <a href="{{ route('admin.prescriptions.index') }}" class="mc-btn sm ghost h-[42px] flex-none">Clear</a>
         @endif
     </form>
 </div>

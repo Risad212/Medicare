@@ -31,7 +31,7 @@
             <div class="mc-avbig">{{ strtoupper(implode('', array_slice(array_map(fn($w) => mb_substr($w, 0, 1), explode(' ', $patient->name)), 0, 2))) }}</div>
             <div class="k">Currently editing</div>
             <h2>{{ $patient->name }}</h2>
-            <p>{{ $patient->email }} · since {{ $patient->created_at->format('Y') }}</p>
+            <p>{{ $patient->email ?? 'No email' }} · since {{ $patient->created_at->format('Y') }}</p>
             <ul class="mc-steps">
                 <li><span class="n">1</span>Contact</li>
                 <li><span class="n">2</span>Clinical</li>
@@ -48,7 +48,7 @@
                     </div>
                     <div class="mc-f">
                         <label>Email</label>
-                        <input type="email" name="email" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal" value="{{ old('email', $patient->email) }}" required>
+                        <input type="email" name="email" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal" value="{{ old('email', $patient->email) }}">
                     </div>
                     <div class="mc-f">
                         <label>Phone</label>

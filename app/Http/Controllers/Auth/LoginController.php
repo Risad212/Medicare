@@ -46,10 +46,6 @@ class LoginController extends Controller
             return redirect()->route('profile');
         }
 
-        if ($user->canAccessAdminPanel()) {
-            return redirect()->route('admin.home');
-        }
-
         return redirect()->route('home');
     }
 }

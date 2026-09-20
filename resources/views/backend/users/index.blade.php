@@ -6,10 +6,7 @@
     <div>
         <p class="mc-kicker">MediCare · Access control</p>
         <h1 class="mc-title">Staff <em>&amp; users</em></h1>
-        <p class="mc-sub">Every login account in one register — set the staff role and attach RBAC roles.</p>
-    </div>
-    <div class="mc-head-acts">
-        <a href="{{ route('admin.roles.index') }}" class="mc-btn ghost"><i class="bi bi-shield-check"></i> Roles</a>
+        <p class="mc-sub">Hospital staff only — patients live under the Patients module.</p>
     </div>
 </div>
 
@@ -35,7 +32,6 @@
                     <th>#</th>
                     <th>User</th>
                     <th>Staff role</th>
-                    <th>RBAC roles</th>
                     <th>Joined</th>
                     <th class="text-right">Action</th>
                 </tr>
@@ -56,13 +52,6 @@
                         @elseif($user->role === 'patient')<span class="mc-pill p-cancelled"><i></i>patient</span>
                         @else<span class="mc-pill p-pending"><i></i>{{ $user->role }}</span>@endif
                     </td>
-                    <td>
-                        @forelse($user->roles as $role)
-                            <span class="mc-pill p-info"><i></i>{{ $role->slug }}</span>
-                        @empty
-                            <span class="text-mut">—</span>
-                        @endforelse
-                    </td>
                     <td class="mc-num">{{ $user->created_at?->format('M j, Y') ?? '—' }}</td>
                     <td>
                         <div class="mc-acts">
@@ -71,7 +60,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="6" class="py-6 text-center text-mut">No users found.</td></tr>
+                <tr><td colspan="5" class="py-6 text-center text-mut">No users found.</td></tr>
             @endforelse
             </tbody>
         </table>
