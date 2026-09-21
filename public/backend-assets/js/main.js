@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var treeviewMenu = $('.mc-nav');
+    var treeviewMenu = $('.side-nav');
 
     // Toggle Sidebar Menu
     $('[data-toggle="sidebar"]').click(function (event) {

@@ -16,7 +16,17 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-    <!-- Tailwind v4 admin theme -->
+    <!-- Bootstrap 5.3 CSS inside a cascade layer: it must NOT override the
+         legacy Tailwind theme during the section-by-section migration.
+         Layered styles always lose to unlayered ones, and this layer is
+         declared before Tailwind's own layers, so Tailwind base/components
+         keep winning (fonts, link colors, buttons) while Bootstrap's
+         utilities/components (d-flex, dropdown, …) still work. -->
+    <style>@import url("https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css") layer(bootstrap);</style>
+    <!-- MediCare admin brand skin — plain CSS, no build step -->
+    <link rel="stylesheet" href="{{ asset('backend-assets/css/admin-brand.css') }}">
+
+    <!-- Tailwind v4 admin theme (legacy — being phased out section by section) -->
     @vite(['resources/css/admin.css'])
     @stack('styles')
 </head>
@@ -25,7 +35,7 @@
 
     @includeIf('backend.layouts.partial.header')
 
-    <main id="mc-content" class="mc-content bg-panel">
+    <main id="admin-content" class="admin-content">
         @yield('content')
     </main>
 
