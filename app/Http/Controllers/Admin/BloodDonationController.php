@@ -22,6 +22,14 @@ class BloodDonationController extends Controller
     {
         $query = BloodDonation::with(['donor', 'bloodGroup']);
 
+        if ($search = $request->query('search')) {
+            $escaped = str_replace(['%', '_'], ['\\%', '\\_'], trim($search));
+            $query->where(function ($q) use ($escaped) {
+                $q->where('bag_number', 'like', "%{$escaped}%")
+                    ->orWhereHas('donor', fn ($d) => $d->where('name', 'like', "%{$escaped}%"));
+            });
+        }
+
         if ($request->filled('blood_group_id')) {
             $query->where('blood_group_id', $request->query('blood_group_id'));
         }

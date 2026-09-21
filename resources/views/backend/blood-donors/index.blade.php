@@ -19,28 +19,28 @@
 
 <div class="mc-ecg"><span>Live register</span><span>{{ $donors->total() }} donors</span></div>
 
-<div class="mc-bar">
-    <form action="{{ route('admin.blood-donors.index') }}" method="GET" class="mc-search" style="flex:1">
+<form action="{{ route('admin.blood-donors.index') }}" method="GET" class="mc-bar">
+    <div class="mc-search" style="flex:1">
         <i class="bi bi-search text-faint"></i>
-        <input type="text" name="search" placeholder="Search name, phone or email…" value="{{ request('search') }}" autocomplete="off">
-    </form>
-    <select name="blood_group_id" onchange="this.form.submit()" class="form-select form-select-sm mc-sel">
+        <input type="search" name="search" placeholder="Search name, phone or email…" value="{{ request('search') }}" autocomplete="off" aria-label="Search donors">
+    </div>
+    <select name="blood_group_id" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by blood group">
         <option value="">All blood groups</option>
         @foreach($bloodGroups as $group)
-            <option value="{{ $group->id }}" {{ request('blood_group_id') == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
+            <option value="{{ $group->id }}" @selected(request('blood_group_id') == $group->id)>{{ $group->name }}</option>
         @endforeach
     </select>
-    <select name="gender" onchange="this.form.submit()" class="form-select form-select-sm mc-sel">
+    <select name="gender" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by gender">
         <option value="">All genders</option>
-        <option value="male" {{ request('gender') === 'male' ? 'selected' : '' }}>Male</option>
-        <option value="female" {{ request('gender') === 'female' ? 'selected' : '' }}>Female</option>
+        <option value="male" @selected(request('gender') === 'male')>Male</option>
+        <option value="female" @selected(request('gender') === 'female')>Female</option>
     </select>
-    <select name="status" onchange="this.form.submit()" class="form-select form-select-sm mc-sel">
+    <select name="status" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by status">
         <option value="">All statuses</option>
-        <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Active</option>
-        <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inactive</option>
+        <option value="1" @selected(request('status') === '1')>Active</option>
+        <option value="0" @selected(request('status') === '0')>Inactive</option>
     </select>
-</div>
+</form>
 
 <div class="mc-card">
     <div class="overflow-x-auto">

@@ -166,7 +166,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($invoice->items as $index => $item)
+            @forelse($invoice->items as $index => $item)
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $item->description }}</td>
@@ -174,7 +174,11 @@
                     <td class="num">${{ number_format($item->unit_price, 2) }}</td>
                     <td class="num">${{ number_format($item->line_total, 2) }}</td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="5" style="text-align:center;color:#6b7280;">No line items recorded for this invoice.</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 

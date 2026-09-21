@@ -20,7 +20,10 @@
             <label class="mb-1 block text-xs font-medium text-mut">To</label>
             <input type="date" name="to" class="rounded-lg border border-line bg-white px-3 py-2 text-[14px] text-ink outline-none focus:border-teal" value="{{ $to->format('Y-m-d') }}">
         </div>
-        <button class="mc-btn sm"><i class="bi bi-funnel"></i> Filter</button>
+        <div>
+            <label class="mb-1 block text-xs font-medium text-mut invisible" aria-hidden="true">Filter</label>
+            <button class="mc-btn sm min-h-[39px]"><i class="bi bi-funnel"></i> Filter</button>
+        </div>
         <div class="ml-auto flex gap-2.5">
             <a href="{{ route('admin.bloodbank.reports.donations', ['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')]) }}" class="mc-btn sm ghost"><i class="bi bi-download"></i> Donations CSV</a>
             <a href="{{ route('admin.bloodbank.reports.requests', ['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')]) }}" class="mc-btn sm ghost"><i class="bi bi-download"></i> Requests CSV</a>

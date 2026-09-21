@@ -24,7 +24,6 @@ use App\Models\Slider;
 use App\Models\Tag;
 use App\Models\TimeSlot;
 use App\Models\User;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
@@ -300,7 +299,7 @@ class DemoDataSeeder extends Seeder
 
             if ($status === 'completed' && $i % 3 !== 2) {
                 $paid = $i % 2 === 0;
-                Invoice::create(
+                $invoice = Invoice::create(
                     [
                         'invoice_no' => 'INV-2026-'.str_pad((string) ($i + 1), 4, '0', STR_PAD_LEFT),
                         'lab_order_id' => $order->id, 'user_id' => $patient->id,
@@ -310,6 +309,17 @@ class DemoDataSeeder extends Seeder
                         'paid_at' => $paid ? now() : null,
                     ]
                 );
+
+                // Snapshot the lab tests as invoice line items so the
+                // invoice detail/PDF tables are never empty.
+                foreach ($picked as $test) {
+                    $invoice->items()->create([
+                        'description' => $test->name,
+                        'quantity' => 1,
+                        'unit_price' => $test->price,
+                        'line_total' => $test->price,
+                    ]);
+                }
             }
         }
     }

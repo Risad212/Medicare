@@ -88,8 +88,12 @@
               <span class="mc-hint">Administrative eligibility window.</span>
               @error('min_donation_days') <span class="text-xs text-red-t">{{ $message }}</span> @enderror
           </div>
-          <div>
-              <button type="submit" class="mc-btn"><i class="bi bi-save"></i> Save settings</button>
+          <div class="mc-f">
+              <label class="invisible" aria-hidden="true">Save settings</label>
+              <div>
+                  <button type="submit" class="mc-btn"><i class="bi bi-save"></i> Save settings</button>
+              </div>
+              <span class="mc-hint invisible" aria-hidden="true">&nbsp;</span>
           </div>
       </form>
   </section>

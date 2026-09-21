@@ -83,6 +83,11 @@
     /* ---- Card ---- */
     .mc-card { @apply overflow-hidden rounded-xl border border-line bg-card shadow-card; }
     .mc-card + .mc-card { @apply mt-4; }
+    /* Flex/grid parents already space children via `gap`, so the stacked-card
+       margin above must not apply there — it offsets grid items and makes
+       sibling cards (e.g. dashboard stat cards) render at uneven heights. */
+    .flex > .mc-card + .mc-card,
+    .grid > .mc-card + .mc-card { margin-top: 0; }
     .welly-card { @apply overflow-hidden rounded-xl border border-line bg-white shadow-card; }
     .welly-card-hd { @apply flex items-center justify-between gap-2.5 px-5 pb-1 pt-4; }
     .welly-card-title { @apply text-[15px] font-extrabold tracking-tight text-ink; }
@@ -281,6 +286,18 @@
     .mc-sec-bd .form-control:focus, .mc-sec-bd .form-select:focus {
         @apply border-teal;
         box-shadow: 0 0 0 3px var(--color-wash);
+    }
+    /* Toolbar controls hug their content and share one height so search /
+       selects / date inputs / buttons stay on a single line inside .mc-bar.
+       (Beats the generic `.mc-bar select` w-full rule above.) */
+    .mc-bar select.mc-sel,
+    .mc-bar input.mc-date {
+        @apply w-auto min-h-[42px] shrink-0 rounded-lg border border-line bg-white px-3 font-body text-[14px] text-ink outline-none;
+    }
+    .mc-bar select.mc-sel:focus,
+    .mc-bar input.mc-date:focus {
+        @apply border-teal;
+        box-shadow: 0 0 0 3px rgb(11 143 116 / 0.12);
     }
     .mc-sec-bd .form-control.is-invalid, .mc-sec-bd .form-select.is-invalid { @apply border-[#dc2626]; }
     .mc-hint { @apply text-xs text-mut; }

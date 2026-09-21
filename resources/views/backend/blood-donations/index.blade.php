@@ -22,29 +22,30 @@
 
 <div class="mc-ecg"><span>Live register</span><span>{{ $donations->total() }} donations</span></div>
 
-<div class="mc-bar">
-    <form action="{{ route('admin.blood-donations.index') }}" method="GET" class="mc-search" style="flex:1">
+<form action="{{ route('admin.blood-donations.index') }}" method="GET" class="mc-bar">
+    <div class="mc-search" style="flex:1">
         <i class="bi bi-search text-faint"></i>
-        <input type="text" name="search" value="{{ request('search') }}" class="hidden">
-    </form>
-    <select name="blood_group_id" onchange="this.form.closest('form').submit()" class="form-select form-select-sm mc-sel">
+        <input type="search" name="search" value="{{ request('search') }}" placeholder="Search donor or bag no…" autocomplete="off" aria-label="Search donations">
+    </div>
+    <select name="blood_group_id" class="mc-sel" onchange="this.form.submit()" aria-label="Filter by blood group">
         <option value="">All groups</option>
         @foreach($bloodGroups as $group)
-            <option value="{{ $group->id }}" {{ request('blood_group_id') == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
+            <option value="{{ $group->id }}" @selected(request('blood_group_id') == $group->id)>{{ $group->name }}</option>
         @endforeach
     </select>
-    <select name="status" onchange="this.form.closest('form').submit()" class="form-select form-select-sm mc-sel">
+    <select name="status" class="mc-sel" onchange="this.form.submit()" aria-label="Filter by status">
         <option value="">All statuses</option>
         @foreach(['collected', 'testing', 'available', 'reserved', 'issued', 'expired', 'rejected'] as $s)
-            <option value="{{ $s }}" {{ request('status') === $s ? 'selected' : '' }}>{{ ucfirst($s) }}</option>
+            <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst($s) }}</option>
         @endforeach
     </select>
-    <form action="{{ route('admin.blood-donations.index') }}" method="GET" class="mc-search flex items-center gap-1" style="width:auto">
-        <input type="date" name="from" class="form-control form-control-sm" value="{{ request('from') }}" title="From">
-        <input type="date" name="to" class="form-control form-control-sm" value="{{ request('to') }}" title="To">
-        <button class="mc-btn sm" type="submit">Filter</button>
-    </form>
-</div>
+    <input type="date" name="from" class="mc-date" value="{{ request('from') }}" title="From" aria-label="From date">
+    <input type="date" name="to" class="mc-date" value="{{ request('to') }}" title="To" aria-label="To date">
+    <button class="mc-btn sm" type="submit">Filter</button>
+    @if(array_filter(request()->only('search', 'blood_group_id', 'status', 'from', 'to')))
+        <a href="{{ route('admin.blood-donations.index') }}" class="mc-btn sm ghost">Clear</a>
+    @endif
+</form>
 
 <div class="mc-card">
     <div class="overflow-x-auto">

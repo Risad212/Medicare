@@ -108,7 +108,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($invoice->items as $index => $item)
+                @forelse($invoice->items as $index => $item)
                     <tr>
                         <td class="mc-idx">{{ $index + 1 }}</td>
                         <td>{{ $item->description }}</td>
@@ -116,7 +116,11 @@
                         <td class="mc-num text-right">${{ number_format($item->unit_price, 2) }}</td>
                         <td class="mc-num text-right">${{ number_format($item->line_total, 2) }}</td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="5" class="py-6 text-center text-mut">No line items recorded for this invoice.</td>
+                    </tr>
+                @endforelse
             </tbody>
             <tfoot>
                 <tr class="border-t border-line font-bold">

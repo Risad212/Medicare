@@ -22,30 +22,30 @@
 
 <div class="mc-ecg"><span>Live register</span><span>{{ $requests->total() }} requests</span></div>
 
-<div class="mc-bar">
-    <form action="{{ route('admin.blood-requests.index') }}" method="GET" class="mc-search" style="flex:1">
+<form action="{{ route('admin.blood-requests.index') }}" method="GET" class="mc-bar">
+    <div class="mc-search" style="flex:1">
         <i class="bi bi-search text-faint"></i>
-        <input type="text" name="search" placeholder="Search patient…" value="{{ request('search') }}" autocomplete="off">
-    </form>
-    <select name="blood_group_id" onchange="this.form.submit()" class="form-select form-select-sm mc-sel">
+        <input type="search" name="search" placeholder="Search patient…" value="{{ request('search') }}" autocomplete="off" aria-label="Search requests">
+    </div>
+    <select name="blood_group_id" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by blood group">
         <option value="">All groups</option>
         @foreach($bloodGroups as $group)
-            <option value="{{ $group->id }}" {{ request('blood_group_id') == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
+            <option value="{{ $group->id }}" @selected(request('blood_group_id') == $group->id)>{{ $group->name }}</option>
         @endforeach
     </select>
-    <select name="urgency" onchange="this.form.submit()" class="form-select form-select-sm mc-sel">
+    <select name="urgency" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by urgency">
         <option value="">All urgencies</option>
-        <option value="normal" {{ request('urgency') === 'normal' ? 'selected' : '' }}>Normal</option>
-        <option value="urgent" {{ request('urgency') === 'urgent' ? 'selected' : '' }}>Urgent</option>
-        <option value="emergency" {{ request('urgency') === 'emergency' ? 'selected' : '' }}>Emergency</option>
+        <option value="normal" @selected(request('urgency') === 'normal')>Normal</option>
+        <option value="urgent" @selected(request('urgency') === 'urgent')>Urgent</option>
+        <option value="emergency" @selected(request('urgency') === 'emergency')>Emergency</option>
     </select>
-    <select name="status" onchange="this.form.submit()" class="form-select form-select-sm mc-sel">
+    <select name="status" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by status">
         <option value="">All statuses</option>
         @foreach(['pending', 'approved', 'partially_approved', 'fulfilled', 'rejected', 'cancelled'] as $s)
-            <option value="{{ $s }}" {{ request('status') === $s ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $s)) }}</option>
+            <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst(str_replace('_', ' ', $s)) }}</option>
         @endforeach
     </select>
-</div>
+</form>
 
 <div class="mc-card">
     <div class="overflow-x-auto">
