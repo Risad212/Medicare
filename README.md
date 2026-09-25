@@ -41,8 +41,6 @@ flowchart LR
     style Patient fill:#fef3c7,stroke:#d97706
 ```
 
-> Full detail with ER diagram, request sequence, appointment + blood lifecycles, admin shell map and testing gates: **[docs/ARCHITECTURE-OVERVIEW.md](docs/ARCHITECTURE-OVERVIEW.md)** · extension rules: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**
-
 ---
 
 ## Features — Complete
@@ -166,8 +164,6 @@ flowchart LR
 - Brand: frontend `--primary:#05d3b0` `topbar:#049f84` `social:#03856f` Poppins/Montserrat → admin Welly skin (Tailwind v4 `@theme`: teal `#0b8f74`, gold `#c2a15a`, Fraunces + Public Sans, `resources/css/admin.css` via Vite) + `bootstrap-icons 1.10.5` CDN `bootstrap.bundle 5.3.2` + `summernote-bs5` + local `jquery-3.7.0.min.js` + `main.js`
 
 ### QA & Tech
-- PHPUnit 12 `sqlite :memory:` — **281 tests / 860 assertions green** (`composer run test`): auth/Google OAuth, appointments (family book, double-booking guard, cancel by token), admin dashboard analytics, blogs/comments, contact, lab orders/invoices, exports, patient lab reports, doctor flows, and **Blood Bank** (`tests/Feature/AdminBloodBankTest.php` — 14 tests: admin gating, group/donor/donation CRUD, oldest-bag reservation, insufficient/partial stock, issue flow + cross-request rejection, patient privacy, doctor scoping, expiry command, reports + CSV, donor eligibility)
-- E2E: **Laravel Dusk 5/5** (`composer run dusk`, own `database/dusk.sqlite`, port 8089)
 - `AppServiceProvider` guards `Schema::hasTable('general_settings')` + try/catch, `remove_order` migrations guard `hasColumn`
 - `composer audit: 0`, `php -l: clean`, Pint-formatted, `Route::throttle:10,1` on contact/appointment/comment/cancel, `#[Fillable]` allowlist on all models, no `{!! !!}` XSS
 - Scheduled tasks: `appointments:send-reminders` (08:00) + `bloodbank:expire` (02:00 — marks overdue bags expired, releases reservations)
@@ -269,10 +265,6 @@ php artisan migrate:fresh --seed
 php artisan db:seed --class=BloodGroupSeeder
 php artisan storage:link
 php artisan bloodbank:expire          # expire overdue donations daily
-php artisan test                      # full PHPUnit suite (221 tests)
-php artisan test --filter=AdminBloodBankTest
-php artisan test --filter=GoogleAuthTest
-composer run dusk                     # Laravel Dusk (5 tests)
 composer audit
 npm run dev
 npm run build
