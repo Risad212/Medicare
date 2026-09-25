@@ -29,6 +29,15 @@ class StaffModuleGate
             'admin.doctors.availability',
             'admin.invoices.*',
             'admin.exports.*',
+            // Day-to-day blood bank ops (no deletes, no settings).
+            'admin.bloodbank.dashboard',
+            'admin.bloodbank.inventory',
+            'admin.bloodbank.reports*',
+            'admin.blood-groups.*',
+            'admin.blood-donors.*',
+            'admin.blood-donations.*',
+            'admin.blood-requests.*',
+            'admin.blood-issues.*',
         ],
         'lab-technician' => [
             'admin.home',

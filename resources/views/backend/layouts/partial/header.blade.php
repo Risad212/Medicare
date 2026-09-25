@@ -223,7 +223,29 @@
                     <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.reports') ? 'active' : '' }}" href="{{ route('admin.bloodbank.reports') }}"><span class="side-dot"></span> Reports</a></li>
                 </ul>
             </li>
+            @endif
 
+            @if($isRecep)
+            <li class="side-tree {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'is-expanded' : '' }}">
+                <a class="side-link {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
+                    <i class="side-icon bi bi-droplet"></i>
+                    <span>Blood Bank</span>
+                    <i class="side-chevron bi bi-chevron-right"></i>
+                </a>
+                <ul class="side-sub">
+                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.dashboard') ? 'active' : '' }}" href="{{ route('admin.bloodbank.dashboard') }}"><span class="side-dot"></span> Dashboard</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.inventory') ? 'active' : '' }}" href="{{ route('admin.bloodbank.inventory') }}"><span class="side-dot"></span> Inventory</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-groups.*') ? 'active' : '' }}" href="{{ route('admin.blood-groups.index') }}"><span class="side-dot"></span> Blood Groups</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-donors.*') ? 'active' : '' }}" href="{{ route('admin.blood-donors.index') }}"><span class="side-dot"></span> Donors</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-donations.*') ? 'active' : '' }}" href="{{ route('admin.blood-donations.index') }}"><span class="side-dot"></span> Donations</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-requests.*') ? 'active' : '' }}" href="{{ route('admin.blood-requests.index') }}"><span class="side-dot"></span> Requests</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-issues.*') ? 'active' : '' }}" href="{{ route('admin.blood-issues.index') }}"><span class="side-dot"></span> Issues</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.reports') ? 'active' : '' }}" href="{{ route('admin.bloodbank.reports') }}"><span class="side-dot"></span> Reports</a></li>
+                </ul>
+            </li>
+            @endif
+
+            @if($isAdmin)
             <li class="side-tree {{ request()->routeIs('admin.departments.*', 'admin.services.*', 'admin.blogs.*', 'admin.categories.*', 'admin.tags.*', 'admin.sliders.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.departments.*', 'admin.services.*', 'admin.blogs.*', 'admin.categories.*', 'admin.tags.*', 'admin.sliders.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-journal-text"></i>

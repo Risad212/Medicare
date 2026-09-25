@@ -35,9 +35,24 @@ class StaffAccessTest extends TestCase
         $this->actingAs($user)->get(route('settings.general'))->assertForbidden();
         $this->actingAs($user)->get(route('admin.users.index'))->assertForbidden();
         $this->actingAs($user)->get(route('admin.lab-orders.index'))->assertForbidden();
-        $this->actingAs($user)->get(route('admin.bloodbank.dashboard'))->assertForbidden();
         $this->actingAs($user)->get(route('admin.prescriptions.index'))->assertForbidden();
         $this->actingAs($user)->delete(route('admin.appointments.destroy', $appointment))->assertForbidden();
+    }
+
+    public function test_receptionist_manages_blood_bank_daily_ops(): void
+    {
+        $user = $this->staff('receptionist');
+
+        $this->actingAs($user)->get(route('admin.bloodbank.dashboard'))->assertOk();
+        $this->actingAs($user)->get(route('admin.bloodbank.inventory'))->assertOk();
+        $this->actingAs($user)->get(route('admin.blood-donors.index'))->assertOk();
+        $this->actingAs($user)->get(route('admin.blood-donations.index'))->assertOk();
+        $this->actingAs($user)->get(route('admin.blood-requests.index'))->assertOk();
+        $this->actingAs($user)->get(route('admin.blood-issues.index'))->assertOk();
+
+        // Settings and deletes stay admin-only.
+        $this->actingAs($user)->patch(route('admin.bloodbank.settings.update'))->assertForbidden();
+        $this->actingAs($user)->get(route('admin.bloodbank.reports'))->assertOk();
     }
 
     public function test_lab_technician_lives_in_lab_modules_only(): void
