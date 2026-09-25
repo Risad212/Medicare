@@ -125,7 +125,7 @@
 </section>
 
 <script>
-    const getSlotsUrl = "{{ route('get.slots') }}";
+    window.getSlotsUrl = "{{ route('get.slots') }}";
 </script>
 
 @endsection

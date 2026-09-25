@@ -9,6 +9,7 @@ use App\Models\Doctor;
 use App\Models\Invoice;
 use App\Models\LabOrder;
 use App\Models\Patient;
+use App\Models\Prescription;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Carbon;
 
@@ -55,15 +56,28 @@ class AdminController extends Controller
             fn ($d) => $weekByDay->get(now()->subDays($d)->toDateString(), collect())->count()
         )->values()->all();
 
-        // Pending first so the morning queue surfaces what needs action,
-        // then newest within each group.
+        // Today's queue: pending first so the morning register surfaces
+        // what needs action, then by slot order.
         $recentAppointments = Appointment::with(['doctor', 'timeSlot'])
+            ->whereDate('appointment_date', now()->toDateString())
             ->orderByRaw('CASE WHEN status = 0 THEN 0 ELSE 1 END')
-            ->latest()
+            ->orderBy('time_slot_id')
             ->take(6)
             ->get();
 
         $topDoctors = Doctor::withCount('appointments as appointment_count')
+            ->orderByDesc('appointment_count')
+            ->take(4)
+            ->get();
+
+        // Doctors actually on duty today (non-cancelled bookings today).
+        $dutyDoctors = Doctor::withCount(['appointments as appointment_count' => function ($q) {
+            $q->whereDate('appointment_date', now()->toDateString())
+                ->where('status', '!=', 3);
+        }])
+            ->whereHas('appointments', function ($q) {
+                $q->whereDate('appointment_date', now()->toDateString());
+            })
             ->orderByDesc('appointment_count')
             ->take(4)
             ->get();
@@ -178,6 +192,19 @@ class AdminController extends Controller
             ->groupBy(fn ($a) => Carbon::parse($a->appointment_date)->toDateString())
             ->map->count();
 
+        // Lab work queue: oldest unprocessed orders first (lab dashboard feed).
+        $pendingLabOrders = LabOrder::with(['doctor', 'items.test'])
+            ->whereIn('status', ['pending', 'in-progress'])
+            ->oldest()
+            ->take(6)
+            ->get();
+
+        // Recent prescriptions feed (pharmacist dashboard feed).
+        $recentPrescriptions = Prescription::with(['doctor'])
+            ->latest()
+            ->take(5)
+            ->get();
+
         return view('backend.home', compact(
             'totalDoctors',
             'totalAppointments',
@@ -198,6 +225,7 @@ class AdminController extends Controller
             'weekTrend',
             'recentAppointments',
             'topDoctors',
+            'dutyDoctors',
             'recentComments',
             'revenueAllTime',
             'revenueThisMonth',
@@ -210,7 +238,9 @@ class AdminController extends Controller
             'monthlyAppointments',
             'monthlyLabOrders',
             'monthLabels',
-            'doctorLoad'
+            'doctorLoad',
+            'pendingLabOrders',
+            'recentPrescriptions'
         ));
     }
 }

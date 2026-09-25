@@ -9,6 +9,10 @@
 @php
     $me = auth()->user();
     $isDoctor = $me && $me->role === 'doctor';
+    $isAdmin = $me && $me->role === 'admin';
+    $isRecep = $me && $me->role === 'receptionist';
+    $isLabTech = $me && $me->role === 'lab-technician';
+    $isPharm = $me && $me->role === 'pharmacist';
     $navCounts = Cache::remember('mc.nav.counts', 60, fn () => [
         'pendingAppointments' => App\Models\Appointment::where('status', 0)->count(),
         'pendingComments' => App\Models\BlogComment::where('status', 0)->count(),
@@ -38,12 +42,14 @@
                 <span class="top-count">{{ $navCounts['pendingAppointments'] > 9 ? '9+' : $navCounts['pendingAppointments'] }}</span>
             @endif
         </a>
+        @if($isAdmin)
         <a href="{{ route('admin.comments.index') }}" class="top-iconbox" title="Pending reviews">
             <i class="bi bi-chat-left-text"></i>
             @if($navCounts['pendingComments'] > 0)
                 <span class="top-count">{{ $navCounts['pendingComments'] > 9 ? '9+' : $navCounts['pendingComments'] }}</span>
             @endif
         </a>
+        @endif
         <a href="{{ route('admin.appointments.index') }}" class="top-iconbox" title="Today's appointments">
             <i class="bi bi-calendar-check"></i>
             @if($navCounts['todayAppointments'] > 0)
@@ -63,35 +69,46 @@
             <button type="button" class="top-avatar dropdown-toggle-no-caret" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User menu">
                 <img src="{{ asset('backend-assets/images/admin.jpg') }}" alt="{{ $me->name ?? 'User' }}">
             </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="width:13rem;">
-                <li class="px-3 pt-2 pb-1">
-                    <p class="m-0 fw-bold text-truncate" style="font-size:14px;">{{ $me->name ?? 'User' }}</p>
-                    <p class="m-0 small text-secondary text-truncate" style="font-size:12px;">{{ ucfirst($me->role ?? 'User') }} · MediCare</p>
+            <ul class="dropdown-menu dropdown-menu-end mc-usermenu">
+                <li class="mc-usermenu-head">
+                    @php
+                        $menuInitials = implode('', array_slice(array_map(fn($w) => mb_substr($w, 0, 1), explode(' ', (string) ($me->name ?? 'U'))), 0, 2));
+                    @endphp
+                    <span class="mc-usermenu-av">{{ strtoupper($menuInitials) }}</span>
+                    <span class="min-w-0">
+                        <p class="mc-usermenu-name">{{ $me->name ?? 'User' }}</p>
+                        <p class="mc-usermenu-role">{{ ucfirst($me->role ?? 'User') }} · MediCare</p>
+                    </span>
                 </li>
-                <li><hr class="dropdown-divider"></li>
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ $isDoctor ? route('doctor.profile.edit') : route('profile') }}">
-                        <i class="bi bi-person text-secondary"></i> Profile
+                    @if($isDoctor)
+                    <a class="mc-usermenu-item" href="{{ route('doctor.profile.edit') }}">
+                        <span class="mc-usermenu-ic"><i class="bi bi-person"></i></span> Profile
                     </a>
+                    @else
+                    <a class="mc-usermenu-item" href="{{ route('admin.users.edit', $me->id) }}">
+                        <span class="mc-usermenu-ic"><i class="bi bi-person"></i></span> My Access
+                    </a>
+                    @endif
                 </li>
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('notifications.index') }}">
-                        <i class="bi bi-bell text-secondary"></i> Notifications
+                    <a class="mc-usermenu-item" href="{{ route('notifications.index') }}">
+                        <span class="mc-usermenu-ic"><i class="bi bi-bell"></i></span> Notifications
                     </a>
                 </li>
                 @if(!$isDoctor)
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('settings.general') }}">
-                        <i class="bi bi-gear text-secondary"></i> Settings
+                    <a class="mc-usermenu-item" href="{{ route('settings.general') }}">
+                        <span class="mc-usermenu-ic"><i class="bi bi-gear"></i></span> Settings
                     </a>
                 </li>
                 @endif
-                <li><hr class="dropdown-divider"></li>
+                <li><hr class="mc-usermenu-div"></li>
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2"
+                    <a class="mc-usermenu-item danger"
                        href="{{ route('logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="bi bi-box-arrow-right text-secondary"></i> Logout
+                        <span class="mc-usermenu-ic"><i class="bi bi-box-arrow-right"></i></span> Logout
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -123,8 +140,11 @@
                 </a>
                 <ul class="side-sub">
                     <li><a class="side-sublink {{ request()->routeIs('admin.home') ? 'active' : '' }}" href="{{ route('admin.home') }}"><span class="side-dot"></span> Dashboard</a></li>
+                    @if($isAdmin || $isRecep)
                     <li><a class="side-sublink {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}" href="{{ route('admin.patients.index') }}"><span class="side-dot"></span> Patients</a></li>
                     <li><a class="side-sublink {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}" href="{{ route('admin.doctors.index') }}"><span class="side-dot"></span> Doctors</a></li>
+                    @endif
+                    @if($isAdmin)
                     <li>
                         <a class="side-sublink {{ request()->routeIs('admin.comments.*') ? 'active' : '' }}" href="{{ route('admin.comments.index') }}"><span class="side-dot"></span> Reviews
                             @if($navCounts['pendingComments'] > 0)
@@ -132,9 +152,11 @@
                             @endif
                         </a>
                     </li>
+                    @endif
                 </ul>
             </li>
 
+            @if($isAdmin || $isRecep)
             <li class="side-tree {{ request()->routeIs('admin.appointments.*', 'admin.time-slots.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.appointments.*', 'admin.time-slots.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-calendar-check"></i>
@@ -147,10 +169,14 @@
                 <ul class="side-sub">
                     <li><a class="side-sublink {{ request()->routeIs('admin.appointments.index') ? 'active' : '' }}" href="{{ route('admin.appointments.index') }}"><span class="side-dot"></span> All Appointments</a></li>
                     <li><a class="side-sublink {{ request()->routeIs('admin.appointments.create') ? 'active' : '' }}" href="{{ route('admin.appointments.create') }}"><span class="side-dot"></span> Book Appointment</a></li>
+                    @if($isAdmin)
                     <li><a class="side-sublink {{ request()->routeIs('admin.time-slots.*') ? 'active' : '' }}" href="{{ route('admin.time-slots.index') }}"><span class="side-dot"></span> Time Slots</a></li>
+                    @endif
                 </ul>
             </li>
+            @endif
 
+            @if($isAdmin || $isRecep || $isLabTech)
             <li class="side-tree {{ request()->routeIs('admin.lab-tests.*', 'admin.lab-orders.*', 'admin.invoices.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.lab-tests.*', 'admin.lab-orders.*', 'admin.invoices.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-clipboard2-pulse"></i>
@@ -158,20 +184,28 @@
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
+                    @if($isAdmin || $isLabTech)
                     <li><a class="side-sublink {{ request()->routeIs('admin.lab-tests.index') ? 'active' : '' }}" href="{{ route('admin.lab-tests.index') }}"><span class="side-dot"></span> Lab Tests</a></li>
                     <li><a class="side-sublink {{ request()->routeIs('admin.lab-tests.create') ? 'active' : '' }}" href="{{ route('admin.lab-tests.create') }}"><span class="side-dot"></span> Add Test</a></li>
                     <li><a class="side-sublink {{ request()->routeIs('admin.lab-orders.*') ? 'active' : '' }}" href="{{ route('admin.lab-orders.index') }}"><span class="side-dot"></span> Lab Orders</a></li>
+                    @endif
+                    @if($isAdmin || $isRecep)
                     <li><a class="side-sublink {{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}" href="{{ route('admin.invoices.index') }}"><span class="side-dot"></span> Invoices</a></li>
+                    @endif
                 </ul>
             </li>
+            @endif
 
+            @if($isAdmin || $isPharm)
             <li class="side-tree">
                 <a class="side-link {{ request()->routeIs('admin.prescriptions.*') ? 'active' : '' }}" href="{{ route('admin.prescriptions.index') }}">
                     <i class="side-icon bi bi-capsule"></i>
                     <span>Prescriptions</span>
                 </a>
             </li>
+            @endif
 
+            @if($isAdmin)
             <li class="side-tree {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-droplet"></i>
@@ -237,6 +271,7 @@
                     <span>Activity Logs</span>
                 </a>
             </li>
+            @endif
 
         @else
 

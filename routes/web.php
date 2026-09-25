@@ -67,7 +67,7 @@ Auth::routes(['verify' => false]);
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->middleware('throttle:10,1')->name('auth.google.redirect');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->middleware('throttle:10,1')->name('auth.google.callback');
 
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
 
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.home');
 
@@ -437,17 +437,22 @@ Route::post('/blog/{blog_id}/comment', [BlogCommentController::class, 'store'])-
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/profile', [FrontProfileController::class, 'index'])->name('profile');
+    // Patient-only frontend profile (doctors use /doctor/profile).
+    Route::middleware('patient')->group(function () {
 
-    Route::put('/profile', [FrontProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile', [FrontProfileController::class, 'index'])->name('profile');
 
-    Route::get('/profile/lab-reports/{report}/download', [FrontProfileController::class, 'downloadReport'])->name('profile.lab-reports.download');
+        Route::put('/profile', [FrontProfileController::class, 'update'])->name('profile.update');
 
-    Route::get('/profile/lab-orders/{order}/pdf', [FrontProfileController::class, 'downloadOrderPdf'])->name('profile.lab-orders.pdf');
+        Route::get('/profile/lab-reports/{report}/download', [FrontProfileController::class, 'downloadReport'])->name('profile.lab-reports.download');
 
-    Route::get('/profile/blood-requests', [FrontendBloodRequestController::class, 'index'])->name('profile.blood-requests');
+        Route::get('/profile/lab-orders/{order}/pdf', [FrontProfileController::class, 'downloadOrderPdf'])->name('profile.lab-orders.pdf');
 
-    Route::get('/profile/prescriptions/{prescription}/pdf', [FrontProfileController::class, 'downloadPrescriptionPdf'])->name('profile.prescriptions.pdf');
+        Route::get('/profile/blood-requests', [FrontendBloodRequestController::class, 'index'])->name('profile.blood-requests');
+
+        Route::get('/profile/prescriptions/{prescription}/pdf', [FrontProfileController::class, 'downloadPrescriptionPdf'])->name('profile.prescriptions.pdf');
+
+    });
 
     Route::patch('/appointment/{appointment}/cancel', [FrontAppointmentController::class, 'cancel'])->middleware('auth')->name('appointment.cancel');
 

@@ -161,11 +161,13 @@
                         </a>
                     </li>
 
+                    @guest
                     <li class="nav-item nav-button unset-cross me-2">
                         <a class="nav-link" href="{{ route('login') }}">
                             Login
                         </a>
                     </li>
+                    @endguest
 
                     @auth
                         <li class="nav-item nav-button unset-cross me-2 mb-2 mb-md-0">
@@ -178,9 +180,19 @@
                         </li>
 
                         <li class="nav-item nav-button unset-cross">
+                            @if(auth()->user()->role === 'patient')
                             <a class="nav-link" href="{{ route('profile') }}">
                                 My Profile
                             </a>
+                            @elseif(auth()->user()->role === 'doctor')
+                            <a class="nav-link" href="{{ route('doctor.dashboard') }}">
+                                Dashboard
+                            </a>
+                            @else
+                            <a class="nav-link" href="{{ route('admin.home') }}">
+                                Dashboard
+                            </a>
+                            @endif
                         </li>
                     @endauth
 

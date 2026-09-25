@@ -3,6 +3,11 @@
 @section('content')
 @php
   use Illuminate\Support\Carbon;
+  $dashRole = auth()->user()->role ?? '';
+  $dashAdmin = $dashRole === 'admin';
+  $dashFrontDesk = in_array($dashRole, ['admin', 'receptionist'], true);
+  $dashLab = in_array($dashRole, ['admin', 'lab-technician'], true);
+  $dashPharm = in_array($dashRole, ['admin', 'pharmacist'], true);
   $statusTotal = max(1, $pendingAppointments + $confirmedAppointments + $completedAppointments + $cancelledAppointments);
   $pctNew = round($pendingAppointments / $statusTotal * 100);
   $pctRec = round($completedAppointments / $statusTotal * 100);
@@ -32,13 +37,18 @@
       <p class="welly-subtitle">Hospital Admin Dashboard Template · {{ $todayAppointments }} appointments today</p>
     </div>
     <div class="flex flex-wrap gap-2.5 pt-1">
+      @if($dashFrontDesk)
       <a href="{{ route('admin.appointments.create') }}" class="mc-btn sm"><i class="bi bi-plus-lg"></i> Book appointment</a>
+      @endif
+      @if($dashAdmin)
       <a href="{{ route('admin.doctors.create') }}" class="welly-outline-btn"><i class="bi bi-person-plus"></i> Add doctor</a>
+      @endif
     </div>
   </div>
 
   {{-- ===== 4 stat cards (gold baseline like screenshot) ===== --}}
   <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    @if($dashFrontDesk)
     <div class="welly-stat">
       <div class="flex items-start justify-between gap-3">
         <div>
@@ -66,6 +76,8 @@
         <span class="welly-stat-icon"><i class="bi bi-person-badge"></i></span>
       </div>
     </div>
+    @endif
+    @if($dashAdmin)
     <div class="welly-stat">
       <div class="flex items-start justify-between gap-3">
         <div>
@@ -75,12 +87,35 @@
         <span class="welly-stat-icon"><i class="bi bi-coin"></i></span>
       </div>
     </div>
+    @endif
+    @if($dashLab)
+    <div class="welly-stat">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="welly-stat-num">{{ $labOrdersPending }}</p>
+          <p class="welly-stat-label">Pending Lab Orders</p>
+        </div>
+        <span class="welly-stat-icon"><i class="bi bi-clipboard2-pulse"></i></span>
+      </div>
+    </div>
+    <div class="welly-stat">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="welly-stat-num">{{ $labOrdersThisMonth }}</p>
+          <p class="welly-stat-label">Lab Orders This Month</p>
+        </div>
+        <span class="welly-stat-icon"><i class="bi bi-graph-up"></i></span>
+      </div>
+    </div>
+    @endif
   </section>
 
   {{-- ===== Patient Percentage + Appointment Schedule ===== --}}
+  @if($dashAdmin || $dashFrontDesk)
   <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
 
     {{-- Patient Percentage --}}
+    @if($dashAdmin)
     <section class="welly-card">
       <div class="welly-card-hd">
         <h2 class="welly-card-title">Patient Percentage</h2>
@@ -123,8 +158,10 @@
         <p class="mt-2 border-t border-line-2 pt-2 text-[12px] text-mut"><span id="welly-range-total">{{ $rangeStats['weekly']['total'] }} bookings in range</span> · {{ $totalAppointments }} total · {{ $pendingAppointments }} pending · {{ $cancelledAppointments }} cancelled</p>
       </div>
     </section>
+    @endif
 
     {{-- Appointment Schedule --}}
+    @if($dashFrontDesk)
     <section class="welly-card">
       <div class="welly-card-hd">
         <h2 class="welly-card-title">Appointment Schedule</h2>
@@ -186,9 +223,12 @@
         <a href="{{ route('admin.appointments.index') }}" class="mt-1 block text-center text-[13px] font-bold text-teal-dk no-underline hover:underline">View all {{ $totalAppointments }} appointments →</a>
       </div>
     </section>
+    @endif
   </div>
+  @endif
 
   {{-- ===== Patient Overview ===== --}}
+  @if($dashAdmin)
   <section class="welly-card">
     <div class="welly-card-hd">
       <div>
@@ -214,9 +254,12 @@
       <span class="ml-auto">Revenue this month: <strong class="text-ink">${{ number_format($revenueThisMonth, 2) }}</strong> · Outstanding invoices: <strong class="text-ink">${{ number_format($invoiceOutstanding, 2) }}</strong></span>
     </div>
   </section>
+  @endif
 
   {{-- ===== Revenue (lab + invoices, Welly cards) ===== --}}
+  @if($dashAdmin || $dashFrontDesk)
   <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
+    @if($dashAdmin)
     <section class="welly-card">
       <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
         <div>
@@ -268,7 +311,9 @@
         </div>
       </div>
     </section>
+    @endif
 
+    @if($dashFrontDesk)
     <section class="welly-card">
       <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
         <div>
@@ -301,15 +346,19 @@
       </div>
       <p class="m-0 border-t border-line-2 px-5 py-2.5 text-[12px] text-mut">Book more from the front desk or review the pending queue.</p>
     </section>
+    @endif
   </div>
+  @endif
 
   {{-- ===== Today's register + side rails (kept from previous dashboard, Welly cards) ===== --}}
+  @if($dashFrontDesk || $dashLab || $dashPharm)
   <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-[1fr_340px]">
+    @if($dashFrontDesk)
     <section class="welly-card">
       <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
         <div>
           <h2 class="welly-card-title">Today's appointments</h2>
-          <p class="m-0 mt-0.5 text-[12px] text-mut">Pending first · latest bookings across all doctors</p>
+          <p class="m-0 mt-0.5 text-[12px] text-mut">Pending first · today's queue across all doctors</p>
         </div>
         <a href="{{ route('admin.appointments.index') }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">View all {{ $totalAppointments }} →</a>
       </div>
@@ -345,14 +394,16 @@
                 <td><a class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline" href="{{ route('admin.appointments.edit', $a->id) }}">Open →</a></td>
               </tr>
             @empty
-              <tr><td colspan="5" class="py-6 text-center text-mut">No appointments yet — new bookings will appear here.</td></tr>
+              <tr><td colspan="5" class="py-6 text-center text-mut">No appointments scheduled for today.</td></tr>
             @endforelse
           </tbody>
         </table>
       </div>
     </section>
+    @endif
 
     <div class="flex flex-col gap-4">
+      @if($dashFrontDesk)
       <section class="welly-card">
         <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
           <div>
@@ -362,17 +413,17 @@
           <a href="{{ route('admin.doctors.index') }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">All {{ $totalDoctors }} →</a>
         </div>
         <div class="px-5 pb-3 pt-1">
-          @forelse($topDoctors as $doc)
+          @forelse($dutyDoctors as $doc)
             <div class="flex items-center gap-2.5 border-b border-line-2 py-2.5 last:border-b-0">
               <div class="mc-av">{{ $doc->name ? strtoupper(mb_substr($doc->name, 0, 1)) : '?' }}</div>
               <div class="min-w-0">
                 <b class="block text-[14px] text-ink">{{ $doc->name }}</b>
-                <span class="text-[12px] text-mut">{{ $doc->department ?? 'General' }} · {{ $doc->appointment_count }} appts</span>
+                <span class="text-[12px] text-mut">{{ $doc->department ?? 'General' }} · {{ $doc->appointment_count }} today</span>
               </div>
               <span class="ml-auto shrink-0 text-[12px] font-bold {{ $doc->status ? 'text-teal-dk' : 'text-faint' }}">• {{ $doc->status ? 'Active' : 'Off duty' }}</span>
             </div>
           @empty
-            <div class="py-3.5 text-[14px] text-mut">No doctors found. <a href="{{ route('admin.doctors.create') }}" class="font-bold text-teal-dk">Add one</a>.</div>
+            <div class="py-3.5 text-[14px] text-mut">Nobody on duty today.</div>
           @endforelse
         </div>
       </section>
@@ -398,7 +449,9 @@
           @endforelse
         </div>
       </section>
+      @endif
 
+      @if($dashAdmin)
       <section class="welly-card">
         <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
           <div>
@@ -418,8 +471,78 @@
         </div>
         <a class="mx-5 mb-5 block rounded-lg bg-ink py-2 text-center text-[14px] font-semibold text-white no-underline hover:bg-black" href="{{ route('admin.comments.index') }}">Moderate comments</a>
       </section>
+      @endif
     </div>
+
+    @if($dashLab)
+    <section class="welly-card xl:col-span-2">
+      <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
+        <div>
+          <h2 class="welly-card-title">Lab queue</h2>
+          <p class="m-0 mt-0.5 text-[12px] text-mut">Oldest unprocessed orders first</p>
+        </div>
+        <a href="{{ route('admin.lab-orders.index') }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">All orders →</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="mc-tbl w-full">
+          <thead><tr><th>Order</th><th>Patient</th><th>Tests</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            @forelse($pendingLabOrders as $o)
+              <tr>
+                <td>
+                  <b class="block text-ink">#{{ $o->id }}</b>
+                  <span class="text-[12px] text-mut">{{ $o->created_at->format('M j') }} · {{ $o->doctor->name ?? '—' }}</span>
+                </td>
+                <td>
+                  <b class="block text-ink">{{ $o->patient_name }}</b>
+                  <span class="text-[12px] text-mut">{{ $o->phone ?? '—' }}</span>
+                </td>
+                <td><span class="text-[12px] text-mut">{{ $o->items->count() }} test(s)</span></td>
+                <td>
+                  @if($o->status === 'in-progress')<span class="mc-pill p-confirmed"><i></i>In Progress</span>
+                  @else<span class="mc-pill p-pending"><i></i>Pending</span>@endif
+                </td>
+                <td><a class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline" href="{{ route('admin.lab-orders.show', $o->id) }}">Open →</a></td>
+              </tr>
+            @empty
+              <tr><td colspan="5" class="py-6 text-center text-mut">Queue clear — no pending lab orders.</td></tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
+    </section>
+    @endif
+
+    @if($dashPharm)
+    <section class="welly-card xl:col-span-2">
+      <div class="flex items-center justify-between gap-2.5 border-b border-line-2 px-5 py-3.5">
+        <div>
+          <h2 class="welly-card-title">Recent prescriptions</h2>
+          <p class="m-0 mt-0.5 text-[12px] text-mut">Latest written across doctors</p>
+        </div>
+        <a href="{{ route('admin.prescriptions.index') }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">All →</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="mc-tbl w-full">
+          <thead><tr><th>Patient</th><th>Doctor</th><th>Date</th><th></th></tr></thead>
+          <tbody>
+            @forelse($recentPrescriptions as $p)
+              <tr>
+                <td><b class="block text-ink">{{ $p->patient_name }}</b></td>
+                <td><span class="text-[13px] text-ink">{{ $p->doctor->name ?? '—' }}</span></td>
+                <td><span class="text-[12px] text-mut">{{ $p->created_at->format('M j, Y') }}</span></td>
+                <td><a class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline" href="{{ route('admin.prescriptions.show', $p->id) }}">Open →</a></td>
+              </tr>
+            @empty
+              <tr><td colspan="4" class="py-6 text-center text-mut">No prescriptions yet.</td></tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
+    </section>
+    @endif
   </div>
+  @endif
 
 </div>
 

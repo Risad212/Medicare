@@ -38,6 +38,10 @@ class LoginController extends Controller
             return redirect()->route('admin.home');
         }
 
+        if (in_array($user->role, ['receptionist', 'lab-technician', 'pharmacist'], true)) {
+            return redirect()->route('admin.home');
+        }
+
         if ($user->role === 'doctor') {
             return redirect()->route('doctor.dashboard');
         }

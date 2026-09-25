@@ -21,8 +21,10 @@
          Layered styles always lose to unlayered ones, and this layer is
          declared before Tailwind's own layers, so Tailwind base/components
          keep winning (fonts, link colors, buttons) while Bootstrap's
-         utilities/components (d-flex, dropdown, …) still work. -->
-    <style>@import url("https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css") layer(bootstrap);</style>
+         utilities/components (d-flex, dropdown, …) still work.
+         Served locally (not CDN) so the admin shell never renders
+         unstyled when the CDN is unreachable. -->
+    <style>@import url("{{ asset('backend-assets/css/bootstrap.min.css') }}") layer(bootstrap);</style>
     <!-- MediCare admin brand skin — plain CSS, no build step -->
     <link rel="stylesheet" href="{{ asset('backend-assets/css/admin-brand.css') }}">
 
@@ -41,8 +43,9 @@
 
     <!-- jQuery (kept for main.js search filters) -->
     <script src="{{ asset('backend-assets/js/jquery-3.7.0.min.js') }}"></script>
-    <!-- Bootstrap 5 JS (dropdowns, modals, tabs) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- Bootstrap 5 JS (dropdowns, modals, tabs) — local so positioning
+         (Popper) never breaks when the CDN is unreachable. -->
+    <script defer src="{{ asset('backend-assets/js/bootstrap.bundle.min.js') }}"></script>
     <!-- Main (sidebar toggle, treeview expand, page search filters) -->
     <script src="{{ asset('backend-assets/js/main.js') }}"></script>
     @stack('scripts')

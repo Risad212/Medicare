@@ -111,6 +111,10 @@ class GoogleAuthController extends Controller
             return redirect()->intended(route('admin.home'));
         }
 
+        if (in_array($user->role, ['receptionist', 'lab-technician', 'pharmacist'], true)) {
+            return redirect()->intended(route('admin.home'));
+        }
+
         if ($user->role === 'doctor') {
             return redirect()->intended(route('doctor.dashboard'));
         }

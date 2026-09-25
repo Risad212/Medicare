@@ -6,16 +6,15 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class PatientMiddleware
 {
     /**
      * Handle an incoming request.
-     * Hospital staff (admin + receptionist/lab-tech/pharmacist) may enter
-     * `/admin/*`. Doctors and patients are kept out.
+     * Only patient role can access the frontend profile.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && in_array(auth()->user()->role, ['admin', 'receptionist', 'lab-technician', 'pharmacist'], true)) {
+        if (auth()->check() && auth()->user()->role === 'patient') {
             return $next($request);
         }
 

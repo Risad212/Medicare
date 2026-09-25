@@ -81,6 +81,18 @@
                 </button>
             </li>
 
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link"
+                    id="invoices-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#invoices"
+                    type="button"
+                    role="tab">
+                    My Invoices
+                </button>
+            </li>
+
         </ul>
 
         {{-- Tab Content --}}
@@ -744,6 +756,111 @@
 
                         <p class="text-muted">
                             When a doctor writes a prescription for you, it will appear here.
+                        </p>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+            {{-- ================= INVOICES ================= --}}
+            <div
+                class="tab-pane fade"
+                id="invoices"
+                role="tabpanel">
+
+                @if($invoices->count())
+
+                    <div class="card border-0 shadow-sm">
+
+                        <div class="card-header bg-white py-3">
+                            <h4 class="mb-0">
+                                My Invoices
+                            </h4>
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="table-responsive">
+
+                                <table class="table table-hover align-middle">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Invoice No</th>
+                                            <th>Date</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        @foreach($invoices as $invoice)
+
+                                            <tr>
+
+                                                <td>
+                                                    {{ $invoice->invoice_no }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $invoice->created_at->format('d M Y') }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $invoice->total }}
+                                                </td>
+
+                                                <td>
+
+                                                    @if($invoice->status === 'paid')
+
+                                                        <span class="badge bg-success">
+                                                            Paid
+                                                        </span>
+
+                                                    @elseif($invoice->status === 'void')
+
+                                                        <span class="badge bg-secondary">
+                                                            Void
+                                                        </span>
+
+                                                    @else
+
+                                                        <span class="badge bg-warning text-dark">
+                                                            Pending
+                                                        </span>
+
+                                                    @endif
+
+                                                </td>
+
+                                            </tr>
+
+                                        @endforeach
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                @else
+
+                    <div class="text-center py-5">
+
+                        <h5>
+                            No Invoices Found
+                        </h5>
+
+                        <p class="text-muted">
+                            When a lab invoice is created for you, it will appear here.
                         </p>
 
                     </div>

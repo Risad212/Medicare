@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Appointment;
 use App\Models\Department;
 use App\Models\Doctor;
 use App\Models\DoctorOffDay;
@@ -217,6 +218,17 @@ class DoctorController extends Controller
             'date' => 'required|date|after_or_equal:today',
             'reason' => 'nullable|string|max:255',
         ]);
+
+        // Never strand booked patients: an off-day must not silently leave
+        // active appointments on that date without a doctor.
+        $activeCount = Appointment::where('doctor_id', $doctor->id)
+            ->whereDate('appointment_date', $validated['date'])
+            ->where('status', '!=', 3)
+            ->count();
+
+        if ($activeCount > 0) {
+            return back()->with('error', "Cannot add leave: {$activeCount} active appointment(s) already booked on this date. Cancel or reschedule them first.");
+        }
 
         $doctor->offDays()->firstOrCreate([
             'date' => $validated['date'],

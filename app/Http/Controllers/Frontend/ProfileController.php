@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Models\Invoice;
 use App\Models\LabOrder;
 use App\Models\LabReport;
 use App\Models\Prescription;
@@ -50,9 +51,19 @@ class ProfileController extends Controller
             ->latest()
             ->get();
 
+        $invoices = Invoice::with(['order', 'items'])
+            ->where(function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+                if (! empty($user->email_verified_at) && ! empty($user->email)) {
+                    $query->orWhere('email', $user->email);
+                }
+            })
+            ->latest()
+            ->get();
+
         return view(
             'frontend.profile.index',
-            compact('user', 'appointments', 'labOrders', 'prescriptions')
+            compact('user', 'appointments', 'labOrders', 'prescriptions', 'invoices')
         );
     }
 
