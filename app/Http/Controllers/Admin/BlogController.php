@@ -3,34 +3,23 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\BlogRequest;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Tag;
-use Illuminate\Http\Request;
+use App\Services\BlogSanitizer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
     /**
-     * Allowed rich-text tags stripped of every attribute, including the
-     * event-handler ones (onclick, onerror, ...) that strip_tags leaves in
-     * place and which would otherwise render as stored XSS on the blog page.
-     */
-    private function sanitizeBlogHtml(string $html): string
-    {
-        $html = strip_tags($html, '<p><br><b><strong><i><em><ul><ol><li>');
-
-        return preg_replace('/\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html) ?? $html;
-    }
-
-    /**
      * Display a listing of the resource.
      */
     public function index()
     {
 
-        $blogs = Blog::latest()->get();
+        $blogs = Blog::latest()->paginate(20);
         $categories = Category::latest()->get();
         $tags = Tag::latest()->get();
 
@@ -51,22 +40,14 @@ class BlogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BlogRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'excerpt' => 'nullable|string|max:500',
-            'content' => 'required|string|max:10000',
-            'order' => 'nullable|integer',
-            'category' => 'nullable|string|max:100',
-            'tags' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
 
-        $data = $request->only(['title', 'excerpt', 'content', 'order', 'category', 'tags']);
+        $data = array_intersect_key($validated, array_flip(['title', 'excerpt', 'content', 'order', 'category', 'tags']));
         // Strip dangerous tags/attributes while allowing basic formatting - XSS prevention
         if (isset($data['content'])) {
-            $data['content'] = $this->sanitizeBlogHtml($data['content']);
+            $data['content'] = BlogSanitizer::sanitize($data['content']);
         }
         if (isset($data['excerpt'])) {
             $data['excerpt'] = strip_tags($data['excerpt']);
@@ -106,21 +87,13 @@ class BlogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Blog $blog)
+    public function update(BlogRequest $request, Blog $blog)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'excerpt' => 'nullable|string|max:500',
-            'content' => 'required|string|max:10000',
-            'order' => 'nullable|integer',
-            'category' => 'nullable|string|max:100',
-            'tags' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
 
-        $data = $request->only(['title', 'excerpt', 'content', 'order', 'category', 'tags']);
+        $data = array_intersect_key($validated, array_flip(['title', 'excerpt', 'content', 'order', 'category', 'tags']));
         if (isset($data['content'])) {
-            $data['content'] = $this->sanitizeBlogHtml($data['content']);
+            $data['content'] = BlogSanitizer::sanitize($data['content']);
         }
         if (isset($data['excerpt'])) {
             $data['excerpt'] = strip_tags($data['excerpt']);

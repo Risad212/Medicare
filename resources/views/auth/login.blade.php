@@ -109,10 +109,12 @@
                         <span class="h-px flex-1 bg-line"></span> or <span class="h-px flex-1 bg-line"></span>
                     </div>
 
+                    @if(!empty(config('services.google.client_id')))
                     <a href="{{ route('auth.google.redirect') }}" class="mc-btn ghost w-full justify-center !py-2.5">
                         <i class="bi bi-google text-red"></i> Continue with Google
                     </a>
                     <p class="m-0 mt-1.5 text-center text-[12px] text-mut">For patients — auto-creates a patient account.</p>
+                    @endif
 
                     <p class="m-0 mt-4 text-center text-[13px] text-ink-2">Don't have an account? <a href="{{ route('register') }}" class="font-bold text-teal-dk no-underline hover:underline">Register</a></p>
                 </form>

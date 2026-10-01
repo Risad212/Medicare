@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreDoctorRequest;
+use App\Http\Requests\Admin\UpdateDoctorRequest;
 use App\Models\Appointment;
 use App\Models\Department;
 use App\Models\Doctor;
@@ -46,33 +48,28 @@ class DoctorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreDoctorRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
+        $validated = $request->validated();
 
         // Create User first
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($validated, $request) {
             $user = new User([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
             ]);
             $user->role = 'doctor';
             $user->save();
 
             // Doctor data - whitelist safe fields only
-            $data = $request->only(['name', 'degree', 'department', 'specialist', 'services', 'availability', 'phone']);
+            $data = array_intersect_key($validated, array_flip(['name', 'degree', 'department', 'specialist', 'services', 'availability', 'phone']));
             if (isset($data['services'])) {
                 $data['services'] = strip_tags($data['services']);
             }
-            $data['slug'] = Str::slug($request->name).'-'.uniqid();
+            $data['slug'] = Str::slug($validated['name']).'-'.uniqid();
             $data['user_id'] = $user->id;
-            $data['status'] = $request->has('status') ? (int) $request->status : 1;
+            $data['status'] = isset($validated['status']) ? (int) $validated['status'] : 1;
 
             if ($request->hasFile('image')) {
                 $data['image'] = $request->file('image')->store('doctors', 'public');
@@ -98,42 +95,32 @@ class DoctorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateDoctorRequest $request, string $id)
     {
         $doctor = Doctor::findOrFail($id);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$doctor->user_id,
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'password' => 'nullable|string|min:8',
-            'degree' => 'nullable|string|max:255',
-            'department' => 'nullable|string|max:255',
-            'specialist' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'status' => 'nullable|in:0,1',
-        ]);
+        $validated = $request->validated();
 
         // Update User
-        DB::transaction(function () use ($request, $doctor) {
+        DB::transaction(function () use ($validated, $request, $doctor) {
             if ($doctor->user_id) {
                 $userData = [
-                    'name' => $request->name,
-                    'email' => $request->email,
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
                 ];
 
-                if ($request->filled('password')) {
-                    $userData['password'] = Hash::make($request->password);
+                if (! empty($validated['password'])) {
+                    $userData['password'] = Hash::make($validated['password']);
                 }
 
                 User::where('id', $doctor->user_id)->update($userData);
             }
 
-            $data = $request->only(['name', 'degree', 'department', 'specialist', 'services', 'availability', 'phone', 'status']);
+            $data = array_intersect_key($validated, array_flip(['name', 'degree', 'department', 'specialist', 'services', 'availability', 'phone', 'status']));
             if (isset($data['services'])) {
                 $data['services'] = strip_tags($data['services']);
             }
-            $data['slug'] = Str::slug($request->name);
+            $data['slug'] = Str::slug($validated['name']);
 
             if ($request->hasFile('image')) {
                 if ($doctor->image) {
@@ -220,23 +207,28 @@ class DoctorController extends Controller
         ]);
 
         // Never strand booked patients: an off-day must not silently leave
-        // active appointments on that date without a doctor.
-        $activeCount = Appointment::where('doctor_id', $doctor->id)
-            ->whereDate('appointment_date', $validated['date'])
-            ->where('status', '!=', 3)
-            ->count();
+        // active appointments on that date without a doctor. Check + create
+        // inside a transaction with a row lock so a concurrent booking
+        // can't slip in between.
+        return DB::transaction(function () use ($doctor, $validated) {
+            $activeCount = Appointment::where('doctor_id', $doctor->id)
+                ->whereDate('appointment_date', $validated['date'])
+                ->where('status', '!=', 3)
+                ->lockForUpdate()
+                ->count();
 
-        if ($activeCount > 0) {
-            return back()->with('error', "Cannot add leave: {$activeCount} active appointment(s) already booked on this date. Cancel or reschedule them first.");
-        }
+            if ($activeCount > 0) {
+                return back()->with('error', "Cannot add leave: {$activeCount} active appointment(s) already booked on this date. Cancel or reschedule them first.");
+            }
 
-        $doctor->offDays()->firstOrCreate([
-            'date' => $validated['date'],
-        ], [
-            'reason' => $validated['reason'] ?? null,
-        ]);
+            $doctor->offDays()->firstOrCreate([
+                'date' => $validated['date'],
+            ], [
+                'reason' => $validated['reason'] ?? null,
+            ]);
 
-        return back()->with('success', 'Off-day added for '.$doctor->name.'.');
+            return back()->with('success', 'Off-day added for '.$doctor->name.'.');
+        });
     }
 
     /**

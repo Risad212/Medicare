@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\SliderRequest;
 use App\Models\Slider;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class SliderController extends Controller
@@ -21,14 +21,11 @@ class SliderController extends Controller
         return view('backend.sliders.create');
     }
 
-    public function store(Request $request)
+    public function store(SliderRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'bg_image' => 'nullable|image|max:2048',
-        ]);
+        $validated = $request->validated();
 
-        $data = $request->only(['title', 'description', 'button_text']);
+        $data = array_intersect_key($validated, array_flip(['title', 'description', 'button_text']));
 
         if ($request->hasFile('bg_image')) {
             $data['bg_image'] = $request->file('bg_image')->store('sliders', 'public');
@@ -44,14 +41,11 @@ class SliderController extends Controller
         return view('backend.sliders.edit', compact('slider'));
     }
 
-    public function update(Request $request, Slider $slider)
+    public function update(SliderRequest $request, Slider $slider)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'bg_image' => 'nullable|image|max:2048',
-        ]);
+        $validated = $request->validated();
 
-        $data = $request->only(['title', 'description', 'button_text']);
+        $data = array_intersect_key($validated, array_flip(['title', 'description', 'button_text']));
 
         if ($request->hasFile('bg_image')) {
             if ($slider->bg_image) {

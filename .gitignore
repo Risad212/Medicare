@@ -20,6 +20,8 @@ database/*.sqlite-journal
 /storage/*.key
 /storage/pail
 /vendor
+/playwright-report
+/test-results
 _ide_helper.php
 Homestead.json
 Homestead.yaml

@@ -137,10 +137,9 @@ flowchart LR
 |--------|-----|------|-------------|
 | GET | `/admin/activity-logs` | `admin.activity-logs.index` | Audit trail — all Eloquent writes logged via `ActivityLogObserver` |
 | GET | `/admin/exports/{appointments,patients,lab-orders}` | `admin.exports.*` | CSV exports via `CsvExport` |
-| RESOURCE (except show) | `/admin/roles` | `admin.roles.*` | Roles CRUD + grouped permission matrix (`RoleService`, `can:roles.manage`); system roles protected |
-| GET/PUT | `/admin/users`, `/admin/users/{user}/edit` | `admin.users.*` | Staff & users register — primary role + RBAC role attach (`can:users.manage`, self-demote blocked) |
+| GET/PUT | `/admin/users`, `/admin/users/{user}/edit` | `admin.users.*` | Staff & users list/edit — role update only |
 
-**Access control (RBAC):** `roles` / `permissions` / `permission_role` / `role_user` tables + `Role`/`Permission` models; 15 module permissions (`*.manage`, `dashboard.view`, `activity-logs.view`) seeded by `RolePermissionSeeder` (admin/receptionist/lab-technician/pharmacist/doctor/patient defaults); Gates resolved lazily in `AuthServiceProvider` with legacy `admin` superuser bypass; every `/admin/*` route carries a `can:` gate and the sidebar/topbar hide ungranted modules via `@can`; `AdminMiddleware` admits `admin` role or any permission holder; staff logins land on `admin.home`.
+**Access control:** simple `users.role` (`admin/receptionist/lab-technician/pharmacist/doctor/patient`) via `AdminMiddleware` + `StaffModuleGate` (`admin` bypass, non-admin `*.destroy` denied); staff logins land on `admin.home`.
 
 ### Doctor Panel (`doctor` middleware)
 | Method | URI | Name | Description |

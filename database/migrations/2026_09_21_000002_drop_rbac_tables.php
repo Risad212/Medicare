@@ -12,6 +12,8 @@ return new class extends Migration
      * Drops the RBAC tables (`roles`, `permissions`, `permission_role`,
      * `role_user`). The legacy `users.role` column is untouched — access is
      * driven by it via the `admin` / `doctor` route middleware.
+     *
+     * Kept for later re-add: `down()` below holds the clean schema reference.
      */
     public function up(): void
     {

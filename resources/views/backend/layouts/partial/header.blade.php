@@ -30,9 +30,14 @@
     </button>
 
     <div class="d-none d-md-block ms-2 lh-sm">
-        <span class="d-block fs-6 fw-bold">MediCare Hospital</span>
-        <span class="d-block small text-secondary">{{ now()->format('l, F j, Y') }}</span>
+        <span class="d-block fw-bold" style="font-size:14px;">MediCare Hospital</span>
+        <span class="d-block text-secondary" style="font-size:11.5px;">{{ now()->format('l, F j, Y') }} &middot; {{ ucfirst($me->role ?? 'User') }} portal</span>
     </div>
+
+    <label class="mc-top-search d-none d-lg-flex ms-3" title="Filter menu">
+        <i class="bi bi-search"></i>
+        <input id="mc-menu-search" type="search" placeholder="Search menu…" autocomplete="off">
+    </label>
 
     <div class="ms-auto d-flex align-items-center gap-2">
         @if(!$isDoctor)
@@ -126,7 +131,7 @@
 <aside class="admin-sidebar">
     <a href="{{ $isDoctor ? route('doctor.dashboard') : route('admin.home') }}" class="brand">
         <span class="brand-logo">M</span>
-        <span class="brand-name">MediCare</span>
+        <span class="brand-name">MediCare<small>Hospital Admin</small></span>
     </a>
 
     <nav class="side-nav" aria-label="{{ $isDoctor ? 'Doctor' : 'Admin' }} navigation">
@@ -335,8 +340,25 @@
     </nav>
 
     <div class="side-foot">
-        <p class="side-foot-title">MediCare Hospital Admin</p>
-        <p>© {{ now()->year }} All Rights Reserved</p>
-        <p class="mt-1">Made with ♥ for care teams</p>
+        <p class="side-foot-title">MediCare Hospital</p>
+        <p>© {{ now()->year }} Care team · v2.0 modern</p>
+        <p class="mt-1">Secure clinical workspace</p>
     </div>
 </aside>
+
+{{-- Sidebar live filter (no dependency on main.js) --}}
+<script>
+(function () {
+    var input = document.getElementById('mc-menu-search');
+    if (!input) return;
+    input.addEventListener('input', function () {
+        var q = input.value.trim().toLowerCase();
+        document.querySelectorAll('.admin-sidebar .side-tree').forEach(function (tree) {
+            if (!q) { tree.style.display = ''; return; }
+            var hit = (tree.textContent || '').toLowerCase().indexOf(q) !== -1;
+            tree.style.display = hit ? '' : 'none';
+            if (hit) tree.classList.add('is-expanded');
+        });
+    });
+})();
+</script>
