@@ -491,13 +491,13 @@ a { text-underline-offset: 3px; }
 .table-hover tbody tr:hover { background: #f3faf8 !important; }
 .btn { border-radius: 10px !important; font-weight: 600 !important; transition: transform 0.14s var(--ease), background 0.14s, border-color 0.14s !important; }
 .btn:active { transform: translateY(1px); }
-.btn-primary, .mc-btn {
+.btn-primary, .mc-btn:not(.ghost):not(.dark):not(.danger-ghost) {
     background: var(--brand) !important;
     border: 1px solid var(--brand-dk) !important;
     font-weight: 700 !important;
     box-shadow: 0 6px 14px -8px rgba(14, 124, 102, 0.7) !important;
 }
-.btn-primary:hover, .mc-btn:hover { background: var(--brand-dk) !important; color: #fff !important; }
+.btn-primary:hover, .mc-btn:not(.ghost):not(.dark):not(.danger-ghost):hover { background: var(--brand-dk) !important; color: #fff !important; }
 .btn-outline-primary { border-color: var(--brand-line) !important; color: var(--brand-ink) !important; }
 .btn-outline-primary:hover { background: var(--brand-wash) !important; border-color: var(--brand) !important; }
 .badge { border-radius: 999px !important; font-weight: 700 !important; letter-spacing: 0.01em; }
