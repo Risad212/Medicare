@@ -13,7 +13,7 @@
 <!--========== Blog Section ==========-->
 <section class="blog-page">
    <div class="container">
-      <div class="row">
+       <div class="row g-4">
 
          @if(isset($blogs) && $blogs->count())
             @foreach($blogs as $blog)
