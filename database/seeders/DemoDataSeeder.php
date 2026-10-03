@@ -207,17 +207,17 @@ class DemoDataSeeder extends Seeder
     private function seedContent(): void
     {
         $services = [
-            ['Emergency Care', 'Round-the-clock emergency unit with ICU backup and rapid triage, so critical patients are stabilised within minutes of arrival.', 'services/icons/emergency.svg'],
-            ['Cardiology', 'Complete heart care — ECG, echocardiogram, stress testing and angiogram support under senior cardiologists.', 'services/icons/cardiology.svg'],
-            ['Diagnostics Lab', 'More than 200 laboratory and imaging tests with accurate, same-day reports you can collect online.', 'services/icons/lab.svg'],
-            ['Blood Bank', 'Safe, screened blood of every group with a verified donor network for urgent transfusion needs.', 'services/icons/blood.svg'],
-            ['Pharmacy', 'Genuine medicine at fair prices, dispensed by qualified pharmacists day and night.', 'services/icons/pharmacy.svg'],
-            ['Ambulance', 'City-wide rapid ambulance pickup with trained responders and direct hospital handover.', 'services/icons/ambulance.svg'],
+            ['Emergency Care', 'emergency-care', 'services/icons/emergency.svg', "Round-the-clock emergency unit with ICU backup and rapid triage, so critical patients are stabilised within minutes of arrival.\nOur emergency floor runs 24 hours with on-call surgeons, anaesthetists and physicians, a stocked pharmacy and a blood bank on the same premises. One call to our hotline dispatches the ambulance and prepares your bed before you arrive."],
+            ['Cardiology', 'cardiology', 'services/icons/cardiology.svg', "Complete heart care — ECG, echocardiogram, stress testing and angiogram support under senior cardiologists.\nFrom preventive screening packages to post-procedure rehabilitation, our cardiology team manages hypertension, chest pain, arrhythmia and heart failure with modern non-invasive diagnostics and honest, staged treatment plans."],
+            ['Diagnostics Lab', 'diagnostics-lab', 'services/icons/lab.svg', "More than 200 laboratory and imaging tests with accurate, same-day reports you can collect online.\nBlood, urine, hormone, X-ray, ECG and ultrasound services run from early morning with home sample collection across the city. Reports are verified by consultant pathologists and delivered digitally the same day."],
+            ['Blood Bank', 'blood-bank', 'services/icons/blood.svg', "Safe, screened blood of every group with a verified donor network for urgent transfusion needs.\nEvery unit is screened and stored to standard with full component separation — red cells, plasma and platelets. Our registered donor panel and 24-hour issue counter support surgeries, thalassemia care and emergencies without delay."],
+            ['Pharmacy', 'pharmacy', 'services/icons/pharmacy.svg', "Genuine medicine at fair prices, dispensed by qualified pharmacists day and night.\nWe stock prescriptions from every department with careful expiry control, offer counselling on dosage and interactions, and maintain monthly refill plans for diabetes, pressure and cardiac patients."],
+            ['Ambulance', 'ambulance', 'services/icons/ambulance.svg', "City-wide rapid ambulance pickup with trained responders and direct hospital handover.\nOur ambulances carry oxygen, first-aid and trained paramedics, coordinated by a single hotline. Patients are received at the gate by the emergency team with their preliminary information already handed over."],
         ];
-        foreach ($services as $i => [$title, $description, $icon]) {
+        foreach ($services as $i => [$title, $slug, $icon, $description]) {
             Service::updateOrCreate(['title' => $title], [
-                'description' => $description, 'icon' => $icon, 'order' => $i, 'status' => 1,
-                'button_text' => 'Read more', 'button_url' => '#',
+                'slug' => $slug, 'description' => $description, 'icon' => $icon, 'order' => $i, 'status' => 1,
+                'button_text' => 'Read more', 'button_url' => null,
             ]);
         }
 

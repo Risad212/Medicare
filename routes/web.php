@@ -417,6 +417,8 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 Route::get('/service', [ServiceController::class, 'index'])->name('service');
 
+Route::get('/service/{service:slug}', [ServiceController::class, 'show'])->name('service.show');
+
 Route::get('/doctor', [FrontendDoctorController::class, 'index'])->name('doctor');
 
 Route::get('/doctor/{id}', [FrontendDoctorController::class, 'show'])->name('doctor.show');

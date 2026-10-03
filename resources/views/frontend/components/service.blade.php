@@ -13,8 +13,8 @@
                         @endif
                     </span>
                     <h3 class="title">{{ $item->title }}</h3>
-                    <p>{{ $item->description }}</p>
-                    <a class="card-btn" href="{{ $item->button_url ?: '#' }}">{{ $item->button_text ?: 'Read more' }}</a>
+                    <p>{{ Str::limit($item->description ?? '', 140) }}</p>
+                    <a class="card-btn" href="{{ $item->button_url ?: ($item->slug ? route('service.show', $item->slug) : route('service')) }}">{{ $item->button_text ?: 'Read more' }}</a>
                 </div>
             </div>
         @endforeach

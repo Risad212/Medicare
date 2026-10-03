@@ -1006,6 +1006,39 @@ input:-webkit-autofill:focus {
   align-self: center;
 }
 
+.service-details .detail-wrap {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 40px 35px;
+}
+
+.service-details .detail-icon {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin-bottom: 15px;
+}
+
+.service-details .detail-wrap .title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.service-details .detail-body p {
+  color: #4c4c4d;
+  margin-bottom: 15px;
+}
+
+.service-details .detail-btn {
+  display: inline-block;
+  background: var(--primary-color);
+  color: #fff;
+  padding: 10px 30px;
+  margin-top: 10px;
+  text-transform: capitalize;
+}
+
 @media only screen and (max-width: 768px) {
   .service-section {
     padding: 50px 0;

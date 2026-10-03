@@ -81,7 +81,7 @@
                     <h4 class="widget-title">Services</h4>
                     <ul class="deparment-list">
                         @forelse($footerServices ?? [] as $footerService)
-                            <li class="item"><a href="{{ route('service') }}">{{ $footerService->title }}</a></li>
+                            <li class="item"><a href="{{ $footerService->slug ? route('service.show', $footerService->slug) : route('service') }}">{{ $footerService->title }}</a></li>
                         @empty
                             <li class="item"><a href="{{ route('service') }}">Our Services</a></li>
                         @endforelse
