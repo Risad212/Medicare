@@ -39,7 +39,7 @@
                     </div>
                     <div class="mc-f full">
                         <label>Description</label>
-                        <textarea name="description" class="form-control" rows="4" placeholder="What this service covers…">{{ old('description', $editing ? $service->description : '') }}</textarea>
+                        <textarea name="description" class="form-control" rows="8" placeholder="What this service covers… Use a blank line between paragraphs.">{{ old('description', $editing ? $service->description : '') }}</textarea>
                         @error('description') <small class="text-red-t text-xs">{{ $message }}</small> @enderror
                     </div>
                 </div>
