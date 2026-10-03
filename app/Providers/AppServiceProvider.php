@@ -15,6 +15,7 @@ use App\Models\LabOrder;
 use App\Models\LabReport;
 use App\Models\LabTest;
 use App\Models\Prescription;
+use App\Models\Service;
 use App\Models\User;
 use App\Observers\ActivityLogObserver;
 use Illuminate\Pagination\Paginator;
@@ -43,6 +44,16 @@ class AppServiceProvider extends ServiceProvider
             }
         } catch (\Throwable $e) {
             View::share('setting', null);
+        }
+
+        try {
+            if (Schema::hasTable('services')) {
+                View::share('footerServices', Service::where('status', 1)->orderBy('order')->take(5)->get());
+            } else {
+                View::share('footerServices', collect());
+            }
+        } catch (\Throwable $e) {
+            View::share('footerServices', collect());
         }
     }
 

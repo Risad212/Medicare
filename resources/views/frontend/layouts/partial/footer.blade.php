@@ -80,11 +80,11 @@
                 <div class="footer-widget-2">
                     <h4 class="widget-title">Services</h4>
                     <ul class="deparment-list">
-                        <li class="item"><a href="#">Heart Transplants</a></li>
-                        <li class="item"><a href="#">Blood Transfusion</a></li>
-                        <li class="item"><a href="#">Lab Tests</a></li>
-                        <li class="item"><a href="#">Intensive Care</a></li>
-                        <li class="item"><a href="#">Teeth Whitening</a></li>
+                        @forelse($footerServices ?? [] as $footerService)
+                            <li class="item"><a href="{{ route('service') }}">{{ $footerService->title }}</a></li>
+                        @empty
+                            <li class="item"><a href="{{ route('service') }}">Our Services</a></li>
+                        @endforelse
                     </ul>
                 </div>
             </div>
