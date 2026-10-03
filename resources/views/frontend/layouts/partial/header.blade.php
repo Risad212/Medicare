@@ -124,41 +124,52 @@
                 <ul class="navbar-nav ms-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('home') }}">Home</a>
+                        <a class="nav-link" href="{{ route('home') }}">{{ __('messages.nav.home') }}</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('about') }}">About Us</a>
+                        <a class="nav-link" href="{{ route('about') }}">{{ __('messages.nav.about') }}</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('service') }}">Our Services</a>
+                        <a class="nav-link" href="{{ route('service') }}">{{ __('messages.nav.services') }}</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('doctor') }}">Doctors</a>
+                        <a class="nav-link" href="{{ route('doctor') }}">{{ __('messages.nav.doctors') }}</a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('blog') }}">
-                            Blog
+                            {{ __('messages.nav.blog') }}
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('contact') }}">Contact</a>
+                        <a class="nav-link" href="{{ route('contact') }}">{{ __('messages.nav.contact') }}</a>
                     </li>
 
                     <li class="nav-item nav-button unset-cross me-2 mb-2 mb-md-0">
                         <a class="nav-link" href="{{ route('appointment') }}">
-                            Appointment
+                            {{ __('messages.nav.appointment') }}
                         </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ __('messages.nav.language') }}">
+                            {{ strtoupper(app()->getLocale()) }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            @foreach(($availableLanguages ?? [['name' => 'English', 'code' => 'en']]) as $lang)
+                                <li><a class="dropdown-item{{ app()->getLocale() === $lang['code'] ? ' active' : '' }}" href="{{ route('language.switch', $lang['code']) }}">{{ $lang['name'] }}</a></li>
+                            @endforeach
+                        </ul>
                     </li>
 
                     @guest
                     <li class="nav-item nav-button unset-cross me-2">
                         <a class="nav-link" href="{{ route('login') }}">
-                            Login
+                            {{ __('messages.nav.login') }}
                         </a>
                     </li>
                     @endguest
@@ -176,7 +187,7 @@
                         <li class="nav-item nav-button unset-cross">
                             @if(auth()->user()->role === 'patient')
                             <a class="nav-link" href="{{ route('profile') }}">
-                                My Profile
+                                {{ __('messages.nav.profile') }}
                             </a>
                             @elseif(auth()->user()->role === 'doctor')
                             <a class="nav-link" href="{{ route('doctor.dashboard') }}">

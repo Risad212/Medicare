@@ -6,7 +6,7 @@
   $dashRole = auth()->user()->role ?? '';
   $dashAdmin = $dashRole === 'admin';
   $dashFrontDesk = in_array($dashRole, ['admin', 'receptionist'], true);
-  $dashLab = in_array($dashRole, ['admin', 'lab-technician'], true);
+  $dashLab = in_array($dashRole, ['admin', 'lab-technician'], true) && \App\Support\Module::enabled('lab');
   $dashPharm = in_array($dashRole, ['admin', 'pharmacist'], true);
   $statusTotal = max(1, $pendingAppointments + $confirmedAppointments + $completedAppointments + $cancelledAppointments);
   $pctNew = round($pendingAppointments / $statusTotal * 100);
@@ -235,14 +235,18 @@
         <h2 class="welly-card-title">Patient Overview</h2>
         <p class="m-0 mt-0.5 text-[12px] text-mut">Monthly trends · Appointments vs lab orders · last 6 months</p>
       </div>
+      @if(\App\Support\Module::enabled('lab'))
       <a href="{{ route('admin.lab-orders.index') }}" class="welly-iconbtn !h-8 !w-8 !text-[16px]" aria-label="Lab orders" title="Lab orders"><i class="bi bi-three-dots"></i></a>
+      @endif
     </div>
     <div class="flex items-end gap-2 px-5 pb-1 pt-3">
       @foreach($monthLabels as $i => $label)
         <div class="flex flex-1 flex-col items-center gap-1.5">
           <div class="flex items-end gap-1" style="height:110px">
             <i class="block w-3 rounded-sm bg-teal" style="height:{{ max(4, round($monthlyAppointments[$i] / $maxAppt * 108)) }}px" title="{{ $monthlyAppointments[$i] }} appointments"></i>
+            @if(\App\Support\Module::enabled('lab'))
             <i class="block w-3 rounded-sm bg-gold" style="height:{{ max(4, round($monthlyLabOrders[$i] / $maxLab * 108)) }}px" title="{{ $monthlyLabOrders[$i] }} lab orders"></i>
+            @endif
           </div>
           <span class="text-[11px] text-mut">{{ $label }}</span>
         </div>
@@ -250,10 +254,19 @@
     </div>
     <div class="flex gap-4 px-5 pb-4 pt-1 text-[12px] text-mut">
       <span><i class="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm bg-teal align-[-1px]"></i>Appointments</span>
+      @if(\App\Support\Module::enabled('lab'))
       <span><i class="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm bg-gold align-[-1px]"></i>Lab orders</span>
       <span class="ml-auto">Revenue this month: <strong class="text-ink">${{ number_format($revenueThisMonth, 2) }}</strong> · Outstanding invoices: <strong class="text-ink">${{ number_format($invoiceOutstanding, 2) }}</strong></span>
+      @else
+      <span class="ml-auto">Outstanding invoices: <strong class="text-ink">${{ number_format($invoiceOutstanding, 2) }}</strong></span>
+      @endif
     </div>
   </section>
+  @endif
+
+  {{-- Analytics module lives in app/Modules/Analytics/ + resources/views/analytics/. --}}
+  @if(\App\Support\Module::enabled('analytics'))
+    @include('analytics.section')
   @endif
 
   {{-- ===== Revenue (lab + invoices, Welly cards) ===== --}}
@@ -266,8 +279,11 @@
           <h2 class="welly-card-title">Revenue</h2>
           <p class="m-0 mt-0.5 text-[12px] text-mut">Lab orders &amp; invoices</p>
         </div>
+        @if(\App\Support\Module::enabled('lab'))
         <a href="{{ route('admin.lab-orders.index', ['status' => 'completed']) }}" class="whitespace-nowrap text-[13px] font-bold text-teal-dk no-underline hover:underline">View completed →</a>
+        @endif
       </div>
+      @if(\App\Support\Module::enabled('lab'))
       <div class="flex flex-wrap gap-x-8 gap-y-3 px-5 py-4">
         <div>
           <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">This month</p>
@@ -286,6 +302,7 @@
           <p class="m-0 mt-1 text-[24px] font-extrabold tabular-nums tracking-tight text-ink">{{ $labOrdersPending }}</p>
         </div>
       </div>
+      @endif
       <div class="border-t border-line-2 px-5 pb-4 pt-3">
         <div class="flex items-center justify-between gap-2.5">
           <p class="m-0 text-[12px] font-semibold uppercase tracking-wider text-mut">Invoice revenue</p>

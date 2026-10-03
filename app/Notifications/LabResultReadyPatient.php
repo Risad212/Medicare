@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Models\LabOrder;
+use App\Modules\Lab\Models\LabOrder;
 use Illuminate\Notifications\Notification;
 
 class LabResultReadyPatient extends Notification

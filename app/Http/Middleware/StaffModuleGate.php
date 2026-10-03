@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\Module;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,22 +30,9 @@ class StaffModuleGate
             'admin.doctors.availability',
             'admin.invoices.*',
             'admin.exports.*',
-            // Day-to-day blood bank ops (no deletes, no settings).
-            'admin.bloodbank.dashboard',
-            'admin.bloodbank.inventory',
-            'admin.bloodbank.reports*',
-            'admin.blood-groups.*',
-            'admin.blood-donors.*',
-            'admin.blood-donations.*',
-            'admin.blood-requests.*',
-            'admin.blood-issues.*',
         ],
         'lab-technician' => [
             'admin.home',
-            'admin.lab-tests.*',
-            'admin.lab-orders.*',
-            'admin.lab-order-items.*',
-            'admin.lab-reports.*',
         ],
         'pharmacist' => [
             'admin.home',
@@ -53,6 +41,49 @@ class StaffModuleGate
             'admin.prescriptions.pdf',
         ],
     ];
+
+    /**
+     * Route grants contributed by optional modules. A disabled (or deleted)
+     * module grants nothing, so its routes stay unreachable for staff.
+     *
+     * @return array<string, array<int, string>>
+     */
+    private static function moduleGrants(): array
+    {
+        $grants = [];
+
+        if (Module::enabled('pharmacy')) {
+            $grants['pharmacist'] = [
+                'admin.prescriptions.items.dispense',
+                'admin.medicines.index',
+            ];
+        }
+
+        if (Module::enabled('lab')) {
+            $grants['lab-technician'] = [
+                'admin.lab-tests.*',
+                'admin.lab-orders.*',
+                'admin.lab-order-items.*',
+                'admin.lab-reports.*',
+            ];
+        }
+
+        if (Module::enabled('bloodbank')) {
+            // Day-to-day blood bank ops for receptionists (no deletes, no settings).
+            $grants['receptionist'] = [
+                'admin.bloodbank.dashboard',
+                'admin.bloodbank.inventory',
+                'admin.bloodbank.reports*',
+                'admin.blood-groups.*',
+                'admin.blood-donors.*',
+                'admin.blood-donations.*',
+                'admin.blood-requests.*',
+                'admin.blood-issues.*',
+            ];
+        }
+
+        return $grants;
+    }
 
     /**
      * Patterns denied for every non-admin, even inside allowed modules.
@@ -74,6 +105,8 @@ class StaffModuleGate
         if ($allowed === null) {
             return redirect('/login');
         }
+
+        $allowed = array_merge($allowed, self::moduleGrants()[$user->role] ?? []);
 
         $name = (string) ($request->route()?->getName() ?? '');
 

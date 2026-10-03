@@ -1,7 +1,7 @@
 # AGENTS.md — MediCare (Laravel 13 Hospital Site)
 
 ## Stack
-- Laravel 13 (`laravel/framework ^13`), PHP `^8.3`, Vite 8, Bootstrap 5.3.2 (admin via CDN + local `jquery-3.7.0`), `laravel/socialite ^5.30`, `laravel/ui` auth scaffolding.
+- Laravel 13 (`laravel/framework ^13`), PHP `^8.4` (required by `composer.json`), Vite 8, Bootstrap 5.3.2 (admin via CDN + local `jquery-3.7.0`), `laravel/socialite ^5.30`, `laravel/ui` auth scaffolding.
 - DB: SQLite by default (`.env.example`: `DB_CONNECTION=sqlite`); MySQL 5.7+ in prod.
 - No CI workflows, no `app/Http/Kernel.php`. Middleware aliases live in `bootstrap/app.php`: `admin`, `doctor`; `SecurityHeadersMiddleware` is global.
 

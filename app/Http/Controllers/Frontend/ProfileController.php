@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Appointment;
 use App\Models\Invoice;
-use App\Models\LabOrder;
-use App\Models\LabReport;
 use App\Models\Prescription;
+use App\Modules\Lab\Models\LabOrder;
+use App\Modules\Lab\Models\LabReport;
 use App\Services\PdfService;
-use Illuminate\Http\Request;
+use App\Support\Module;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,19 +28,23 @@ class ProfileController extends Controller
             ->latest()
             ->get();
 
-        $labOrders = LabOrder::with(['items.test', 'doctor', 'reports'])
-            ->where(function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-                // Email is self-asserted (profile email can be changed to any
-                // unique address), so only trust it once verified. Guest
-                // orders are linked by user_id at login/register via
-                // GuestRecordLinker, keeping pre-account history visible.
-                if (! empty($user->email_verified_at) && ! empty($user->email)) {
-                    $query->orWhere('email', $user->email);
-                }
-            })
-            ->latest()
-            ->get();
+        $labOrders = collect();
+
+        if (Module::enabled('lab')) {
+            $labOrders = LabOrder::with(['items.test', 'doctor', 'reports'])
+                ->where(function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                    // Email is self-asserted (profile email can be changed to any
+                    // unique address), so only trust it once verified. Guest
+                    // orders are linked by user_id at login/register via
+                    // GuestRecordLinker, keeping pre-account history visible.
+                    if (! empty($user->email_verified_at) && ! empty($user->email)) {
+                        $query->orWhere('email', $user->email);
+                    }
+                })
+                ->latest()
+                ->get();
+        }
 
         $prescriptions = Prescription::with(['doctor', 'items'])
             ->where(function ($query) use ($user) {
@@ -51,7 +56,10 @@ class ProfileController extends Controller
             ->latest()
             ->get();
 
-        $invoices = Invoice::with(['order', 'items'])
+        // The lab-order link only exists while the lab module ships.
+        $invoiceWith = Module::enabled('lab') ? ['order', 'items'] : ['items'];
+
+        $invoices = Invoice::with($invoiceWith)
             ->where(function ($query) use ($user) {
                 $query->where('user_id', $user->id);
                 if (! empty($user->email_verified_at) && ! empty($user->email)) {
@@ -70,20 +78,11 @@ class ProfileController extends Controller
     /**
      * Update user profile.
      */
-    public function update(Request $request)
+    public function update(UpdateProfileRequest $request)
     {
         $user = Auth::user();
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
-            'phone' => 'nullable|string|max:20',
-            'date_of_birth' => 'nullable|date',
-            'gender' => 'nullable|in:male,female,other',
-            'blood_group' => 'nullable|string|max:10',
-            'address' => 'nullable|string|max:1000',
-            'profile_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('profile_image')) {
 
@@ -110,6 +109,8 @@ class ProfileController extends Controller
      */
     public function downloadReport(LabReport $report)
     {
+        abort_if(! Module::enabled('lab'), 404);
+
         $user = Auth::user();
 
         $emailTrusted = ! empty($user->email_verified_at) && ! empty($user->email);
@@ -127,6 +128,8 @@ class ProfileController extends Controller
      */
     public function downloadOrderPdf(LabOrder $order, PdfService $pdf)
     {
+        abort_if(! Module::enabled('lab'), 404);
+
         $user = Auth::user();
 
         $emailTrusted = ! empty($user->email_verified_at) && ! empty($user->email);
@@ -136,7 +139,7 @@ class ProfileController extends Controller
 
         $order->load(['items.test', 'doctor', 'reports']);
 
-        return $pdf->stream('pdf.lab-order-result', ['order' => $order], 'lab-order-'.$order->id.'-report.pdf');
+        return $pdf->stream('lab.order-result-pdf', ['order' => $order], 'lab-order-'.$order->id.'-report.pdf');
     }
 
     /**

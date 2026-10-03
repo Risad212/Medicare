@@ -34,12 +34,16 @@
                     'AppointmentStatusChanged' => 'arrow-repeat',
                     'AppointmentReminder' => 'alarm',
                     'LabResultReady' => 'clipboard2-pulse',
+                    'AmbulanceRequested' => 'truck',
                     default => 'bell',
                 };
-                $isLab = ! empty($notification->data['lab_order_id']);
-                $target = auth()->user()->role === 'doctor'
-                    ? ($isLab ? route('doctor.lab-orders.show', $notification->data['lab_order_id']) : route('doctor.appointments'))
-                    : ($isLab ? route('admin.lab-orders.show', $notification->data['lab_order_id']) : route('admin.appointments.edit', $notification->data['appointment_id']));
+                $isLab = ! empty($notification->data['lab_order_id']) && \App\Support\Module::enabled('lab');
+                $isAmbulance = ! empty($notification->data['ambulance_request_id']) && \App\Support\Module::enabled('ambulance');
+                $target = $isAmbulance
+                    ? route('admin.ambulance-requests.index')
+                    : (auth()->user()->role === 'doctor'
+                        ? ($isLab ? route('doctor.lab-orders.show', $notification->data['lab_order_id']) : route('doctor.appointments'))
+                        : ($isLab ? route('admin.lab-orders.show', $notification->data['lab_order_id']) : route('admin.appointments.edit', $notification->data['appointment_id'] ?? 0)));
             @endphp
             <li class="flex items-start gap-3.5 px-4.5 py-4 {{ $unread ? 'bg-wash' : '' }}">
                 <a href="{{ $target }}" class="flex w-full items-start gap-3.5 no-underline">

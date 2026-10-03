@@ -11,6 +11,7 @@ use App\Models\Prescription;
 use App\Services\PatientNotifier;
 use App\Services\PdfService;
 use App\Services\PrescriptionService;
+use App\Support\Module;
 use Illuminate\Support\Facades\Mail;
 
 class PrescriptionController extends Controller
@@ -37,13 +38,16 @@ class PrescriptionController extends Controller
     {
         $doctor = $this->doctor();
 
-        $appointments = Appointment::with('timeSlot')
+        $appointments = Appointment::with(['timeSlot', 'user'])
             ->where('doctor_id', $doctor->id)
             ->whereIn('status', [1, 2])
             ->latest()
+            ->limit(200)
             ->get();
 
-        return view('backend.doctor-dashboard.prescriptions.create', compact('doctor', 'appointments'));
+        $patientAllergies = null;
+
+        return view('backend.doctor-dashboard.prescriptions.create', compact('doctor', 'appointments', 'patientAllergies'));
     }
 
     /**
@@ -72,9 +76,11 @@ class PrescriptionController extends Controller
         $doctor = $this->doctor();
         abort_if($prescription->doctor_id !== $doctor->id, 403, 'Unauthorized prescription access.');
 
-        $prescription->load(['items', 'appointment.timeSlot']);
+        $prescription->load(['items', 'appointment.timeSlot', 'appointment.user', 'patient']);
 
-        return view('backend.doctor-dashboard.prescriptions.show', compact('prescription'));
+        $patientAllergies = $this->resolvePatientAllergies($prescription->appointment, $prescription);
+
+        return view('backend.doctor-dashboard.prescriptions.show', compact('prescription', 'patientAllergies'));
     }
 
     /**
@@ -85,15 +91,18 @@ class PrescriptionController extends Controller
         $doctor = $this->doctor();
         abort_if($prescription->doctor_id !== $doctor->id, 403, 'Unauthorized prescription access.');
 
-        $appointments = Appointment::with('timeSlot')
+        $appointments = Appointment::with(['timeSlot', 'user'])
             ->where('doctor_id', $doctor->id)
             ->whereIn('status', [1, 2])
             ->latest()
+            ->limit(200)
             ->get();
 
-        $prescription->load(['items']);
+        $prescription->load(['items', 'appointment.user', 'patient']);
 
-        return view('backend.doctor-dashboard.prescriptions.edit', compact('doctor', 'appointments', 'prescription'));
+        $patientAllergies = $this->resolvePatientAllergies($prescription->appointment, $prescription);
+
+        return view('backend.doctor-dashboard.prescriptions.edit', compact('doctor', 'appointments', 'prescription', 'patientAllergies'));
     }
 
     /**
@@ -155,6 +164,29 @@ class PrescriptionController extends Controller
         abort_if(! $appointment || $appointment->doctor_id !== $doctor->id, 403, 'Unauthorized appointment access.');
 
         return $appointment;
+    }
+
+    /**
+     * Resolve allergy text for the banner. Linked account wins;
+     * guest/walk-in bookings (user_id = null) return null = no banner.
+     */
+    private function resolvePatientAllergies(?Appointment $appointment, ?Prescription $prescription = null): ?string
+    {
+        if (! Module::enabled('allergy')) {
+            return null;
+        }
+
+        $fromPrescription = $prescription?->patient?->allergies;
+        if (is_string($fromPrescription) && trim($fromPrescription) !== '') {
+            return $fromPrescription;
+        }
+
+        $fromAppointment = $appointment?->user?->allergies;
+        if (is_string($fromAppointment) && trim($fromAppointment) !== '') {
+            return $fromAppointment;
+        }
+
+        return null;
     }
 
     private function notifyPatient(Prescription $prescription): void

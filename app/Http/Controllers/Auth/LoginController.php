@@ -4,12 +4,25 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Services\GuestRecordLinker;
+use App\Support\Module;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    use AuthenticatesUsers;
+    use AuthenticatesUsers {
+        hasTooManyLoginAttempts as protected traitHasTooManyLoginAttempts;
+    }
+
+    /**
+     * Lockout module kill-switch: with the flag off, both the route
+     * throttle (see routes/web.php) and this per-account lockout stay out
+     * of the way and every attempt reaches credential validation.
+     */
+    protected function hasTooManyLoginAttempts(Request $request)
+    {
+        return Module::enabled('lockout') && $this->traitHasTooManyLoginAttempts($request);
+    }
 
     /**
      * Default redirect after login.

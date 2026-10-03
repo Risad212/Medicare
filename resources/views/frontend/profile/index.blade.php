@@ -122,7 +122,12 @@
                 </div>
                 <div class="d-flex gap-2 flex-shrink-0">
                     <a href="{{ route('appointment') }}" class="btn mx-btn-primary">Book appointment</a>
+                    @if(\App\Support\Module::enabled('vaccination'))
+                    <a href="{{ route('my-vaccinations') }}" class="btn mx-btn-ghost">Vaccinations</a>
+                    @endif
+                    @if(\App\Support\Module::enabled('bloodbank'))
                     <a href="{{ route('profile.blood-requests') }}" class="btn mx-btn-ghost">Blood requests</a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -148,12 +153,14 @@
                 <div><div class="n">{{ $prescriptions->count() }}</div><div class="t">Prescriptions</div></div>
             </div>
         </div>
+        @if(\App\Support\Module::enabled('lab'))
         <div class="col-6 col-lg-3">
             <div class="mx-stat d-flex gap-3 align-items-center">
                 <div class="mx-ico" style="background:#f0f9ff;color:#0369a1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6M10 3v6L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9V3"/><path d="M7 15h10"/></svg></div>
                 <div><div class="n">{{ $labOrders->count() }}</div><div class="t">Lab orders</div></div>
             </div>
         </div>
+        @endif
     </div>
 
     <div class="row g-4 align-items-start">
@@ -161,7 +168,9 @@
             <div class="mx-nav nav flex-column gap-1" id="profileTabs" role="tablist">
                 <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab"><span class="dot">U</span><span>Profile<small>Personal details</small></span></button>
                 <button class="nav-link" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab"><span class="dot">A</span><span>Appointments<small>Visits &amp; status</small></span><span class="cnt">{{ $appointments->count() }}</span></button>
+                @if(\App\Support\Module::enabled('lab'))
                 <button class="nav-link" id="lab-tab" data-bs-toggle="tab" data-bs-target="#lab-reports" type="button" role="tab"><span class="dot">L</span><span>Lab reports<small>Orders &amp; results</small></span><span class="cnt">{{ $labOrders->count() }}</span></button>
+                @endif
                 <button class="nav-link" id="prescriptions-tab" data-bs-toggle="tab" data-bs-target="#prescriptions" type="button" role="tab"><span class="dot">R</span><span>Prescriptions<small>Medicines</small></span><span class="cnt">{{ $prescriptions->count() }}</span></button>
                 <button class="nav-link" id="invoices-tab" data-bs-toggle="tab" data-bs-target="#invoices" type="button" role="tab"><span class="dot">$</span><span>Invoices<small>Billing</small></span><span class="cnt">{{ $invoices->count() }}</span></button>
                 <hr class="my-2">
@@ -194,6 +203,9 @@
                                         <select name="blood_group" class="form-select"><option value="">Select</option>@foreach(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $group)<option value="{{ $group }}" {{ old('blood_group', $user->blood_group) === $group ? 'selected' : '' }}>{{ $group }}</option>@endforeach</select>
                                     </div>
                                     <div class="col-12 mx-field"><label>Address</label><textarea name="address" rows="3" class="form-control" placeholder="House, road, area">{{ old('address', $user->address) }}</textarea></div>
+                                    @if(\App\Support\Module::enabled('allergy'))
+                                    <div class="col-12 mx-field"><label>Allergies <span class="text-muted fw-normal">(visible to your doctor when prescribing)</span></label><textarea name="allergies" rows="3" class="form-control @error('allergies') is-invalid @enderror" placeholder="e.g. Penicillin, peanuts, latex — comma or newline separated">{{ old('allergies', $user->allergies) }}</textarea>@error('allergies')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
+                                    @endif
                                     <div class="col-12 mx-field"><label>Profile photo</label><input type="file" name="profile_image" class="form-control" accept="image/jpeg,image/png,image/webp"><small class="text-muted">JPG, PNG or WEBP, max 2MB.</small></div>
                                 </div>
                                 <div class="d-flex gap-2 mt-4"><button type="submit" class="btn mx-btn-primary px-4">Save changes</button></div>
@@ -227,6 +239,7 @@
                     </div>
                 </div>
 
+                @if(\App\Support\Module::enabled('lab'))
                 <div class="tab-pane fade" id="lab-reports" role="tabpanel">
                     @if($labOrders->count())
                         @foreach($labOrders as $labOrder)
@@ -250,6 +263,7 @@
                         <div class="mx-panel"><div class="mx-empty"><div class="mx-empty-art">L</div><h6 class="fw-bold">No lab reports</h6><p class="text-muted small mb-0">Ordered tests and results will appear here.</p></div></div>
                     @endif
                 </div>
+                @endif
 
                 <div class="tab-pane fade" id="prescriptions" role="tabpanel">
                     @if($prescriptions->count())

@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Models\Appointment;
-use App\Models\LabOrder;
 use App\Models\Prescription;
 use App\Models\User;
+use App\Modules\Lab\Models\LabOrder;
 use App\Notifications\AppointmentBookedPatient;
 use App\Notifications\AppointmentReminderPatient;
 use App\Notifications\AppointmentStatusChangedPatient;

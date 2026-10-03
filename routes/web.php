@@ -4,20 +4,11 @@ use App\Http\Controllers\Admin\ActivityLogController as AdminActivityLogControll
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 use App\Http\Controllers\Admin\BlogCommentController as AdminBlogCommentController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
-use App\Http\Controllers\Admin\BloodBankController;
-use App\Http\Controllers\Admin\BloodDonationController as AdminBloodDonationController;
-use App\Http\Controllers\Admin\BloodDonorController as AdminBloodDonorController;
-use App\Http\Controllers\Admin\BloodGroupController as AdminBloodGroupController;
-use App\Http\Controllers\Admin\BloodIssueController as AdminBloodIssueController;
-use App\Http\Controllers\Admin\BloodReportController as AdminBloodReportController;
-use App\Http\Controllers\Admin\BloodRequestController as AdminBloodRequestController;
 use App\Http\Controllers\Admin\CategoryController as AdminBlogCategoryController;
 use App\Http\Controllers\Admin\DepartmentController as AdminDepartmentController;
 use App\Http\Controllers\Admin\DoctorController as AdminDoctorController;
 use App\Http\Controllers\Admin\ExportController as AdminExportController;
 use App\Http\Controllers\Admin\InvoiceController as AdminInvoiceController;
-use App\Http\Controllers\Admin\LabOrderController as AdminLabOrderController;
-use App\Http\Controllers\Admin\LabTestController;
 use App\Http\Controllers\Admin\PatientController as AdminPatientController;
 use App\Http\Controllers\Admin\PrescriptionController as AdminPrescriptionController;
 use App\Http\Controllers\Admin\SeoSettingController;
@@ -28,16 +19,14 @@ use App\Http\Controllers\Admin\TimeSlotController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\GoogleAuthController;
-use App\Http\Controllers\Doctor\BloodRequestController as DoctorBloodRequestController;
+use App\Http\Controllers\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
 use App\Http\Controllers\Doctor\DoctorProfileController as DoctorDashboardProfileController;
-use App\Http\Controllers\Doctor\LabOrderController as DoctorLabOrderController;
 use App\Http\Controllers\Doctor\PrescriptionController as DoctorPrescriptionController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\AppointmentController as FrontAppointmentController;
 use App\Http\Controllers\Frontend\BlogCommentController;
 use App\Http\Controllers\Frontend\BlogController as FrontBlogController;
-use App\Http\Controllers\Frontend\BloodRequestController as FrontendBloodRequestController;
 use App\Http\Controllers\Frontend\ContactController as FrontContactController;
 use App\Http\Controllers\Frontend\DoctorController as FrontendDoctorController;
 use App\Http\Controllers\Frontend\HomeController;
@@ -52,6 +41,7 @@ use App\Http\Controllers\Settings\DoctorSettingController;
 use App\Http\Controllers\Settings\GeneralSettingController;
 use App\Http\Controllers\Settings\HomeSettingController;
 use App\Http\Controllers\Settings\ServiceSettingController;
+use App\Support\Module;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -61,7 +51,17 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Auth::routes(['verify' => false]);
+Auth::routes(['verify' => false, 'login' => false]);
+
+// Login wired manually so the POST carries a brute-force throttle when the
+// lockout module is on (boot-time flag; reboot after changing it).
+// The AuthenticatesUsers trait still applies its own per-account lockout
+// (5 attempts, per username+IP) underneath this per-IP rate limit, gated by
+// LoginController::hasTooManyLoginAttempts() at runtime.
+Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthLoginController::class, 'login'])
+    ->middleware(...(Module::enabled('lockout') ? ['throttle:5,1'] : []))
+    ->name('login.attempt');
 
 // Google OAuth for patients (also links existing accounts)
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->middleware('throttle:10,1')->name('auth.google.redirect');
@@ -205,6 +205,8 @@ Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
         ->names('admin.comments')
         ->only(['index', 'update', 'destroy']);
 
+    // Languages module routes live in app/Modules/Language/routes.php.
+
     /*
     |--------------------------------------------------------------------------
     | Appointments Routes
@@ -222,6 +224,18 @@ Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
     Route::resource('/admin/patients', AdminPatientController::class)
         ->names('admin.patients');
 
+    // Vaccination admin routes live in the module: app/Modules/Vaccination/routes.php
+    // (registered by VaccinationServiceProvider only when enabled).
+
+    // Ambulance routes live in the module: app/Modules/Ambulance/routes.php
+    // (registered by AmbulanceServiceProvider only when enabled).
+
+    // Beds routes live in the module: app/Modules/Beds/routes.php
+    // (registered by BedsServiceProvider only when enabled).
+
+    // Pharmacy routes live in the module: app/Modules/Pharmacy/routes.php
+    // (registered by PharmacyServiceProvider only when enabled).
+
     /*
     |--------------------------------------------------------------------------
     | Time Slot Routes
@@ -229,33 +243,8 @@ Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
     */
     Route::resource('/admin/time-slots', TimeSlotController::class)->names('admin.time-slots')->except(['show']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | Laboratory Tests Routes
-    |--------------------------------------------------------------------------
-    */
-    Route::resource('/admin/lab-tests', LabTestController::class)->names('admin.lab-tests')->except(['show']);
-
-    /*
-    |--------------------------------------------------------------------------
-    | Laboratory Orders Routes (admin / lab staff)
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/admin/lab-orders', [AdminLabOrderController::class, 'index'])->name('admin.lab-orders.index');
-
-    Route::get('/admin/lab-orders/{order}', [AdminLabOrderController::class, 'show'])->name('admin.lab-orders.show');
-
-    Route::put('/admin/lab-orders/{order}/status', [AdminLabOrderController::class, 'updateStatus'])->name('admin.lab-orders.status');
-
-    Route::post('/admin/lab-orders/{order}/reports', [AdminLabOrderController::class, 'storeReport'])->name('admin.lab-orders.reports.store');
-
-    Route::get('/admin/lab-orders/{order}/pdf', [AdminLabOrderController::class, 'downloadPdf'])->name('admin.lab-orders.pdf');
-
-    Route::put('/admin/lab-order-items/{item}/result', [AdminLabOrderController::class, 'updateItemResult'])->name('admin.lab-order-items.result');
-
-    Route::delete('/admin/lab-reports/{report}', [AdminLabOrderController::class, 'destroyReport'])->name('admin.lab-reports.destroy');
-
-    Route::get('/admin/lab-reports/{report}/download', [AdminLabOrderController::class, 'downloadReport'])->name('admin.lab-reports.download');
+    // Laboratory routes live in the module: app/Modules/Lab/routes.php
+    // (registered by LabServiceProvider only when enabled).
 
     /*
     |--------------------------------------------------------------------------
@@ -282,8 +271,6 @@ Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
 
     Route::get('/admin/exports/patients', [AdminExportController::class, 'patients'])->name('admin.exports.patients');
 
-    Route::get('/admin/exports/lab-orders', [AdminExportController::class, 'labOrders'])->name('admin.exports.lab-orders');
-
     /*
     |--------------------------------------------------------------------------
     | Invoices Routes
@@ -292,7 +279,6 @@ Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
     Route::get('/admin/invoices', [AdminInvoiceController::class, 'index'])->name('admin.invoices.index');
     Route::get('/admin/invoices/{invoice}', [AdminInvoiceController::class, 'show'])->name('admin.invoices.show');
     Route::get('/admin/invoices/{invoice}/pdf', [AdminInvoiceController::class, 'download'])->name('admin.invoices.pdf');
-    Route::post('/admin/lab-orders/{order}/invoice', [AdminInvoiceController::class, 'createFromOrder'])->name('admin.invoices.create-from-order');
     Route::patch('/admin/invoices/{invoice}/status', [AdminInvoiceController::class, 'updateStatus'])->name('admin.invoices.status');
     Route::delete('/admin/invoices/{invoice}', [AdminInvoiceController::class, 'destroy'])->name('admin.invoices.destroy');
 
@@ -309,48 +295,8 @@ Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
 
     Route::delete('/admin/prescriptions/{prescription}', [AdminPrescriptionController::class, 'destroy'])->name('admin.prescriptions.destroy');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Blood Bank Routes
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/admin/bloodbank', [BloodBankController::class, 'dashboard'])->name('admin.bloodbank.dashboard');
-    Route::get('/admin/bloodbank/inventory', [BloodBankController::class, 'inventory'])->name('admin.bloodbank.inventory');
-    Route::patch('/admin/bloodbank/settings', [BloodBankController::class, 'updateSettings'])->name('admin.bloodbank.settings.update');
-
-    Route::resource('/admin/blood-groups', AdminBloodGroupController::class)
-        ->names('admin.blood-groups')
-        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
-    Route::patch('/admin/blood-groups/{bloodGroup}/toggle', [AdminBloodGroupController::class, 'toggle'])->name('admin.blood-groups.toggle');
-
-    Route::resource('/admin/blood-donors', AdminBloodDonorController::class)
-        ->names('admin.blood-donors')
-        ->parameters(['blood-donors' => 'donor']);
-
-    Route::resource('/admin/blood-donations', AdminBloodDonationController::class)
-        ->names('admin.blood-donations')
-        ->parameters(['blood-donations' => 'donation']);
-    Route::patch('/admin/blood-donations/{donation}/status', [AdminBloodDonationController::class, 'updateStatus'])->name('admin.blood-donations.status');
-
-    Route::get('/admin/blood-requests', [AdminBloodRequestController::class, 'index'])->name('admin.blood-requests.index');
-    Route::get('/admin/blood-requests/create', [AdminBloodRequestController::class, 'create'])->name('admin.blood-requests.create');
-    Route::post('/admin/blood-requests', [AdminBloodRequestController::class, 'store'])->name('admin.blood-requests.store');
-    Route::get('/admin/blood-requests/{bloodRequest}', [AdminBloodRequestController::class, 'show'])->name('admin.blood-requests.show');
-    Route::post('/admin/blood-requests/{bloodRequest}/approve', [AdminBloodRequestController::class, 'approve'])->name('admin.blood-requests.approve');
-    Route::post('/admin/blood-requests/{bloodRequest}/reject', [AdminBloodRequestController::class, 'reject'])->name('admin.blood-requests.reject');
-    Route::post('/admin/blood-requests/{bloodRequest}/cancel', [AdminBloodRequestController::class, 'cancel'])->name('admin.blood-requests.cancel');
-    Route::delete('/admin/blood-requests/{bloodRequest}', [AdminBloodRequestController::class, 'destroy'])->name('admin.blood-requests.destroy');
-
-    Route::get('/admin/blood-issues', [AdminBloodIssueController::class, 'index'])->name('admin.blood-issues.index');
-    Route::get('/admin/blood-issues/create/{bloodRequest}', [AdminBloodIssueController::class, 'create'])->name('admin.blood-issues.create');
-    Route::post('/admin/blood-issues/{bloodRequest}', [AdminBloodIssueController::class, 'store'])->name('admin.blood-issues.store');
-    Route::get('/admin/blood-issues/{bloodIssue}', [AdminBloodIssueController::class, 'show'])->name('admin.blood-issues.show');
-
-    Route::get('/admin/blood-reports', [AdminBloodReportController::class, 'index'])->name('admin.bloodbank.reports');
-    Route::get('/admin/blood-reports/export/donations', [AdminBloodReportController::class, 'exportDonations'])->name('admin.bloodbank.reports.donations');
-    Route::get('/admin/blood-reports/export/requests', [AdminBloodReportController::class, 'exportRequests'])->name('admin.bloodbank.reports.requests');
-    Route::get('/admin/blood-reports/export/issues', [AdminBloodReportController::class, 'exportIssues'])->name('admin.bloodbank.reports.issues');
+    // Blood bank routes live in the module: app/Modules/BloodBank/routes.php
+    // (registered by BloodBankServiceProvider only when enabled).
 
 }); // end admin group
 
@@ -371,21 +317,11 @@ Route::middleware(['auth', 'doctor'])->group(function () {
 
     Route::put('/doctor/appointments/{appointment}', [DoctorDashboardController::class, 'updateStatus'])->name('doctor.appointments.update');
 
-    Route::get('/doctor/lab-orders', [DoctorLabOrderController::class, 'index'])->name('doctor.lab-orders.index');
+    // Doctor lab order routes live in the module: app/Modules/Lab/routes.php
+    // (registered by LabServiceProvider only when enabled).
 
-    Route::get('/doctor/lab-orders/create', [DoctorLabOrderController::class, 'create'])->name('doctor.lab-orders.create');
-
-    Route::post('/doctor/lab-orders', [DoctorLabOrderController::class, 'store'])->name('doctor.lab-orders.store');
-
-    Route::get('/doctor/lab-orders/{order}', [DoctorLabOrderController::class, 'show'])->name('doctor.lab-orders.show');
-
-    Route::get('/doctor/blood-requests', [DoctorBloodRequestController::class, 'index'])->name('doctor.blood-requests.index');
-
-    Route::get('/doctor/blood-requests/create', [DoctorBloodRequestController::class, 'create'])->name('doctor.blood-requests.create');
-
-    Route::post('/doctor/blood-requests', [DoctorBloodRequestController::class, 'store'])->name('doctor.blood-requests.store');
-
-    Route::get('/doctor/blood-requests/{bloodRequest}', [DoctorBloodRequestController::class, 'show'])->name('doctor.blood-requests.show');
+    // Doctor blood request routes live in the module: app/Modules/BloodBank/routes.php
+    // (registered by BloodBankServiceProvider only when enabled).
 
     Route::get('/doctor/prescriptions', [DoctorPrescriptionController::class, 'index'])->name('doctor.prescriptions.index');
 
@@ -402,6 +338,9 @@ Route::middleware(['auth', 'doctor'])->group(function () {
     Route::put('/doctor/prescriptions/{prescription}', [DoctorPrescriptionController::class, 'update'])->name('doctor.prescriptions.update');
 
     Route::delete('/doctor/prescriptions/{prescription}', [DoctorPrescriptionController::class, 'destroy'])->name('doctor.prescriptions.destroy');
+
+    // Doctor vaccination routes live in the module: app/Modules/Vaccination/routes.php
+    // (registered by VaccinationServiceProvider only when enabled).
 
 });
 
@@ -449,8 +388,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile/lab-reports/{report}/download', [FrontProfileController::class, 'downloadReport'])->name('profile.lab-reports.download');
 
         Route::get('/profile/lab-orders/{order}/pdf', [FrontProfileController::class, 'downloadOrderPdf'])->name('profile.lab-orders.pdf');
-
-        Route::get('/profile/blood-requests', [FrontendBloodRequestController::class, 'index'])->name('profile.blood-requests');
 
         Route::get('/profile/prescriptions/{prescription}/pdf', [FrontProfileController::class, 'downloadPrescriptionPdf'])->name('profile.prescriptions.pdf');
 

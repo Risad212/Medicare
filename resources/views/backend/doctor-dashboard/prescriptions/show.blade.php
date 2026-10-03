@@ -25,6 +25,12 @@
     <div class="mb-3 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
 @endif
 
+@if(! empty($patientAllergies ?? null))
+    <div class="mb-3 rounded-lg px-4 py-3 text-sm" role="alert" style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;">
+        <strong>Allergy alert:</strong> {{ $patientAllergies }}
+    </div>
+@endif
+
 <div class="mb-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
     <div class="mc-card">
         <div class="border-b border-line px-4.5 py-3.5"><h5 class="mb-0">Patient Information</h5></div>

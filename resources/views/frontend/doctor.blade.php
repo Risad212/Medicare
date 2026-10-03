@@ -10,6 +10,10 @@
     'title' => $pageTitle ?? 'Our Doctors'
 ])
 
+@if(\App\Support\Module::enabled('search'))
+    @include('search.form')
+@endif
+
 <!--========== Doctors Section ==========-->
 <section class="doctor-section doctor-page">
     <div class="container">

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
-use App\Models\LabOrder;
 use App\Models\Patient;
+use App\Modules\Lab\Models\LabOrder;
 use App\Services\CsvExport;
 
 class ExportController extends Controller

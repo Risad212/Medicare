@@ -108,16 +108,34 @@ class PrescriptionService
 
     private function syncItems(Prescription $prescription, array $items): void
     {
+        // Keep dispensing history: rows that survive the edit under the same
+        // medicine name retain their dispense record.
+        $dispensed = $prescription->items()
+            ->whereNotNull('dispensed_at')
+            ->get(['medicine_name', 'medicine_id', 'dispensed_quantity', 'dispensed_at', 'dispensed_by'])
+            ->keyBy('medicine_name');
+
         $prescription->items()->delete();
 
-        $rows = collect($items)->map(fn (array $item) => new PrescriptionItem([
-            'medicine_name' => $item['medicine_name'],
-            'dosage' => $item['dosage'] ?? null,
-            'frequency' => $item['frequency'] ?? null,
-            'duration' => $item['duration'] ?? null,
-            'quantity' => $item['quantity'] ?? null,
-            'instructions' => $item['instructions'] ?? null,
-        ]));
+        $rows = collect($items)->map(function (array $item) use ($dispensed) {
+            $row = new PrescriptionItem([
+                'medicine_name' => $item['medicine_name'],
+                'dosage' => $item['dosage'] ?? null,
+                'frequency' => $item['frequency'] ?? null,
+                'duration' => $item['duration'] ?? null,
+                'quantity' => $item['quantity'] ?? null,
+                'instructions' => $item['instructions'] ?? null,
+            ]);
+
+            if ($kept = $dispensed->get($item['medicine_name'] ?? '')) {
+                $row->medicine_id = $kept->medicine_id;
+                $row->dispensed_quantity = $kept->dispensed_quantity;
+                $row->dispensed_at = $kept->dispensed_at;
+                $row->dispensed_by = $kept->dispensed_by;
+            }
+
+            return $row;
+        });
 
         $prescription->items()->saveMany($rows);
     }
