@@ -31,5 +31,10 @@ jobs:
           php -l app/Http/Controllers/Admin/BlogController.php
           php -l app/Http/Controllers/Doctor/DoctorProfileController.php
 
+      - name: Setup test env
+        run: |
+          cp .env.example .env
+          php artisan key:generate --no-interaction
+
       - name: PHPUnit (Unit + Feature)
         run: vendor/bin/phpunit --testsuite=Unit,Feature
