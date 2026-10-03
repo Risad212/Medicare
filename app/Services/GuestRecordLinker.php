@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use App\Models\Appointment;
-use App\Models\LabOrder;
 use App\Models\User;
+use App\Modules\Lab\Models\LabOrder;
+use App\Support\Module;
 use Illuminate\Support\Facades\DB;
 
 class GuestRecordLinker
@@ -25,9 +26,11 @@ class GuestRecordLinker
                 ->where('email', $user->email)
                 ->update(['user_id' => $user->id]);
 
-            LabOrder::whereNull('user_id')
-                ->where('email', $user->email)
-                ->update(['user_id' => $user->id]);
+            if (Module::enabled('lab')) {
+                LabOrder::whereNull('user_id')
+                    ->where('email', $user->email)
+                    ->update(['user_id' => $user->id]);
+            }
         });
     }
 }

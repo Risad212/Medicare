@@ -23,6 +23,11 @@
 @if(session('success'))
     <div class="mb-3 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
 @endif
+@if($errors->any())
+    <div class="mb-3 rounded-lg bg-red-bg px-4 py-3 text-sm text-red-t">
+        <ul class="mb-0 mt-0 list-inside list-disc">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+    </div>
+@endif
 
 <div class="mb-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
     <div class="mc-card">
@@ -106,6 +111,9 @@
                     <th>Duration</th>
                     <th>Quantity</th>
                     <th>Instructions</th>
+                    @if(\App\Support\Module::enabled('pharmacy'))
+                    <th>Dispensing</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -117,10 +125,30 @@
                         <td>{{ $item->duration ?? '—' }}</td>
                         <td>{{ $item->quantity ?? '—' }}</td>
                         <td class="text-mut">{{ $item->instructions ?? '—' }}</td>
+                        @if(\App\Support\Module::enabled('pharmacy'))
+                        <td>
+                            @if($item->is_dispensed)
+                                <span class="mc-pill p-confirmed">Dispensed</span>
+                                <div class="mc-sub2">{{ $item->dispensed_quantity }} × {{ $item->medicine?->name ?? $item->medicine_name }} · {{ $item->dispenser?->name ?? '—' }}</div>
+                            @else
+                                <form action="{{ route('admin.prescriptions.items.dispense', [$prescription->id, $item->id]) }}" method="POST" class="d-flex gap-1">
+                                    @csrf
+                                    <select name="medicine_id" class="form-select form-select-sm" style="min-width:130px" required>
+                                        <option value="">Stock…</option>
+                                        @foreach($medicines ?? [] as $medicine)
+                                            <option value="{{ $medicine->id }}">{{ $medicine->name }} ({{ $medicine->stock_quantity }})</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="number" name="quantity" class="form-control form-control-sm" style="width:70px" min="1" value="1" required>
+                                    <button type="submit" class="mc-btn sm">Dispense</button>
+                                </form>
+                            @endif
+                        </td>
+                        @endif
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6"><div class="mc-empty"><b>No medicines</b>This prescription has no medicine rows.</div></td>
+                        <td colspan="7"><div class="mc-empty"><b>No medicines</b>This prescription has no medicine rows.</div></td>
                     </tr>
                 @endforelse
             </tbody>

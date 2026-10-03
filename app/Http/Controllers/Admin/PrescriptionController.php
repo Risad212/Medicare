@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Prescription;
+use App\Modules\Pharmacy\Models\Medicine;
 use App\Services\PdfService;
 use App\Services\PrescriptionService;
+use App\Support\Module;
 use Illuminate\Http\Request;
 
 class PrescriptionController extends Controller
@@ -38,9 +40,16 @@ class PrescriptionController extends Controller
      */
     public function show(Prescription $prescription)
     {
-        $prescription->load(['items', 'doctor', 'appointment.timeSlot', 'patient']);
+        $prescription->load(['items.dispenser', 'doctor', 'appointment.timeSlot', 'patient']);
 
-        return view('backend.prescriptions.show', compact('prescription'));
+        $medicines = collect();
+
+        if (Module::enabled('pharmacy')) {
+            $prescription->load('items.medicine');
+            $medicines = Medicine::orderBy('name')->limit(200)->get(['id', 'name', 'stock_quantity', 'unit']);
+        }
+
+        return view('backend.prescriptions.show', compact('prescription', 'medicines'));
     }
 
     /**

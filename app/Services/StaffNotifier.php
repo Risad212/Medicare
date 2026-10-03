@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Appointment;
-use App\Models\LabOrder;
 use App\Models\User;
+use App\Modules\Ambulance\Models\AmbulanceRequest;
+use App\Modules\Ambulance\Notifications\AmbulanceRequested;
+use App\Modules\Lab\Models\LabOrder;
 use App\Notifications\AppointmentBooked;
 use App\Notifications\AppointmentReminder;
 use App\Notifications\AppointmentStatusChanged;
@@ -32,6 +34,16 @@ class StaffNotifier
             ->reject(fn (User $user) => $user->getKey() === $excludeUserId);
 
         self::send($recipients, new AppointmentStatusChanged($appointment, $status));
+    }
+
+    /**
+     * Notify all admins that a new ambulance request landed.
+     */
+    public static function ambulanceRequested(AmbulanceRequest $request): void
+    {
+        $admins = User::where('role', 'admin')->get();
+
+        self::send($admins, new AmbulanceRequested($request));
     }
 
     /**

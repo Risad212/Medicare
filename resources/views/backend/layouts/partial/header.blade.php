@@ -189,7 +189,7 @@
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    @if($isAdmin || $isLabTech)
+                    @if(($isAdmin || $isLabTech) && \App\Support\Module::enabled('lab'))
                     <li><a class="side-sublink {{ request()->routeIs('admin.lab-tests.index') ? 'active' : '' }}" href="{{ route('admin.lab-tests.index') }}"><span class="side-dot"></span> Lab Tests</a></li>
                     <li><a class="side-sublink {{ request()->routeIs('admin.lab-tests.create') ? 'active' : '' }}" href="{{ route('admin.lab-tests.create') }}"><span class="side-dot"></span> Add Test</a></li>
                     <li><a class="side-sublink {{ request()->routeIs('admin.lab-orders.*') ? 'active' : '' }}" href="{{ route('admin.lab-orders.index') }}"><span class="side-dot"></span> Lab Orders</a></li>
@@ -210,7 +210,16 @@
             </li>
             @endif
 
-            @if($isAdmin)
+            @if($isAdmin && \App\Support\Module::enabled('vaccination'))
+            <li class="side-tree">
+                <a class="side-link {{ request()->routeIs('admin.vaccinations.*') ? 'active' : '' }}" href="{{ route('admin.vaccinations.index') }}">
+                    <i class="side-icon bi bi-shield-plus"></i>
+                    <span>Vaccinations</span>
+                </a>
+            </li>
+            @endif
+
+            @if($isAdmin && \App\Support\Module::enabled('bloodbank'))
             <li class="side-tree {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-droplet"></i>
@@ -226,6 +235,44 @@
                     <li><a class="side-sublink {{ request()->routeIs('admin.blood-requests.*') ? 'active' : '' }}" href="{{ route('admin.blood-requests.index') }}"><span class="side-dot"></span> Requests</a></li>
                     <li><a class="side-sublink {{ request()->routeIs('admin.blood-issues.*') ? 'active' : '' }}" href="{{ route('admin.blood-issues.index') }}"><span class="side-dot"></span> Issues</a></li>
                     <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.reports') ? 'active' : '' }}" href="{{ route('admin.bloodbank.reports') }}"><span class="side-dot"></span> Reports</a></li>
+                </ul>
+            </li>
+
+            @if(\App\Support\Module::enabled('ambulance'))
+            <li class="side-tree">
+                <a class="side-link {{ request()->routeIs('admin.ambulance-requests.*') ? 'active' : '' }}" href="{{ route('admin.ambulance-requests.index') }}">
+                    <i class="side-icon bi bi-truck"></i>
+                    <span>Ambulance</span>
+                </a>
+            </li>
+            @endif
+
+            @if(\App\Support\Module::enabled('beds'))
+            <li class="side-tree {{ request()->routeIs('admin.beds.*', 'admin.wards.*', 'admin.rooms.*') ? 'is-expanded' : '' }}">
+                <a class="side-link {{ request()->routeIs('admin.beds.*', 'admin.wards.*', 'admin.rooms.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
+                    <i class="side-icon bi bi-hospital"></i>
+                    <span>In-patient</span>
+                    <i class="side-chevron bi bi-chevron-right"></i>
+                </a>
+                <ul class="side-sub">
+                    <li><a class="side-sublink {{ request()->routeIs('admin.beds.index') ? 'active' : '' }}" href="{{ route('admin.beds.index') }}"><span class="side-dot"></span> Bed Dashboard</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.wards.*') ? 'active' : '' }}" href="{{ route('admin.wards.index') }}"><span class="side-dot"></span> Wards</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.rooms.*') ? 'active' : '' }}" href="{{ route('admin.rooms.index') }}"><span class="side-dot"></span> Rooms</a></li>
+                </ul>
+            </li>
+            @endif
+            @endif
+
+            @if(($isAdmin || $isPharm) && \App\Support\Module::enabled('pharmacy'))
+            <li class="side-tree {{ request()->routeIs('admin.medicines.*') ? 'is-expanded' : '' }}">
+                <a class="side-link {{ request()->routeIs('admin.medicines.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
+                    <i class="side-icon bi bi-prescription2"></i>
+                    <span>Pharmacy</span>
+                    <i class="side-chevron bi bi-chevron-right"></i>
+                </a>
+                <ul class="side-sub">
+                    <li><a class="side-sublink {{ request()->routeIs('admin.medicines.index') ? 'active' : '' }}" href="{{ route('admin.medicines.index') }}"><span class="side-dot"></span> Medicine Stock</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.prescriptions.index') ? 'active' : '' }}" href="{{ route('admin.prescriptions.index') }}"><span class="side-dot"></span> Dispense</a></li>
                 </ul>
             </li>
             @endif
@@ -298,12 +345,28 @@
                     <span>Activity Logs</span>
                 </a>
             </li>
+            @if(\App\Support\Module::enabled('backups'))
+            <li class="side-tree">
+                <a class="side-link {{ request()->routeIs('admin.backups.*') ? 'active' : '' }}" href="{{ route('admin.backups.index') }}">
+                    <i class="side-icon bi bi-database"></i>
+                    <span>Backups</span>
+                </a>
+            </li>
+            @endif
+            @if(\App\Support\Module::enabled('language'))
+            <li class="side-tree">
+                <a class="side-link {{ request()->routeIs('admin.languages.*') ? 'active' : '' }}" href="{{ route('admin.languages.index') }}">
+                    <i class="side-icon bi bi-translate"></i>
+                    <span>{{ __('messages.admin.languages') }}</span>
+                </a>
+            </li>
+            @endif
             @endif
 
         @else
 
-            <li class="side-tree {{ request()->routeIs('doctor.dashboard', 'doctor.appointments', 'doctor.lab-orders.*', 'doctor.prescriptions.*') ? 'is-expanded' : '' }}">
-                <a class="side-link {{ request()->routeIs('doctor.dashboard', 'doctor.appointments', 'doctor.lab-orders.*', 'doctor.prescriptions.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
+            <li class="side-tree {{ request()->routeIs('doctor.dashboard', 'doctor.appointments', 'doctor.lab-orders.*', 'doctor.prescriptions.*', 'doctor.vaccinations.*') ? 'is-expanded' : '' }}">
+                <a class="side-link {{ request()->routeIs('doctor.dashboard', 'doctor.appointments', 'doctor.lab-orders.*', 'doctor.prescriptions.*', 'doctor.vaccinations.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-speedometer2"></i>
                     <span>Dashboard</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
@@ -311,11 +374,17 @@
                 <ul class="side-sub">
                     <li><a class="side-sublink {{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}" href="{{ route('doctor.dashboard') }}"><span class="side-dot"></span> Dashboard</a></li>
                     <li><a class="side-sublink {{ request()->routeIs('doctor.appointments') ? 'active' : '' }}" href="{{ route('doctor.appointments') }}"><span class="side-dot"></span> Appointments</a></li>
+                    @if(\App\Support\Module::enabled('lab'))
                     <li><a class="side-sublink {{ request()->routeIs('doctor.lab-orders.*') ? 'active' : '' }}" href="{{ route('doctor.lab-orders.index') }}"><span class="side-dot"></span> Lab Requests</a></li>
+                    @endif
                     <li><a class="side-sublink {{ request()->routeIs('doctor.prescriptions.*') ? 'active' : '' }}" href="{{ route('doctor.prescriptions.index') }}"><span class="side-dot"></span> Prescriptions</a></li>
+                    @if(\App\Support\Module::enabled('vaccination'))
+                    <li><a class="side-sublink {{ request()->routeIs('doctor.vaccinations.*') ? 'active' : '' }}" href="{{ route('doctor.vaccinations.index') }}"><span class="side-dot"></span> Vaccinations</a></li>
+                    @endif
                 </ul>
             </li>
 
+            @if(\App\Support\Module::enabled('bloodbank'))
             <li class="side-tree {{ request()->routeIs('doctor.blood-requests.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('doctor.blood-requests.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-droplet"></i>
@@ -327,6 +396,7 @@
                     <li><a class="side-sublink {{ request()->routeIs('doctor.blood-requests.create') ? 'active' : '' }}" href="{{ route('doctor.blood-requests.create') }}"><span class="side-dot"></span> New Request</a></li>
                 </ul>
             </li>
+            @endif
 
             <li class="side-tree">
                 <a class="side-link {{ request()->routeIs('doctor.profile.*') ? 'active' : '' }}" href="{{ route('doctor.profile.edit') }}">

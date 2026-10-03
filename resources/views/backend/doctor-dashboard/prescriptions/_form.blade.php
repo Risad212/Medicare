@@ -20,10 +20,19 @@
     ]]);
 @endphp
 
+@php($patientAllergies ??= null)
 <form action="{{ $formAction }}" method="POST">
     @csrf
     @if(($method ?? null) === 'PUT')
         @method('PUT')
+    @endif
+
+    @if(\App\Support\Module::enabled('allergy'))
+    <div id="allergy_alert" class="mb-3 rounded-lg px-4 py-3 text-sm" role="alert"
+         style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;{{ $patientAllergies ? '' : 'display:none;' }}">
+        <strong>Allergy alert:</strong>
+        <span id="allergy_alert_text">{{ $patientAllergies ?? '' }}</span>
+    </div>
     @endif
 
     <div class="mc-grid">
@@ -54,6 +63,7 @@
                                         data-gender="{{ $appointment->gender }}"
                                         data-phone="{{ $appointment->phone }}"
                                         data-email="{{ $appointment->email }}"
+                                        data-allergies="{{ $appointment->user?->allergies ?? '' }}"
                                         @selected(old('appointment_id', $prescription?->appointment_id) == $appointment->id)>
                                     #{{ $appointment->id }} - {{ $appointment->patient_name }} ({{ $appointment->appointment_date }})
                                 </option>
@@ -222,6 +232,21 @@
         var select = document.getElementById('appointment_select');
         var cache = {};
 
+        var allergyBox = document.getElementById('allergy_alert');
+        var allergyText = document.getElementById('allergy_alert_text');
+
+        function showAllergies(value) {
+            if (!allergyBox || !allergyText) return;
+            var text = (value || '').trim();
+            if (text) {
+                allergyText.textContent = text;
+                allergyBox.style.display = '';
+            } else {
+                allergyText.textContent = '';
+                allergyBox.style.display = 'none';
+            }
+        }
+
         function fill(fields) {
             ['name', 'age', 'gender', 'phone', 'email'].forEach(function (key) {
                 var el = document.getElementById('patient_' + key);
@@ -241,17 +266,22 @@
                         gender: option.dataset.gender,
                         phone: option.dataset.phone,
                         email: option.dataset.email,
+                        allergies: option.dataset.allergies || '',
                     };
                 }
             });
 
             if (select.value && cache[select.value]) {
                 fill(cache[select.value]);
+                showAllergies(cache[select.value].allergies);
             }
 
             select.addEventListener('change', function () {
                 if (cache[this.value]) {
                     fill(cache[this.value]);
+                    showAllergies(cache[this.value].allergies);
+                } else {
+                    showAllergies('');
                 }
             });
         }

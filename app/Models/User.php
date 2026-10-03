@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Modules\BloodBank\Models\BloodDonation;
+use App\Modules\BloodBank\Models\BloodIssue;
+use App\Modules\BloodBank\Models\BloodRequest;
+use App\Modules\Vaccination\Models\Vaccination;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -19,6 +23,7 @@ use Illuminate\Notifications\Notifiable;
     'gender',
     'blood_group',
     'address',
+    'allergies',
     'profile_image',
     'google_id',
     'provider',
@@ -103,5 +108,13 @@ class User extends Authenticatable
     public function prescriptions(): HasMany
     {
         return $this->hasMany(Prescription::class, 'patient_user_id');
+    }
+
+    /**
+     * Vaccination records linked to this account (own + children's via child_name).
+     */
+    public function vaccinations(): HasMany
+    {
+        return $this->hasMany(Vaccination::class);
     }
 }

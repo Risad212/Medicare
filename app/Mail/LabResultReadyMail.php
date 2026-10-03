@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\LabOrder;
+use App\Modules\Lab\Models\LabOrder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;

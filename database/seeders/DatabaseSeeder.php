@@ -25,5 +25,14 @@ class DatabaseSeeder extends Seeder
 
         $this->call(BloodGroupSeeder::class);
         $this->call(DemoDataSeeder::class);
+
+        Language::firstOrCreate(
+            ['code' => 'en'],
+            ['name' => 'English', 'is_default' => true, 'is_active' => true]
+        );
+        Language::firstOrCreate(
+            ['code' => 'bn'],
+            ['name' => 'Bangla', 'is_default' => false, 'is_active' => true]
+        );
     }
 }

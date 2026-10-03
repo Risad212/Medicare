@@ -7,9 +7,11 @@ use App\Models\Blog;
 use App\Models\BlogComment;
 use App\Models\Doctor;
 use App\Models\Invoice;
-use App\Models\LabOrder;
 use App\Models\Patient;
 use App\Models\Prescription;
+use App\Modules\Analytics\Services\AnalyticsService;
+use App\Modules\Lab\Models\LabOrder;
+use App\Support\Module;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Carbon;
 
@@ -90,14 +92,21 @@ class AdminController extends Controller
 
         // ---------- Analytics ----------
 
-        $completedLabOrders = LabOrder::where('status', 'completed');
+        $revenueAllTime = 0.0;
+        $revenueThisMonth = 0.0;
+        $labOrdersThisMonth = 0;
+        $labOrdersPending = 0;
 
-        $revenueAllTime = (float) $completedLabOrders->clone()->sum('total');
-        $revenueThisMonth = (float) $completedLabOrders->clone()
-            ->whereBetween('created_at', [now()->startOfMonth(), now()])
-            ->sum('total');
-        $labOrdersThisMonth = LabOrder::whereBetween('created_at', [now()->startOfMonth(), now()])->count();
-        $labOrdersPending = LabOrder::where('status', 'pending')->count();
+        if (Module::enabled('lab')) {
+            $completedLabOrders = LabOrder::where('status', 'completed');
+
+            $revenueAllTime = (float) $completedLabOrders->clone()->sum('total');
+            $revenueThisMonth = (float) $completedLabOrders->clone()
+                ->whereBetween('created_at', [now()->startOfMonth(), now()])
+                ->sum('total');
+            $labOrdersThisMonth = LabOrder::whereBetween('created_at', [now()->startOfMonth(), now()])->count();
+            $labOrdersPending = LabOrder::where('status', 'pending')->count();
+        }
 
         // Invoice revenue: only "paid" invoices count as collected; "pending"
         // invoices are outstanding. Filters mirror InvoiceController's statuses.
@@ -112,9 +121,13 @@ class AdminController extends Controller
         $appointmentsByMonth = Appointment::where('created_at', '>=', now()->subMonths(5)->startOfMonth())
             ->get(['created_at'])
             ->groupBy(fn ($a) => $a->created_at->format('Y-m'));
-        $labOrdersByMonth = LabOrder::where('created_at', '>=', now()->subMonths(5)->startOfMonth())
-            ->get(['created_at'])
-            ->groupBy(fn ($o) => $o->created_at->format('Y-m'));
+        $labOrdersByMonth = collect();
+
+        if (Module::enabled('lab')) {
+            $labOrdersByMonth = LabOrder::where('created_at', '>=', now()->subMonths(5)->startOfMonth())
+                ->get(['created_at'])
+                ->groupBy(fn ($o) => $o->created_at->format('Y-m'));
+        }
 
         $monthlyAppointments = collect(range(5, 0))->map(
             fn ($i) => $appointmentsByMonth->get(now()->subMonths($i)->format('Y-m'), collect())->count()
@@ -137,8 +150,11 @@ class AdminController extends Controller
             ->get();
 
         // Welly stat: hospital earning = collected invoices + completed lab revenue.
-        $hospitalEarning = (float) (Invoice::where('status', 'paid')->sum('total'))
-            + (float) (LabOrder::where('status', 'completed')->sum('total'));
+        $hospitalEarning = (float) (Invoice::where('status', 'paid')->sum('total'));
+
+        if (Module::enabled('lab')) {
+            $hospitalEarning += (float) (LabOrder::where('status', 'completed')->sum('total'));
+        }
 
         // Welly schedule rail: upcoming non-cancelled bookings grouped by day.
         $upcomingSchedule = Appointment::with(['doctor', 'timeSlot'])
@@ -193,17 +209,28 @@ class AdminController extends Controller
             ->map->count();
 
         // Lab work queue: oldest unprocessed orders first (lab dashboard feed).
-        $pendingLabOrders = LabOrder::with(['doctor', 'items.test'])
-            ->whereIn('status', ['pending', 'in-progress'])
-            ->oldest()
-            ->take(6)
-            ->get();
+        $pendingLabOrders = collect();
+
+        if (Module::enabled('lab')) {
+            $pendingLabOrders = LabOrder::with(['doctor', 'items.test'])
+                ->whereIn('status', ['pending', 'in-progress'])
+                ->oldest()
+                ->take(6)
+                ->get();
+        }
 
         // Recent prescriptions feed (pharmacist dashboard feed).
         $recentPrescriptions = Prescription::with(['doctor'])
             ->latest()
             ->take(5)
             ->get();
+
+        // Analytics module (app/Modules/Analytics/): computed only when the flag is on.
+        // The ::class reference is a plain string until app() resolves it, so a
+        // deleted module folder is never autoloaded while the flag is off.
+        $analytics = Module::enabled('analytics')
+            ? app(AnalyticsService::class)->data()
+            : [];
 
         return view('backend.home', compact(
             'totalDoctors',
@@ -240,7 +267,8 @@ class AdminController extends Controller
             'monthLabels',
             'doctorLoad',
             'pendingLabOrders',
-            'recentPrescriptions'
+            'recentPrescriptions',
+            'analytics'
         ));
     }
 }

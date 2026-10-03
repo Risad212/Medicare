@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Services\BloodCompatibility;
+use App\Modules\BloodBank\Services\BloodCompatibility;
 use PHPUnit\Framework\TestCase;
 
 class BloodCompatibilityTest extends TestCase

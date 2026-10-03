@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
-use App\Models\LabOrder;
+use App\Modules\Lab\Models\LabOrder;
 use App\Services\InvoiceService;
 use App\Services\PdfService;
+use App\Support\Module;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
@@ -16,7 +17,10 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $invoices = Invoice::with(['order', 'items'])
+        // The lab-order link only exists while the lab module ships.
+        $with = Module::enabled('lab') ? ['order', 'items'] : ['items'];
+
+        $invoices = Invoice::with($with)
             ->when(in_array($request->status, ['pending', 'paid', 'void'], true), function ($query) use ($request) {
                 return $query->where('status', $request->status);
             })
@@ -31,6 +35,10 @@ class InvoiceController extends Controller
             ->paginate(10)
             ->withQueryString();
 
+        if (! Module::enabled('lab')) {
+            $invoices->getCollection()->each(fn (Invoice $i) => $i->setRelation('order', null));
+        }
+
         return view('backend.invoices.index', compact('invoices'));
     }
 
@@ -39,7 +47,13 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
-        $invoice->load(['items', 'order.doctor', 'creator']);
+        $invoice->load(['items', 'creator']);
+
+        if (Module::enabled('lab')) {
+            $invoice->load('order.doctor');
+        } else {
+            $invoice->setRelation('order', null);
+        }
 
         return view('backend.invoices.show', compact('invoice'));
     }
@@ -88,6 +102,10 @@ class InvoiceController extends Controller
     public function download(Invoice $invoice, PdfService $pdf)
     {
         $invoice->load('items');
+
+        if (! Module::enabled('lab')) {
+            $invoice->setRelation('order', null);
+        }
 
         return $pdf->stream('pdf.invoice', ['invoice' => $invoice], 'invoice-'.$invoice->invoice_no.'.pdf');
     }

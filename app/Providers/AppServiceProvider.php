@@ -4,20 +4,21 @@ namespace App\Providers;
 
 use App\Models\Appointment;
 use App\Models\Blog;
-use App\Models\BloodDonation;
-use App\Models\BloodDonor;
-use App\Models\BloodGroup;
-use App\Models\BloodIssue;
-use App\Models\BloodRequest;
 use App\Models\Doctor;
 use App\Models\GeneralSetting;
-use App\Models\LabOrder;
-use App\Models\LabReport;
-use App\Models\LabTest;
 use App\Models\Prescription;
 use App\Models\Service;
 use App\Models\User;
+use App\Modules\BloodBank\Models\BloodDonation;
+use App\Modules\BloodBank\Models\BloodDonor;
+use App\Modules\BloodBank\Models\BloodGroup;
+use App\Modules\BloodBank\Models\BloodIssue;
+use App\Modules\BloodBank\Models\BloodRequest;
+use App\Modules\Lab\Models\LabOrder;
+use App\Modules\Lab\Models\LabReport;
+use App\Modules\Lab\Models\LabTest;
 use App\Observers\ActivityLogObserver;
+use App\Support\Module;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -66,17 +67,26 @@ class AppServiceProvider extends ServiceProvider
             Appointment::class,
             Blog::class,
             Doctor::class,
-            LabOrder::class,
-            LabReport::class,
-            LabTest::class,
             User::class,
-            BloodDonor::class,
-            BloodDonation::class,
-            BloodGroup::class,
-            BloodRequest::class,
-            BloodIssue::class,
             Prescription::class,
         ];
+
+        if (Module::enabled('lab')) {
+            array_push($models, LabOrder::class, LabReport::class, LabTest::class);
+        }
+
+        // Module models are observed only while the module ships; a deleted
+        // module must never break core boot.
+        if (Module::enabled('bloodbank')) {
+            array_push(
+                $models,
+                BloodDonor::class,
+                BloodDonation::class,
+                BloodGroup::class,
+                BloodRequest::class,
+                BloodIssue::class,
+            );
+        }
 
         foreach ($models as $model) {
             $model::observe(ActivityLogObserver::class);

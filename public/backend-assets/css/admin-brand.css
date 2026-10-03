@@ -195,7 +195,7 @@ a { text-underline-offset: 3px; }
     border-color: var(--brand-line);
     color: var(--brand-ink);
     font-weight: 700;
-    box-shadow: inset 3px 0 0 var(--brand);
+    /* box-shadow: inset 3px 0 0 var(--brand); */
 }
 .side-icon {
     display: inline-flex;
@@ -252,7 +252,7 @@ a { text-underline-offset: 3px; }
     transition: background 0.14s, color 0.14s, transform 0.14s var(--ease);
 }
 .side-sublink:hover { background: var(--line-2); color: var(--ink); transform: translateX(2px); }
-.side-sublink.active { background: var(--brand-wash); color: var(--brand-ink); font-weight: 700; box-shadow: inset 2px 0 0 var(--brand); }
+.side-sublink.active { background: var(--brand-wash); color: var(--brand-ink); font-weight: 700;}
 .side-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.5; flex-shrink: 0; }
 .side-sublink.active .side-dot { opacity: 1; }
 .side-minibadge {

@@ -78,7 +78,7 @@
             </div>
             <div class="col-lg-3">
                 <div class="footer-widget-2">
-                    <h4 class="widget-title">Services</h4>
+                    <h4 class="widget-title">{{ __('messages.footer.services') }}</h4>
                     <ul class="deparment-list">
                         @forelse($footerServices ?? [] as $footerService)
                             <li class="item"><a href="{{ $footerService->slug ? route('service.show', $footerService->slug) : route('service') }}">{{ $footerService->title }}</a></li>
@@ -90,19 +90,19 @@
             </div>
             <div class="col-lg-3">
                 <div class="footer-widget-2">
-                    <h4 class="widget-title">usefull links</h4>
+                    <h4 class="widget-title">{{ __('messages.footer.quick_links') }}</h4>
                     <ul class="deparment-list">
-                        <li class="item"><a href="#">About Us</a></li>
-                        <li class="item"><a href="#">Services</a></li>
-                        <li class="item"><a href="#">Doctors</a></li>
+                        <li class="item"><a href="#">{{ __('messages.nav.about') }}</a></li>
+                        <li class="item"><a href="#">{{ __('messages.nav.services') }}</a></li>
+                        <li class="item"><a href="#">{{ __('messages.nav.doctors') }}</a></li>
                         <li class="item"><a href="#">Gallary</a></li>
-                        <li class="item"><a href="#">Contact</a></li>
+                        <li class="item"><a href="#">{{ __('messages.nav.contact') }}</a></li>
                     </ul>
                 </div>
             </div>
             <div class="col-lg-3">
                 <div class="footer-widget-4">
-                    <h3 class="widget-title">Contact</h3>
+                    <h3 class="widget-title">{{ __('messages.footer.contact') }}</h3>
                     <ul class="contact-list">
                         <li class="item">
                             <a href="#">
