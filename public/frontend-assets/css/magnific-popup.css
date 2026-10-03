@@ -2081,6 +2081,11 @@ input:-webkit-autofill:focus {
   color: #fff !important;
 }
 
+.pagination-list li a.arrow {
+  font-size: 28px;
+  line-height: 36px;
+}
+
 /*================================================
      Contact Page 
 ==================================================*/
