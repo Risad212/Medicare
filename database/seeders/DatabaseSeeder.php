@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
 
         User::firstOrCreate(
             ['email' => 'test@example.com'],
-            ['name' => 'Test User', 'password' => Hash::make('password')]
+            ['name' => 'Test User', 'password' => Hash::make('123456')]
         );
 
         $this->call(BloodGroupSeeder::class);

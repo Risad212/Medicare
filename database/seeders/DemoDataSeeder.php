@@ -64,7 +64,7 @@ class DemoDataSeeder extends Seeder
             $this->seedSettings();
         });
 
-        $this->command->info('Demo data seeded. Log in as admin@medicare.test / password.');
+        $this->command->info('Demo data seeded. Log in as admin@medicare.test / 123456.');
     }
 
     private function seedFrontendMedia(): void
@@ -123,7 +123,7 @@ class DemoDataSeeder extends Seeder
      */
     private function seedUsers(): array
     {
-        $password = Hash::make('password');
+        $password = Hash::make('123456');
 
         $admin = User::create([
             'name' => 'Hospital Admin', 'email' => 'admin@medicare.test',
