@@ -86,6 +86,8 @@ class DemoDataSeeder extends Seeder
             'about/about-1.jpg' => 'media/about/about-1.jpg',
             'about/about-2.jpg' => 'media/about/about-2.jpg',
             'service/emergency.jpg' => 'media/service/emargency.jpg',
+            'settings/logo.png' => 'media/common/logo.png',
+            'settings/footer-logo.png' => 'media/common/logo.png',
         ];
 
         foreach ($map as $target => $source) {
@@ -470,6 +472,8 @@ class DemoDataSeeder extends Seeder
         $general = GeneralSetting::first();
         $generalData = [
             'site_name' => 'MediCare Hospital',
+            'logo' => 'settings/logo.png',
+            'footer_logo' => 'settings/footer-logo.png',
             'address' => '12 Green Road, Dhaka 1215',
             'working_hours' => 'Open 24 Hours, Every Day',
             'phone' => '+880 2-5815-1234',
