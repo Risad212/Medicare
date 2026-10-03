@@ -981,6 +981,21 @@ input:-webkit-autofill:focus {
   color: #1c274c;
 }
 
+.service-section .row > div[class*="col-"] {
+  display: flex;
+}
+
+.service-section .service-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-section .service-card p {
+  flex-grow: 1;
+}
+
 @media only screen and (max-width: 768px) {
   .service-section {
     padding: 50px 0;
