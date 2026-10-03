@@ -2,13 +2,17 @@
 
 @section('content')
 
-<div class="row">
-    <div class="col-md-12">
-       @include('backend.components.seo-settings', [
-            'title' => 'Doctor',
-            'page' => 'doctor',
-        ])
+<div class="mc-head">
+    <div>
+        <p class="mc-kicker">MediCare · Settings</p>
+        <h1 class="mc-title">Doctor <em>SEO</em></h1>
+        <p class="mc-sub">Meta tags for the Doctor page.</p>
     </div>
 </div>
+
+@include('backend.components.seo-settings', [
+    'title' => 'Doctor',
+    'page' => 'doctor',
+])
 
 @endsection

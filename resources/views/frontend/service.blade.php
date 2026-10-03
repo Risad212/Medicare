@@ -25,7 +25,7 @@
             <div class="col-lg-6">
                 <div class="emargency-image">
                     <img class="img-fluid"
-                        src="{{ asset($service->emergency_image ?? 'frontend-assets/media/service/emargency.jpg') }}"
+                        src="{{ !empty($service?->emergency_image) ? asset('storage/'.$service->emergency_image) : asset('frontend-assets/media/service/emargency.jpg') }}"
                         alt="">
                 </div>
             </div>
@@ -61,7 +61,7 @@
 
                             <div>
                                 <span>Call Now</span>
-                                <h5>{{ $service->emergency_phone ?? '+821-456-789' }}</h5>
+                                <h5>{{ $service?->emergency_phone ?? ($setting->phone ?? '+821-456-789') }}</h5>
                             </div>
                         </div>
 
@@ -88,7 +88,7 @@
 
                             <div>
                                 <span>Mail Us</span>
-                                <h5>{{ $service->emergency_email ?? 'hello@info.com' }}</h5>
+                                <h5>{{ $service?->emergency_email ?? ($setting->email ?? 'hello@info.com') }}</h5>
                             </div>
                         </div>
 

@@ -14,9 +14,9 @@ class BlogSettingController extends Controller
      */
     public function blog()
     {
-       $seo = SeoSetting::where('page', 'blog')->first();
+        $seo = SeoSetting::where('page', 'blog')->first();
 
-       return view('backend.settings.blog', compact(
+        return view('backend.settings.blog', compact(
             'seo'
         ));
     }

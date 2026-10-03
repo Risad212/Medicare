@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\GuestRecordLinker;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -31,7 +32,13 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+        GuestRecordLinker::link($user);
+
         if ($user->role === 'admin') {
+            return redirect()->route('admin.home');
+        }
+
+        if (in_array($user->role, ['receptionist', 'lab-technician', 'pharmacist'], true)) {
             return redirect()->route('admin.home');
         }
 

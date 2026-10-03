@@ -10,16 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->string('phone')->nullable();
-        $table->date('date_of_birth')->nullable();
-        $table->string('gender')->nullable();
-        $table->string('blood_group')->nullable();
-        $table->text('address')->nullable();
-        $table->string('profile_image')->nullable();
-    });
-}
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('phone')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('blood_group')->nullable();
+            $table->text('address')->nullable();
+            $table->string('profile_image')->nullable();
+        });
+    }
 
     /**
      * Reverse the migrations.

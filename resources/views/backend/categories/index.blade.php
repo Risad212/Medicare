@@ -1,58 +1,56 @@
 @extends('backend.layouts.app')
 
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <div class="tile">
-            <div class="tile-title-w-btn">
-                <h3 class="tile-title">All Categories</h3>
-                <a href="{{ route('admin.categories.create') }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-plus"></i> Add New
-                </a>
-            </div>
+<div class="mc-head">
+    <div>
+        <p class="mc-kicker">MediCare · Taxonomy</p>
+        <h1 class="mc-title">All <em>Categories</em></h1>
+        <p class="mc-sub">Group blog posts by topic.</p>
+    </div>
+    <div class="mc-head-acts">
+        <a href="{{ route('admin.categories.create') }}" class="mc-btn"><i class="bi bi-plus-lg"></i> Add new category</a>
+    </div>
+</div>
 
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
+@if(session('success'))
+    <div class="mb-4 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
+@endif
 
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Slug</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($categories as $category)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $category->name }}</td>
-                            <td>{{ $category->slug }}</td>
-                            <td>
-                                <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-sm btn-info">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-                                <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="text-center">No categories found.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="mc-card">
+    <div class="table-responsive">
+        <table class="mc-tbl">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($categories as $category)
+                <tr>
+                    <td class="mc-idx">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</td>
+                    <td>{{ $category->name }}</td>
+                    <td>{{ $category->slug }}</td>
+                    <td>
+                        <div class="mc-acts">
+                            <a href="{{ route('admin.categories.edit', $category->id) }}" class="mc-btn sm dark"><i class="bi bi-pencil"></i> Edit</a>
+                            <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="mc-btn sm danger-ghost"><i class="bi bi-trash"></i> Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="4"><div class="mc-empty"><b>Nothing on this chart</b>No categories found. Add the first one to start grouping.</div></td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 @endsection

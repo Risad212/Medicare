@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Mail\ContactFormMail;
-use Illuminate\Support\Facades\Mail;
+use App\Models\GeneralSetting;
 use App\Models\SeoSetting;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
@@ -27,7 +28,9 @@ class ContactController extends Controller
             'message' => 'required',
         ]);
 
-        Mail::to('hospital@gmail.com')
+        $recipient = GeneralSetting::first()?->email ?: config('mail.from.address');
+
+        Mail::to($recipient)
             ->send(new ContactFormMail($data));
 
         return back()->with('success', 'Message sent successfully.');

@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var treeviewMenu = $('.app-menu');
+    var treeviewMenu = $('.side-nav');
 
     // Toggle Sidebar Menu
     $('[data-toggle="sidebar"]').click(function (event) {

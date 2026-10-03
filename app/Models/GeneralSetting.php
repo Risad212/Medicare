@@ -16,6 +16,7 @@ class GeneralSetting extends Model
         'twitter',
         'linkedin',
         'youtube',
+        'map_embed_url',
         'email',
         'phone',
         'footer_logo',

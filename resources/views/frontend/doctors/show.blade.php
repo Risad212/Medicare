@@ -38,9 +38,9 @@
                     </h5>
 
                     <div class="mb-2">
-                       <strong>Services:</strong>
-                       {!! $doctor->services !!}
-                   </div>
+                        <strong>Services:</strong>
+                        {{ $doctor->services }}
+                    </div>
 
                     <h5 class="doctor-availability">
                         <strong>Availability:</strong> {{ $doctor->availability }}
@@ -73,7 +73,7 @@
 
                                 <div class="col-lg-6">
                                     <label>Doctor Name</label>
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <input type="text"
                                                class="form-control"
                                                readonly
@@ -83,7 +83,7 @@
 
                                 <div class="col-lg-6">
                                     <label>Visit Type</label>
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <select id="visit_type" class="form-control" name="visit_type">
                                             <option value="1">First Visit</option>
                                             <option value="2">Second Visit</option>
@@ -94,7 +94,7 @@
 
                                 <div class="col-lg-6">
                                     <label>Patient Name</label>
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <input type="text"
                                                class="form-control"
                                                name="patient_name"
@@ -104,7 +104,7 @@
 
                                 <div class="col-lg-6">
                                     <label>Age</label>
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <input type="number"
                                                class="form-control"
                                                name="age"
@@ -114,7 +114,7 @@
 
                                 <div class="col-lg-6">
                                     <label>Gender</label>
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <select class="form-control" name="gender">
                                             <option value="" disabled selected>Select Gender</option>
                                             <option value="1">Male</option>
@@ -126,7 +126,7 @@
 
                                 <div class="col-lg-6">
                                     <label>Phone</label>
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <input type="number"
                                                class="form-control"
                                                name="phone"
@@ -136,7 +136,7 @@
 
                                 <div class="col-lg-6">
                                     <label>Email</label>
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <input type="email"
                                                class="form-control"
                                                name="email"
@@ -147,19 +147,19 @@
 
                                 <div class="col-lg-6">
                                     <label>Appointment Date</label>
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <input type="date"
                                             name="appointment_date"
                                             class="form-control"
                                             id="appointment_date"
                                             min="{{ date('Y-m-d') }}"
-                                            value="{{ old('date') }}">
+                                            value="{{ old('appointment_date') }}">
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
                                     <label>Time Slot</label>
-                                    <div class="form-group">
+                                    <div class="mb-3">
                                         <select name="time_slot_id" id="time_slot" class="form-control">
                                             <option value="">Select Time Slot</option>
                                         </select>

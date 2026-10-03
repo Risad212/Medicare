@@ -17,9 +17,9 @@ return new class extends Migration
 
             // Optional foreign key – if you want referential integrity
             $table->foreign('time_slot_id')
-                  ->references('id')
-                  ->on('time_slots')
-                  ->onDelete('set null');
+                ->references('id')
+                ->on('time_slots')
+                ->onDelete('set null');
         });
     }
 

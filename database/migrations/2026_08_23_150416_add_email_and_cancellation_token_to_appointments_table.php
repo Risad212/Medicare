@@ -23,6 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('appointments', function (Blueprint $table) {
+            $table->dropUnique(['cancellation_token']);
             $table->dropColumn(['email', 'cancellation_token']);
         });
     }

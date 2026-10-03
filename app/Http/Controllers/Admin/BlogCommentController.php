@@ -13,6 +13,7 @@ class BlogCommentController extends Controller
     public function index()
     {
         $comments = BlogComment::with('blog')->latest()->get();
+
         return view('backend.comments.index', compact('comments'));
     }
 
@@ -22,6 +23,7 @@ class BlogCommentController extends Controller
     public function update(BlogComment $comment)
     {
         $comment->update(['status' => 1]);
+
         return back()->with('success', 'Comment approved!');
     }
 
@@ -31,6 +33,7 @@ class BlogCommentController extends Controller
     public function destroy(BlogComment $comment)
     {
         $comment->delete();
+
         return back()->with('success', 'Comment deleted!');
     }
 }

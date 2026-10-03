@@ -10,11 +10,12 @@ class AdminMiddleware
 {
     /**
      * Handle an incoming request.
-     * Only admin role can access
+     * Hospital staff (admin + receptionist/lab-tech/pharmacist) may enter
+     * `/admin/*`. Doctors and patients are kept out.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role === 'admin') {
+        if (auth()->check() && in_array(auth()->user()->role, ['admin', 'receptionist', 'lab-technician', 'pharmacist'], true)) {
             return $next($request);
         }
 

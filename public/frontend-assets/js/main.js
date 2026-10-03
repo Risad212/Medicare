@@ -133,14 +133,16 @@
        sticky Menu
      ========================*/
     const navbarMenu = document.querySelector('.header');
-    let navTopbar = navbarMenu.offsetTop;
-    window.addEventListener('scroll', () => {
-        if (window.scrollY >= navTopbar) {
-            navbarMenu.classList.add('sticky-nav');
-        } else {
-            navbarMenu.classList.remove('sticky-nav');
-        }
-    });
+    if (navbarMenu) {
+        let navTopbar = navbarMenu.offsetTop;
+        window.addEventListener('scroll', () => {
+            if (window.scrollY >= navTopbar) {
+                navbarMenu.classList.add('sticky-nav');
+            } else {
+                navbarMenu.classList.remove('sticky-nav');
+            }
+        });
+    }
 
     /*=====================
          date picker
@@ -159,88 +161,81 @@
 
 
     /*===========================================
-      AJAX: Load available time slots for a doctor & date For Apoinment Page
+      AJAX: Load available time slots for a doctor & date
+      Works on both the /appointment page (#doctor_id,#time_slot_id)
+      and the doctor details page (input[name=doctor_id],#time_slot).
     ===========================================*/
-    function loadSlots() {
-        let date = $('#appointment_date').val();
-        let doctor_id = $('#doctor_id').val();
-
-        $.ajax({
-            url: getSlotsUrl,
-            type: 'GET',
-            data: { date: date, doctor_id: doctor_id },
-            success: function (response) {
-                let options = '<option value="">Select Time</option>';
-                response.slots.forEach(function (slot) {
-                    let booked = response.bookedSlotIds.includes(slot.id);
-                    if (booked) {
-                        options += `<option value="${slot.id}" disabled>${slot.time} (Booked)</option>`;
-                    } else {
-                        options += `<option value="${slot.id}">${slot.time}</option>`;
-                    }
-                });
-                $('#time_slot_id').html(options);
-            }
-        });
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
     }
 
-    $(document).ready(function () {
-        loadSlots();
-    });
+    var dateInput = document.getElementById('appointment_date');
+    if (dateInput && window.getSlotsUrl) {
+        var slotSelect = document.getElementById('time_slot_id') || document.getElementById('time_slot');
+        var doctorSelect = document.getElementById('doctor_id');
+        var doctorHidden = document.querySelector('input[name="doctor_id"]');
 
-    $('#appointment_date').on('change', loadSlots);
-    $('#doctor_id').on('change', loadSlots);
-
-    /*===========================================
-      AJAX: Load available time slots for a specific doctor (doctor details page)
-    ===========================================*/
-    function loadDoctorSlots() {
-        var doctorId = document.querySelector('input[name="doctor_id"]').value;
-        var date     = document.getElementById('appointment_date').value;
-        var slotSelect = document.getElementById('time_slot');
-
-        if (!doctorId || !date) {
-            slotSelect.innerHTML = '<option value="">Select Time Slot</option>';
-            return;
+        function currentDoctorId() {
+            if (doctorSelect) {
+                return doctorSelect.value;
+            }
+            return doctorHidden ? doctorHidden.value : '';
         }
 
-        // Build the URL with query parameters
-        var url = getSlotsUrl + '?doctor_id=' + encodeURIComponent(doctorId) + '&date=' + encodeURIComponent(date);
+        function loadSlots() {
+            if (!slotSelect) {
+                return;
+            }
 
-        fetch(url)
-            .then(function(response) {
-                if (!response.ok) throw new Error('Network error');
-                return response.json();
-            })
-            .then(function(data) {
-                var options = '<option value="">Select Time Slot</option>';
-                var slots = data.slots;
-                var bookedIds = data.bookedSlotIds;
+            var date = dateInput.value;
+            var doctor_id = currentDoctorId();
 
-                slots.forEach(function(slot) {
-                    var isBooked = bookedIds.includes(slot.id);
-                    options += '<option value="' + slot.id + '"' +
-                               (isBooked ? ' disabled' : '') + '>' +
-                               slot.time + (isBooked ? ' (Booked)' : '') +
-                               '</option>';
-                });
+            // Never fire the request until both a date and a doctor are chosen,
+            // so the dropdown keeps showing the "select first" hint.
+            if (!date || !doctor_id) {
+                slotSelect.innerHTML = '<option value="">Select Date & Doctor First</option>';
+                return;
+            }
 
-                slotSelect.innerHTML = options;
-            })
-            .catch(function(error) {
-                console.error('Error fetching slots:', error);
+            $.ajax({
+                url: window.getSlotsUrl,
+                type: 'GET',
+                data: { date: date, doctor_id: doctor_id },
+                success: function (response) {
+                    var options = '<option value="">Select Time</option>';
+                    (response.slots || []).forEach(function (slot) {
+                        var booked = (response.bookedSlotIds || []).indexOf(slot.id) !== -1;
+                        var unavailable = (response.unavailableSlotIds || []).indexOf(slot.id) !== -1;
+                        var label = escapeHtml(slot.time);
+                        if (booked) {
+                            options += '<option value="' + slot.id + '" disabled>' + label + ' (Booked)</option>';
+                        } else if (unavailable) {
+                            options += '<option value="' + slot.id + '" disabled>' + label + ' (Not available)</option>';
+                        } else {
+                            options += '<option value="' + slot.id + '">' + label + '</option>';
+                        }
+                    });
+                    slotSelect.innerHTML = options;
+                },
+                error: function () {
+                    slotSelect.innerHTML = '<option value="">Unable to load time slots</option>';
+                }
             });
+        }
+
+        dateInput.addEventListener('change', loadSlots);
+        if (doctorSelect) {
+            doctorSelect.addEventListener('change', loadSlots);
+        }
+        // Restore slots immediately when a date came back via validation re-render.
+        if (dateInput.value) {
+            loadSlots();
+        }
     }
-
-    // Attach event to the date input
-    document.getElementById('appointment_date').addEventListener('change', loadDoctorSlots);
-
-    // If a date is already picked (e.g., after form validation), load immediately
-    if (document.getElementById('appointment_date').value) {
-        loadDoctorSlots();
-    }
-
-
 
 })(jQuery);
 

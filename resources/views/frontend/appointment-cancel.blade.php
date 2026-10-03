@@ -45,7 +45,7 @@
                 </tr>
                 <tr>
                     <td class="mc-cancel-table-label">Visit Type:</td>
-                    <td>{{ $appointment->visit_type }}</td>
+                    <td>{{ $appointment->visit_type_label }}</td>
                 </tr>
                 <tr>
                     <td class="mc-cancel-table-label">Status:</td>

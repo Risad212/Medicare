@@ -3,13 +3,13 @@
 .env
 .env.backup
 .env.production
+database/*.sqlite
+database/*.sqlite-journal
 .phpactor.json
-.phpunit.result.cache
 /.codex
 /.cursor/
 /.idea
 /.nova
-/.phpunit.cache
 /.vscode
 /.zed
 /auth.json
@@ -20,6 +20,8 @@
 /storage/*.key
 /storage/pail
 /vendor
+/playwright-report
+/test-results
 _ide_helper.php
 Homestead.json
 Homestead.yaml

@@ -1,3 +1,8 @@
+# Security headers are owned by App\Http\Middleware\SecurityHeadersMiddleware
+# (single source of truth — works on `php artisan serve`, nginx, and Apache).
+# Kept out of .htaccess to avoid duplicate/conflicting values
+# (notably X-XSS-Protection: middleware sends modern `0`).
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes

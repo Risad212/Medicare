@@ -9,7 +9,7 @@ class Blog extends Model
     protected $fillable = [
         'title', 'slug', 'excerpt', 'content',
         'image', 'author', 'status', 'order',
-        'category', 'tags'
+        'category', 'tags',
     ];
 
     public function comments()

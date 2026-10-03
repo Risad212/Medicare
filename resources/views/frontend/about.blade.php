@@ -6,6 +6,15 @@
 
 @section('front-content')
 
+@php
+    $aboutImageOne = !empty($about?->image_one)
+        ? asset('storage/'.$about->image_one)
+        : asset('frontend-assets/media/about/about-1.jpg');
+    $aboutImageTwo = !empty($about?->image_two)
+        ? asset('storage/'.$about->image_two)
+        : asset('frontend-assets/media/about/about-2.jpg');
+@endphp
+
 @include('frontend.components.breadcrumb', [
     'title' => $pageTitle ?? 'About Us'
 ])
@@ -24,13 +33,13 @@
 
                     <div class="first-img">
                         <img class="img-fluid"
-                            src="{{ asset($about->image_one ?? 'frontend-assets/media/about/about-1.jpg') }}"
+                            src="{{ $aboutImageOne }}"
                             alt="">
                     </div>
 
                     <div class="second-img">
                         <img class="img-fluid"
-                            src="{{ asset($about->image_two ?? 'frontend-assets/media/about/about-2.jpg') }}"
+                            src="{{ $aboutImageTwo }}"
                             alt="">
                     </div>
 
