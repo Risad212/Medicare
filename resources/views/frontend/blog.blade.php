@@ -57,9 +57,7 @@
        </div>
 
        @if(isset($blogs) && method_exists($blogs, 'hasPages') && $blogs->hasPages())
-          <div class="d-flex justify-content-center mt-5">
-             {{ $blogs->links() }}
-          </div>
+          {{ $blogs->links('frontend.components.pagination') }}
        @endif
     </div>
 </section>
