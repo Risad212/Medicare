@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AboutSetting;
 use App\Models\Appointment;
 use App\Models\Blog;
 use App\Models\BlogComment;
@@ -13,13 +14,16 @@ use App\Models\Category;
 use App\Models\Department;
 use App\Models\Doctor;
 use App\Models\GeneralSetting;
+use App\Models\HomeSetting;
 use App\Models\Invoice;
 use App\Models\LabOrder;
 use App\Models\LabOrderItem;
 use App\Models\LabTest;
 use App\Models\Prescription;
 use App\Models\PrescriptionItem;
+use App\Models\SeoSetting;
 use App\Models\Service;
+use App\Models\ServiceSetting;
 use App\Models\Slider;
 use App\Models\Tag;
 use App\Models\TimeSlot;
@@ -28,6 +32,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -46,6 +51,7 @@ class DemoDataSeeder extends Seeder
         }
 
         DB::transaction(function () {
+            $this->seedFrontendMedia();
             $this->seedLookups();
             $users = $this->seedUsers();
             $doctors = $this->seedDoctors($users);
@@ -59,6 +65,38 @@ class DemoDataSeeder extends Seeder
         });
 
         $this->command->info('Demo data seeded. Log in as admin@medicare.test / password.');
+    }
+
+    private function seedFrontendMedia(): void
+    {
+        $map = [
+            'sliders/slider-1.jpg' => 'media/home/slider-1.jpg',
+            'sliders/slider-2.jpg' => 'media/home/slider-2.jpg',
+            'sliders/slider-3.png' => 'media/home/slider-3.png',
+            'home/about-1.jpg' => 'media/home/about-1.jpg',
+            'home/about-2.jpg' => 'media/home/about-2.jpg',
+            'home/about-3.jpeg' => 'media/home/about-3.jpeg',
+            'doctors/doctor-1.png' => 'media/home/doctor-1.png',
+            'doctors/doctor-2.png' => 'media/home/doctor-2.png',
+            'doctors/doctor-3.png' => 'media/home/doctor-3.png',
+            'blogs/blog-1.jpeg' => 'media/home/blog.jpeg',
+            'blogs/blog-2.jpg' => 'media/home/blog2.jpg',
+            'blogs/blog-3.jpg' => 'media/home/blog3.jpg',
+            'blogs/blog-4.jpg' => 'media/home/blog4.jpg',
+            'about/about-1.jpg' => 'media/about/about-1.jpg',
+            'about/about-2.jpg' => 'media/about/about-2.jpg',
+            'service/emergency.jpg' => 'media/service/emargency.jpg',
+        ];
+
+        foreach ($map as $target => $source) {
+            $sourcePath = public_path('frontend-assets/'.$source);
+            $targetPath = storage_path('app/public/'.$target);
+
+            if (! File::exists($targetPath) && File::exists($sourcePath)) {
+                File::ensureDirectoryExists(dirname($targetPath));
+                File::copy($sourcePath, $targetPath);
+            }
+        }
     }
 
     private function seedLookups(): void
@@ -134,7 +172,9 @@ class DemoDataSeeder extends Seeder
             ['Dr. Rafiq Islam', 'General Medicine', 'Internal Medicine', 'MBBS, FCPS', 'Everyday 10AM-8PM'],
         ];
 
-        return collect($rows)->map(function ($row, $i) use ($users) {
+        $images = ['doctors/doctor-1.png', 'doctors/doctor-2.png', 'doctors/doctor-3.png'];
+
+        return collect($rows)->map(function ($row, $i) use ($users, $images) {
             [$name, $department, $specialist, $degree, $availability] = $row;
 
             return Doctor::updateOrCreate(
@@ -145,6 +185,7 @@ class DemoDataSeeder extends Seeder
                     'phone' => '01'.rand(700000000, 799999999), 'status' => 1,
                     'user_id' => $users['doctorUsers'][$i]->id,
                     'services' => 'Consultation, Follow-up, Emergency',
+                    'image' => $images[$i % count($images)],
                 ]
             );
         });
@@ -158,22 +199,28 @@ class DemoDataSeeder extends Seeder
     private function seedContent(): void
     {
         $services = [
-            ['Emergency Care', '24/7 emergency response with ICU backup.', 'bi-activity'],
-            ['Cardiology', 'ECG, echo and angiogram facilities.', 'bi-heart-pulse'],
-            ['Diagnostics Lab', '200+ tests with same-day reports.', 'bi-clipboard2-pulse'],
-            ['Blood Bank', 'Safe screened blood, all groups.', 'bi-droplet'],
-            ['Pharmacy', 'Genuine medicine round the clock.', 'bi-capsule'],
-            ['Ambulance', 'City-wide rapid pickup service.', 'bi-truck'],
+            ['Emergency Care', 'Round-the-clock emergency unit with ICU backup and rapid triage, so critical patients are stabilised within minutes of arrival.', 'bi-activity'],
+            ['Cardiology', 'Complete heart care — ECG, echocardiogram, stress testing and angiogram support under senior cardiologists.', 'bi-heart-pulse'],
+            ['Diagnostics Lab', 'More than 200 laboratory and imaging tests with accurate, same-day reports you can collect online.', 'bi-clipboard2-pulse'],
+            ['Blood Bank', 'Safe, screened blood of every group with a verified donor network for urgent transfusion needs.', 'bi-droplet'],
+            ['Pharmacy', 'Genuine medicine at fair prices, dispensed by qualified pharmacists day and night.', 'bi-capsule'],
+            ['Ambulance', 'City-wide rapid ambulance pickup with trained responders and direct hospital handover.', 'bi-truck'],
         ];
         foreach ($services as $i => [$title, $description, $icon]) {
-            Service::firstOrCreate(['title' => $title], [
+            Service::updateOrCreate(['title' => $title], [
                 'description' => $description, 'icon' => $icon, 'order' => $i, 'status' => 1,
+                'button_text' => 'Read more', 'button_url' => '#',
             ]);
         }
 
-        foreach (['Your Health, Our Mission', 'Advanced Care Close to Home', 'Trusted Doctors, Modern Labs'] as $i => $title) {
-            Slider::firstOrCreate(['title' => $title], [
-                'description' => 'Quality healthcare for every family.', 'button_text' => 'Book Appointment',
+        $sliders = [
+            ['Advanced Healthcare You Can Trust', 'From emergency response to specialised surgery, MediCare Hospital brings modern diagnostics, expert doctors and 24/7 care under one roof.', 'Book Appointment', 'sliders/slider-1.jpg'],
+            ['Your Health, Our Mission', 'Book appointments online in a minute, meet specialists across six departments and get same-day lab reports.', 'Book Appointment', 'sliders/slider-2.jpg'],
+            ['Emergency Care, Around the Clock', 'Our emergency unit, ICU backup and rapid ambulance service respond within minutes — day or night.', 'Call Emergency', 'sliders/slider-3.png'],
+        ];
+        foreach ($sliders as [$title, $description, $button, $image]) {
+            Slider::updateOrCreate(['title' => $title], [
+                'description' => $description, 'button_text' => $button, 'bg_image' => $image,
             ]);
         }
 
@@ -185,17 +232,17 @@ class DemoDataSeeder extends Seeder
         }
 
         $posts = [
-            ['10 Tips for a Healthy Heart', 'Heart Health', 'health,tips'],
-            ['Child Vaccination Schedule', 'Child Care', 'care,tips'],
-            ['When to See a Cardiologist', 'Heart Health', 'doctor,health'],
-            ['Eating Right on a Budget', 'Nutrition', 'tips,care'],
-            ['Monsoon Health Precautions', 'Wellness', 'hospital,care'],
-            ['Understanding Blood Pressure', 'Wellness', 'health,doctor'],
+            ['10 Tips for a Healthy Heart', 'Heart Health', 'health,tips', 'blogs/blog-1.jpeg', 'Small daily habits — walking, less salt, regular checkups — keep your heart strong. Our cardiologists explain what works.'],
+            ['Child Vaccination Schedule', 'Child Care', 'care,tips', 'blogs/blog-2.jpg', 'Which vaccines your child needs and when. A simple schedule every parent can follow from birth to age five.'],
+            ['When to See a Cardiologist', 'Heart Health', 'doctor,health', 'blogs/blog-3.jpg', 'Chest discomfort, breathlessness or high blood pressure? Know the warning signs that deserve a specialist visit.'],
+            ['Eating Right on a Budget', 'Nutrition', 'tips,care', 'blogs/blog-4.jpg', 'Healthy eating does not need to be expensive. Local foods and smart planning cover everything your body needs.'],
+            ['Monsoon Health Precautions', 'Wellness', 'hospital,care', 'blogs/blog-1.jpeg', 'Waterborne illness rises every monsoon. Safe water, food hygiene and timely vaccination keep your family protected.'],
+            ['Understanding Blood Pressure', 'Wellness', 'health,doctor', 'blogs/blog-2.jpg', 'What your readings mean, how to measure correctly at home, and when medication becomes necessary.'],
         ];
-        foreach ($posts as $i => [$title, $category, $tags]) {
-            $blog = Blog::firstOrCreate(['slug' => Str::slug($title)], [
-                'title' => $title, 'excerpt' => Str::limit('Practical guidance from our specialists on '.$title.'.', 120),
-                'content' => '<p>Our specialists share practical, everyday guidance on '.$title.'. Visit MediCare for a full checkup.</p>',
+        foreach ($posts as $i => [$title, $category, $tags, $image, $excerpt]) {
+            $blog = Blog::updateOrCreate(['slug' => Str::slug($title)], [
+                'title' => $title, 'excerpt' => $excerpt, 'image' => $image,
+                'content' => '<p>'.$excerpt.'</p><p>At MediCare Hospital, our specialists combine modern diagnostics with personal guidance. Book a consultation to get advice shaped around your health, not generic tips — and return for regular follow-ups so small issues never become big ones.</p>',
                 'author' => 'MediCare Team', 'status' => 1, 'order' => $i,
                 'category' => $category, 'tags' => $tags,
             ]);
@@ -420,15 +467,107 @@ class DemoDataSeeder extends Seeder
 
     private function seedSettings(): void
     {
-        if (GeneralSetting::count() === 0) {
-            GeneralSetting::create([
-                'site_name' => 'MediCare Hospital',
-                'address' => '12 Green Road, Dhaka 1215',
-                'working_hours' => 'Open 24 Hours',
-                'facebook' => 'https://facebook.com/medicare',
-                'twitter' => 'https://x.com/medicare',
-                'linkedin' => 'https://linkedin.com/company/medicare',
-                'youtube' => 'https://youtube.com/@medicare',
+        $general = GeneralSetting::first();
+        $generalData = [
+            'site_name' => 'MediCare Hospital',
+            'address' => '12 Green Road, Dhaka 1215',
+            'working_hours' => 'Open 24 Hours, Every Day',
+            'phone' => '+880 2-5815-1234',
+            'email' => 'info@medicarehospital.com',
+            'footer_description' => 'MediCare Hospital has served Dhaka families for over 25 years with specialist doctors, a modern diagnostics lab, a safe blood bank and round-the-clock emergency care.',
+            'copyright' => '© '.now()->year.' MediCare Hospital. All rights reserved.',
+            'facebook' => 'https://facebook.com/medicare',
+            'twitter' => 'https://x.com/medicare',
+            'linkedin' => 'https://linkedin.com/company/medicare',
+            'youtube' => 'https://youtube.com/@medicare',
+        ];
+        if (! $general) {
+            GeneralSetting::create($generalData);
+        } else {
+            foreach ($generalData as $key => $value) {
+                if (empty($general->{$key})) {
+                    $general->{$key} = $value;
+                }
+            }
+            $general->save();
+        }
+
+        HomeSetting::firstOrCreate([], [
+            'about_title' => 'A Modern Hospital Built Around Patients',
+            'about_description' => 'For over 25 years, MediCare Hospital has combined experienced specialists with modern diagnostics — from cardiology and neurology to pediatrics and emergency care. Book online in a minute, meet your doctor without long queues, and collect lab reports the same day.',
+            'about_button_text' => 'More About Us',
+            'about_image_one' => 'home/about-1.jpg',
+            'about_image_two' => 'home/about-2.jpg',
+            'about_image_three' => 'home/about-3.jpeg',
+            'counter_one_number' => 25, 'counter_one_text' => 'Years of Experience',
+            'counter_two_number' => 150, 'counter_two_text' => 'Specialist Doctors',
+            'counter_three_number' => 48000, 'counter_three_text' => 'Happy Patients',
+            'counter_four_number' => 15, 'counter_four_text' => 'Medical Departments',
+        ]);
+
+        AboutSetting::firstOrCreate([], [
+            'subtitle' => 'About MediCare',
+            'title' => 'Compassionate Care Backed by Modern Medicine',
+            'tagline' => 'Trusted by Dhaka families since 2000',
+            'description' => 'MediCare Hospital began as a small clinic with one promise: no patient should wait for quality care. Today our 150+ specialists, 200-test diagnostics lab, safe blood bank and 24/7 emergency unit serve thousands of families every month — with online booking, transparent pricing and follow-up that continues after discharge.',
+            'button_text' => 'Meet Our Doctors',
+            'button_url' => '/doctor',
+            'image_one' => 'about/about-1.jpg',
+            'image_two' => 'about/about-2.jpg',
+            'mission_title' => 'Our Mission',
+            'mission_description' => 'To make advanced healthcare reachable for every family — accurate diagnosis, honest advice and treatment without delay.',
+            'planning_title' => 'Our Approach',
+            'planning_description' => 'Specialist consultation, same-day diagnostics and coordinated follow-up, all managed through one patient record.',
+            'vision_title' => 'Our Vision',
+            'vision_description' => 'A healthier Bangladesh where world-class hospital care is available in every neighbourhood, not just abroad.',
+        ]);
+
+        $serviceSetting = ServiceSetting::firstOrCreate([], [
+            'emergency_subtitle' => 'Emergency Treatment',
+            'emergency_title' => 'Emergency? Call Us Any Time, Day or Night',
+            'emergency_description' => 'Chest pain, accidents, complications in pregnancy — our emergency team triages within minutes, with ICU backup, an on-call surgeon and a stocked blood bank on site. One call dispatches our ambulance and prepares your bed before you arrive.',
+            'emergency_image' => 'service/emergency.jpg',
+            'emergency_phone' => '+880 2-5815-1234',
+            'emergency_email' => 'emergency@medicarehospital.com',
+            'prevention_subtitle' => 'Prevention',
+            'prevention_title' => 'How To Protect Yourself',
+            'prevention_1_title' => 'Wash Your Hands',
+            'prevention_1_desc' => 'Scrub with soap for at least 20 seconds before meals and after returning home — the simplest shield against infection.',
+            'prevention_2_title' => 'Stay At Home When Sick',
+            'prevention_2_desc' => 'Rest, hydrate and avoid crowds during fever or flu so you recover faster and protect those around you.',
+            'prevention_3_title' => 'Avoid Close Contact',
+            'prevention_3_desc' => 'Keep distance from anyone coughing or sneezing, and wear a mask in crowded indoor places.',
+            'prevention_4_title' => 'Eat Balanced Meals',
+            'prevention_4_desc' => 'Fresh vegetables, lentils, fish and clean water every day keep immunity strong without costly supplements.',
+            'prevention_5_title' => 'Exercise Regularly',
+            'prevention_5_desc' => 'Thirty minutes of brisk walking most days lowers blood pressure, sugar and stress alike.',
+            'prevention_6_title' => 'Get Regular Checkups',
+            'prevention_6_desc' => 'Yearly screening catches diabetes, hypertension and heart risk early — when treatment is simplest.',
+            'prevention_7_title' => 'Washing Hands',
+            'prevention_7_desc' => 'Carry soap or sanitizer when travelling so clean hands are always within reach, wherever you are.',
+            'prevention_8_title' => 'Use Your Gloves',
+            'prevention_8_desc' => 'Wear gloves when caring for a sick family member or handling waste, and dispose of them safely afterwards.',
+        ]);
+        $serviceSetting->fill([
+            'prevention_7_title' => 'Washing Hands',
+            'prevention_7_desc' => 'Carry soap or sanitizer when travelling so clean hands are always within reach, wherever you are.',
+            'prevention_8_title' => 'Use Your Gloves',
+            'prevention_8_desc' => 'Wear gloves when caring for a sick family member or handling waste, and dispose of them safely afterwards.',
+        ]);
+        $serviceSetting->save();
+
+        $seoRows = [
+            'home' => ['MediCare Hospital — Advanced Healthcare in Dhaka', 'Specialist doctors, modern diagnostics lab, blood bank and 24/7 emergency care at MediCare Hospital, Dhaka. Book appointments online.', 'hospital, doctors, appointment, diagnostics, emergency, Dhaka'],
+            'about' => ['About Us — MediCare Hospital', 'Trusted by Dhaka families since 2000. Meet our mission, our specialists and our modern facilities.', 'about hospital, mission, vision, Dhaka hospital'],
+            'service' => ['Our Services — MediCare Hospital', 'Emergency care, cardiology, diagnostics lab, blood bank, pharmacy and ambulance services under one roof.', 'hospital services, emergency, cardiology, lab, pharmacy'],
+            'doctor' => ['Our Doctors — MediCare Hospital', 'Meet experienced specialists across cardiology, neurology, orthopedics, pediatrics and more. Book your visit online.', 'doctors, specialists, appointment'],
+            'blog' => ['Health Blog — MediCare Hospital', 'Practical health guidance from our specialists on heart, nutrition, child care and everyday wellness.', 'health blog, tips, wellness'],
+            'contact' => ['Contact Us — MediCare Hospital', 'Reach MediCare Hospital at 12 Green Road, Dhaka. Call, email or send a message — we reply within one working day.', 'contact hospital, address, phone'],
+            'appointment' => ['Book Appointment — MediCare Hospital', 'Choose your doctor, date and time slot online. Instant confirmation with live status tracking.', 'book appointment, doctor visit'],
+        ];
+        foreach ($seoRows as $page => [$title, $description, $keywords]) {
+            SeoSetting::firstOrCreate(['page' => $page], [
+                'meta_title' => $title, 'meta_description' => $description, 'meta_keywords' => $keywords,
             ]);
         }
     }
