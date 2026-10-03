@@ -2209,6 +2209,8 @@ input:-webkit-autofill:focus {
 
 .blog-page .blog-card .blog-img a img {
   width: 100%;
+  height: 230px;
+  object-fit: cover;
 
   transition: 0.4s;
 }
