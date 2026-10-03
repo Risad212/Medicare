@@ -22,7 +22,7 @@ class BlogController extends Controller
             $query->where('tags', 'like', '%'.$request->tag.'%');
         }
 
-        $blogs = $query->paginate(9);
+        $blogs = $query->paginate(6)->withQueryString();
         $categories = Blog::where('status', 1)
             ->whereNotNull('category')
             ->selectRaw('category, count(*) as count')

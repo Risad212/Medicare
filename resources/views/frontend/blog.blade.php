@@ -54,8 +54,14 @@
             </div>
          @endif
 
-      </div>
-   </div>
+       </div>
+
+       @if(isset($blogs) && method_exists($blogs, 'hasPages') && $blogs->hasPages())
+          <div class="d-flex justify-content-center mt-5">
+             {{ $blogs->links() }}
+          </div>
+       @endif
+    </div>
 </section>
 
 @endsection
