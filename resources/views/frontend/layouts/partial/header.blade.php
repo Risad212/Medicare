@@ -139,16 +139,10 @@
                         <a class="nav-link" href="{{ route('doctor') }}">Doctors</a>
                     </li>
 
-                    <li class="nav-item dropdown">
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('blog') }}">
                             Blog
                         </a>
-
-                        <ul class="dropdown-list">
-                            <li class="item">
-                                <a href="#">Blog Details</a>
-                            </li>
-                        </ul>
                     </li>
 
                     <li class="nav-item">
