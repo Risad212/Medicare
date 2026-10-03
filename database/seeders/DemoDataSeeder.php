@@ -6,19 +6,12 @@ use App\Models\AboutSetting;
 use App\Models\Appointment;
 use App\Models\Blog;
 use App\Models\BlogComment;
-use App\Models\BloodDonation;
-use App\Models\BloodDonor;
-use App\Models\BloodGroup;
-use App\Models\BloodRequest;
 use App\Models\Category;
 use App\Models\Department;
 use App\Models\Doctor;
 use App\Models\GeneralSetting;
 use App\Models\HomeSetting;
 use App\Models\Invoice;
-use App\Models\LabOrder;
-use App\Models\LabOrderItem;
-use App\Models\LabTest;
 use App\Models\Prescription;
 use App\Models\PrescriptionItem;
 use App\Models\SeoSetting;
@@ -28,6 +21,14 @@ use App\Models\Slider;
 use App\Models\Tag;
 use App\Models\TimeSlot;
 use App\Models\User;
+use App\Modules\BloodBank\Models\BloodDonation;
+use App\Modules\BloodBank\Models\BloodDonor;
+use App\Modules\BloodBank\Models\BloodGroup;
+use App\Modules\BloodBank\Models\BloodRequest;
+use App\Modules\Lab\Models\LabOrder;
+use App\Modules\Lab\Models\LabOrderItem;
+use App\Modules\Lab\Models\LabTest;
+use App\Support\Module;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
@@ -58,8 +59,12 @@ class DemoDataSeeder extends Seeder
             $slots = $this->seedTimeSlots();
             $this->seedContent();
             $appointments = $this->seedAppointments($users, $doctors, $slots);
-            $this->seedLaboratory($users, $doctors);
-            $this->seedBlood($users, $doctors);
+            if (Module::enabled('lab')) {
+                $this->seedLaboratory($users, $doctors);
+            }
+            if (Module::enabled('bloodbank')) {
+                $this->seedBlood($users, $doctors);
+            }
             $this->seedPrescriptions($users, $doctors, $appointments);
             $this->seedSettings();
         });

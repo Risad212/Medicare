@@ -5,7 +5,7 @@ description: Add or modify Laravel backend code in MediCare (controllers, routes
 
 # Laravel Conventions (MediCare)
 
-Stack: Laravel 13, PHP `^8.3`, SQLite dev / MySQL prod, `laravel/ui` auth, `laravel/socialite`.
+Stack: Laravel 13, PHP `^8.4`, SQLite dev / MySQL prod, `laravel/ui` auth, `laravel/socialite`.
 
 ## Routing
 

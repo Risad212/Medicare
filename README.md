@@ -1,7 +1,7 @@
 # Laravel Hospital Website — MediCare
 
 ## Requirements
-- PHP: 8.3 or higher (composer requires `^8.3`)
+- PHP: 8.4 or higher (composer requires `^8.4`)
 - Composer: Latest version
 - Laravel: 13.x (`laravel/framework ^13.0`)
 - MySQL: 5.7 or higher (or SQLite for testing)
@@ -244,7 +244,7 @@ http://127.0.0.1:8000/admin
 ---
 
 ## Important Notes
-- Use PHP 8.3+
+- Use PHP 8.4+
 - Keep assets inside public/ folder
 - Always use asset() helper for CSS, JS, images
 - File names are case-sensitive
