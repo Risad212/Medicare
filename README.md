@@ -10,18 +10,41 @@ This repository does not have a hosted public demo. The demo accounts below work
 
 ## Demo login accounts
 
-All sample accounts use the password **`123456`**. Visit `/login` on the running website and sign in with one of these email addresses:
+Seed the demo accounts first (local demo only):
 
-| Role | Demo email | Where you go after signing in |
-| --- | --- | --- |
-| Administrator | `admin@medicare.test` | Admin panel (`/admin`) |
-| Receptionist | `receptionist@medicare.test` | Staff/admin area |
-| Lab technician | `lab@medicare.test` | Staff/admin area |
-| Pharmacist | `pharmacist@medicare.test` | Staff/admin area |
-| Doctor | `doctor1@medicare.test` through `doctor6@medicare.test` | Doctor dashboard |
-| Patient | `patient1@medicare.test` through `patient8@medicare.test` | Patient profile |
+```bash
+php artisan migrate --seed
+# or, if the tables already exist:
+php artisan db:seed --class=DemoDataSeeder
+```
 
-These are public sample credentials for local demonstration only. Never use them on a live website or store real patient information in a demo installation. A hosted demo operator may disable or change these accounts.
+### How to log in (same steps for every role)
+
+1. Start the site, e.g. `php artisan serve` → `http://127.0.0.1:8000`.
+2. Open `http://127.0.0.1:8000/login`.
+3. Enter one of the email + password pairs below and click **Login**.
+4. You are redirected automatically based on your role (see "Goes to" column).
+5. To switch roles, **Logout** first, then log in again with another account.
+
+All sample accounts use the password **`123456`**.
+
+| Role | Demo email(s) | Password | Goes to after login | What this account can do |
+| --- | --- | --- | --- | --- |
+| Administrator (admin) | `admin@medicare.test` | `123456` | `/admin` (admin panel) | Full access: dashboard, appointments, doctors, patients, settings, users/roles, invoices, prescriptions, lab/pharmacy/blood-bank modules when enabled |
+| Receptionist (front desk) | `receptionist@medicare.test` | `123456` | `/admin` (staff area, restricted) | Front-desk workflows: appointments and patient intake; other menus hidden if no permission |
+| Lab technician | `lab@medicare.test` (role: `lab-technician`) | `123456` | `/admin` (staff area, restricted) | Lab workflows: lab tests/orders/reports where enabled |
+| Pharmacist | `pharmacist@medicare.test` | `123456` | `/admin` (staff area, restricted) | Pharmacy workflows: medicines/prescriptions where enabled |
+| Doctor | `doctor1@medicare.test`, `doctor2@medicare.test`, `doctor3@medicare.test`, `doctor4@medicare.test`, `doctor5@medicare.test`, `doctor6@medicare.test` | `123456` | `/doctor` (doctor dashboard) | Assigned appointments, update appointment status, profile, prescriptions; lab/blood-bank tools only if permitted |
+| Patient | `patient1@medicare.test` through `patient8@medicare.test` (e.g. `patient1@medicare.test`) | `123456` | `/profile` (My Profile) | View own appointments, lab reports/orders, prescriptions; book and cancel eligible appointments |
+
+Notes:
+
+- Administrator login example: open `/login`, enter `admin@medicare.test` / `123456` → lands on `/admin`.
+- Lab technician login example: open `/login`, enter `lab@medicare.test` / `123456` → lands on `/admin` with lab-only menus.
+- Doctor login example: open `/login`, enter `doctor1@medicare.test` / `123456` → lands on `/doctor`.
+- Patient login example: open `/login`, enter `patient1@medicare.test` / `123456` → lands on `/profile`. Patients can also self-register at `/register` or use Google sign-in (creates a `patient` account) instead of using a demo account.
+- Staff accounts (`receptionist`, `lab-technician`, `pharmacist`) share the `/admin` area with the admin but see only permitted modules. If a menu is missing, the module is disabled or the role has no permission.
+- These are public sample credentials for local demonstration only. Never use them on a live website or store real patient information in a demo installation. A hosted demo operator may disable or change these accounts. For live use, the admin should create individual accounts and replace all demo passwords.
 
 ## Using MediCare as a visitor
 
