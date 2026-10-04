@@ -83,4 +83,4 @@ Staff accounts have restricted access based on their role. For example, receptio
 
 ## Application structure
 
-For a visual overview of the application structure, see [APP_OVERVIEW.md](APP_OVERVIEW.md).
+For a visual overview of the application structure, see [ARCHITECTURE.md](ARCHITECTURE.md).
