@@ -12,13 +12,16 @@ flowchart LR
     Service["Application Service"]
     Model["Eloquent Model"]
     Database[("Database")]
-    View["Blade View"]
+    Inertia["Inertia response"]
+    React["React admin page"]
+    Blade["Blade page"]
 
     Browser --> Routes --> Middleware --> Controller
     Controller --> Request
     Controller --> Service
     Service --> Model --> Database
-    Controller --> View --> Browser
+    Controller --> Inertia --> React --> Browser
+    Controller --> Blade --> Browser
 ```
 
 ## Application layers
@@ -26,7 +29,9 @@ flowchart LR
 ```mermaid
 flowchart TB
     subgraph Presentation["Presentation"]
-        Blade["resources/views"]
+        Blade["Blade public and unconverted views"]
+        React["resources/js/Pages · React admin screens"]
+        Inertia["Inertia adapter"]
         Assets["resources/js · resources/css · resources/sass"]
     end
 
@@ -50,9 +55,11 @@ flowchart TB
     Controllers --> Services
     Services --> Models --> Database
     Controllers --> Blade
+    Controllers --> Inertia --> React
     Modules --> Services
     Modules --> Models
     Assets --> Blade
+    Assets --> React
 ```
 
 ## Main source directories
@@ -80,7 +87,7 @@ database/
 
 resources/
 ├── css/            Frontend and admin styles
-├── js/             Frontend scripts
+├── js/             Frontend scripts and React admin pages
 ├── sass/           Sass stylesheets
 └── views/          Blade templates
 

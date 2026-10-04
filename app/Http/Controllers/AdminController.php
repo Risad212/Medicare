@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
-use App\Models\Blog;
 use App\Models\BlogComment;
 use App\Models\Doctor;
 use App\Models\Invoice;
@@ -11,9 +10,12 @@ use App\Models\Patient;
 use App\Models\Prescription;
 use App\Modules\Analytics\Services\AnalyticsService;
 use App\Modules\Lab\Models\LabOrder;
+use App\Support\AdminNavigation;
 use App\Support\Module;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AdminController extends Controller
 {
@@ -29,15 +31,12 @@ class AdminController extends Controller
 
     /**
      * Show the application dashboard.
-     *
-     * @return Renderable
      */
-    public function index()
+    public function index(): Response
     {
         $totalDoctors = Doctor::count();
         $totalAppointments = Appointment::count();
         $totalPatients = Patient::count();
-        $totalBlogs = Blog::count();
         $pendingComments = BlogComment::where('status', 0)->count();
 
         $pendingAppointments = Appointment::where('status', 0)->count();
@@ -48,15 +47,6 @@ class AdminController extends Controller
         $activeDoctorsToday = Doctor::whereHas('appointments', function ($q) {
             $q->whereDate('appointment_date', now()->toDateString());
         })->count();
-
-        // Last 7 days of bookings (oldest -> newest) for the trend sparkline.
-        $weekByDay = Appointment::where('appointment_date', '>=', now()->subDays(6)->toDateString())
-            ->where('appointment_date', '<=', now()->toDateString())
-            ->get(['appointment_date'])
-            ->groupBy(fn ($a) => Carbon::parse($a->appointment_date)->toDateString());
-        $weekTrend = collect(range(6, 0))->map(
-            fn ($d) => $weekByDay->get(now()->subDays($d)->toDateString(), collect())->count()
-        )->values()->all();
 
         // Today's queue: pending first so the morning register surfaces
         // what needs action, then by slot order.
@@ -232,43 +222,144 @@ class AdminController extends Controller
             ? app(AnalyticsService::class)->data()
             : [];
 
-        return view('backend.home', compact(
-            'totalDoctors',
-            'totalAppointments',
-            'totalPatients',
-            'hospitalEarning',
-            'upcomingSchedule',
-            'rangeStats',
-            'calMonth',
-            'calBookings',
-            'totalBlogs',
-            'pendingComments',
-            'pendingAppointments',
-            'confirmedAppointments',
-            'completedAppointments',
-            'cancelledAppointments',
-            'todayAppointments',
-            'activeDoctorsToday',
-            'weekTrend',
-            'recentAppointments',
-            'topDoctors',
-            'dutyDoctors',
-            'recentComments',
-            'revenueAllTime',
-            'revenueThisMonth',
-            'labOrdersThisMonth',
-            'labOrdersPending',
-            'invoicePaidThisMonth',
-            'invoicePaidAllTime',
-            'invoiceOutstanding',
-            'invoicesPendingCount',
-            'monthlyAppointments',
-            'monthlyLabOrders',
-            'monthLabels',
-            'doctorLoad',
-            'pendingLabOrders',
-            'recentPrescriptions',
-            'analytics'
-        ));
+        $role = (string) auth()->user()->role;
+        $isAdmin = $role === 'admin';
+        $isFrontDesk = in_array($role, ['admin', 'receptionist'], true);
+        $isLabStaff = in_array($role, ['admin', 'lab-technician'], true) && Module::enabled('lab');
+        $isPharmacyStaff = in_array($role, ['admin', 'pharmacist'], true);
+
+        $calendarStart = $calMonth->copy()->startOfWeek(Carbon::SUNDAY);
+        $today = now()->toDateString();
+        $calendar = collect(range(0, 41))->map(function ($offset) use ($calendarStart, $calMonth, $calBookings, $today) {
+            $day = $calendarStart->copy()->addDays($offset);
+            $date = $day->toDateString();
+
+            return [
+                'date' => $date,
+                'day' => $day->day,
+                'inMonth' => $day->month === $calMonth->month,
+                'isToday' => $date === $today,
+                'hasBookings' => $calBookings->get($date, 0) > 0,
+            ];
+        });
+
+        $queue = $isFrontDesk ? $recentAppointments->map(fn (Appointment $appointment) => [
+            'id' => $appointment->id,
+            'patientName' => $appointment->patient_name,
+            'phone' => $appointment->phone,
+            'age' => $appointment->age,
+            'doctorName' => $appointment->doctor->name ?? '—',
+            'department' => $appointment->doctor->department ?? 'General',
+            'date' => Carbon::parse($appointment->appointment_date)->format('M j'),
+            'time' => $appointment->timeSlot->time ?? '—',
+            'status' => (int) $appointment->status,
+        ])->values() : [];
+
+        $schedule = $isFrontDesk ? $upcomingSchedule->map(fn ($appointments, $dayLabel) => [
+            'day' => $dayLabel,
+            'appointments' => $appointments->take(2)->map(fn (Appointment $appointment) => [
+                'id' => $appointment->id,
+                'time' => $appointment->timeSlot->time ?? '—',
+                'doctorName' => $appointment->doctor->name ?? '—',
+                'patientName' => $appointment->patient_name,
+                'status' => (int) $appointment->status,
+            ])->values(),
+        ])->values() : [];
+
+        $analyticsData = $isAdmin && Module::enabled('analytics')
+            ? [
+                ...$analytics,
+                'busiestDoctors' => collect($analytics['busiestDoctors'] ?? [])->map(fn ($doctor) => [
+                    'name' => $doctor->name,
+                    'appointmentCount' => $doctor->appointment_count,
+                ])->values(),
+            ]
+            : null;
+
+        return Inertia::render('Admin/Dashboard', [
+            'metrics' => [
+                'frontDesk' => $isFrontDesk ? [
+                    'todayAppointments' => $todayAppointments,
+                    'totalPatients' => $totalPatients,
+                    'totalDoctors' => $totalDoctors,
+                    'totalAppointments' => $totalAppointments,
+                    'pendingAppointments' => $pendingAppointments,
+                    'confirmedAppointments' => $confirmedAppointments,
+                    'completedAppointments' => $completedAppointments,
+                    'cancelledAppointments' => $cancelledAppointments,
+                    'activeDoctorsToday' => $activeDoctorsToday,
+                ] : null,
+                'admin' => $isAdmin ? [
+                    'hospitalEarning' => $hospitalEarning,
+                    'pendingComments' => $pendingComments,
+                    'revenueAllTime' => $revenueAllTime,
+                    'revenueThisMonth' => $revenueThisMonth,
+                    'invoicePaidThisMonth' => $invoicePaidThisMonth,
+                    'invoicePaidAllTime' => $invoicePaidAllTime,
+                    'invoiceOutstanding' => $invoiceOutstanding,
+                    'invoicesPendingCount' => $invoicesPendingCount,
+                    'monthlyAppointments' => $monthlyAppointments,
+                    'monthlyLabOrders' => $monthlyLabOrders,
+                    'monthLabels' => $monthLabels,
+                    'rangeStats' => $rangeStats,
+                    'topDoctors' => $topDoctors->take(5)->map(fn (Doctor $doctor) => [
+                        'id' => $doctor->id,
+                        'name' => $doctor->name,
+                    ])->values(),
+                    'comments' => $recentComments->map(fn (BlogComment $comment) => [
+                        'comment' => Str::limit($comment->comment, 90),
+                        'name' => $comment->name,
+                        'blogTitle' => $comment->blog->title ?? '—',
+                    ])->values(),
+                    'analytics' => $analyticsData,
+                ] : null,
+                'laboratory' => $isLabStaff ? [
+                    'ordersThisMonth' => $labOrdersThisMonth,
+                    'ordersPending' => $labOrdersPending,
+                    'pendingOrders' => $pendingLabOrders->map(fn (LabOrder $order) => [
+                        'id' => $order->id,
+                        'createdAt' => $order->created_at->format('M j'),
+                        'doctorName' => $order->doctor->name ?? '—',
+                        'patientName' => $order->patient_name,
+                        'phone' => $order->phone ?? '—',
+                        'testCount' => $order->items->count(),
+                        'status' => $order->status,
+                    ])->values(),
+                ] : null,
+                'pharmacy' => $isPharmacyStaff ? [
+                    'prescriptions' => $recentPrescriptions->map(fn (Prescription $prescription) => [
+                        'id' => $prescription->id,
+                        'patientName' => $prescription->patient_name,
+                        'doctorName' => $prescription->doctor->name ?? '—',
+                        'createdAt' => $prescription->created_at->format('M j, Y'),
+                    ])->values(),
+                ] : null,
+            ],
+            'calendar' => $isFrontDesk ? [
+                'month' => $calMonth->format('F Y'),
+                'monthParam' => $calMonth->format('Y-m'),
+                'todayMonth' => now()->format('Y-m'),
+                'previousMonth' => $calMonth->copy()->subMonth()->format('Y-m'),
+                'nextMonth' => $calMonth->copy()->addMonth()->format('Y-m'),
+                'days' => $calendar,
+            ] : null,
+            'schedule' => $schedule,
+            'queue' => $queue,
+            'dutyDoctors' => $isFrontDesk ? $dutyDoctors->map(fn (Doctor $doctor) => [
+                'name' => $doctor->name,
+                'department' => $doctor->department ?? 'General',
+                'appointmentCount' => $doctor->appointment_count,
+                'active' => (bool) $doctor->status,
+            ])->values() : [],
+            'doctorLoad' => $isFrontDesk ? $doctorLoad->map(fn (Doctor $doctor) => [
+                'name' => $doctor->name,
+                'appointmentCount' => $doctor->appointment_count,
+            ])->values() : [],
+            'features' => [
+                'lab' => Module::enabled('lab'),
+                'analytics' => Module::enabled('analytics'),
+            ],
+            'routes' => AdminNavigation::routes(),
+        ]);
     }
 }

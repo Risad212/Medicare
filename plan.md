@@ -10,9 +10,17 @@ This plan covers the `/admin` area and staff modules shown within it. The public
 
 - The application uses Laravel 13 and Vite.
 - Tailwind CSS v4 and its Vite plugin are already installed and used by the admin styles.
-- React and the Inertia.js adapters are not currently listed as dependencies.
-- Admin and staff pages are currently Blade templates, with controllers and routes in Laravel.
+- React, React DOM, Inertia React, and the Laravel Inertia adapter are now installed for the migration.
+- The admin dashboard and appointment register have been moved to React; remaining admin/staff pages are still Blade templates backed by Laravel controllers and routes.
 - Admin routes use the `auth`, `admin`, and `staff.modules` middleware. Staff module permissions and enabled-module checks must continue to apply after the frontend migration.
+
+## Implementation progress
+
+- **Completed:** Added the Laravel Inertia and React/Vite foundation inside the existing monolith.
+- **Completed:** Converted the role-aware admin/staff dashboard and appointment register page to React, preserving Laravel routes, search, pagination, appointment actions, module-aware widgets, and role-specific data.
+- **Completed:** Converted appointment create/edit forms to React/Inertia, preserving the existing Laravel submission, validation, booking-conflict, notification, and status workflows.
+- **In progress:** Patient and doctor/department pages, remaining admin CRUD forms, content/settings pages, and optional module screens are still Blade-rendered and should be migrated incrementally.
+- **Next:** Convert patients and doctors/departments, then continue through the remaining screens in the migration phases below.
 
 ## Recommended architecture
 

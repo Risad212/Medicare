@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Invoice;
 use App\Models\User;
+use App\Modules\Analytics\Services\AnalyticsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -46,7 +47,23 @@ class AnalyticsTest extends TestCase
         $response = $this->actingAs($admin)->get('/admin');
 
         $response->assertOk();
-        $analytics = $response->viewData('analytics');
+        $analytics = app(AnalyticsService::class)->data();
+        $response->assertInertia(fn ($page) => $page
+            ->component('Admin/Dashboard')
+            ->where('metrics.admin.analytics.appointmentsThisMonth', 2)
+            ->where('metrics.admin.analytics.appointmentsLastMonth', 1)
+            ->where('metrics.admin.analytics.statusBreakdown', [
+                'pending' => 1,
+                'approved' => 0,
+                'completed' => 1,
+                'cancelled' => 1,
+            ])
+            ->where('metrics.admin.analytics.totalRegisteredPatients', 2)
+            ->where('metrics.admin.analytics.newPatientsThisMonth', 1)
+            ->where('metrics.admin.analytics.trendCounts', $analytics['trendCounts'])
+            ->has('metrics.admin.analytics.busiestDoctors', 1)
+            ->where('metrics.admin.analytics.busiestDoctors.0.name', 'Dr Stats')
+        );
         $this->assertSame(2, $analytics['appointmentsThisMonth']);
         $this->assertSame(1, $analytics['appointmentsLastMonth']);
         $this->assertSame([
@@ -57,10 +74,6 @@ class AnalyticsTest extends TestCase
         ], $analytics['statusBreakdown']);
         $this->assertSame(2, $analytics['totalRegisteredPatients']);
         $this->assertSame(1, $analytics['newPatientsThisMonth']);
-        $response->assertSee('Dr Stats', false);
-        $response->assertSee('analyticsTrend', false);
-        $response->assertSee('analyticsStatus', false);
-
         // Trend covers exactly the last 30 days of bookings.
         $trend = $analytics['trendCounts'];
         $this->assertCount(30, $trend);
@@ -76,7 +89,7 @@ class AnalyticsTest extends TestCase
         $this->actingAs($patient)->get('/admin')->assertRedirect('/login');
     }
 
-    public function test_disabled_module_hides_section_without_queries(): void
+    public function test_disabled_module_hides_analytics_props(): void
     {
         config()->set('modules.analytics', false);
         $admin = User::factory()->create(['role' => 'admin']);
@@ -84,10 +97,11 @@ class AnalyticsTest extends TestCase
         $response = $this->actingAs($admin)->get('/admin');
 
         $response->assertOk();
-        $response->assertSee('Dashboard', false); // core page intact
-        $response->assertDontSee('analyticsTrend', false);
-        $response->assertDontSee('analyticsStatus', false);
-        $this->assertSame([], $response->viewData('analytics'));
+        $response->assertInertia(fn ($page) => $page
+            ->component('Admin/Dashboard')
+            ->where('features.analytics', false)
+            ->where('metrics.admin.analytics', null)
+        );
     }
 
     private function makeAppointment(int $doctorId, int $status): Appointment

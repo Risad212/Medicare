@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\DoctorMiddleware;
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\ModuleEnabled;
 use App\Http\Middleware\PatientMiddleware;
 use App\Http\Middleware\SecurityHeadersMiddleware;
@@ -26,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'module' => ModuleEnabled::class,
         ]);
         $middleware->append(SecurityHeadersMiddleware::class);
+        $middleware->web(append: [HandleInertiaRequests::class]);
         // Language module (boot-time flag; runtime kill-switch lives in
         // SetLocale itself). ::class is a plain string and never autoloads,
         // so a deleted module folder is safe once this line is removed too.

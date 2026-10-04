@@ -9,22 +9,26 @@ use App\Models\TimeSlot;
 use App\Services\AppointmentNotifier;
 use App\Services\PatientNotifier;
 use App\Services\StaffNotifier;
+use App\Support\AdminNavigation;
+use App\Support\Module;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AppointmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $search = $request->search ? str_replace(['%', '_'], ['\%', '\_'], $request->search) : null;
-        $appointments = Appointment::with('doctor')
+        $appointments = Appointment::with(['doctor', 'timeSlot'])
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('patient_name', 'like', '%'.$search.'%')
@@ -38,18 +42,76 @@ class AppointmentController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('backend.appointments.index', compact('appointments'));
+        $appointments->through(fn (Appointment $appointment) => [
+            'id' => $appointment->id,
+            'patientName' => $appointment->patient_name,
+            'age' => $appointment->age,
+            'gender' => match ((int) $appointment->gender) {
+                1 => 'Male',
+                2 => 'Female',
+                default => 'Other',
+            },
+            'phone' => $appointment->phone,
+            'email' => $appointment->email ?? 'N/A',
+            'visitType' => $appointment->visit_type_label,
+            'date' => $appointment->appointment_date->format('d M Y'),
+            'doctorName' => $appointment->doctor->name ?? 'N/A',
+            'time' => $appointment->timeSlot->time ?? 'N/A',
+            'status' => (int) $appointment->status,
+        ]);
+
+        return Inertia::render('Admin/Appointments/Index', [
+            'appointments' => [
+                'data' => $appointments->items(),
+                'currentPage' => $appointments->currentPage(),
+                'lastPage' => $appointments->lastPage(),
+                'firstItem' => $appointments->firstItem(),
+                'lastItem' => $appointments->lastItem(),
+                'total' => $appointments->total(),
+                'previousPageUrl' => $appointments->previousPageUrl(),
+                'nextPageUrl' => $appointments->nextPageUrl(),
+            ],
+            'filters' => [
+                'search' => (string) $request->query('search', ''),
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.appointments.index'),
+                'create' => route('admin.appointments.create'),
+                'export' => route('admin.exports.appointments'),
+                'editBase' => url('/admin/appointments'),
+                'deleteBase' => url('/admin/appointments'),
+            ],
+            'features' => [
+                'lab' => Module::enabled('lab'),
+            ],
+        ]);
     }
 
     /**
      * Show the form for creating a new appointment.
      */
-    public function create()
+    public function create(): Response
     {
         $doctors = Doctor::where('status', 1)->get();
         $timeSlots = TimeSlot::where('status', 1)->get();
 
-        return view('backend.appointments.create', compact('doctors', 'timeSlots'));
+        return Inertia::render('Admin/Appointments/Create', [
+            'defaultDate' => now()->toDateString(),
+            'doctors' => $doctors->map(fn (Doctor $doctor) => [
+                'id' => $doctor->id,
+                'name' => $doctor->name,
+            ]),
+            'timeSlots' => $timeSlots->map(fn (TimeSlot $slot) => [
+                'id' => $slot->id,
+                'time' => $slot->time,
+            ]),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.appointments.index'),
+                'store' => route('admin.appointments.store'),
+            ],
+        ]);
     }
 
     /**
@@ -126,7 +188,7 @@ class AppointmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): Response
     {
         $appointment = Appointment::findOrFail($id);
         $doctors = Doctor::where('status', 1)->get();
@@ -136,7 +198,37 @@ class AppointmentController extends Controller
             ->orderBy('id')
             ->get();
 
-        return view('backend.appointments.edit', compact('appointment', 'doctors', 'slots'));
+        return Inertia::render('Admin/Appointments/Edit', [
+            'appointment' => [
+                'id' => $appointment->id,
+                'doctorId' => $appointment->doctor_id,
+                'name' => $appointment->patient_name,
+                'age' => $appointment->age,
+                'gender' => (string) $appointment->gender,
+                'phone' => $appointment->phone,
+                'email' => $appointment->email,
+                'visitType' => (string) $appointment->visit_type,
+                'date' => $appointment->appointment_date->toDateString(),
+                'timeSlotId' => $appointment->time_slot_id,
+                'status' => (string) $appointment->status,
+                'doctorName' => $appointment->doctor->name ?? 'N/A',
+                'time' => $appointment->timeSlot->time ?? 'N/A',
+                'visitTypeLabel' => $appointment->visit_type_label,
+            ],
+            'doctors' => $doctors->map(fn (Doctor $doctor) => [
+                'id' => $doctor->id,
+                'name' => $doctor->name,
+            ]),
+            'timeSlots' => $slots->map(fn (TimeSlot $slot) => [
+                'id' => $slot->id,
+                'time' => $slot->time,
+            ]),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.appointments.index'),
+                'update' => route('admin.appointments.update', $appointment),
+            ],
+        ]);
     }
 
     /**
