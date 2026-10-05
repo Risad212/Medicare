@@ -56,7 +56,7 @@ class PharmacyTest extends TestCase
     public function test_stock_index_flags_low_stock(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
-        Medicine::create([
+        $medicine = Medicine::create([
             'name' => 'Almost Gone',
             'unit' => 'vial',
             'stock_quantity' => 3,
@@ -66,15 +66,52 @@ class PharmacyTest extends TestCase
 
         $response = $this->actingAs($admin)->get('/admin/medicines');
 
-        $response->assertOk();
-        $response->assertSee('Low stock');
+        $response->assertInertia(fn ($page) => $page
+            ->component('Admin/Pharmacy/Index')
+            ->where('lowStockCount', 1)
+            ->where('medicines.data.0.name', 'Almost Gone')
+            ->where('medicines.data.0.isLowStock', true)
+            ->where('canManage', true)
+        );
+    }
+
+    public function test_medicine_create_and_edit_forms_render_react_pages(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $medicine = Medicine::create([
+            'name' => 'Napa 500',
+            'generic_name' => 'Paracetamol',
+            'unit' => 'tablet',
+            'stock_quantity' => 100,
+            'unit_price' => 2.50,
+            'low_stock_threshold' => 10,
+        ]);
+
+        $this->actingAs($admin)
+            ->get('/admin/medicines/create')
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Pharmacy/Create')
+                ->has('routes.store')
+            );
+
+        $this->get("/admin/medicines/{$medicine->id}/edit")
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Pharmacy/Edit')
+                ->where('medicine.genericName', 'Paracetamol')
+                ->where('medicine.stockQuantity', 100)
+            );
     }
 
     public function test_pharmacist_can_view_stock_but_cannot_manage_it(): void
     {
         $pharmacist = User::factory()->create(['role' => 'pharmacist']);
 
-        $this->actingAs($pharmacist)->get('/admin/medicines')->assertOk();
+        $this->actingAs($pharmacist)
+            ->get('/admin/medicines')
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Pharmacy/Index')
+                ->where('canManage', false)
+            );
         $this->actingAs($pharmacist)->get('/admin/medicines/create')->assertForbidden();
         $this->actingAs($pharmacist)->post('/admin/medicines', [
             'name' => 'X',

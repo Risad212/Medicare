@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Modules\Ambulance\Models\AmbulanceRequest;
 use App\Modules\Ambulance\Notifications\AmbulanceRequested;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -113,12 +114,13 @@ class AmbulanceTest extends TestCase
     public function test_admin_index_lists_newest_first_with_call_link(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
-        AmbulanceRequest::create([
+        $oldRequest = AmbulanceRequest::create([
             'requester_name' => 'Old',
             'requester_phone' => '01710000000',
             'pickup_address' => 'Old address',
-            'created_at' => now()->subDay(),
         ]);
+        DB::table('ambulance_requests')->where('id', $oldRequest->id)
+            ->update(['created_at' => now()->subDay()]);
         AmbulanceRequest::create([
             'requester_name' => 'New',
             'requester_phone' => '01719999999',
@@ -127,9 +129,13 @@ class AmbulanceTest extends TestCase
 
         $response = $this->actingAs($admin)->get('/admin/ambulance-requests');
 
-        $response->assertOk();
-        $response->assertSeeInOrder(['New', 'Old']);
-        $response->assertSee('tel:01719999999', false);
+        $response->assertInertia(fn ($page) => $page
+            ->component('Admin/Ambulance/Index')
+            ->where('requests.data.0.requesterName', 'New')
+            ->where('requests.data.0.requesterPhone', '01719999999')
+            ->where('requests.data.0.transitions.0.label', 'Dispatched')
+            ->where('requests.data.1.requesterName', 'Old')
+        );
     }
 
     public function test_guest_and_patient_cannot_access_admin_panel(): void

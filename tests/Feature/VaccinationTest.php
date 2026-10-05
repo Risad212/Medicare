@@ -34,6 +34,51 @@ class VaccinationTest extends TestCase
         ]);
     }
 
+    public function test_admin_vaccination_pages_render_react_components_and_preserve_search(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $patient = User::factory()->create(['role' => 'patient']);
+        $vaccination = Vaccination::create([
+            'user_id' => $patient->id,
+            'child_name' => 'Baby Aarav',
+            'vaccine_name' => 'Pentavalent',
+            'dose_number' => 2,
+            'status' => 0,
+            'next_due_date' => now()->subWeek()->toDateString(),
+            'created_by' => $admin->id,
+        ]);
+
+        $this->actingAs($admin)->get('/admin/vaccinations?search=Pentavalent')
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Vaccinations/Index')
+                ->where('filters.search', 'Pentavalent')
+                ->where('vaccinations.data.0.subjectName', 'Baby Aarav')
+                ->where('vaccinations.data.0.isOverdue', true)
+            );
+
+        $this->actingAs($admin)->get('/admin/vaccinations/create')
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Vaccinations/Form')
+                ->where('mode', 'create')
+                ->has('users')
+                ->has('patients')
+            );
+
+        $this->actingAs($admin)->get("/admin/vaccinations/{$vaccination->id}/edit")
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Vaccinations/Form')
+                ->where('mode', 'edit')
+                ->where('vaccination.vaccineName', 'Pentavalent')
+            );
+
+        $this->actingAs($admin)->get("/admin/vaccinations/{$vaccination->id}")
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Vaccinations/Show')
+                ->where('vaccination.creatorName', $admin->name)
+                ->where('vaccination.isOverdue', true)
+            );
+    }
+
     public function test_doctor_can_create_vaccination_for_register_child(): void
     {
         [$doctorUser] = $this->makeDoctor();

@@ -96,10 +96,11 @@ class DoctorSearchTest extends TestCase
             $this->makeDoctor(['name' => "Dr Page {$i}"]);
         }
 
-        $doctors = $this->get('/doctor')->viewData('doctors');
-
-        $this->assertSame(12, $doctors->count());
-        $this->assertSame(13, $doctors->total());
+        $this->get('/doctor')->assertInertia(fn ($page) => $page
+            ->component('Public/Doctors/Index')
+            ->has('doctors.data', 12)
+            ->where('doctors.total', 13)
+        );
     }
 
     private function makeDoctor(array $overrides = []): Doctor

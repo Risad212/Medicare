@@ -7,7 +7,10 @@ use App\Modules\BloodBank\Models\BloodDonation;
 use App\Modules\BloodBank\Models\BloodDonor;
 use App\Modules\BloodBank\Models\BloodGroup;
 use App\Modules\BloodBank\Services\BloodBankService;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BloodDonationController extends Controller
 {
@@ -18,7 +21,7 @@ class BloodDonationController extends Controller
     /**
      * Filterable, paginated list of blood donations.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $query = BloodDonation::with(['donor', 'bloodGroup']);
 
@@ -48,20 +51,70 @@ class BloodDonationController extends Controller
 
         $donations = $query->latest('donation_date')->paginate(10)->withQueryString();
 
-        return view('bloodbank.donations.index', [
-            'donations' => $donations,
-            'bloodGroups' => BloodGroup::orderBy('name')->get(),
+        $donations->through(fn (BloodDonation $donation) => [
+            'id' => $donation->id,
+            'donorName' => $donation->donor?->name ?? 'Removed',
+            'bloodGroup' => $donation->bloodGroup?->name ?? '—',
+            'quantity' => $donation->quantity,
+            'unit' => $donation->unit,
+            'donationDate' => $donation->donation_date->format('Y-m-d'),
+            'expiryDate' => $donation->expiry_date->format('Y-m-d'),
+            'status' => $donation->status,
+            'canSetAvailable' => in_array($donation->status, [BloodDonation::STATUS_COLLECTED, BloodDonation::STATUS_TESTING], true),
+            'canDelete' => in_array($donation->status, [BloodDonation::STATUS_COLLECTED, BloodDonation::STATUS_TESTING, BloodDonation::STATUS_EXPIRED], true),
+        ]);
+
+        return Inertia::render('Admin/BloodBank/Donations/Index', [
+            'donations' => [
+                'data' => $donations->items(),
+                'currentPage' => $donations->currentPage(),
+                'lastPage' => $donations->lastPage(),
+                'firstItem' => $donations->firstItem(),
+                'lastItem' => $donations->lastItem(),
+                'total' => $donations->total(),
+                'previousPageUrl' => $donations->previousPageUrl(),
+                'nextPageUrl' => $donations->nextPageUrl(),
+            ],
+            'bloodGroups' => BloodGroup::orderBy('name')->get(['id', 'name']),
+            'filters' => [
+                'search' => (string) $request->query('search', ''),
+                'bloodGroupId' => (string) $request->query('blood_group_id', ''),
+                'status' => (string) $request->query('status', ''),
+                'from' => (string) $request->query('from', ''),
+                'to' => (string) $request->query('to', ''),
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-donations.index'),
+                'create' => route('admin.blood-donations.create'),
+                'showBase' => url('/admin/blood-donations'),
+                'editBase' => url('/admin/blood-donations'),
+                'statusBase' => url('/admin/blood-donations'),
+                'deleteBase' => url('/admin/blood-donations'),
+            ],
         ]);
     }
 
     /**
      * Show the form for recording a new donation.
      */
-    public function create()
+    public function create(): Response
     {
-        return view('bloodbank.donations.create', [
-            'donors' => BloodDonor::where('status', true)->orderBy('name')->get(),
-            'bloodGroups' => BloodGroup::where('status', true)->orderBy('name')->get(),
+        return Inertia::render('Admin/BloodBank/Donations/Form', [
+            'mode' => 'create',
+            'defaults' => [
+                'donationDate' => now()->format('Y-m-d'),
+                'expiryDate' => now()->addMonths(3)->format('Y-m-d'),
+                'quantity' => 450,
+            ],
+            'donors' => BloodDonor::with('bloodGroup')->where('status', true)->orderBy('name')->get()
+                ->map(fn (BloodDonor $donor) => ['id' => $donor->id, 'name' => $donor->name, 'bloodGroup' => $donor->bloodGroup?->name]),
+            'bloodGroups' => BloodGroup::where('status', true)->orderBy('name')->get(['id', 'name']),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-donations.index'),
+                'store' => route('admin.blood-donations.store'),
+            ],
         ]);
     }
 
@@ -94,22 +147,68 @@ class BloodDonationController extends Controller
     /**
      * Display a single donation with links to issue history.
      */
-    public function show(BloodDonation $donation)
+    public function show(BloodDonation $donation): Response
     {
         $donation->load(['donor', 'bloodGroup', 'creator', 'issues.request', 'issues.patient']);
 
-        return view('bloodbank.donations.show', compact('donation'));
+        return Inertia::render('Admin/BloodBank/Donations/Show', [
+            'donation' => [
+                'id' => $donation->id,
+                'donorName' => $donation->donor?->name ?? 'Removed donor',
+                'bloodGroup' => $donation->bloodGroup?->name ?? '—',
+                'quantity' => $donation->quantity,
+                'unit' => $donation->unit,
+                'bagNumber' => $donation->bag_number,
+                'collectionLocation' => $donation->collection_location,
+                'donationDate' => $donation->donation_date->format('Y-m-d'),
+                'expiryDate' => $donation->expiry_date->format('Y-m-d'),
+                'status' => $donation->status,
+                'creatorName' => $donation->creator?->name,
+                'issues' => $donation->issues->map(fn ($issue) => [
+                    'id' => $issue->id,
+                    'date' => $issue->issue_date->format('Y-m-d'),
+                    'requestId' => $issue->request?->id,
+                    'patientName' => $issue->patient?->name,
+                    'quantity' => $issue->quantity,
+                    'unit' => $issue->unit,
+                ]),
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-donations.index'),
+                'edit' => route('admin.blood-donations.edit', $donation),
+            ],
+        ]);
     }
 
     /**
      * Show the form for editing the specified donation.
      */
-    public function edit(BloodDonation $donation)
+    public function edit(BloodDonation $donation): Response
     {
-        return view('bloodbank.donations.edit', [
-            'donation' => $donation,
-            'donors' => BloodDonor::where('status', true)->orderBy('name')->get(),
-            'bloodGroups' => BloodGroup::where('status', true)->orderBy('name')->get(),
+        return Inertia::render('Admin/BloodBank/Donations/Form', [
+            'mode' => 'edit',
+            'donation' => [
+                'id' => $donation->id,
+                'donorId' => $donation->donor_id,
+                'bloodGroupId' => $donation->blood_group_id,
+                'donationDate' => $donation->donation_date->format('Y-m-d'),
+                'quantity' => $donation->quantity,
+                'bagNumber' => $donation->bag_number,
+                'expiryDate' => $donation->expiry_date->format('Y-m-d'),
+                'collectionLocation' => $donation->collection_location,
+                'notes' => $donation->notes,
+                'bloodGroup' => $donation->bloodGroup?->name,
+                'status' => $donation->status,
+            ],
+            'donors' => BloodDonor::with('bloodGroup')->where('status', true)->orderBy('name')->get()
+                ->map(fn (BloodDonor $donor) => ['id' => $donor->id, 'name' => $donor->name, 'bloodGroup' => $donor->bloodGroup?->name]),
+            'bloodGroups' => BloodGroup::where('status', true)->orderBy('name')->get(['id', 'name']),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-donations.index'),
+                'update' => route('admin.blood-donations.update', $donation),
+            ],
         ]);
     }
 

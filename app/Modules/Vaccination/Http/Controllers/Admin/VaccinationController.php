@@ -8,11 +8,14 @@ use App\Models\User;
 use App\Modules\Vaccination\Http\Requests\VaccinationRequest;
 use App\Modules\Vaccination\Models\Vaccination;
 use App\Modules\Vaccination\Services\VaccinationService;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class VaccinationController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $search = $request->search ? str_replace(['%', '_'], ['\%', '\_'], $request->search) : null;
 
@@ -29,15 +32,55 @@ class VaccinationController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('vaccinations.index', compact('vaccinations'));
+        $vaccinations->through(fn (Vaccination $vaccination) => [
+            'id' => $vaccination->id,
+            'subjectName' => $vaccination->subject_name,
+            'vaccineName' => $vaccination->vaccine_name,
+            'doseNumber' => $vaccination->dose_number,
+            'status' => $vaccination->status,
+            'statusLabel' => $vaccination->status_label,
+            'isOverdue' => $vaccination->is_overdue,
+            'nextDueDate' => $vaccination->next_due_date?->format('Y-m-d'),
+        ]);
+
+        return Inertia::render('Admin/Vaccinations/Index', [
+            'vaccinations' => [
+                'data' => $vaccinations->items(),
+                'currentPage' => $vaccinations->currentPage(),
+                'lastPage' => $vaccinations->lastPage(),
+                'firstItem' => $vaccinations->firstItem(),
+                'lastItem' => $vaccinations->lastItem(),
+                'total' => $vaccinations->total(),
+                'previousPageUrl' => $vaccinations->previousPageUrl(),
+                'nextPageUrl' => $vaccinations->nextPageUrl(),
+            ],
+            'filters' => ['search' => (string) $request->query('search', '')],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.vaccinations.index'),
+                'create' => route('admin.vaccinations.create'),
+                'showBase' => url('/admin/vaccinations'),
+                'editBase' => url('/admin/vaccinations'),
+                'deleteBase' => url('/admin/vaccinations'),
+            ],
+        ]);
     }
 
-    public function create()
+    public function create(): Response
     {
         $users = User::where('role', 'patient')->orderBy('name')->limit(200)->get(['id', 'name']);
         $patients = Patient::orderBy('name')->limit(200)->get(['id', 'name']);
 
-        return view('vaccinations.create', compact('users', 'patients'));
+        return Inertia::render('Admin/Vaccinations/Form', [
+            'mode' => 'create',
+            'users' => $users,
+            'patients' => $patients,
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.vaccinations.index'),
+                'store' => route('admin.vaccinations.store'),
+            ],
+        ]);
     }
 
     public function store(VaccinationRequest $request, VaccinationService $service)
@@ -48,19 +91,65 @@ class VaccinationController extends Controller
             ->with('success', 'Vaccination record created successfully.');
     }
 
-    public function show(Vaccination $vaccination)
+    public function show(Vaccination $vaccination): Response
     {
         $vaccination->load(['user', 'patient', 'creator']);
 
-        return view('vaccinations.show', compact('vaccination'));
+        return Inertia::render('Admin/Vaccinations/Show', [
+            'vaccination' => [
+                'id' => $vaccination->id,
+                'subjectName' => $vaccination->subject_name,
+                'userName' => $vaccination->user?->name,
+                'patientName' => $vaccination->patient?->name,
+                'vaccineName' => $vaccination->vaccine_name,
+                'doseNumber' => $vaccination->dose_number,
+                'status' => $vaccination->status_label,
+                'isOverdue' => $vaccination->is_overdue,
+                'dateGiven' => $vaccination->date_given?->format('d M Y'),
+                'nextDueDate' => $vaccination->next_due_date?->format('d M Y'),
+                'nextDueDateLong' => $vaccination->next_due_date?->format('d M Y'),
+                'administeredBy' => $vaccination->administered_by,
+                'notes' => $vaccination->notes,
+                'creatorName' => $vaccination->creator?->name,
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.vaccinations.index'),
+                'edit' => route('admin.vaccinations.edit', $vaccination),
+                'delete' => route('admin.vaccinations.destroy', $vaccination),
+            ],
+        ]);
     }
 
-    public function edit(Vaccination $vaccination)
+    public function edit(Vaccination $vaccination): Response
     {
         $users = User::where('role', 'patient')->orderBy('name')->limit(200)->get(['id', 'name']);
         $patients = Patient::orderBy('name')->limit(200)->get(['id', 'name']);
 
-        return view('vaccinations.edit', compact('vaccination', 'users', 'patients'));
+        return Inertia::render('Admin/Vaccinations/Form', [
+            'mode' => 'edit',
+            'vaccination' => [
+                'id' => $vaccination->id,
+                'userId' => $vaccination->user_id,
+                'patientId' => $vaccination->patient_id,
+                'childName' => $vaccination->child_name,
+                'vaccineName' => $vaccination->vaccine_name,
+                'doseNumber' => $vaccination->dose_number,
+                'dateGiven' => $vaccination->date_given?->format('Y-m-d'),
+                'nextDueDate' => $vaccination->next_due_date?->format('Y-m-d'),
+                'administeredBy' => $vaccination->administered_by,
+                'notes' => $vaccination->notes,
+                'status' => $vaccination->status,
+            ],
+            'users' => $users,
+            'patients' => $patients,
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.vaccinations.index'),
+                'show' => route('admin.vaccinations.show', $vaccination),
+                'update' => route('admin.vaccinations.update', $vaccination),
+            ],
+        ]);
     }
 
     public function update(VaccinationRequest $request, Vaccination $vaccination, VaccinationService $service)

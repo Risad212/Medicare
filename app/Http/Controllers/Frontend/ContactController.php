@@ -8,14 +8,22 @@ use App\Models\GeneralSetting;
 use App\Models\SeoSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ContactController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
         $seo = SeoSetting::where('page', 'contact')->first();
 
-        return view('frontend.contact', compact('seo'));
+        return Inertia::render('Public/Contact', [
+            'seo' => [
+                'title' => $seo?->meta_title,
+                'description' => $seo?->meta_description,
+                'keywords' => $seo?->meta_keywords,
+            ],
+        ]);
     }
 
     public function store(Request $request)

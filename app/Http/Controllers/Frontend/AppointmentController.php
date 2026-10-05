@@ -17,16 +17,34 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AppointmentController extends Controller
 {
-    public function index()
+    public function index(Request $request): Response
     {
         $doctors = Doctor::where('status', 1)->get();
         $availableSlots = TimeSlot::where('status', 1)->orderBy('time')->get();
         $seo = SeoSetting::where('page', 'appointment')->first();
 
-        return view('frontend.appointment', compact('doctors', 'availableSlots', 'seo'));
+        return Inertia::render('Public/Appointment', [
+            'doctors' => $doctors->map(fn (Doctor $doctor) => [
+                'id' => $doctor->id,
+                'name' => $doctor->name,
+            ])->values(),
+            'availableSlots' => $availableSlots->map(fn (TimeSlot $slot) => [
+                'id' => $slot->id,
+                'time' => $slot->time,
+            ])->values(),
+            'selectedDoctorId' => (string) $request->query('doctor_id', ''),
+            'minDate' => now()->toDateString(),
+            'seo' => [
+                'title' => $seo?->meta_title,
+                'description' => $seo?->meta_description,
+                'keywords' => $seo?->meta_keywords,
+            ],
+        ]);
     }
 
     public function store(Request $request)
@@ -229,7 +247,18 @@ class AppointmentController extends Controller
             abort(410, 'This appointment can no longer be cancelled.');
         }
 
-        return view('frontend.appointment-cancel', compact('appointment'));
+        return Inertia::render('Public/AppointmentCancel', [
+            'token' => $token,
+            'appointment' => [
+                'name' => $appointment->patient_name,
+                'doctor' => $appointment->doctor->name ?? 'N/A',
+                'date' => $appointment->appointment_date?->format('d M Y') ?? (string) $appointment->appointment_date,
+                'time' => $appointment->timeSlot->time ?? 'N/A',
+                'visitType' => $appointment->visit_type_label,
+                'status' => (int) $appointment->status,
+            ],
+            'seo' => ['title' => 'Cancel Appointment'],
+        ]);
     }
 
     /**

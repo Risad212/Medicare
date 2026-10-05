@@ -26,7 +26,10 @@ class LanguageTest extends TestCase
         $response->assertRedirect();
         $this->assertSame('bn', session('locale'));
 
-        $this->get('/')->assertSee('হোম', false);
+        $this->get('/')->assertInertia(fn ($page) => $page
+            ->component('Public/Home')
+            ->where('navLabels.home', 'হোম')
+        );
     }
 
     public function test_unknown_or_inactive_code_returns_404(): void
@@ -39,12 +42,18 @@ class LanguageTest extends TestCase
 
     public function test_browser_language_is_respected_without_session(): void
     {
-        $this->withHeaders(['Accept-Language' => 'bn'])->get('/')->assertSee('হোম', false);
+        $this->withHeaders(['Accept-Language' => 'bn'])->get('/')->assertInertia(fn ($page) => $page
+            ->component('Public/Home')
+            ->where('navLabels.home', 'হোম')
+        );
     }
 
     public function test_english_stays_the_default(): void
     {
-        $this->get('/')->assertSee('Home', false);
+        $this->get('/')->assertInertia(fn ($page) => $page
+            ->component('Public/Home')
+            ->where('navLabels.home', 'Home')
+        );
     }
 
     public function test_switch_persists_to_user_profile(): void
@@ -55,7 +64,10 @@ class LanguageTest extends TestCase
         $this->assertSame('bn', $user->fresh()->locale);
 
         // Profile wins even with a fresh session.
-        $this->actingAs($user)->get('/')->assertSee('হোম', false);
+        $this->actingAs($user)->get('/')->assertInertia(fn ($page) => $page
+            ->component('Public/Home')
+            ->where('navLabels.home', 'হোম')
+        );
     }
 
     public function test_validation_messages_render_in_bangla(): void
@@ -63,12 +75,32 @@ class LanguageTest extends TestCase
         $this->withHeaders(['Accept-Language' => 'bn', 'Referer' => route('appointment')])
             ->followingRedirects()
             ->post('/appointment', [])
-            ->assertSee('আবশ্যক', false);
+            ->assertInertia(fn ($page) => $page
+                ->component('Public/Appointment')
+                ->has('errors.doctor_id')
+                ->where('navLabels.home', 'হোম')
+            );
     }
 
     public function test_admin_can_manage_languages(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
+        $bangla = Language::where('code', 'bn')->first();
+
+        $this->actingAs($admin)->get(route('admin.languages.index'))
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Languages/Index')
+                ->where('languages.data.0.code', 'en')
+                ->where('languages.data.0.isDefault', true)
+            );
+        $this->actingAs($admin)->get(route('admin.languages.create'))
+            ->assertInertia(fn ($page) => $page->component('Admin/Languages/Form')->where('mode', 'create'));
+        $this->actingAs($admin)->get(route('admin.languages.edit', $bangla))
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Languages/Form')
+                ->where('mode', 'edit')
+                ->where('language.code', 'bn')
+            );
 
         // Create.
         $this->actingAs($admin)->post(route('admin.languages.store'), [
@@ -112,7 +144,10 @@ class LanguageTest extends TestCase
         $this->actingAs($admin)->get(route('admin.languages.index'))->assertNotFound();
 
         // Even a stale Bangla session falls back to English.
-        $this->withSession(['locale' => 'bn'])->get('/')->assertSee('Home', false);
+        $this->withSession(['locale' => 'bn'])->get('/')->assertInertia(fn ($page) => $page
+            ->component('Public/Home')
+            ->where('navLabels.home', 'Home')
+        );
     }
 
     public function test_non_admin_cannot_manage_languages(): void

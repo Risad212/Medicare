@@ -9,7 +9,10 @@ use App\Modules\BloodBank\Models\BloodDonation;
 use App\Modules\BloodBank\Models\BloodGroup;
 use App\Modules\BloodBank\Models\BloodRequest;
 use App\Modules\BloodBank\Services\BloodBankService;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BloodRequestController extends Controller
 {
@@ -20,7 +23,7 @@ class BloodRequestController extends Controller
     /**
      * Filterable, paginated list of blood requests.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $query = BloodRequest::with(['patient', 'bloodGroup', 'doctor']);
 
@@ -51,21 +54,59 @@ class BloodRequestController extends Controller
 
         $requests = $query->latest()->paginate(10)->withQueryString();
 
-        return view('bloodbank.requests.index', [
-            'requests' => $requests,
-            'bloodGroups' => BloodGroup::orderBy('name')->get(),
+        $requests->through(fn (BloodRequest $bloodRequest) => [
+            'id' => $bloodRequest->id,
+            'patientName' => $bloodRequest->patient?->name ?? 'Unknown',
+            'department' => $bloodRequest->department,
+            'bloodGroup' => $bloodRequest->bloodGroup?->name ?? '—',
+            'quantity' => $bloodRequest->quantity,
+            'unit' => $bloodRequest->unit,
+            'urgency' => $bloodRequest->urgency,
+            'requiredDate' => $bloodRequest->required_date->format('Y-m-d'),
+            'status' => $bloodRequest->status,
+        ]);
+
+        return Inertia::render('Admin/BloodBank/Requests/Index', [
+            'requests' => [
+                'data' => $requests->items(),
+                'currentPage' => $requests->currentPage(),
+                'lastPage' => $requests->lastPage(),
+                'firstItem' => $requests->firstItem(),
+                'lastItem' => $requests->lastItem(),
+                'total' => $requests->total(),
+                'previousPageUrl' => $requests->previousPageUrl(),
+                'nextPageUrl' => $requests->nextPageUrl(),
+            ],
+            'bloodGroups' => BloodGroup::orderBy('name')->get(['id', 'name']),
+            'filters' => [
+                'search' => (string) $request->query('search', ''),
+                'bloodGroupId' => (string) $request->query('blood_group_id', ''),
+                'urgency' => (string) $request->query('urgency', ''),
+                'status' => (string) $request->query('status', ''),
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-requests.index'),
+                'create' => route('admin.blood-requests.create'),
+                'showBase' => url('/admin/blood-requests'),
+            ],
         ]);
     }
 
     /**
      * Show the form for creating a blood request.
      */
-    public function create()
+    public function create(): Response
     {
-        return view('bloodbank.requests.create', [
-            'patients' => User::where('role', 'patient')->orderBy('name')->get(),
-            'doctors' => Doctor::orderBy('name')->get(),
-            'bloodGroups' => BloodGroup::where('status', true)->orderBy('name')->get(),
+        return Inertia::render('Admin/BloodBank/Requests/Create', [
+            'patients' => User::where('role', 'patient')->orderBy('name')->get(['id', 'name', 'email']),
+            'doctors' => Doctor::orderBy('name')->get(['id', 'name']),
+            'bloodGroups' => BloodGroup::where('status', true)->orderBy('name')->get(['id', 'name']),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-requests.index'),
+                'store' => route('admin.blood-requests.store'),
+            ],
         ]);
     }
 
@@ -99,7 +140,7 @@ class BloodRequestController extends Controller
     /**
      * Display request details: patient, requested vs available, issues.
      */
-    public function show(BloodRequest $bloodRequest)
+    public function show(BloodRequest $bloodRequest): Response
     {
         $bloodRequest->load(['patient', 'doctor', 'bloodGroup', 'requester', 'issues.donation']);
 
@@ -115,11 +156,52 @@ class BloodRequestController extends Controller
             ->orderBy('expiry_date')
             ->get();
 
-        return view('bloodbank.requests.show', [
-            'request' => $bloodRequest,
+        return Inertia::render('Admin/BloodBank/Requests/Show', [
+            'bloodRequest' => [
+                'id' => $bloodRequest->id,
+                'patientName' => $bloodRequest->patient?->name ?? 'Unknown',
+                'doctorName' => $bloodRequest->doctor?->name,
+                'requesterName' => $bloodRequest->requester?->name,
+                'group' => $bloodRequest->bloodGroup?->name ?? '—',
+                'quantity' => $bloodRequest->quantity,
+                'unit' => $bloodRequest->unit,
+                'urgency' => $bloodRequest->urgency,
+                'requiredDate' => $bloodRequest->required_date->format('Y-m-d'),
+                'createdAt' => $bloodRequest->created_at->format('Y-m-d H:i'),
+                'status' => $bloodRequest->status,
+                'department' => $bloodRequest->department,
+                'reason' => $bloodRequest->reason,
+                'notes' => $bloodRequest->notes,
+                'issuedQuantity' => $bloodRequest->issuedQuantity(),
+                'issues' => $bloodRequest->issues->map(fn ($issue) => [
+                    'id' => $issue->id,
+                    'date' => $issue->issue_date->format('Y-m-d'),
+                    'bagNumber' => $issue->donation?->bag_number ?: '#'.$issue->donation_id,
+                    'quantity' => $issue->quantity,
+                    'unit' => $issue->unit,
+                    'receiverName' => $issue->receiver_name ?: ($bloodRequest->patient?->name ?? 'Unknown'),
+                ]),
+            ],
             'availableUnits' => $availableUnits,
             'availableQty' => $availableQty,
-            'reservedUnits' => $reservedForRequest,
+            'reservedUnits' => $reservedForRequest->map(fn (BloodDonation $bag) => [
+                'id' => $bag->id,
+                'bagNumber' => $bag->bag_number ?: '#'.$bag->id,
+                'quantity' => $bag->quantity,
+                'unit' => $bag->unit,
+                'expiryDate' => $bag->expiry_date->format('Y-m-d'),
+                'status' => $bag->status,
+            ]),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-requests.index'),
+                'approve' => route('admin.blood-requests.approve', $bloodRequest),
+                'reject' => route('admin.blood-requests.reject', $bloodRequest),
+                'cancel' => route('admin.blood-requests.cancel', $bloodRequest),
+                'delete' => route('admin.blood-requests.destroy', $bloodRequest),
+                'issue' => route('admin.blood-issues.create', $bloodRequest),
+                'issueShowBase' => url('/admin/blood-issues'),
+            ],
         ]);
     }
 

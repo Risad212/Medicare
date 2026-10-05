@@ -19,8 +19,24 @@ This plan covers the `/admin` area and staff modules shown within it. The public
 - **Completed:** Added the Laravel Inertia and React/Vite foundation inside the existing monolith.
 - **Completed:** Converted the role-aware admin/staff dashboard and appointment register page to React, preserving Laravel routes, search, pagination, appointment actions, module-aware widgets, and role-specific data.
 - **Completed:** Converted appointment create/edit forms to React/Inertia, preserving the existing Laravel submission, validation, booking-conflict, notification, and status workflows.
-- **In progress:** Patient and doctor/department pages, remaining admin CRUD forms, content/settings pages, and optional module screens are still Blade-rendered and should be migrated incrementally.
-- **Next:** Convert patients and doctors/departments, then continue through the remaining screens in the migration phases below.
+- **Completed:** Converted the patient register, search/pagination, create/edit forms, patient details, and matched appointment history to React/Inertia. Patient records remain separate from login accounts.
+- **Completed:** Converted doctor register/create/edit and weekly availability/off-day management to React/Inertia. Doctor login account updates, image fields, server-side schedule checks, and protection against deleting doctors with patient history remain in Laravel.
+- **Completed:** Converted the department register and create/edit forms to React/Inertia, preserving visibility status and existing validation.
+- **Completed:** Converted time-slot listing and create/edit forms to React/Inertia, preserving active status, uniqueness validation, and booking associations.
+- **Completed:** Converted services, blog articles, blog categories/tags, and comment moderation to React/Inertia. Rich article content continues to be sanitized server-side, and media uploads remain Laravel-managed.
+- **Completed:** Converted slider list/create/edit pages to React/Inertia, preserving image uploads and existing Laravel CRUD behavior.
+- **Completed:** Converted general, home, about, service, and page SEO settings to React/Inertia, preserving Laravel validation, SEO persistence, and image uploads.
+- **Completed:** Converted staff user search/role access and activity audit logs to React/Inertia, preserving Laravel access checks, filters, pagination, and self-demotion protection.
+- **Completed:** Converted invoice and prescription list/detail pages to React/Inertia, preserving status changes, deletion, PDFs, and pharmacy dispensing when enabled. Verified patient CSV downloads remain server-generated and formula-safe.
+- **Completed:** Converted the enabled lab module's admin test catalog and lab-order list/detail to React/Inertia, preserving test CRUD, search/status filters, result updates, report upload/download/deletion, status notifications, PDF/export routes, and invoice creation.
+- **Completed:** Converted pharmacy stock list/create/edit to React/Inertia for admins and read-only pharmacists, retaining Laravel validation, low-stock/expiry flags, protected write access, delete safeguards, and prescription dispensing.
+- **Completed:** Converted bed availability, ward and room management, and bed assignment/discharge pages to React/Inertia, preserving occupancy counts, patient assignment limits, occupied-bed safeguards, and module/role access.
+- **Completed:** Converted the ambulance request queue to React/Inertia, preserving newest-first pagination, callback links, valid dispatch transitions, terminal states, and module/role access.
+- **Completed:** Converted Blood Bank dashboard, inventory, blood-group management, donor register/profile/forms, donation collection/bag pages, request review/reservation, issue recording/history, and reports to React/Inertia. Preserved stock calculations, status transitions, filters, validation, reservation/issue safeguards, pagination, settings, and CSV exports.
+- **Completed:** Converted the admin vaccination register, search/pagination, create/edit forms, and record details to React/Inertia, preserving Laravel validation, duplicate-dose checks, patient/clinic register selection, overdue status, and staff/module access. Doctor and patient vaccination screens remain unchanged.
+- **Completed:** Converted language management list/create/edit to React/Inertia, retaining localized labels, role/module access, default-language locking, active-language checks, and the existing locale-switching behavior.
+- **Completed:** Converted backup history and manual-run controls to React/Inertia while preserving admin/module access, newest-first listing, and the existing allowlisted download flow. Failed backup command exit codes now surface as an error flash instead of a false success.
+- **Completed:** The planned optional admin module migrations are complete.
 
 ## Recommended architecture
 
@@ -135,3 +151,17 @@ The inventory must record which roles can access each page and action, which mod
 - Converting patient or doctor dashboards as part of this admin migration.
 - Changing roles, permissions, appointment rules, or optional-module behavior.
 - Replacing the existing authentication system with a separate SPA authentication service.
+
+## Public website React migration
+
+The public website conversion is a separate, user-approved scope from the admin migration. Its primary routes now render React/Inertia pages styled with a separate Tailwind CSS entry:
+
+- Home, about, services and service details.
+- Doctor directory and profiles.
+- Blog listing, article details, category/tag filters, pagination, and comments.
+- Contact form and map.
+- Appointment booking, doctor/date-based available-time selection, and guest cancellation.
+
+Laravel continues to own data access, SEO values, locale selection, request validation, appointment availability, booking, comments, and cancellation. Authentication pages, patient profile/notifications, doctor dashboard, admin pages not yet migrated, and optional module pages that still use the shared legacy layout remain Blade-rendered and are outside this public-site scope.
+
+Blog article HTML is sanitized with a tag/attribute allowlist before React renders it, retaining common editorial formatting while removing executable content and unsafe links. Public contact, comment, and appointment submissions have Laravel feature coverage, and the contact form also has a browser end-to-end submission check.

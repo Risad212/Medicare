@@ -4,6 +4,7 @@ namespace App\Modules\Lab\Models;
 
 use App\Models\Appointment;
 use App\Models\Doctor;
+use App\Models\Invoice;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

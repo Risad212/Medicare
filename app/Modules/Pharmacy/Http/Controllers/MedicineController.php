@@ -5,11 +5,14 @@ namespace App\Modules\Pharmacy\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Pharmacy\Http\Requests\MedicineRequest;
 use App\Modules\Pharmacy\Models\Medicine;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class MedicineController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $search = $request->search ? str_replace(['%', '_'], ['\%', '\_'], $request->search) : null;
 
@@ -26,12 +29,54 @@ class MedicineController extends Controller
 
         $lowStockCount = Medicine::lowStock()->count();
 
-        return view('pharmacy.index', compact('medicines', 'lowStockCount'));
+        $medicines->through(fn (Medicine $medicine) => [
+            'id' => $medicine->id,
+            'name' => $medicine->name,
+            'genericName' => $medicine->generic_name,
+            'unit' => $medicine->unit,
+            'stockQuantity' => $medicine->stock_quantity,
+            'unitPrice' => $medicine->unit_price,
+            'expiryDate' => $medicine->expiry_date?->format('Y-m-d'),
+            'isLowStock' => $medicine->is_low_stock,
+            'isExpired' => $medicine->is_expired,
+        ]);
+
+        return Inertia::render('Admin/Pharmacy/Index', [
+            'medicines' => [
+                'data' => $medicines->items(),
+                'currentPage' => $medicines->currentPage(),
+                'lastPage' => $medicines->lastPage(),
+                'firstItem' => $medicines->firstItem(),
+                'lastItem' => $medicines->lastItem(),
+                'total' => $medicines->total(),
+                'previousPageUrl' => $medicines->previousPageUrl(),
+                'nextPageUrl' => $medicines->nextPageUrl(),
+            ],
+            'lowStockCount' => $lowStockCount,
+            'filters' => [
+                'search' => (string) $request->query('search', ''),
+                'lowStock' => $request->boolean('low_stock'),
+            ],
+            'canManage' => $request->user()->role === 'admin',
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.medicines.index'),
+                'create' => route('admin.medicines.create'),
+                'editBase' => url('/admin/medicines'),
+                'deleteBase' => url('/admin/medicines'),
+            ],
+        ]);
     }
 
-    public function create()
+    public function create(): Response
     {
-        return view('pharmacy.create');
+        return Inertia::render('Admin/Pharmacy/Create', [
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.medicines.index'),
+                'store' => route('admin.medicines.store'),
+            ],
+        ]);
     }
 
     public function store(MedicineRequest $request)
@@ -42,9 +87,25 @@ class MedicineController extends Controller
             ->with('success', "Medicine '{$medicine->name}' added successfully.");
     }
 
-    public function edit(Medicine $medicine)
+    public function edit(Medicine $medicine): Response
     {
-        return view('pharmacy.edit', compact('medicine'));
+        return Inertia::render('Admin/Pharmacy/Edit', [
+            'medicine' => [
+                'id' => $medicine->id,
+                'name' => $medicine->name,
+                'genericName' => $medicine->generic_name,
+                'unit' => $medicine->unit,
+                'stockQuantity' => $medicine->stock_quantity,
+                'unitPrice' => $medicine->unit_price,
+                'lowStockThreshold' => $medicine->low_stock_threshold,
+                'expiryDate' => $medicine->expiry_date?->format('Y-m-d'),
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.medicines.index'),
+                'update' => route('admin.medicines.update', $medicine),
+            ],
+        ]);
     }
 
     public function update(MedicineRequest $request, Medicine $medicine)

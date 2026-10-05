@@ -8,33 +8,75 @@ use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Services\BlogSanitizer;
+use App\Support\AdminNavigation;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BlogController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
 
-        $blogs = Blog::latest()->paginate(20);
+        $blogs = Blog::latest()->paginate(20)->withQueryString();
         $categories = Category::latest()->get();
         $tags = Tag::latest()->get();
 
-        return view('backend.blogs.index', compact('blogs', 'categories', 'tags'));
+        $blogs->through(fn (Blog $blog) => [
+            'id' => $blog->id,
+            'title' => $blog->title,
+            'excerpt' => $blog->excerpt,
+            'image' => $blog->image,
+            'author' => $blog->author,
+            'category' => $blog->category,
+            'tags' => $blog->tags,
+            'status' => (int) $blog->status,
+            'date' => $blog->created_at?->format('M d, Y'),
+        ]);
+
+        return Inertia::render('Admin/Blogs/Index', [
+            'blogs' => [
+                'data' => $blogs->items(),
+                'currentPage' => $blogs->currentPage(),
+                'lastPage' => $blogs->lastPage(),
+                'firstItem' => $blogs->firstItem(),
+                'lastItem' => $blogs->lastItem(),
+                'total' => $blogs->total(),
+                'previousPageUrl' => $blogs->previousPageUrl(),
+                'nextPageUrl' => $blogs->nextPageUrl(),
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blogs.index'),
+                'create' => route('admin.blogs.create'),
+                'editBase' => url('/admin/blogs'),
+                'deleteBase' => url('/admin/blogs'),
+            ],
+            'storageUrl' => asset('storage'),
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
         $categories = Category::latest()->get();
         $tags = Tag::latest()->get();
 
-        return view('backend.blogs.create', compact('categories', 'tags'));
+        return Inertia::render('Admin/Blogs/Create', [
+            'categories' => $categories->map(fn (Category $category) => ['name' => $category->name])->values(),
+            'tags' => $tags->map(fn (Tag $tag) => ['name' => $tag->name])->values(),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blogs.index'),
+                'store' => route('admin.blogs.store'),
+            ],
+        ]);
     }
 
     /**
@@ -76,12 +118,33 @@ class BlogController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Blog $blog)
+    public function edit(Blog $blog): Response
     {
         $categories = Category::latest()->get();
         $tags = Tag::latest()->get();
 
-        return view('backend.blogs.edit', compact('blog', 'categories', 'tags'));
+        return Inertia::render('Admin/Blogs/Edit', [
+            'blog' => [
+                'id' => $blog->id,
+                'title' => $blog->title,
+                'excerpt' => $blog->excerpt,
+                'content' => $blog->content,
+                'image' => $blog->image,
+                'author' => $blog->author,
+                'category' => $blog->category,
+                'tags' => $blog->tags,
+                'status' => (bool) $blog->status,
+                'date' => $blog->created_at?->format('M d, Y'),
+            ],
+            'categories' => $categories->map(fn (Category $category) => ['name' => $category->name])->values(),
+            'tags' => $tags->map(fn (Tag $tag) => ['name' => $tag->name])->values(),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blogs.index'),
+                'update' => route('admin.blogs.update', $blog),
+            ],
+            'storageUrl' => asset('storage'),
+        ]);
     }
 
     /**

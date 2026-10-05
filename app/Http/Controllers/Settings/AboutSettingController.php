@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\AboutSetting;
 use App\Models\SeoSetting;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AboutSettingController extends Controller
 {
@@ -14,15 +17,21 @@ class AboutSettingController extends Controller
      *
      * @return void
      */
-    public function about()
+    public function about(): Response
     {
         $about = AboutSetting::first();
         $seo = SeoSetting::where('page', 'about')->first();
 
-        return view('backend.settings.about', compact(
-            'about',
-            'seo'
-        ));
+        return Inertia::render('Admin/Settings/Form', [
+            'routes' => AdminNavigation::routes(),
+            'type' => 'about',
+            'title' => 'About Settings',
+            'setting' => $about?->toArray() ?? [],
+            'seo' => $seo?->only('page', 'meta_title', 'meta_description', 'meta_keywords') ?? ['page' => 'about'],
+            'submitUrl' => route('settings.about.update'),
+            'seoSubmitUrl' => route('admin.seo-settings.update'),
+            'storageUrl' => asset('storage'),
+        ]);
     }
 
     /**

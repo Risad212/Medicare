@@ -5,13 +5,13 @@ function Icon({ name, className = '' }) {
     return <i aria-hidden="true" className={`bi bi-${name} ${className}`} />;
 }
 
-export default function AdminLayout({ title, active, routes, features, children, actions }) {
+export default function AdminLayout({ title, active, routes, features = {}, children, actions }) {
     const { auth, flash = {}, csrfToken } = usePage().props;
     const [navOpen, setNavOpen] = useState(false);
     const role = auth.user.role;
     const isAdmin = role === 'admin';
     const isFrontDesk = ['admin', 'receptionist'].includes(role);
-    const isLabStaff = ['admin', 'lab-technician'].includes(role) && features.lab;
+    const isLabStaff = ['admin', 'lab-technician'].includes(role) && routes.labOrders;
     const isPharmacist = ['admin', 'pharmacist'].includes(role);
 
     const navLink = (href, icon, label, key) => (
@@ -44,27 +44,67 @@ export default function AdminLayout({ title, active, routes, features, children,
                     </span>
                 </a>
 
-                <div className="px-4 pt-5">
-                    <p className="mc-kicker mb-2 px-3">Workspace</p>
-                    <nav aria-label="Admin navigation" className="flex flex-col gap-1">
-                        {navLink(routes.dashboard, 'speedometer2', 'Overview', 'dashboard')}
-                        {isFrontDesk && navLink(routes.appointments, 'calendar2-check', 'Appointments', 'appointments')}
-                        {isFrontDesk && navLink(routes.patients, 'people', 'Patients', 'patients')}
-                        {isFrontDesk && navLink(routes.doctors, 'person-badge', 'Doctors', 'doctors')}
-                        {isLabStaff && routes.labOrders && navLink(routes.labOrders, 'clipboard2-pulse', 'Laboratory', 'laboratory')}
-                        {isPharmacist && navLink(routes.prescriptions, 'capsule', 'Prescriptions', 'prescriptions')}
-                    </nav>
-                </div>
-
-                {isAdmin && (
-                    <div className="px-4 pt-6">
-                        <p className="mc-kicker mb-2 px-3">Administration</p>
-                        <nav aria-label="Administration navigation" className="flex flex-col gap-1">
-                            {navLink(routes.comments, 'chat-left-text', 'Review comments', 'comments')}
-                            {navLink(routes.invoices, 'receipt', 'Invoices', 'invoices')}
+                <div className="min-h-0 flex-1 overflow-y-auto pb-4">
+                    <div className="px-4 pt-5">
+                        <p className="mc-kicker mb-2 px-3">Workspace</p>
+                        <nav aria-label="Admin navigation" className="flex flex-col gap-1">
+                            {navLink(routes.dashboard, 'speedometer2', 'Overview', 'dashboard')}
+                            {isFrontDesk && navLink(routes.appointments, 'calendar2-check', 'Appointments', 'appointments')}
+                            {isFrontDesk && navLink(routes.patients, 'people', 'Patients', 'patients')}
+                            {isFrontDesk && navLink(routes.doctors, 'person-badge', 'Doctors', 'doctors')}
+                            {isAdmin && navLink(routes.departments, 'diagram-3', 'Departments', 'departments')}
+                            {isAdmin && navLink(routes.timeSlots, 'clock-history', 'Time slots', 'time-slots')}
+                            {isAdmin && routes.beds && navLink(routes.beds, 'hospital', 'Beds', 'beds')}
+                            {isAdmin && routes.ambulanceRequests && navLink(routes.ambulanceRequests, 'truck', 'Ambulance requests', 'ambulance')}
+                            {isAdmin && routes.bloodBank && navLink(routes.bloodBank, 'droplet-half', 'Blood bank', 'blood-bank')}
+                            {isAdmin && routes.bloodDonors && navLink(routes.bloodDonors, 'people', 'Blood donors', 'blood-donors')}
+                            {isAdmin && routes.bloodGroups && navLink(routes.bloodGroups, 'droplet', 'Blood groups', 'blood-groups')}
+                            {isAdmin && routes.bloodDonations && navLink(routes.bloodDonations, 'droplet-fill', 'Blood donations', 'blood-donations')}
+                            {isAdmin && routes.bloodRequests && navLink(routes.bloodRequests, 'clipboard-plus', 'Blood requests', 'blood-requests')}
+                            {isAdmin && routes.bloodIssues && navLink(routes.bloodIssues, 'eyedropper', 'Blood issues', 'blood-issues')}
+                            {isAdmin && routes.bloodReports && navLink(routes.bloodReports, 'bar-chart', 'Blood reports', 'blood-reports')}
+                            {isAdmin && routes.vaccinations && navLink(routes.vaccinations, 'shield-plus', 'Vaccinations', 'vaccinations')}
+                            {isAdmin && navLink(routes.services, 'heart-pulse', 'Services', 'services')}
+                            {isLabStaff && navLink(routes.labOrders, 'clipboard2-pulse', 'Laboratory orders', 'laboratory')}
+                            {isAdmin && routes.labTests && navLink(routes.labTests, 'beaker', 'Lab tests', 'lab-tests')}
+                            {isPharmacist && routes.medicines && navLink(routes.medicines, 'capsule', 'Medicine stock', 'medicines')}
+                            {isPharmacist && navLink(routes.prescriptions, 'capsule', 'Prescriptions', 'prescriptions')}
                         </nav>
                     </div>
-                )}
+
+                    {isAdmin && (
+                        <>
+                            <div className="px-4 pt-6">
+                                <p className="mc-kicker mb-2 px-3">Administration</p>
+                                <nav aria-label="Administration navigation" className="flex flex-col gap-1">
+                                    {navLink(routes.comments, 'chat-left-text', 'Review comments', 'comments')}
+                                    {navLink(routes.users, 'people-gear', 'Users & access', 'users')}
+                                    {navLink(routes.activityLogs, 'clipboard-data', 'Activity logs', 'activity-logs')}
+                                    {routes.languages && navLink(routes.languages, 'translate', 'Languages', 'languages')}
+                                    {routes.backups && navLink(routes.backups, 'database', 'Backups', 'backups')}
+                                    {navLink(routes.blogs, 'journal-text', 'Blog posts', 'blogs')}
+                                    {navLink(routes.categories, 'collection', 'Categories', 'categories')}
+                                    {navLink(routes.tags, 'tags', 'Tags', 'tags')}
+                                    {navLink(routes.sliders, 'images', 'Sliders', 'sliders')}
+                                    {navLink(routes.invoices, 'receipt', 'Invoices', 'invoices')}
+                                </nav>
+                            </div>
+                            <div className="px-4 pt-6">
+                                <p className="mc-kicker mb-2 px-3">Website settings</p>
+                                <nav aria-label="Website settings navigation" className="flex flex-col gap-1">
+                                    {navLink(routes.settingsGeneral, 'gear', 'General', 'settings-general')}
+                                    {navLink(routes.settingsHome, 'house', 'Home page', 'settings-home')}
+                                    {navLink(routes.settingsAbout, 'info-circle', 'About page', 'settings-about')}
+                                    {navLink(routes.settingsService, 'heart-pulse', 'Service page', 'settings-service')}
+                                    {navLink(routes.settingsDoctorSeo, 'person-badge', 'Doctor SEO', 'settings-seo-doctor')}
+                                    {navLink(routes.settingsBlogSeo, 'journal-text', 'Blog SEO', 'settings-seo-blog')}
+                                    {navLink(routes.settingsContactSeo, 'envelope', 'Contact SEO', 'settings-seo-contact')}
+                                    {navLink(routes.settingsAppointmentSeo, 'calendar2-check', 'Appointment SEO', 'settings-seo-appointment')}
+                                </nav>
+                            </div>
+                        </>
+                    )}
+                </div>
 
                 <div className="mt-auto border-t border-line-2 p-4">
                     <div className="rounded-xl bg-panel p-3">

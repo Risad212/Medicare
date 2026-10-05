@@ -34,8 +34,11 @@ class BackupModuleTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
 
         $this->actingAs($admin)->get('/admin/backups')
-            ->assertOk()
-            ->assertSee('No backups yet');
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Backups/Index')
+                ->where('backups', [])
+                ->has('routes.run')
+            );
     }
 
     public function test_admin_can_run_backup_and_download_it(): void

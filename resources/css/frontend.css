@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+    --color-teal: #087d70;
+    --color-teal-dark: #075d56;
+    --color-teal-pale: #e6f2ef;
+    --color-gold: #b78b4b;
+    --color-paper: #fbfaf7;
+    --color-paper-dark: #f2f0e9;
+    --color-ink: #182522;
+    --color-muted: #63716d;
+    --color-line: #dce4df;
+    --font-display: "Fraunces", Georgia, serif;
+    --font-body: "Public Sans", sans-serif;
+}
+
+@layer base {
+    body {
+        font-family: var(--font-body);
+    }
+
+    :focus-visible {
+        outline: 3px solid var(--color-gold);
+        outline-offset: 3px;
+    }
+}
+
+@layer components {
+    .blog-content :where(h2, h3, h4, h5, h6) {
+        margin-block: 1.75rem 0.75rem;
+        font-family: var(--font-display);
+        color: var(--color-ink);
+        line-height: 1.25;
+    }
+
+    .blog-content :where(p, ul, ol, blockquote, figure, table, pre) {
+        margin-block: 1rem;
+    }
+
+    .blog-content :where(ul, ol) {
+        padding-left: 1.5rem;
+    }
+
+    .blog-content ul {
+        list-style: disc;
+    }
+
+    .blog-content ol {
+        list-style: decimal;
+    }
+
+    .blog-content a {
+        color: var(--color-teal-dark);
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+    }
+
+    .blog-content img {
+        height: auto;
+        max-width: 100%;
+        border-radius: 0.75rem;
+    }
+
+    .blog-content blockquote {
+        border-left: 2px solid var(--color-gold);
+        padding-left: 1rem;
+        color: var(--color-muted);
+    }
+
+    .blog-content :where(th, td) {
+        border: 1px solid var(--color-line);
+        padding: 0.5rem 0.75rem;
+        text-align: left;
+    }
+
+    .blog-content pre {
+        overflow-x: auto;
+        border-radius: 0.75rem;
+        background: var(--color-paper-dark);
+        padding: 1rem;
+    }
+}

@@ -9,9 +9,12 @@ use App\Modules\BloodBank\Models\BloodIssue;
 use App\Modules\BloodBank\Models\BloodRequest;
 use App\Modules\BloodBank\Services\BloodBankService;
 use App\Services\CsvExport;
+use App\Support\AdminNavigation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BloodReportController extends Controller
 {
@@ -23,7 +26,7 @@ class BloodReportController extends Controller
     /**
      * Reports overview with period filters.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $from = $request->filled('from') ? Carbon::parse($request->query('from'))->startOfDay() : now()->startOfMonth();
         $to = $request->filled('to') ? Carbon::parse($request->query('to'))->endOfDay() : now()->endOfDay();
@@ -84,7 +87,40 @@ class BloodReportController extends Controller
                 ->count(),
         ];
 
-        return view('bloodbank.reports', compact('donationStats', 'issuedByGroup', 'monthly', 'groupStats', 'stats', 'from', 'to'));
+        return Inertia::render('Admin/BloodBank/Reports/Index', [
+            'donationStats' => $donationStats->map(fn ($row) => [
+                'bloodGroupId' => $row->blood_group_id,
+                'status' => $row->status,
+                'totalQuantity' => (int) $row->total_quantity,
+            ]),
+            'issuedByGroup' => $issuedByGroup->map(fn ($quantity, $name) => [
+                'group' => $name,
+                'quantity' => (int) $quantity,
+            ])->values(),
+            'monthly' => $monthly->values(),
+            'groupStats' => $groupStats->map(fn (BloodGroup $group) => [
+                'id' => $group->id,
+                'name' => $group->name,
+                'availableQuantity' => $group->available_quantity,
+                'donationCount' => $group->donation_count,
+                'issuedCount' => $group->issued_count,
+            ])->values(),
+            'stats' => [
+                'periodDonations' => $stats['period_donations'],
+                'periodIssued' => $stats['period_issued'],
+                'periodRequestsCreated' => $stats['period_requests_created'],
+                'periodRequestsFulfilled' => $stats['period_requests_fulfilled'],
+            ],
+            'from' => $from->format('Y-m-d'),
+            'to' => $to->format('Y-m-d'),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.bloodbank.reports'),
+                'exportDonations' => route('admin.bloodbank.reports.donations'),
+                'exportRequests' => route('admin.bloodbank.reports.requests'),
+                'exportIssues' => route('admin.bloodbank.reports.issues'),
+            ],
+        ]);
     }
 
     /**

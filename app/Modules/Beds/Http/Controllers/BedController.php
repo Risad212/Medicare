@@ -10,13 +10,16 @@ use App\Modules\Beds\Models\Bed;
 use App\Modules\Beds\Models\Room;
 use App\Modules\Beds\Models\Ward;
 use App\Modules\Beds\Services\BedService;
+use App\Support\AdminNavigation;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BedController extends Controller
 {
     /**
      * Bed availability dashboard: per-ward counts + color-coded grid.
      */
-    public function index()
+    public function index(): Response
     {
         $wards = Ward::with(['rooms.beds.currentPatient'])
             ->withCount([
@@ -27,16 +30,65 @@ class BedController extends Controller
             ->orderBy('name')
             ->get();
 
-        $patients = User::where('role', 'patient')->orderBy('name')->limit(200)->get(['id', 'name']);
+        $wards = $wards->map(fn (Ward $ward) => [
+            'id' => $ward->id,
+            'name' => $ward->name,
+            'availableBedsCount' => $ward->available_beds_count,
+            'bedsCount' => $ward->beds_count,
+            'rooms' => $ward->rooms->map(fn (Room $room) => [
+                'id' => $room->id,
+                'roomNumber' => $room->room_number,
+                'roomType' => $room->room_type,
+                'beds' => $room->beds->map(fn (Bed $bed) => [
+                    'id' => $bed->id,
+                    'bedNumber' => $bed->bed_number,
+                    'status' => $bed->status,
+                    'statusLabel' => $bed->status_label,
+                    'patientName' => $bed->currentPatient?->name,
+                    'routes' => [
+                        'edit' => route('admin.beds.edit', $bed),
+                        'assign' => route('admin.beds.assign', $bed),
+                        'discharge' => route('admin.beds.discharge', $bed),
+                        'delete' => route('admin.beds.destroy', $bed),
+                    ],
+                ]),
+            ]),
+        ]);
 
-        return view('beds.dashboard', compact('wards', 'patients'));
+        $patients = User::where('role', 'patient')->orderBy('name')->limit(200)
+            ->get(['id', 'name'])
+            ->map(fn (User $patient) => ['id' => $patient->id, 'name' => $patient->name]);
+
+        return Inertia::render('Admin/Beds/Index', [
+            'wards' => $wards,
+            'patients' => $patients,
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.beds.index'),
+                'create' => route('admin.beds.create'),
+                'wards' => route('admin.wards.index'),
+                'rooms' => route('admin.rooms.index'),
+            ],
+        ]);
     }
 
-    public function create()
+    public function create(): Response
     {
         $rooms = Room::with('ward')->orderBy('room_number')->get();
 
-        return view('beds.create', compact('rooms'));
+        return Inertia::render('Admin/Beds/Form', [
+            'mode' => 'create',
+            'rooms' => $rooms->map(fn (Room $room) => [
+                'id' => $room->id,
+                'roomNumber' => $room->room_number,
+                'wardName' => $room->ward?->name,
+            ]),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.beds.index'),
+                'store' => route('admin.beds.store'),
+            ],
+        ]);
     }
 
     public function store(BedRequest $request)
@@ -47,11 +99,29 @@ class BedController extends Controller
             ->with('success', 'Bed created successfully.');
     }
 
-    public function edit(Bed $bed)
+    public function edit(Bed $bed): Response
     {
         $rooms = Room::with('ward')->orderBy('room_number')->get();
 
-        return view('beds.edit', compact('bed', 'rooms'));
+        return Inertia::render('Admin/Beds/Form', [
+            'mode' => 'edit',
+            'bed' => [
+                'id' => $bed->id,
+                'roomId' => $bed->room_id,
+                'bedNumber' => $bed->bed_number,
+                'status' => $bed->status,
+            ],
+            'rooms' => $rooms->map(fn (Room $room) => [
+                'id' => $room->id,
+                'roomNumber' => $room->room_number,
+                'wardName' => $room->ward?->name,
+            ]),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.beds.index'),
+                'update' => route('admin.beds.update', $bed),
+            ],
+        ]);
     }
 
     public function update(BedRequest $request, Bed $bed)

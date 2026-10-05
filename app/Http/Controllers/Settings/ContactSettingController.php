@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\SeoSetting;
+use App\Support\AdminNavigation;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ContactSettingController extends Controller
 {
@@ -12,12 +15,16 @@ class ContactSettingController extends Controller
      *
      * @return void
      */
-    public function contact()
+    public function contact(): Response
     {
         $seo = SeoSetting::where('page', 'contact')->first();
 
-        return view('backend.settings.contact', compact(
-            'seo'
-        ));
+        return Inertia::render('Admin/Settings/Form', [
+            'routes' => AdminNavigation::routes(),
+            'type' => 'seo',
+            'title' => 'Contact SEO',
+            'seo' => $seo?->only('page', 'meta_title', 'meta_description', 'meta_keywords') ?? ['page' => 'contact'],
+            'seoSubmitUrl' => route('admin.seo-settings.update'),
+        ]);
     }
 }

@@ -14,7 +14,7 @@ export default defineConfig({
     workers: process.env.CI ? 1 : undefined,
     reporter: [['list'], ['html', { open: 'never' }]],
     use: {
-        baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:8000',
+        baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:8001',
         trace: 'on-first-retry',
     },
     projects: [
@@ -24,12 +24,13 @@ export default defineConfig({
         },
     ],
     webServer: {
-        command: 'php artisan serve --host=127.0.0.1 --port=8000',
-        url: 'http://127.0.0.1:8000/',
-        reuseExistingServer: !process.env.CI,
+        command: 'php artisan serve --host=127.0.0.1 --port=8001',
+        url: 'http://127.0.0.1:8001/',
+        reuseExistingServer: false,
         timeout: 60 * 1000,
         env: {
             APP_ENV: 'local',
+            MAIL_MAILER: 'log',
         },
     },
 });

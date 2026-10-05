@@ -3,14 +3,32 @@
 namespace App\Modules\Backups\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\AdminNavigation;
+use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BackupController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
-        return view('backups.index', ['backups' => $this->listBackups()]);
+        $backups = $this->listBackups();
+
+        return Inertia::render('Admin/Backups/Index', [
+            'backups' => array_map(fn (array $backup) => [
+                ...$backup,
+                'createdAt' => Carbon::createFromTimestamp($backup['created_at'])->format('d M Y h:i A'),
+                'downloadUrl' => route('admin.backups.download', $backup['name']),
+            ], $backups),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.backups.index'),
+                'run' => route('admin.backups.run'),
+            ],
+        ]);
     }
 
     public function download(string $file)
@@ -22,9 +40,13 @@ class BackupController extends Controller
         return Storage::disk($this->disk())->download($this->prefix().$file);
     }
 
-    public function run()
+    public function run(): RedirectResponse
     {
-        Artisan::call('backup:run', ['--disable-notifications' => true]);
+        $exitCode = Artisan::call('backup:run', ['--disable-notifications' => true]);
+
+        if ($exitCode !== 0) {
+            return back()->with('error', 'Backup failed. Check the application logs for details.');
+        }
 
         return back()->with('success', 'Backup completed successfully.');
     }

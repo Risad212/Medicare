@@ -4,26 +4,53 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ServiceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $services = Service::orderBy('order')->latest()->get();
 
-        return view('backend.services.index', compact('services'));
+        return Inertia::render('Admin/Services/Index', [
+            'services' => $services->map(fn (Service $service) => [
+                'id' => $service->id,
+                'title' => $service->title,
+                'description' => $service->description,
+                'icon' => $service->icon,
+                'order' => $service->order,
+                'status' => (int) $service->status,
+            ])->values(),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.services.index'),
+                'create' => route('admin.services.create'),
+                'settings' => route('settings.service'),
+                'editBase' => url('/admin/services'),
+                'deleteBase' => url('/admin/services'),
+            ],
+            'storageUrl' => asset('storage'),
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
-        return view('backend.services.create');
+        return Inertia::render('Admin/Services/Create', [
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.services.index'),
+                'store' => route('admin.services.store'),
+            ],
+        ]);
     }
 
     /**
@@ -55,9 +82,26 @@ class ServiceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Service $service)
+    public function edit(Service $service): Response
     {
-        return view('backend.services.edit', compact('service'));
+        return Inertia::render('Admin/Services/Edit', [
+            'service' => [
+                'id' => $service->id,
+                'title' => $service->title,
+                'description' => $service->description,
+                'icon' => $service->icon,
+                'buttonText' => $service->button_text,
+                'buttonUrl' => $service->button_url,
+                'order' => $service->order,
+                'status' => (bool) $service->status,
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.services.index'),
+                'update' => route('admin.services.update', $service),
+            ],
+            'storageUrl' => asset('storage'),
+        ]);
     }
 
     /**

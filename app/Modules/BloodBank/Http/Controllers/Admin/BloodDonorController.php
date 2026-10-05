@@ -6,14 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Modules\BloodBank\Models\BloodDonor;
 use App\Modules\BloodBank\Models\BloodGroup;
 use App\Modules\BloodBank\Models\BloodInventorySetting;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BloodDonorController extends Controller
 {
     /**
      * Display a filterable, paginated donor list.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $query = BloodDonor::with('bloodGroup');
 
@@ -40,19 +43,58 @@ class BloodDonorController extends Controller
 
         $donors = $query->latest()->paginate(10)->withQueryString();
 
-        return view('bloodbank.donors.index', [
-            'donors' => $donors,
-            'bloodGroups' => BloodGroup::orderBy('name')->get(),
+        $donors->through(fn (BloodDonor $donor) => [
+            'id' => $donor->id,
+            'name' => $donor->name,
+            'email' => $donor->email,
+            'phone' => $donor->phone,
+            'bloodGroup' => $donor->bloodGroup?->name,
+            'lastDonationDate' => $donor->last_donation_date?->format('Y-m-d'),
+            'status' => $donor->status,
+        ]);
+
+        return Inertia::render('Admin/BloodBank/Donors/Index', [
+            'donors' => [
+                'data' => $donors->items(),
+                'currentPage' => $donors->currentPage(),
+                'lastPage' => $donors->lastPage(),
+                'firstItem' => $donors->firstItem(),
+                'lastItem' => $donors->lastItem(),
+                'total' => $donors->total(),
+                'previousPageUrl' => $donors->previousPageUrl(),
+                'nextPageUrl' => $donors->nextPageUrl(),
+            ],
+            'bloodGroups' => BloodGroup::orderBy('name')->get(['id', 'name']),
+            'filters' => [
+                'search' => (string) $request->query('search', ''),
+                'bloodGroupId' => (string) $request->query('blood_group_id', ''),
+                'gender' => (string) $request->query('gender', ''),
+                'status' => (string) $request->query('status', ''),
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-donors.index'),
+                'create' => route('admin.blood-donors.create'),
+                'showBase' => url('/admin/blood-donors'),
+                'editBase' => url('/admin/blood-donors'),
+                'deleteBase' => url('/admin/blood-donors'),
+            ],
         ]);
     }
 
     /**
      * Show the form for creating a new donor.
      */
-    public function create()
+    public function create(): Response
     {
-        return view('bloodbank.donors.create', [
-            'bloodGroups' => BloodGroup::where('status', true)->orderBy('name')->get(),
+        return Inertia::render('Admin/BloodBank/Donors/Form', [
+            'mode' => 'create',
+            'bloodGroups' => BloodGroup::where('status', true)->orderBy('name')->get(['id', 'name']),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-donors.index'),
+                'store' => route('admin.blood-donors.store'),
+            ],
         ]);
     }
 
@@ -93,24 +135,71 @@ class BloodDonorController extends Controller
     /**
      * Display a donor profile with donation history and eligibility.
      */
-    public function show(BloodDonor $donor)
+    public function show(BloodDonor $donor): Response
     {
         $donor->load('bloodGroup', 'donations.bloodGroup');
 
-        return view('bloodbank.donors.show', [
-            'donor' => $donor,
+        return Inertia::render('Admin/BloodBank/Donors/Show', [
+            'donor' => [
+                'id' => $donor->id,
+                'name' => $donor->name,
+                'phone' => $donor->phone,
+                'email' => $donor->email,
+                'gender' => $donor->gender,
+                'dateOfBirth' => $donor->date_of_birth?->format('Y-m-d'),
+                'address' => $donor->address,
+                'lastDonationDate' => $donor->last_donation_date?->format('Y-m-d'),
+                'notes' => $donor->notes,
+                'status' => $donor->status,
+                'bloodGroup' => $donor->bloodGroup?->name,
+                'totalDonations' => $donor->totalDonations(),
+                'eligible' => $donor->isEligible(BloodInventorySetting::setting()->minDonationDays()),
+                'donations' => $donor->donations->map(fn ($donation) => [
+                    'id' => $donation->id,
+                    'date' => $donation->donation_date->format('Y-m-d'),
+                    'bagNumber' => $donation->bag_number,
+                    'quantity' => $donation->quantity,
+                    'unit' => $donation->unit,
+                    'expiryDate' => $donation->expiry_date->format('Y-m-d'),
+                    'status' => $donation->status,
+                ]),
+            ],
             'minDonationDays' => BloodInventorySetting::setting()->minDonationDays(),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-donors.index'),
+                'edit' => route('admin.blood-donors.edit', $donor),
+            ],
         ]);
     }
 
     /**
      * Show the form for editing the specified donor.
      */
-    public function edit(BloodDonor $donor)
+    public function edit(BloodDonor $donor): Response
     {
-        return view('bloodbank.donors.edit', [
-            'donor' => $donor,
-            'bloodGroups' => BloodGroup::where('status', true)->orderBy('name')->get(),
+        return Inertia::render('Admin/BloodBank/Donors/Form', [
+            'mode' => 'edit',
+            'donor' => [
+                'id' => $donor->id,
+                'name' => $donor->name,
+                'bloodGroupId' => $donor->blood_group_id,
+                'phone' => $donor->phone,
+                'email' => $donor->email,
+                'dateOfBirth' => $donor->date_of_birth?->format('Y-m-d'),
+                'gender' => $donor->gender,
+                'address' => $donor->address,
+                'lastDonationDate' => $donor->last_donation_date?->format('Y-m-d'),
+                'status' => $donor->status,
+                'notes' => $donor->notes,
+            ],
+            'bloodGroups' => BloodGroup::where('status', true)->orderBy('name')->get(['id', 'name']),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-donors.index'),
+                'show' => route('admin.blood-donors.show', $donor),
+                'update' => route('admin.blood-donors.update', $donor),
+            ],
         ]);
     }
 

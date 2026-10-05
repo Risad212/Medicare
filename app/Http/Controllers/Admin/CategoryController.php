@@ -4,27 +4,51 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $categories = Category::latest()->get();
 
-        return view('backend.categories.index', compact('categories'));
+        return Inertia::render('Admin/Taxonomy/Index', [
+            'kind' => 'categories',
+            'records' => $categories->map(fn (Category $category) => [
+                'id' => $category->id,
+                'name' => $category->name,
+                'slug' => $category->slug,
+            ])->values(),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.categories.index'),
+                'create' => route('admin.categories.create'),
+                'editBase' => url('/admin/blog/categories'),
+                'deleteBase' => url('/admin/blog/categories'),
+            ],
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
-        return view('backend.categories.create');
+        return Inertia::render('Admin/Taxonomy/Form', [
+            'kind' => 'categories',
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.categories.index'),
+                'store' => route('admin.categories.store'),
+            ],
+        ]);
     }
 
     /**
@@ -47,9 +71,17 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit(Category $category): Response
     {
-        return view('backend.categories.edit', compact('category'));
+        return Inertia::render('Admin/Taxonomy/Form', [
+            'kind' => 'categories',
+            'record' => ['id' => $category->id, 'name' => $category->name],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.categories.index'),
+                'update' => route('admin.categories.update', $category),
+            ],
+        ]);
     }
 
     /**

@@ -4,28 +4,55 @@ namespace App\Modules\BloodBank\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Modules\BloodBank\Models\BloodGroup;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BloodGroupController extends Controller
 {
     /**
      * Display a listing of blood groups.
      */
-    public function index()
+    public function index(): Response
     {
         $bloodGroups = BloodGroup::withCount(['donors', 'donations', 'requests'])
             ->orderBy('name')
             ->get();
 
-        return view('bloodbank.groups.index', compact('bloodGroups'));
+        return Inertia::render('Admin/BloodBank/Groups/Index', [
+            'bloodGroups' => $bloodGroups->map(fn (BloodGroup $group) => [
+                'id' => $group->id,
+                'name' => $group->name,
+                'status' => $group->status,
+                'donorsCount' => $group->donors_count,
+                'donationsCount' => $group->donations_count,
+                'requestsCount' => $group->requests_count,
+            ]),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-groups.index'),
+                'create' => route('admin.blood-groups.create'),
+                'editBase' => url('/admin/blood-groups'),
+                'toggleBase' => url('/admin/blood-groups'),
+                'deleteBase' => url('/admin/blood-groups'),
+            ],
+        ]);
     }
 
     /**
      * Show the form for creating a new blood group.
      */
-    public function create()
+    public function create(): Response
     {
-        return view('bloodbank.groups.create');
+        return Inertia::render('Admin/BloodBank/Groups/Form', [
+            'mode' => 'create',
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-groups.index'),
+                'store' => route('admin.blood-groups.store'),
+            ],
+        ]);
     }
 
     /**
@@ -49,9 +76,21 @@ class BloodGroupController extends Controller
     /**
      * Show the form for editing the specified blood group.
      */
-    public function edit(BloodGroup $bloodGroup)
+    public function edit(BloodGroup $bloodGroup): Response
     {
-        return view('bloodbank.groups.edit', compact('bloodGroup'));
+        return Inertia::render('Admin/BloodBank/Groups/Form', [
+            'mode' => 'edit',
+            'bloodGroup' => [
+                'id' => $bloodGroup->id,
+                'name' => $bloodGroup->name,
+                'status' => $bloodGroup->status,
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.blood-groups.index'),
+                'update' => route('admin.blood-groups.update', $bloodGroup),
+            ],
+        ]);
     }
 
     /**

@@ -4,26 +4,48 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\TimeSlot;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class TimeSlotController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $timeSlots = TimeSlot::orderBy('time')->get();
 
-        return view('backend.timeslots.index', compact('timeSlots'));
+        return Inertia::render('Admin/TimeSlots/Index', [
+            'timeSlots' => $timeSlots->map(fn (TimeSlot $timeSlot) => [
+                'id' => $timeSlot->id,
+                'time' => $timeSlot->time,
+                'status' => (int) $timeSlot->status,
+            ])->values(),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.time-slots.index'),
+                'create' => route('admin.time-slots.create'),
+                'editBase' => url('/admin/time-slots'),
+                'deleteBase' => url('/admin/time-slots'),
+            ],
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
-        return view('backend.timeslots.create');
+        return Inertia::render('Admin/TimeSlots/Create', [
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.time-slots.index'),
+                'store' => route('admin.time-slots.store'),
+            ],
+        ]);
     }
 
     /**
@@ -46,9 +68,20 @@ class TimeSlotController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TimeSlot $timeSlot)
+    public function edit(TimeSlot $timeSlot): Response
     {
-        return view('backend.timeslots.edit', compact('timeSlot'));
+        return Inertia::render('Admin/TimeSlots/Edit', [
+            'timeSlot' => [
+                'id' => $timeSlot->id,
+                'time' => $timeSlot->time,
+                'status' => (bool) $timeSlot->status,
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.time-slots.index'),
+                'update' => route('admin.time-slots.update', $timeSlot),
+            ],
+        ]);
     }
 
     /**

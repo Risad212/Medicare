@@ -4,27 +4,51 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tag;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class TagController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $tags = Tag::latest()->get();
 
-        return view('backend.tags.index', compact('tags'));
+        return Inertia::render('Admin/Taxonomy/Index', [
+            'kind' => 'tags',
+            'records' => $tags->map(fn (Tag $tag) => [
+                'id' => $tag->id,
+                'name' => $tag->name,
+                'slug' => $tag->slug,
+            ])->values(),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.tags.index'),
+                'create' => route('admin.tags.create'),
+                'editBase' => url('/admin/blog/tags'),
+                'deleteBase' => url('/admin/blog/tags'),
+            ],
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
-        return view('backend.tags.create');
+        return Inertia::render('Admin/Taxonomy/Form', [
+            'kind' => 'tags',
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.tags.index'),
+                'store' => route('admin.tags.store'),
+            ],
+        ]);
     }
 
     /**
@@ -47,9 +71,17 @@ class TagController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tag $tag)
+    public function edit(Tag $tag): Response
     {
-        return view('backend.tags.edit', compact('tag'));
+        return Inertia::render('Admin/Taxonomy/Form', [
+            'kind' => 'tags',
+            'record' => ['id' => $tag->id, 'name' => $tag->name],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.tags.index'),
+                'update' => route('admin.tags.update', $tag),
+            ],
+        ]);
     }
 
     /**

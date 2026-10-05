@@ -13,7 +13,7 @@ flowchart LR
     Model["Eloquent Model"]
     Database[("Database")]
     Inertia["Inertia response"]
-    React["React admin page"]
+    React["React public and admin pages"]
     Blade["Blade page"]
 
     Browser --> Routes --> Middleware --> Controller
@@ -29,8 +29,8 @@ flowchart LR
 ```mermaid
 flowchart TB
     subgraph Presentation["Presentation"]
-        Blade["Blade public and unconverted views"]
-        React["resources/js/Pages · React admin screens"]
+        Blade["Blade authentication, patient/doctor portals, optional modules"]
+        React["resources/js/Pages · React public site and admin screens"]
         Inertia["Inertia adapter"]
         Assets["resources/js · resources/css · resources/sass"]
     end
@@ -87,7 +87,7 @@ database/
 
 resources/
 ├── css/            Frontend and admin styles
-├── js/             Frontend scripts and React admin pages
+├── js/             Frontend scripts and React public/admin pages
 ├── sass/           Sass stylesheets
 └── views/          Blade templates
 
@@ -102,10 +102,10 @@ routes/
 flowchart TB
     User["Signed-in user"]
     Role{"Account role"}
-    Admin["Admin and staff area"]
-    Doctor["Doctor area"]
-    Patient["Patient area"]
-    Public["Public website"]
+    Admin["Admin and staff area · React/Inertia migration in progress"]
+    Doctor["Doctor portal · Blade"]
+    Patient["Patient profile · Blade"]
+    Public["Public website · React/Inertia"]
 
     User --> Role
     Role --> Admin

@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\HomeSetting;
 use App\Models\SeoSetting;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class HomeSettingController extends Controller
 {
@@ -14,15 +17,21 @@ class HomeSettingController extends Controller
      *
      * @return void
      */
-    public function home()
+    public function home(): Response
     {
         $homeSetting = HomeSetting::first();
         $seo = SeoSetting::where('page', 'home')->first();
 
-        return view('backend.settings.home', compact(
-            'homeSetting',
-            'seo'
-        ));
+        return Inertia::render('Admin/Settings/Form', [
+            'routes' => AdminNavigation::routes(),
+            'type' => 'home',
+            'title' => 'Home Settings',
+            'setting' => $homeSetting?->toArray() ?? [],
+            'seo' => $seo?->only('page', 'meta_title', 'meta_description', 'meta_keywords') ?? ['page' => 'home'],
+            'submitUrl' => route('settings.home.update'),
+            'seoSubmitUrl' => route('admin.seo-settings.update'),
+            'storageUrl' => asset('storage'),
+        ]);
     }
 
     /**

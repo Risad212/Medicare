@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\GeneralSetting;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class GeneralSettingController extends Controller
 {
@@ -13,11 +16,22 @@ class GeneralSettingController extends Controller
      *
      * @return void
      */
-    public function general()
+    public function general(): Response
     {
         $setting = GeneralSetting::first();
 
-        return view('backend.settings.general', compact('setting'));
+        return Inertia::render('Admin/Settings/Form', [
+            'routes' => AdminNavigation::routes(),
+            'type' => 'general',
+            'title' => 'General Settings',
+            'setting' => $setting?->only([
+                'site_name', 'logo', 'favicon', 'address', 'working_hours', 'facebook',
+                'twitter', 'linkedin', 'youtube', 'map_embed_url', 'email', 'phone',
+                'footer_logo', 'footer_description', 'copyright',
+            ]) ?? [],
+            'submitUrl' => route('settings.general.update'),
+            'storageUrl' => asset('storage'),
+        ]);
     }
 
     /**

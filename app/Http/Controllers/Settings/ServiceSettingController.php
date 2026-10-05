@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\SeoSetting;
 use App\Models\ServiceSetting;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ServiceSettingController extends Controller
 {
@@ -14,15 +17,22 @@ class ServiceSettingController extends Controller
      *
      * @return void
      */
-    public function service()
+    public function service(): Response
     {
         $serviceSetting = ServiceSetting::first();
         $seo = SeoSetting::where('page', 'service')->first();
 
-        return view('backend.settings.service', compact(
-            'serviceSetting',
-            'seo'
-        ));
+        return Inertia::render('Admin/Settings/Form', [
+            'routes' => AdminNavigation::routes(),
+            'type' => 'service',
+            'title' => 'Service Settings',
+            'setting' => $serviceSetting?->toArray() ?? [],
+            'seo' => $seo?->only('page', 'meta_title', 'meta_description', 'meta_keywords') ?? ['page' => 'service'],
+            'submitUrl' => route('settings.service.update'),
+            'seoSubmitUrl' => route('admin.seo-settings.update'),
+            'serviceCardsUrl' => route('admin.services.index'),
+            'storageUrl' => asset('storage'),
+        ]);
     }
 
     /**

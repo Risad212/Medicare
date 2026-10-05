@@ -8,10 +8,12 @@ use App\Models\SeoSetting;
 use App\Modules\Search\Services\DoctorSearchService;
 use App\Support\Module;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DoctorController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         // Search module (app/Modules/Search/): only touched when the flag is
         // on. ::class references are plain strings until app() resolves them,
@@ -31,13 +33,53 @@ class DoctorController extends Controller
         $pageTitle = 'Our Doctors';
         $noDoctorsMessage = 'No doctors found.';
 
-        return view('frontend.doctor', compact('doctors', 'departments', 'filters', 'seo', 'pageTitle', 'noDoctorsMessage'));
+        $doctors->setCollection($doctors->getCollection()->map(fn (Doctor $doctor) => [
+            'id' => $doctor->id,
+            'name' => $doctor->name,
+            'department' => $doctor->department,
+            'specialist' => $doctor->specialist,
+            'degree' => $doctor->degree,
+            'image' => $doctor->image,
+        ]));
+
+        return Inertia::render('Public/Doctors/Index', [
+            'doctors' => [
+                'data' => $doctors->items(),
+                'currentPage' => $doctors->currentPage(),
+                'lastPage' => $doctors->lastPage(),
+                'total' => $doctors->total(),
+                'links' => $doctors->linkCollection(),
+            ],
+            'departments' => $departments,
+            'filters' => $filters,
+            'searchEnabled' => Module::enabled('search'),
+            'pageTitle' => $pageTitle,
+            'noDoctorsMessage' => $noDoctorsMessage,
+            'seo' => [
+                'title' => $seo?->meta_title,
+                'description' => $seo?->meta_description,
+                'keywords' => $seo?->meta_keywords,
+            ],
+        ]);
     }
 
-    public function show($id)
+    public function show($id): Response
     {
         $doctor = Doctor::where('id', $id)->where('status', 1)->firstOrFail();
 
-        return view('frontend.doctors.show', compact('doctor'));
+        return Inertia::render('Public/Doctors/Show', [
+            'minDate' => now()->toDateString(),
+            'doctor' => [
+                'id' => $doctor->id,
+                'name' => $doctor->name,
+                'degree' => $doctor->degree,
+                'department' => $doctor->department,
+                'specialist' => $doctor->specialist,
+                'services' => $doctor->services,
+                'availability' => $doctor->availability,
+                'phone' => $doctor->phone,
+                'image' => $doctor->image,
+            ],
+        ]);
     }
 }

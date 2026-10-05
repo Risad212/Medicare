@@ -4,17 +4,35 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlogComment;
+use App\Support\AdminNavigation;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class BlogCommentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $comments = BlogComment::with('blog')->latest()->get();
 
-        return view('backend.comments.index', compact('comments'));
+        return Inertia::render('Admin/Comments/Index', [
+            'comments' => $comments->map(fn (BlogComment $comment) => [
+                'id' => $comment->id,
+                'blogTitle' => $comment->blog?->title ?? 'Deleted post',
+                'name' => $comment->name,
+                'email' => $comment->email,
+                'comment' => $comment->comment,
+                'status' => (int) $comment->status,
+                'date' => $comment->created_at?->format('M d, Y'),
+            ])->values(),
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'approveBase' => url('/admin/comments'),
+                'deleteBase' => url('/admin/comments'),
+            ],
+        ]);
     }
 
     /**

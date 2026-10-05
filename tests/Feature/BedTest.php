@@ -151,9 +151,54 @@ class BedTest extends TestCase
 
         $response = $this->actingAs($admin)->get('/admin/beds');
 
-        $response->assertOk();
-        $response->assertSee('0/1 available');
-        $response->assertSee($patient->name);
+        $response->assertInertia(fn ($page) => $page
+            ->component('Admin/Beds/Index')
+            ->where('wards.0.availableBedsCount', 0)
+            ->where('wards.0.bedsCount', 1)
+            ->where('wards.0.rooms.0.beds.0.patientName', $patient->name)
+        );
+    }
+
+    public function test_ward_and_room_pages_render_react_components(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $bed = $this->makeBed();
+
+        $this->actingAs($admin)->get('/admin/wards')
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Wards/Index')
+                ->where('wards.data.0.name', 'General Ward')
+            );
+
+        $this->actingAs($admin)->get("/admin/wards/{$bed->room->ward_id}")
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Wards/Show')
+                ->where('ward.rooms.0.bedsCount', 1)
+            );
+
+        $this->actingAs($admin)->get('/admin/rooms')
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Rooms/Index')
+                ->where('rooms.data.0.roomNumber', '101')
+            );
+
+        $this->actingAs($admin)->get("/admin/rooms/{$bed->room_id}")
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Rooms/Show')
+                ->where('room.beds.0.bedNumber', 'B-01')
+            );
+    }
+
+    public function test_bed_forms_render_react_component(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $bed = $this->makeBed();
+
+        $this->actingAs($admin)->get('/admin/beds/create')
+            ->assertInertia(fn ($page) => $page->component('Admin/Beds/Form')->where('mode', 'create'));
+
+        $this->actingAs($admin)->get("/admin/beds/{$bed->id}/edit")
+            ->assertInertia(fn ($page) => $page->component('Admin/Beds/Form')->where('mode', 'edit'));
     }
 
     public function test_guest_and_patient_cannot_access_bed_admin(): void

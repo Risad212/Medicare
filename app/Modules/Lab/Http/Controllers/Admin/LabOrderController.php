@@ -11,16 +11,19 @@ use App\Modules\Lab\Services\LabReportService;
 use App\Services\PatientNotifier;
 use App\Services\PdfService;
 use App\Services\StaffNotifier;
+use App\Support\AdminNavigation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class LabOrderController extends Controller
 {
     /**
      * Display all lab orders across the hospital.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $orders = LabOrder::with(['items.test', 'doctor', 'reports'])
             ->when(in_array($request->status, ['pending', 'in-progress', 'completed', 'cancelled'], true), function ($query) use ($request) {
@@ -36,19 +39,99 @@ class LabOrderController extends Controller
                 });
             })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('lab.orders.index', compact('orders'));
+        $orders->through(fn (LabOrder $order) => [
+            'id' => $order->id,
+            'createdAt' => $order->created_at?->format('d M Y'),
+            'patientName' => $order->patient_name,
+            'phone' => $order->phone,
+            'doctorName' => $order->doctor?->name ?? 'N/A',
+            'tests' => $order->items->map(fn ($item) => $item->test?->name ?? 'Removed test')->values(),
+            'priority' => $order->priority,
+            'total' => number_format((float) $order->total, 2),
+            'reportsCount' => $order->reports->count(),
+            'status' => $order->status,
+        ]);
+
+        return Inertia::render('Admin/Lab/Orders/Index', [
+            'orders' => [
+                'data' => $orders->items(),
+                'currentPage' => $orders->currentPage(),
+                'lastPage' => $orders->lastPage(),
+                'firstItem' => $orders->firstItem(),
+                'lastItem' => $orders->lastItem(),
+                'total' => $orders->total(),
+                'previousPageUrl' => $orders->previousPageUrl(),
+                'nextPageUrl' => $orders->nextPageUrl(),
+            ],
+            'filters' => [
+                'search' => (string) $request->query('search', ''),
+                'status' => in_array($request->query('status'), ['pending', 'in-progress', 'completed', 'cancelled'], true) ? $request->query('status') : '',
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.lab-orders.index'),
+                'export' => route('admin.exports.lab-orders'),
+                'showBase' => url('/admin/lab-orders'),
+            ],
+        ]);
     }
 
     /**
      * Display a single lab order with report management.
      */
-    public function show(LabOrder $order)
+    public function show(LabOrder $order): Response
     {
-        $order->load(['items.test', 'doctor', 'reports.uploader', 'appointment.timeSlot', 'user']);
+        $order->load(['items.test', 'doctor', 'reports.uploader', 'appointment.timeSlot', 'user', 'invoice']);
 
-        return view('lab.orders.show', compact('order'));
+        return Inertia::render('Admin/Lab/Orders/Show', [
+            'order' => [
+                'id' => $order->id,
+                'patientName' => $order->patient_name,
+                'phone' => $order->phone,
+                'email' => $order->email,
+                'accountName' => $order->user?->name ?? 'Walk-in (no account)',
+                'doctorName' => $order->doctor?->name ?? 'N/A',
+                'appointmentId' => $order->appointment?->id,
+                'appointmentDate' => $order->appointment?->appointment_date?->format('d M Y'),
+                'createdAt' => $order->created_at?->format('d M Y h:i A'),
+                'priority' => $order->priority,
+                'status' => $order->status,
+                'total' => number_format((float) $order->total, 2),
+                'note' => $order->note,
+                'invoiceId' => $order->invoice?->id,
+                'invoiceNumber' => $order->invoice?->invoice_no,
+                'items' => $order->items->map(fn ($item) => [
+                    'id' => $item->id,
+                    'testName' => $item->test?->name ?? 'Removed test',
+                    'normalRange' => $item->test?->normal_range,
+                    'unit' => $item->test?->unit,
+                    'result' => $item->result,
+                    'price' => number_format((float) $item->price, 2),
+                ])->values(),
+                'reports' => $order->reports->map(fn (LabReport $report) => [
+                    'id' => $report->id,
+                    'name' => $report->report_name,
+                    'notes' => $report->notes,
+                    'createdAt' => $report->created_at?->format('d M Y h:i A'),
+                    'uploaderName' => $report->uploader?->name,
+                ])->values(),
+            ],
+            'routes' => [
+                ...AdminNavigation::routes(),
+                'index' => route('admin.lab-orders.index'),
+                'status' => route('admin.lab-orders.status', $order),
+                'pdf' => route('admin.lab-orders.pdf', $order),
+                'reportsStore' => route('admin.lab-orders.reports.store', $order),
+                'itemResultBase' => url('/admin/lab-order-items'),
+                'reportDownloadBase' => url('/admin/lab-reports'),
+                'reportDeleteBase' => url('/admin/lab-reports'),
+                'invoiceCreate' => route('admin.invoices.create-from-order', $order),
+                'invoiceShowBase' => url('/admin/invoices'),
+            ],
+        ]);
     }
 
     /**

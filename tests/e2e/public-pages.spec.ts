@@ -16,27 +16,43 @@ const pages = [
 
 for (const { path, name } of pages) {
     test(`${name} page loads`, async ({ page }) => {
+        const pageErrors: string[] = [];
+        page.on('pageerror', (error) => pageErrors.push(error.message));
         const response = await page.goto(path);
         expect(response?.status()).toBe(200);
         await expect(page).toHaveURL(new RegExp(`${path.replace('/', '\\/')}$`));
-        // Page renders <body> with visible content, no Laravel exception page
-        await expect(page.locator('body')).toBeVisible();
+        await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible();
+        await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
         await expect(page.locator('body')).not.toContainText('Whoops, something went wrong');
         await expect(page.locator('body')).not.toContainText('Server Error');
+        expect(pageErrors).toEqual([]);
     });
 }
 
 test('navigation from home reaches appointment page', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
     await page.goto('/');
     // Click first visible link to /appointment (header CTA)
-    const appointmentLink = page.locator('a[href="/appointment"]').first();
-    if ((await appointmentLink.count()) > 0) {
-        await appointmentLink.click();
-        await expect(page).toHaveURL(/\/appointment$/);
-        await expect(page.locator('body')).toBeVisible();
-    } else {
-        // Fallback: direct navigation still proves the flow
-        await page.goto('/appointment');
-        await expect(page).toHaveURL(/\/appointment$/);
-    }
+    await page.getByRole('link', { name: /Appointment/ }).first().click();
+    await expect(page).toHaveURL(/\/appointment$/);
+    await expect(page.getByRole('heading', { name: 'Request an appointment' })).toBeVisible();
+    await expect(page.getByLabel('Patient name')).toBeVisible();
+    await expect(page.getByLabel('Doctor')).toBeVisible();
+    await expect(page.getByLabel('Appointment date')).toBeVisible();
+    expect(pageErrors).toEqual([]);
+});
+
+test('contact form submits successfully', async ({ page }) => {
+    test.skip(Boolean(process.env.PLAYWRIGHT_BASE_URL), 'The contact workflow sends mail; only run it against the isolated local test server.');
+
+    await page.goto('/contact');
+    await page.getByLabel('Your name').fill('Playwright Visitor');
+    await page.getByLabel('Email address').fill('playwright@example.test');
+    await page.getByLabel('Phone number').fill('01700000000');
+    await page.getByLabel('Subject').fill('Test message');
+    await page.getByLabel('Message').fill('This is an end-to-end contact form test.');
+    await page.getByRole('button', { name: /Send message/ }).click();
+
+    await expect(page.getByText('Your message has been sent. Thank you for contacting us.')).toBeVisible();
 });
