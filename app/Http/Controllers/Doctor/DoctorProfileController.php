@@ -10,14 +10,14 @@ class DoctorProfileController extends Controller
 {
     public function edit()
     {
-        $doctor = Doctor::where('user_id', auth()->id())->first();
+        $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
 
         return view('backend.doctor-dashboard.profile', compact('doctor'));
     }
 
     public function update(UpdateDoctorProfileRequest $request)
     {
-        $doctor = Doctor::where('user_id', auth()->id())->first();
+        $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
 
         $validated = $request->validated();
 

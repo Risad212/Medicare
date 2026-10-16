@@ -162,8 +162,8 @@ class BedTest extends TestCase
         $this->get('/admin/wards')->assertRedirect('/login');
 
         $patient = User::factory()->create(['role' => 'patient']);
-        $this->actingAs($patient)->get('/admin/beds')->assertRedirect('/login');
-        $this->actingAs($patient)->get('/admin/rooms')->assertRedirect('/login');
+        $this->actingAs($patient)->get('/admin/beds')->assertForbidden();
+        $this->actingAs($patient)->get('/admin/rooms')->assertForbidden();
     }
 
     public function test_disabled_module_hides_bed_routes(): void

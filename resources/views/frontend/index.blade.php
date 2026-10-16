@@ -26,7 +26,7 @@
                             <h2>{{ $slider->title ?? '' }}</h2>
                             <p>{{ $slider->description ?? '' }}</p>
                             <div class="btn-title-home">
-                                <a href="#" class="btn-title">{{ $slider->button_text ?? 'Read More' }}</a>
+                                <a href="{{ route('appointment') }}" class="btn-title">{{ $slider->button_text ?? __('messages.public.read_more') }}</a>
                             </div>
                         </div>
                     </div>
@@ -121,7 +121,7 @@
                     </p>
 
                     <a class="about-btn" href="{{ route('about') }}">
-                        {{ $homeSetting->about_button_text ?? 'Read More' }}
+                        {{ $homeSetting->about_button_text ?? __('messages.public.read_more') }}
                     </a>
 
                 </div>
@@ -157,16 +157,18 @@
     </div>
 </section>
 
+@if(\App\Support\Module::enabled('directory'))
 <!--============== SERVICE SECTION ===============-->
 <section class="service-section">
     <div class="container">
         <div class="title-head">
-            <span class="subtitle">OUR SERVICES</span>
-            <h3 class="title">We Care Our Patients</h3>
+            <span class="subtitle">{{ $homeSetting->services_subtitle ?? __('messages.public.our_services') }}</span>
+            <h3 class="title">{{ $homeSetting->services_title ?? __('messages.public.section_services_title') }}</h3>
         </div>
-        @include('frontend.components.service')
+        @include('directory.components-service-card')
     </div>
 </section>
+@endif
 
 <!--============== COUNTER SECTION ===============-->
 <section id="counter" class="parallax100">
@@ -278,8 +280,8 @@
 <section class="blog-section">
     <div class="container">
         <div class="title-head">
-            <span class="subtitle">Our Blog</span>
-            <h3 class="title">Recent Articles and News</h3>
+            <span class="subtitle">{{ $homeSetting->blog_subtitle ?? __('messages.public.our_blog') }}</span>
+            <h3 class="title">{{ $homeSetting->blog_title ?? __('messages.public.section_blog_title') }}</h3>
         </div>
 
         @if(isset($recentBlogs) && $recentBlogs->count())
@@ -297,7 +299,7 @@
                             <div class="text-box">
                                 <h3>{{ $feature->title }}</h3>
                                 <p>{{ Str::limit($feature->excerpt, 140) }}</p>
-                                <a href="{{ route('blog.show', $feature->slug) }}" class="button">Read More</a>
+                                <a href="{{ route('blog.show', $feature->slug) }}" class="button">{{ __('messages.public.read_more') }}</a>
                             </div>
                         </div>
                     </div>
@@ -316,7 +318,7 @@
                                 <div class="col-md-6 col-sm-12">
                                     <h3>{{ $blog->title }}</h3>
                                     <p>{{ Str::limit($blog->excerpt, 90) }}</p>
-                                    <a href="{{ route('blog.show', $blog->slug) }}" class="button">Read More</a>
+                                    <a href="{{ route('blog.show', $blog->slug) }}" class="button">{{ __('messages.public.read_more') }}</a>
                                 </div>
                             </div>
                         @endforeach
@@ -335,37 +337,37 @@
 <section class="sister-concern-section">
     <div class="container">
         <div class="title-head">
-            <span class="subtitle">sister soncerns</span>
-            <h3 class="title">Our Brands</h3>
+            <span class="subtitle">{{ $homeSetting->brands_subtitle ?? __('messages.public.sister_concerns') }}</span>
+            <h3 class="title">{{ $homeSetting->brands_title ?? __('messages.public.section_brands_title') }}</h3>
         </div>
         <div class="clients-slider owl-carousel owl-theme">
             <div class="clients-member">
-                <a href="#" target="_blank">
+                <div class="clients-link">
                     <div class="clients-photo">
                         <img class="img-fluid" src="{{ asset('frontend-assets/media/home/brand1.png') }}" alt="Member">
                     </div>
-                </a>
+                </div>
             </div>
             <div class="clients-member">
-                <a href="#" target="_blank">
+                <div class="clients-link">
                     <div class="clients-photo">
                         <img class="img-fluid" src="{{ asset('frontend-assets/media/home/brand2.png') }}" alt="Member">
                     </div>
-                </a>
+                </div>
             </div>
             <div class="clients-member">
-                <a href="#" target="_blank">
+                <div class="clients-link">
                     <div class="clients-photo">
                         <img class="img-fluid" src="{{ asset('frontend-assets/media/home/brand3.png') }}" alt="Member">
                     </div>
-                </a>
+                </div>
             </div>
             <div class="clients-member">
-                <a href="#" target="_blank">
+                <div class="clients-link">
                     <div class="clients-photo">
                         <img class="img-fluid" src="{{ asset('frontend-assets/media/home/brand4.png') }}" alt="Member">
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </div>

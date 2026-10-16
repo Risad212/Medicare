@@ -26,14 +26,15 @@ class AppointmentReminderPatient extends Notification
      */
     public function toDatabase(object $notifiable): array
     {
+        $locale = $notifiable->locale ?? app()->getLocale();
+
         return [
             'appointment_id' => $this->appointment->id,
-            'title' => 'Appointment reminder',
-            'message' => sprintf(
-                'Reminder: you have an appointment with Dr. %s tomorrow at %s.',
-                $this->appointment->doctor?->name ?? 'N/A',
-                $this->appointment->timeSlot?->time ?? 'N/A',
-            ),
+            'title' => __('messages.notifications.reminder_title', [], $locale),
+            'message' => __('messages.notifications.reminder_patient_message', [
+                'doctor' => $this->appointment->doctor?->name ?? 'N/A',
+                'time' => $this->appointment->timeSlot?->time ?? 'N/A',
+            ], $locale),
         ];
     }
 }

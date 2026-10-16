@@ -9,11 +9,13 @@ use App\Models\TimeSlot;
 use App\Services\AppointmentNotifier;
 use App\Services\PatientNotifier;
 use App\Services\StaffNotifier;
+use App\Support\Module;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AppointmentController extends Controller
@@ -46,8 +48,8 @@ class AppointmentController extends Controller
      */
     public function create()
     {
-        $doctors = Doctor::where('status', 1)->get();
-        $timeSlots = TimeSlot::where('status', 1)->get();
+        $doctors = Doctor::where('status', 1)->orderBy('name')->get();
+        $timeSlots = TimeSlot::where('status', 1)->orderBy('time')->get();
 
         return view('backend.appointments.create', compact('doctors', 'timeSlots'));
     }
@@ -64,8 +66,11 @@ class AppointmentController extends Controller
             'age' => 'nullable|integer|min:0|max:120',
             'gender' => 'required|in:1,2,3',
             'phone' => 'required|string|max:20',
-            'email' => 'nullable|email|max:255',
             'visit_type' => 'required|in:1,2,3',
+            'consultation_mode' => [Module::enabled('zoom') ? 'required' : 'sometimes', Rule::in(
+                Module::enabled('zoom') ? ['in_person', 'telehealth'] : ['in_person'],
+            )],
+            'email' => 'required_if:consultation_mode,telehealth|nullable|email|max:255',
             'date' => 'required|date|after_or_equal:today',
         ]);
 
@@ -82,6 +87,11 @@ class AppointmentController extends Controller
         // final guard; convert a race loss into a validation error.
         try {
             $appointment = DB::transaction(function () use ($validated) {
+                // Serialize per-doctor bookings: exists() locks nothing on
+                // zero rows, so lock the doctor row first. Unique index
+                // remains the final guard.
+                Doctor::whereKey($validated['doctor_id'])->lockForUpdate()->first();
+
                 $conflict = Appointment::where('doctor_id', $validated['doctor_id'])
                     ->where('appointment_date', $validated['date'])
                     ->where('time_slot_id', $validated['time_slot_id'])
@@ -102,6 +112,7 @@ class AppointmentController extends Controller
                     'phone' => $validated['phone'],
                     'email' => $validated['email'] ?? null,
                     'visit_type' => $validated['visit_type'],
+                    'consultation_mode' => $validated['consultation_mode'] ?? 'in_person',
                     'appointment_date' => $validated['date'],
                     'status' => 0,
                 ]);
@@ -129,7 +140,7 @@ class AppointmentController extends Controller
     public function edit(string $id)
     {
         $appointment = Appointment::findOrFail($id);
-        $doctors = Doctor::where('status', 1)->get();
+        $doctors = Doctor::where('status', 1)->orderBy('name')->get();
         // Keep the current slot selectable even if it was deactivated.
         $slots = TimeSlot::where('status', 1)
             ->orWhere('id', $appointment->time_slot_id)
@@ -150,8 +161,11 @@ class AppointmentController extends Controller
             'age' => 'nullable|integer|min:0|max:120',
             'gender' => 'required|in:1,2,3',
             'phone' => 'required|string|max:20',
-            'email' => 'nullable|email|max:255',
             'visit_type' => 'required|in:1,2,3',
+            'consultation_mode' => [Module::enabled('zoom') ? 'required' : 'sometimes', Rule::in(
+                Module::enabled('zoom') ? ['in_person', 'telehealth'] : ['in_person'],
+            )],
+            'email' => 'required_if:consultation_mode,telehealth|nullable|email|max:255',
             // No after_or_equal:today here: admins must be able to finish or
             // correct past appointments (e.g. mark yesterday's visit completed).
             'date' => 'required|date',
@@ -211,6 +225,7 @@ class AppointmentController extends Controller
                     'phone' => $validated['phone'],
                     'email' => $validated['email'] ?? null,
                     'visit_type' => $validated['visit_type'],
+                    'consultation_mode' => $validated['consultation_mode'] ?? $appointment->consultation_mode,
                     'appointment_date' => $validated['date'],
                     'time_slot_id' => $slotId,
                     'status' => $validated['status'],
@@ -314,6 +329,21 @@ class AppointmentController extends Controller
     public function destroy(string $id)
     {
         $appointment = Appointment::findOrFail($id);
+
+        // An active booking must never vanish silently — convert it to a
+        // cancellation so the slot frees up and both sides are notified.
+        if (in_array((int) $appointment->status, [0, 1], true)) {
+            $appointment->update([
+                'status' => 3,
+                'cancellation_token' => null,
+            ]);
+
+            StaffNotifier::appointmentStatusChanged($appointment->refresh(), 3, (int) auth()->id());
+            PatientNotifier::appointmentStatusChanged($appointment, 3);
+
+            return back()->with('success', 'Active appointment was cancelled instead of deleted.');
+        }
+
         $appointment->delete();
 
         return back()->with('success', 'Appointment deleted successfully!');

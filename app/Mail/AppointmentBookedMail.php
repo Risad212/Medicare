@@ -29,7 +29,7 @@ class AppointmentBookedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Appointment Confirmation - Medicare',
+            subject: __('messages.mail.booked_subject'),
         );
     }
 

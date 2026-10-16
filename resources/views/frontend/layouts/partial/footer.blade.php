@@ -9,8 +9,9 @@
                     </a>
                     <p>{{ $setting->footer_description ?? '' }}</p>
                     <div class="social-list">
+                        @if(!empty($setting->facebook))
                         <span class="item">
-                            <a href="{{ $setting->facebook ?? '#' }}">
+                            <a href="{{ $setting->facebook }}">
                                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 310 310" xml:space="preserve">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -25,8 +26,10 @@
                                 </svg>
                             </a>
                         </span>
+                        @endif
+                        @if(!empty($setting->twitter))
                         <span class="item">
-                            <a href="{{ $setting->twitter ?? '#' }}">
+                            <a href="{{ $setting->twitter }}">
                                 <svg viewBox="0 -23.5 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid"
                                     stroke="#000000">
@@ -42,8 +45,10 @@
                                 </svg>
                             </a>
                         </span>
+                        @endif
+                        @if(!empty($setting->linkedin))
                         <span class="item">
-                            <a href="{{ $setting->linkedin ?? '#' }}">
+                            <a href="{{ $setting->linkedin }}">
                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -58,8 +63,10 @@
                                 </svg>
                             </a>
                         </span>
+                        @endif
+                        @if(!empty($setting->youtube))
                         <span class="item">
-                            <a href="{{ $setting->youtube ?? '#' }}">
+                            <a href="{{ $setting->youtube }}">
                                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-271 311.2 256 179.8"
                                     xml:space="preserve">
@@ -73,6 +80,7 @@
                                 </svg>
                             </a>
                         </span>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -92,11 +100,11 @@
                 <div class="footer-widget-2">
                     <h4 class="widget-title">{{ __('messages.footer.quick_links') }}</h4>
                     <ul class="deparment-list">
-                        <li class="item"><a href="#">{{ __('messages.nav.about') }}</a></li>
-                        <li class="item"><a href="#">{{ __('messages.nav.services') }}</a></li>
-                        <li class="item"><a href="#">{{ __('messages.nav.doctors') }}</a></li>
-                        <li class="item"><a href="#">Gallary</a></li>
-                        <li class="item"><a href="#">{{ __('messages.nav.contact') }}</a></li>
+                        <li class="item"><a href="{{ route('about') }}">{{ __('messages.nav.about') }}</a></li>
+                        <li class="item"><a href="{{ route('service') }}">{{ __('messages.nav.services') }}</a></li>
+                        <li class="item"><a href="{{ route('doctor') }}">{{ __('messages.nav.doctors') }}</a></li>
+                        <li class="item"><a href="{{ route('appointment') }}">{{ __('messages.nav.appointment') }}</a></li>
+                        <li class="item"><a href="{{ route('contact') }}">{{ __('messages.nav.contact') }}</a></li>
                     </ul>
                 </div>
             </div>
@@ -105,7 +113,7 @@
                     <h3 class="widget-title">{{ __('messages.footer.contact') }}</h3>
                     <ul class="contact-list">
                         <li class="item">
-                            <a href="#">
+                            <span class="contact-line">
                                 <span class="icon">
                                     <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                         xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"
@@ -122,10 +130,10 @@
                                 <address class="address">
                                     {{ $setting->address ?? '' }}
                                 </address>
-                            </a>
+                            </span>
                         </li>
                         <li class="item">
-                            <a href="#">
+                            <a href="tel:{{ $setting->phone ?? '' }}">
                                 <span class="icon">
                                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -143,7 +151,7 @@
                             </a>
                         </li>
                         <li class="item">
-                            <a href="#">
+                            <a href="mailto:{{ $setting->email ?? '' }}">
                                 <span class="icon">
                                     <svg viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -161,7 +169,7 @@
                             </a>
                         </li>
                         <li class="item">
-                            <a href="#">
+                            <span class="contact-line">
                                 <span class="icon">
                                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -179,7 +187,7 @@
                                 <span>
                                     {{ $setting->working_hours ?? '' }}
                                 </span>
-                            </a>
+                            </span>
                         </li>
                     </ul>
                 </div>

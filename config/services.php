@@ -41,4 +41,17 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL').'/auth/google/callback'),
     ],
 
+    'google_calendar' => [
+        'redirect' => env('GOOGLE_CALENDAR_REDIRECT_URI', env('APP_URL').'/doctor/calendar/callback'),
+        'event_duration_minutes' => (int) env('GOOGLE_CALENDAR_EVENT_DURATION_MINUTES', 60),
+    ],
+
+    'zoom' => [
+        'account_id' => env('ZOOM_ACCOUNT_ID'),
+        'client_id' => env('ZOOM_CLIENT_ID'),
+        'client_secret' => env('ZOOM_CLIENT_SECRET'),
+        'host_user_id' => env('ZOOM_HOST_USER_ID', 'me'),
+        'duration_minutes' => (int) env('ZOOM_MEETING_DURATION_MINUTES', 60),
+    ],
+
 ];

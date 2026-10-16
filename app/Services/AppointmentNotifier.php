@@ -16,7 +16,9 @@ class AppointmentNotifier
         $email = $this->recipient($appointment);
 
         if ($email) {
-            Mail::to($email)->queue(new AppointmentConfirmedMail($appointment->loadMissing('doctor', 'timeSlot')));
+            Mail::to($email)
+                ->locale($appointment->user?->locale ?? app()->getLocale())
+                ->queue(new AppointmentConfirmedMail($appointment->loadMissing('doctor', 'timeSlot')));
         }
     }
 

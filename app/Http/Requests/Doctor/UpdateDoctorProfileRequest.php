@@ -21,8 +21,8 @@ class UpdateDoctorProfileRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:20'],
             'degree' => ['nullable', 'string', 'max:255'],
             'specialist' => ['nullable', 'string', 'max:255'],
-            'services' => ['nullable', 'string'],
-            'availability' => ['nullable', 'string'],
+            'services' => ['nullable', 'string', 'max:20000'],
+            'availability' => ['nullable', 'string', 'max:255'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
         ];
     }

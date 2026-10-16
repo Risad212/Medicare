@@ -1,11 +1,11 @@
 @extends('frontend.layouts.front-app')
 
-@section('meta_title', 'Cancel Appointment')
+@section('meta_title', __('messages.public.cancel_title'))
 
 @section('front-content')
 
 @include('frontend.components.breadcrumb', [
-    'title' => 'Cancel Appointment'
+    'title' => __('messages.public.cancel_title')
 ])
 
 <section class="mc-cancel-wrapper">
@@ -21,43 +21,43 @@
     <div class="mc-cancel-card">
 
         <div class="mc-cancel-header">
-            <h2 class="mc-cancel-header-title">Appointment Details</h2>
+            <h2 class="mc-cancel-header-title">{{ __('messages.public.cancel_details') }}</h2>
         </div>
 
         <div class="mc-cancel-body">
 
             <p class="mc-cancel-lead">
-                Hello {{ $appointment->patient_name }}, here are your appointment details:
+                {{ __('messages.public.cancel_greeting', ['name' => $appointment->patient_name]) }}
             </p>
 
             <table class="mc-cancel-table">
                 <tr>
-                    <td class="mc-cancel-table-label">Doctor:</td>
+                    <td class="mc-cancel-table-label">{{ __('messages.mail_body.t_doctor') }}:</td>
                     <td>{{ $appointment->doctor->name ?? 'N/A' }}</td>
                 </tr>
                 <tr>
-                    <td class="mc-cancel-table-label">Date:</td>
+                    <td class="mc-cancel-table-label">{{ __('messages.mail_body.t_date') }}:</td>
                     <td>{{ $appointment->appointment_date }}</td>
                 </tr>
                 <tr>
-                    <td class="mc-cancel-table-label">Time:</td>
+                    <td class="mc-cancel-table-label">{{ __('messages.mail_body.t_time') }}:</td>
                     <td>{{ $appointment->timeSlot->time ?? 'N/A' }}</td>
                 </tr>
                 <tr>
-                    <td class="mc-cancel-table-label">Visit Type:</td>
+                    <td class="mc-cancel-table-label">{{ __('messages.mail_body.t_visit_type') }}:</td>
                     <td>{{ $appointment->visit_type_label }}</td>
                 </tr>
                 <tr>
-                    <td class="mc-cancel-table-label">Status:</td>
+                    <td class="mc-cancel-table-label">{{ __('messages.common.status') }}:</td>
                     <td>
                         @if($appointment->status == 0)
-                            <span class="mc-cancel-status mc-cancel-status-pending">Pending</span>
+                            <span class="mc-cancel-status mc-cancel-status-pending">{{ \Illuminate\Support\Str::ucfirst(__('messages.notifications.status_pending')) }}</span>
                         @elseif($appointment->status == 1)
-                            <span class="mc-cancel-status mc-cancel-status-approved">Approved</span>
+                            <span class="mc-cancel-status mc-cancel-status-approved">{{ \Illuminate\Support\Str::ucfirst(__('messages.notifications.status_approved')) }}</span>
                         @elseif($appointment->status == 2)
-                            <span class="mc-cancel-status mc-cancel-status-completed">Completed</span>
+                            <span class="mc-cancel-status mc-cancel-status-completed">{{ \Illuminate\Support\Str::ucfirst(__('messages.notifications.status_completed')) }}</span>
                         @else
-                            <span class="mc-cancel-status mc-cancel-status-cancelled">Cancelled</span>
+                            <span class="mc-cancel-status mc-cancel-status-cancelled">{{ \Illuminate\Support\Str::ucfirst(__('messages.notifications.status_cancelled')) }}</span>
                         @endif
                     </td>
                 </tr>
@@ -67,18 +67,18 @@
                 @if(in_array($appointment->status, [0, 1]))
                     <form action="{{ route('appointment.cancel-by-token', $appointment->cancellation_token) }}"
                           method="POST"
-                          onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                          onsubmit="return confirm('{{ __('messages.public.cancel_confirm') }}');">
                         @csrf
                         @method('PUT')
-                        <button type="submit" class="mc-cancel-btn">Cancel My Appointment</button>
+                        <button type="submit" class="mc-cancel-btn">{{ __('messages.mail_body.booked_cancel_button') }}</button>
                     </form>
                 @else
-                    <span class="mc-cancel-btn-disabled">This appointment can no longer be cancelled</span>
+                    <span class="mc-cancel-btn-disabled">{{ __('messages.public.cancel_closed') }}</span>
                 @endif
             </div>
 
             <p class="mc-cancel-note">
-                This link is unique to your appointment. Please keep it private.
+                {{ __('messages.public.cancel_note') }}
             </p>
 
         </div>

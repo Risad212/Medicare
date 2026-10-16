@@ -40,6 +40,9 @@
                     <th>Phone</th>
                     <th>Email</th>
                     <th>Visit type</th>
+                    @if(\App\Support\Module::enabled('zoom'))
+                    <th>Consultation</th>
+                    @endif
                     <th>Date</th>
                     <th>Time slot</th>
                     <th>Status</th>
@@ -76,6 +79,9 @@
                     <td class="mc-num">{{ $appointment->phone }}</td>
                     <td>{{ $appointment->email ?? 'N/A' }}</td>
                     <td>{{ $appointment->visit_type_label }}</td>
+                    @if(\App\Support\Module::enabled('zoom'))
+                    <td>{{ $appointment->consultation_mode === 'telehealth' ? 'Zoom telehealth' : 'In-person' }}</td>
+                    @endif
                     <td class="mc-num">{{ $appointment->appointment_date->format('d M Y') }}</td>
                     <td class="mc-num">{{ $appointment->timeSlot->time ?? 'N/A' }}</td>
                     <td><span class="mc-pill {{ $statusClass }}"><i></i>{{ $statusLabel }}</span></td>
@@ -92,7 +98,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="12"><div class="mc-empty"><b>Nothing on this chart</b>No appointments found. Book the first one to get the day moving.</div></td>
+                    <td colspan="{{ \App\Support\Module::enabled('zoom') ? 13 : 12 }}"><div class="mc-empty"><b>Nothing on this chart</b>No appointments found. Book the first one to get the day moving.</div></td>
                 </tr>
             @endforelse
             </tbody>

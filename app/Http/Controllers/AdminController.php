@@ -14,6 +14,7 @@ use App\Modules\Lab\Models\LabOrder;
 use App\Support\Module;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -50,12 +51,17 @@ class AdminController extends Controller
         })->count();
 
         // Last 7 days of bookings (oldest -> newest) for the trend sparkline.
-        $weekByDay = Appointment::where('appointment_date', '>=', now()->subDays(6)->toDateString())
-            ->where('appointment_date', '<=', now()->toDateString())
-            ->get(['appointment_date'])
-            ->groupBy(fn ($a) => Carbon::parse($a->appointment_date)->toDateString());
+        $weekByDay = Appointment::whereBetween('appointment_date', [
+            now()->subDays(6)->toDateString(),
+            now()->toDateString(),
+        ])
+            ->selectRaw('appointment_date as day, count(*) as total')
+            ->groupBy('day')
+            ->get()
+            ->mapWithKeys(fn ($row) => [$row->day => (int) $row->total]);
+
         $weekTrend = collect(range(6, 0))->map(
-            fn ($d) => $weekByDay->get(now()->subDays($d)->toDateString(), collect())->count()
+            fn ($d) => $weekByDay->get(now()->subDays($d)->toDateString(), 0)
         )->values()->all();
 
         // Today's queue: pending first so the morning register surfaces
@@ -118,23 +124,29 @@ class AdminController extends Controller
         $invoicesPendingCount = Invoice::where('status', 'pending')->count();
 
         // Last 6 months of appointments vs lab orders (oldest -> newest).
+        // Aggregated in the database; the month expression is driver-specific.
         $appointmentsByMonth = Appointment::where('created_at', '>=', now()->subMonths(5)->startOfMonth())
-            ->get(['created_at'])
-            ->groupBy(fn ($a) => $a->created_at->format('Y-m'));
+            ->selectRaw($this->monthKeyExpression('created_at').' as ym, count(*) as total')
+            ->groupBy('ym')
+            ->get()
+            ->mapWithKeys(fn ($row) => [$row->ym => (int) $row->total]);
+
         $labOrdersByMonth = collect();
 
         if (Module::enabled('lab')) {
             $labOrdersByMonth = LabOrder::where('created_at', '>=', now()->subMonths(5)->startOfMonth())
-                ->get(['created_at'])
-                ->groupBy(fn ($o) => $o->created_at->format('Y-m'));
+                ->selectRaw($this->monthKeyExpression('created_at').' as ym, count(*) as total')
+                ->groupBy('ym')
+                ->get()
+                ->mapWithKeys(fn ($row) => [$row->ym => (int) $row->total]);
         }
 
         $monthlyAppointments = collect(range(5, 0))->map(
-            fn ($i) => $appointmentsByMonth->get(now()->subMonths($i)->format('Y-m'), collect())->count()
+            fn ($i) => $appointmentsByMonth->get(now()->subMonths($i)->format('Y-m'), 0)
         )->values()->all();
 
         $monthlyLabOrders = collect(range(5, 0))->map(
-            fn ($i) => $labOrdersByMonth->get(now()->subMonths($i)->format('Y-m'), collect())->count()
+            fn ($i) => $labOrdersByMonth->get(now()->subMonths($i)->format('Y-m'), 0)
         )->values()->all();
 
         $monthLabels = collect(range(5, 0))->map(
@@ -149,11 +161,16 @@ class AdminController extends Controller
             ->take(6)
             ->get();
 
-        // Welly stat: hospital earning = collected invoices + completed lab revenue.
-        $hospitalEarning = (float) (Invoice::where('status', 'paid')->sum('total'));
+        // Welly stat: hospital earning for the current month = collected
+        // invoices + completed lab revenue (both aggregated in the database).
+        $hospitalEarning = (float) Invoice::where('status', 'paid')
+            ->whereBetween('paid_at', [now()->startOfMonth(), now()])
+            ->sum('total');
 
         if (Module::enabled('lab')) {
-            $hospitalEarning += (float) (LabOrder::where('status', 'completed')->sum('total'));
+            $hospitalEarning += (float) LabOrder::where('status', 'completed')
+                ->whereBetween('created_at', [now()->startOfMonth(), now()])
+                ->sum('total');
         }
 
         // Welly schedule rail: upcoming non-cancelled bookings grouped by day.
@@ -173,17 +190,25 @@ class AdminController extends Controller
             'monthly' => [now()->subDays(29)->toDateString(), now()->toDateString()],
         ])->mapWithKeys(function ($range, $key) {
             [$from, $to] = $range;
-            $rows = Appointment::whereBetween('appointment_date', [$from, $to])->get(['status']);
-            $total = max(1, $rows->count());
-            $pending = $rows->where('status', 0)->count();
-            $recovered = $rows->where('status', 2)->count();
-            $treating = $rows->where('status', 1)->count();
+
+            // Aggregate per status in the database instead of loading rows.
+            $counts = Appointment::whereBetween('appointment_date', [$from, $to])
+                ->selectRaw('status, count(*) as total')
+                ->groupBy('status')
+                ->get()
+                ->mapWithKeys(fn ($row) => [(int) $row->status => (int) $row->total]);
+
+            $total = (int) $counts->sum();
+            $denominator = max(1, $total);
+            $pending = $counts->get(0, 0);
+            $recovered = $counts->get(2, 0);
+            $treating = $counts->get(1, 0);
 
             return [$key => [
-                'total' => $rows->count(),
-                'new' => round($pending / $total * 100),
-                'recovered' => round($recovered / $total * 100),
-                'treating' => round($treating / $total * 100),
+                'total' => $total,
+                'new' => round($pending / $denominator * 100),
+                'recovered' => round($recovered / $denominator * 100),
+                'treating' => round($treating / $denominator * 100),
             ]];
         })->all();
 
@@ -204,9 +229,10 @@ class AdminController extends Controller
                 $calMonth->copy()->startOfMonth()->toDateString(),
                 $calMonth->copy()->endOfMonth()->toDateString(),
             ])
-            ->get(['appointment_date'])
-            ->groupBy(fn ($a) => Carbon::parse($a->appointment_date)->toDateString())
-            ->map->count();
+            ->selectRaw('appointment_date as day, count(*) as total')
+            ->groupBy('day')
+            ->get()
+            ->mapWithKeys(fn ($row) => [$row->day => (int) $row->total]);
 
         // Lab work queue: oldest unprocessed orders first (lab dashboard feed).
         $pendingLabOrders = collect();
@@ -270,5 +296,15 @@ class AdminController extends Controller
             'recentPrescriptions',
             'analytics'
         ));
+    }
+
+    /**
+     * Driver-specific SQL that formats a datetime column as "YYYY-MM".
+     */
+    private function monthKeyExpression(string $column): string
+    {
+        return DB::connection()->getDriverName() === 'sqlite'
+            ? "strftime('%Y-%m', {$column})"
+            : "DATE_FORMAT({$column}, '%Y-%m')";
     }
 }

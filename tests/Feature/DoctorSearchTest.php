@@ -33,7 +33,7 @@ class DoctorSearchTest extends TestCase
         $response->assertSee('Dr Active', false)->assertDontSee('Dr Hidden', false);
 
         $this->get('/doctor?search=nobody-matches-this')
-            ->assertSee('No doctors found.', false);
+            ->assertSee(__('messages.public.no_doctors'), false);
     }
 
     public function test_department_filter_is_exact(): void

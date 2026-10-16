@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Support\Module;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class UpdateProfileRequest extends FormRequest
 {
@@ -28,6 +29,7 @@ class UpdateProfileRequest extends FormRequest
             'blood_group' => ['nullable', 'string', 'max:10'],
             'address' => ['nullable', 'string', 'max:1000'],
             'profile_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'password' => ['nullable', 'string', 'confirmed', Password::min(12)->letters()->mixedCase()->numbers()->symbols()],
         ];
 
         if (Module::enabled('allergy')) {

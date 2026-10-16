@@ -9,18 +9,11 @@ use App\Models\GeneralSetting;
 use App\Models\Prescription;
 use App\Models\Service;
 use App\Models\User;
-use App\Modules\BloodBank\Models\BloodDonation;
-use App\Modules\BloodBank\Models\BloodDonor;
-use App\Modules\BloodBank\Models\BloodGroup;
-use App\Modules\BloodBank\Models\BloodIssue;
-use App\Modules\BloodBank\Models\BloodRequest;
-use App\Modules\Lab\Models\LabOrder;
-use App\Modules\Lab\Models\LabReport;
-use App\Modules\Lab\Models\LabTest;
 use App\Observers\ActivityLogObserver;
 use App\Support\Module;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -35,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         $this->registerActivityLogObservers();
 
         try {
@@ -48,7 +45,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         try {
-            if (Schema::hasTable('services')) {
+            if (Module::enabled('directory') && Schema::hasTable('services')) {
                 View::share('footerServices', Service::where('status', 1)->orderBy('order')->take(5)->get());
             } else {
                 View::share('footerServices', collect());
@@ -63,32 +60,10 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function registerActivityLogObservers(): void
     {
-        $models = [
-            Appointment::class,
-            Blog::class,
-            Doctor::class,
-            User::class,
-            Prescription::class,
-        ];
-
-        if (Module::enabled('lab')) {
-            array_push($models, LabOrder::class, LabReport::class, LabTest::class);
-        }
-
-        // Module models are observed only while the module ships; a deleted
-        // module must never break core boot.
-        if (Module::enabled('bloodbank')) {
-            array_push(
-                $models,
-                BloodDonor::class,
-                BloodDonation::class,
-                BloodGroup::class,
-                BloodRequest::class,
-                BloodIssue::class,
-            );
-        }
-
-        foreach ($models as $model) {
+        // Kernel models only. Module models self-register their observer
+        // inside their own service provider (Lab, BloodBank, ...), so a
+        // removed module can never break core boot.
+        foreach ([Appointment::class, Blog::class, Doctor::class, User::class, Prescription::class] as $model) {
             $model::observe(ActivityLogObserver::class);
         }
     }

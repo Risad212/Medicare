@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Appointment;
+use App\Models\DoctorSchedule;
 use App\Models\TimeSlot;
 use Illuminate\Http\Request;
 
@@ -73,6 +75,11 @@ class TimeSlotController extends Controller
      */
     public function destroy(TimeSlot $timeSlot)
     {
+        if (Appointment::where('time_slot_id', $timeSlot->id)->exists()
+            || DoctorSchedule::where('time_slot_id', $timeSlot->id)->exists()) {
+            return back()->with('error', 'Time slot is in use and cannot be deleted.');
+        }
+
         $timeSlot->delete();
 
         return back()->with('success', 'Time slot deleted successfully!');

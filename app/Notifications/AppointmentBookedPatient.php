@@ -26,15 +26,16 @@ class AppointmentBookedPatient extends Notification
      */
     public function toDatabase(object $notifiable): array
     {
+        $locale = $notifiable->locale ?? app()->getLocale();
+
         return [
             'appointment_id' => $this->appointment->id,
-            'title' => 'Booking received',
-            'message' => sprintf(
-                'Your appointment request with Dr. %s on %s at %s has been received and is awaiting confirmation.',
-                $this->appointment->doctor?->name ?? 'N/A',
-                $this->appointment->appointment_date?->format('d M Y') ?? 'N/A',
-                $this->appointment->timeSlot?->time ?? 'N/A',
-            ),
+            'title' => __('messages.notifications.booking_received_title', [], $locale),
+            'message' => __('messages.notifications.booking_received_message', [
+                'doctor' => $this->appointment->doctor?->name ?? 'N/A',
+                'date' => $this->appointment->appointment_date?->format('d M Y') ?? 'N/A',
+                'time' => $this->appointment->timeSlot?->time ?? 'N/A',
+            ], $locale),
         ];
     }
 }

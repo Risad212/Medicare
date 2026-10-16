@@ -155,16 +155,18 @@
                         </a>
                     </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ __('messages.nav.language') }}">
-                            {{ strtoupper(app()->getLocale()) }}
-                        </a>
-                        <ul class="dropdown-menu">
-                            @foreach(($availableLanguages ?? [['name' => 'English', 'code' => 'en']]) as $lang)
-                                <li><a class="dropdown-item{{ app()->getLocale() === $lang['code'] ? ' active' : '' }}" href="{{ route('language.switch', $lang['code']) }}">{{ $lang['name'] }}</a></li>
-                            @endforeach
-                        </ul>
-                    </li>
+                    @if(\App\Support\Module::enabled('language'))
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ __('messages.nav.language') }}">
+                                {{ collect($availableLanguages ?? [])->firstWhere('code', app()->getLocale())['name'] ?? strtoupper(app()->getLocale()) }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                @foreach(($availableLanguages ?? [['name' => 'English', 'code' => 'en']]) as $lang)
+                                    <li><a class="dropdown-item{{ app()->getLocale() === $lang['code'] ? ' active' : '' }}" href="{{ route('language.switch', $lang['code']) }}">{{ $lang['name'] }}</a></li>
+                                @endforeach
+                            </ul>
+                        </li>
+                    @endif
 
                     @guest
                     <li class="nav-item nav-button unset-cross me-2">

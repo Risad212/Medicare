@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Models\Doctor;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UpdateDoctorRequest extends FormRequest
 {
@@ -32,7 +33,7 @@ class UpdateDoctorRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
-            'password' => ['nullable', 'string', 'min:8'],
+            'password' => ['nullable', 'string', Password::min(12)->letters()->mixedCase()->numbers()->symbols()],
             'degree' => ['nullable', 'string', 'max:255'],
             'department' => ['nullable', 'string', 'max:255'],
             'specialist' => ['nullable', 'string', 'max:255'],

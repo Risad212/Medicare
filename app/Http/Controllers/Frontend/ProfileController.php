@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Prescription;
 use App\Modules\Lab\Models\LabOrder;
 use App\Modules\Lab\Models\LabReport;
+use App\Modules\Zoom\Services\TelehealthJoinLink;
 use App\Services\PdfService;
 use App\Support\Module;
 use Illuminate\Support\Facades\Auth;
@@ -24,9 +25,30 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         $appointments = Appointment::with(['doctor', 'timeSlot'])
-            ->where('user_id', $user->id)
+            ->where(function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+                // Email is self-asserted, so only trust it once verified.
+                // Guest bookings are linked by user_id at login/register via
+                // GuestRecordLinker, keeping pre-account history visible.
+                if (! empty($user->email_verified_at) && ! empty($user->email)) {
+                    $query->orWhere('email', $user->email);
+                }
+            })
             ->latest()
             ->get();
+        $telehealthJoinLinks = collect();
+
+        if (Module::enabled('zoom')) {
+            $appointments->load('zoomMeeting');
+            $joinLink = app(TelehealthJoinLink::class);
+            foreach ($appointments as $appointment) {
+                if ($appointment->consultation_mode === 'telehealth'
+                    && (int) $appointment->status === 1
+                    && $appointment->zoomMeeting?->sync_status === 'ready') {
+                    $telehealthJoinLinks->put($appointment->id, $joinLink->for($appointment));
+                }
+            }
+        }
 
         $labOrders = collect();
 
@@ -71,7 +93,7 @@ class ProfileController extends Controller
 
         return view(
             'frontend.profile.index',
-            compact('user', 'appointments', 'labOrders', 'prescriptions', 'invoices')
+            compact('user', 'appointments', 'telehealthJoinLinks', 'labOrders', 'prescriptions', 'invoices')
         );
     }
 
@@ -85,18 +107,27 @@ class ProfileController extends Controller
         $validated = $request->validated();
 
         if ($request->hasFile('profile_image')) {
-
-            if ($user->profile_image) {
-                Storage::disk('public')->delete($user->profile_image);
-            }
+            $oldPath = $user->profile_image;
 
             $validated['profile_image'] = $request
                 ->file('profile_image')
                 ->store('profile-images', 'public');
+
+            // Delete the previous image only after the new one is stored, and
+            // only if it still exists on disk (guards against manual removal).
+            if ($oldPath && Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
+            }
         }
 
         if (isset($validated['email']) && $validated['email'] !== $user->email) {
             $validated['email_verified_at'] = null;
+        }
+
+        if ($request->filled('password')) {
+            $validated['password'] = $request->input('password');
+        } else {
+            unset($validated['password']);
         }
 
         $user->update($validated);
@@ -107,9 +138,13 @@ class ProfileController extends Controller
     /**
      * Download a lab report that belongs to the current patient.
      */
-    public function downloadReport(LabReport $report)
+    public function downloadReport(int $report)
     {
         abort_if(! Module::enabled('lab'), 404);
+
+        // Resolved manually (not via route-model binding) so a physically
+        // removed lab module still 404s here instead of failing the binding.
+        $report = LabReport::findOrFail($report);
 
         $user = Auth::user();
 
@@ -118,17 +153,21 @@ class ProfileController extends Controller
             && ($report->order->user_id === $user->id || ($emailTrusted && $report->order->email === $user->email));
 
         abort_unless($ownsOrder, 403, 'You do not have access to this report.');
-        abort_if(! Storage::disk('public')->exists($report->file_path), 404, 'Report file not found.');
+        abort_if(! Storage::disk('local')->exists($report->file_path), 404, 'Report file not found.');
 
-        return Storage::disk('public')->download($report->file_path);
+        return Storage::disk('local')->download($report->file_path);
     }
 
     /**
      * Stream a printable PDF report sheet for one of the patient's lab orders.
      */
-    public function downloadOrderPdf(LabOrder $order, PdfService $pdf)
+    public function downloadOrderPdf(int $order, PdfService $pdf)
     {
         abort_if(! Module::enabled('lab'), 404);
+
+        // Resolved manually (not via route-model binding) so a physically
+        // removed lab module still 404s here instead of failing the binding.
+        $order = LabOrder::findOrFail($order);
 
         $user = Auth::user();
 

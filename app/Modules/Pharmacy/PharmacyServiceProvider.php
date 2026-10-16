@@ -13,4 +13,19 @@ class PharmacyServiceProvider extends ServiceProvider
             $this->loadRoutesFrom(__DIR__.'/routes.php');
         }
     }
+
+    /**
+     * Staff route grants contributed while this module is enabled.
+     *
+     * @return array<string, array<int, string>>
+     */
+    public static function staffGrants(): array
+    {
+        return [
+            'pharmacist' => [
+                'admin.prescriptions.items.dispense',
+                'admin.medicines.index',
+            ],
+        ];
+    }
 }

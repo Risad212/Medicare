@@ -2,12 +2,14 @@
 
 namespace App\Modules\Lab\Http\Controllers\Admin;
 
+use App\Events\LabOrderCompleted;
 use App\Http\Controllers\Controller;
 use App\Mail\LabResultReadyMail;
 use App\Modules\Lab\Models\LabOrder;
 use App\Modules\Lab\Models\LabOrderItem;
 use App\Modules\Lab\Models\LabReport;
 use App\Modules\Lab\Services\LabReportService;
+use App\Services\InvoiceService;
 use App\Services\PatientNotifier;
 use App\Services\PdfService;
 use App\Services\StaffNotifier;
@@ -70,12 +72,16 @@ class LabOrderController extends Controller
             $email = $order->email ?: $order->user?->email;
 
             if ($email) {
-                Mail::to($email)->queue(new LabResultReadyMail($order->load(['items.test', 'doctor', 'user'])));
+                Mail::to($email)
+                    ->locale($order->user?->locale ?? app()->getLocale())
+                    ->queue(new LabResultReadyMail($order->load(['items.test', 'doctor', 'user'])));
             }
 
             StaffNotifier::labResultReady($order, (int) auth()->id());
 
             PatientNotifier::labResultReady($order);
+
+            event(new LabOrderCompleted($order->id));
         }
 
         return back()->with('success', 'Lab order status updated to '.ucwords(str_replace('-', ' ', $validated['status'])).'.');
@@ -126,9 +132,9 @@ class LabOrderController extends Controller
      */
     public function downloadReport(LabReport $report)
     {
-        abort_if(! Storage::disk('public')->exists($report->file_path), 404, 'Report file not found.');
+        abort_if(! Storage::disk('local')->exists($report->file_path), 404, 'Report file not found.');
 
-        return Storage::disk('public')->download($report->file_path);
+        return Storage::disk('local')->download($report->file_path);
     }
 
     /**
@@ -139,5 +145,19 @@ class LabOrderController extends Controller
         $order->load(['items.test', 'doctor', 'reports']);
 
         return $pdf->stream('lab.order-result-pdf', ['order' => $order], 'lab-order-'.$order->id.'-report.pdf');
+    }
+
+    /**
+     * Create a billing invoice from a completed lab order.
+     * Lives here (not in Billing) so Lab never depends on the Billing
+     * module: it only uses the kernel InvoiceService. The route keeps its
+     * admin.invoices.create-from-order name for compatibility.
+     */
+    public function createInvoice(LabOrder $order, InvoiceService $service)
+    {
+        $invoice = $service->createFromOrder($order, auth()->id());
+
+        return redirect()->route('admin.invoices.show', $invoice)
+            ->with('success', 'Invoice '.$invoice->invoice_no.' created successfully.');
     }
 }

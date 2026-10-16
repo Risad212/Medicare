@@ -64,6 +64,23 @@
                 </div>
             </section>
 
+            <section class="mc-sec">
+                <div class="mc-sec-hd"><span class="no">02</span><h3>Practice</h3><p>Shown on your public profile.</p></div>
+                <div class="mc-sec-bd grid-cols-1">
+                    <div class="mc-f">
+                        <label>Services</label>
+                        <textarea name="services" rows="3" class="form-control" placeholder="e.g. General consultation, ECG, Diabetes care">{{ old('services', $doctor->services ?? '') }}</textarea>
+                        @error('services') <small class="text-red-t">{{ $message }}</small> @enderror
+                    </div>
+
+                    <div class="mc-f">
+                        <label>Availability</label>
+                        <textarea name="availability" rows="3" maxlength="255" class="form-control" placeholder="e.g. Mon–Fri, 9:00–17:00">{{ old('availability', $doctor->availability ?? '') }}</textarea>
+                        @error('availability') <small class="text-red-t">{{ $message }}</small> @enderror
+                    </div>
+                </div>
+            </section>
+
             <div class="mc-formacts">
                 <button type="submit" class="mc-btn"><i class="bi bi-save"></i> Update Profile</button>
             </div>

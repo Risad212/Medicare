@@ -26,14 +26,15 @@ class PrescriptionReadyPatient extends Notification
      */
     public function toDatabase(object $notifiable): array
     {
+        $locale = $notifiable->locale ?? app()->getLocale();
+
         return [
             'prescription_id' => $this->prescription->id,
-            'title' => 'Prescription ready',
-            'message' => sprintf(
-                'Dr. %s prepared a prescription for you on %s. You can view it in your profile.',
-                $this->prescription->doctor?->name ?? 'N/A',
-                $this->prescription->created_at->format('d M Y'),
-            ),
+            'title' => __('messages.notifications.prescription_title', [], $locale),
+            'message' => __('messages.notifications.prescription_patient_message', [
+                'doctor' => $this->prescription->doctor?->name ?? 'N/A',
+                'date' => $this->prescription->created_at->format('d M Y'),
+            ], $locale),
         ];
     }
 }

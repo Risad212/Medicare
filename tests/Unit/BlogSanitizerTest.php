@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Services\BlogSanitizer;
+use App\Modules\Publishing\Services\BlogSanitizer;
 use PHPUnit\Framework\TestCase;
 
 class BlogSanitizerTest extends TestCase
@@ -29,6 +29,14 @@ class BlogSanitizerTest extends TestCase
 
         $this->assertStringNotContainsStringIgnoringCase('onclick', $output);
         $this->assertStringNotContainsStringIgnoringCase('onerror', $output);
+    }
+
+    public function test_strips_style_attributes(): void
+    {
+        $output = BlogSanitizer::sanitize('<p style="position:fixed;top:0">hi</p>');
+
+        $this->assertStringNotContainsStringIgnoringCase('style', $output);
+        $this->assertStringContainsString('<p>hi</p>', $output);
     }
 
     public function test_strips_anchor_and_img_tags_leaving_text(): void

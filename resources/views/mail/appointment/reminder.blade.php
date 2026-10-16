@@ -1,24 +1,24 @@
 <x-mail::message>
-# Hi {{ $appointment->patient_name }},
+# {{ __('messages.mail_body.greeting', ['name' => $appointment->patient_name]) }}
 
-A friendly reminder that your appointment is **tomorrow**.
+{{ __('messages.mail_body.reminder_intro') }}
 
-**Details:**
+**{{ __('messages.mail_body.details') }}**
 
 <x-mail::table>
 | | |
 | --- | --- |
-| Doctor | {{ $appointment->doctor->name ?? 'N/A' }} |
-| Date | {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('l, d F Y') }} |
-| Time | {{ $appointment->timeSlot->time ?? 'N/A' }} |
+| {{ __('messages.mail_body.t_doctor') }} | {{ $appointment->doctor->name ?? 'N/A' }} |
+| {{ __('messages.mail_body.t_date') }} | {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('l, d F Y') }} |
+| {{ __('messages.mail_body.t_time') }} | {{ $appointment->timeSlot->time ?? 'N/A' }} |
 </x-mail::table>
 
-Please arrive a little early and bring any previous reports.
+{{ __('messages.mail_body.reminder_outro') }}
 
 <x-mail::button :url="route('home')">
-Visit MediCare
+{{ __('messages.mail_body.visit_site') }}
 </x-mail::button>
 
-Thanks,<br>
+{{ __('messages.mail_body.thanks') }}<br>
 {{ config('app.name') }}
 </x-mail::message>

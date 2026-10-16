@@ -19,7 +19,7 @@ class PrescriptionReadyMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your prescription is ready - MediCare',
+            subject: __('messages.mail.prescription_subject'),
         );
     }
 

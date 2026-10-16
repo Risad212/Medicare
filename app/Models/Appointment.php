@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Modules\Zoom\Models\ZoomMeeting;
 use Illuminate\Database\Eloquent\Model;
 
 class Appointment extends Model
@@ -16,6 +17,7 @@ class Appointment extends Model
         'email',
         'cancellation_token',
         'visit_type',
+        'consultation_mode',
         'appointment_date',
         'time_slot_id',
         'status',
@@ -70,5 +72,10 @@ class Appointment extends Model
     public function prescriptions()
     {
         return $this->hasMany(Prescription::class);
+    }
+
+    public function zoomMeeting()
+    {
+        return $this->hasOne(ZoomMeeting::class);
     }
 }

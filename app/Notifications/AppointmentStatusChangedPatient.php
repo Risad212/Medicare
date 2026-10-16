@@ -26,20 +26,25 @@ class AppointmentStatusChangedPatient extends Notification
      */
     public function toDatabase(object $notifiable): array
     {
-        $labels = [0 => 'pending', 1 => 'approved', 2 => 'completed', 3 => 'cancelled'];
-        $label = $labels[$this->status] ?? 'updated';
+        $locale = $notifiable->locale ?? app()->getLocale();
+        $labels = [
+            0 => __('messages.notifications.status_pending', [], $locale),
+            1 => __('messages.notifications.status_approved', [], $locale),
+            2 => __('messages.notifications.status_completed', [], $locale),
+            3 => __('messages.notifications.status_cancelled', [], $locale),
+        ];
+        $label = $labels[$this->status] ?? __('messages.notifications.status_updated', [], $locale);
 
         return [
             'appointment_id' => $this->appointment->id,
             'status' => (string) $this->status,
-            'title' => 'Appointment '.$label,
-            'message' => sprintf(
-                'Your appointment with Dr. %s on %s at %s is now %s.',
-                $this->appointment->doctor?->name ?? 'N/A',
-                $this->appointment->appointment_date?->format('d M Y') ?? 'N/A',
-                $this->appointment->timeSlot?->time ?? 'N/A',
-                $label,
-            ),
+            'title' => __('messages.notifications.status_title', ['status' => $label], $locale),
+            'message' => __('messages.notifications.status_patient_message', [
+                'doctor' => $this->appointment->doctor?->name ?? 'N/A',
+                'date' => $this->appointment->appointment_date?->format('d M Y') ?? 'N/A',
+                'time' => $this->appointment->timeSlot?->time ?? 'N/A',
+                'status' => $label,
+            ], $locale),
         ];
     }
 }

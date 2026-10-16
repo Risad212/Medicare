@@ -42,7 +42,9 @@ class UserController extends Controller
             return back()->with('error', 'You cannot remove your own admin access.');
         }
 
-        $user->update(['role' => $request->validated()['staff_role']]);
+        // `role` is not mass-assignable; set it explicitly after the
+        // ownership guard above so staff access changes stay intentional.
+        $user->forceFill(['role' => $request->validated()['staff_role']])->save();
 
         return redirect()->route('admin.users.index')->with('success', "Access updated for '{$user->name}'.");
     }

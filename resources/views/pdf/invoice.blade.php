@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <title>{{ $invoice->invoice_no }}</title>
@@ -103,35 +103,35 @@
             </div>
         </div>
         <div class="bill-title">
-            <h2>Invoice</h2>
+            <h2>{{ __('messages.pdf.invoice_title') }}</h2>
             <div class="subtitle">{{ $invoice->invoice_no }}</div>
         </div>
     </div>
 
     <table class="meta">
         <tr>
-            <td>Invoice No</td>
+            <td>{{ __('messages.pdf_body.invoice_no') }}</td>
             <td><strong>{{ $invoice->invoice_no }}</strong></td>
-            <td>Date</td>
+            <td>{{ __('messages.mail_body.t_date') }}</td>
             <td>{{ $invoice->created_at->format('d M Y') }}</td>
         </tr>
         <tr>
-            <td>Bill To</td>
+            <td>{{ __('messages.pdf_body.bill_to') }}</td>
             <td><strong>{{ $invoice->patient_name }}</strong></td>
-            <td>Status</td>
+            <td>{{ __('messages.common.status') }}</td>
             <td>
                 @if($invoice->isPaid())
-                    <span class="badge paid">Paid</span>
+                    <span class="badge paid">{{ __('messages.pdf_body.status_paid') }}</span>
                 @elseif($invoice->isVoid())
-                    <span class="badge void">Void</span>
+                    <span class="badge void">{{ __('messages.pdf_body.status_void') }}</span>
                 @else
-                    <span class="badge pending">Pending</span>
+                    <span class="badge pending">{{ __('messages.pdf_body.status_pending_cap') }}</span>
                 @endif
             </td>
         </tr>
         @if($invoice->phone || $invoice->email)
             <tr>
-                <td>Contact</td>
+                <td>{{ __('messages.pdf_body.contact_label') }}</td>
                 <td>{{ $invoice->phone ?? '' }} {{ $invoice->email ? ($invoice->phone ? ' · ' : '').$invoice->email : '' }}</td>
                 <td></td>
                 <td></td>
@@ -139,15 +139,15 @@
         @endif
         @if($invoice->order?->doctor)
             <tr>
-                <td>Requested By</td>
+                <td>{{ __('messages.pdf_body.requested_by') }}</td>
                 <td>Dr. {{ $invoice->order->doctor->name }}</td>
-                <td>Lab Order</td>
+                <td>{{ __('messages.pdf_body.lab_order') }}</td>
                 <td>#{{ $invoice->order->id }}</td>
             </tr>
         @endif
         @if($invoice->paid_at)
             <tr>
-                <td>Paid On</td>
+                <td>{{ __('messages.pdf_body.paid_on') }}</td>
                 <td>{{ $invoice->paid_at->format('d M Y h:i A') }}</td>
                 <td></td>
                 <td></td>
@@ -159,10 +159,10 @@
         <thead>
             <tr>
                 <th style="width:5%;">#</th>
-                <th>Description</th>
-                <th class="num" style="width:10%;">Qty</th>
-                <th class="num" style="width:15%;">Unit Price</th>
-                <th class="num" style="width:15%;">Amount</th>
+                <th>{{ __('messages.pdf_body.description') }}</th>
+                <th class="num" style="width:10%;">{{ __('messages.pdf_body.qty') }}</th>
+                <th class="num" style="width:15%;">{{ __('messages.pdf_body.unit_price') }}</th>
+                <th class="num" style="width:15%;">{{ __('messages.pdf_body.amount') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -176,7 +176,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" style="text-align:center;color:#6b7280;">No line items recorded for this invoice.</td>
+                    <td colspan="5" style="text-align:center;color:#6b7280;">{{ __('messages.pdf_body.no_items') }}</td>
                 </tr>
             @endforelse
         </tbody>
@@ -184,32 +184,32 @@
 
     <table class="totals">
         <tr>
-            <td>Subtotal</td>
+            <td>{{ __('messages.pdf_body.subtotal') }}</td>
             <td>${{ number_format($invoice->subtotal, 2) }}</td>
         </tr>
         <tr>
-            <td>Tax</td>
+            <td>{{ __('messages.pdf_body.tax') }}</td>
             <td>${{ number_format($invoice->tax, 2) }}</td>
         </tr>
         <tr>
-            <td>Discount</td>
+            <td>{{ __('messages.pdf_body.discount') }}</td>
             <td>-${{ number_format($invoice->discount, 2) }}</td>
         </tr>
         <tr class="total-row">
-            <td>Total</td>
+            <td>{{ __('messages.pdf_body.total') }}</td>
             <td>${{ number_format($invoice->total, 2) }}</td>
         </tr>
     </table>
 
     @if($invoice->notes)
         <div style="margin-top:24px;">
-            <strong>Notes:</strong><br>
+            <strong>{{ __('messages.pdf_body.notes_label') }}</strong><br>
             {{ $invoice->notes }}
         </div>
     @endif
 
     <div class="footer">
-        Thank you for choosing {{ $setting->site_name ?? 'MediCare' }}.
+        {{ __('messages.pdf_body.inv_footer', ['site' => $setting->site_name ?? 'MediCare']) }}
     </div>
 
 </body>

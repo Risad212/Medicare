@@ -27,7 +27,9 @@ class BedController extends Controller
             ->orderBy('name')
             ->get();
 
-        $patients = User::where('role', 'patient')->orderBy('name')->limit(200)->get(['id', 'name']);
+        // Prefetch a small first page of patients; the search box filters the
+        // rest on demand via the patient picker endpoint (see dashboard view).
+        $patients = User::where('role', 'patient')->orderBy('name')->limit(50)->get(['id', 'name']);
 
         return view('beds.dashboard', compact('wards', 'patients'));
     }

@@ -27,17 +27,17 @@ class AppointmentBooked extends Notification
     public function toDatabase(object $notifiable): array
     {
         $appointment = $this->appointment;
+        $locale = $notifiable->locale ?? app()->getLocale();
 
         return [
             'appointment_id' => $appointment->id,
-            'title' => 'New appointment booked',
-            'message' => sprintf(
-                '%s booked Dr. %s on %s at %s',
-                $appointment->patient_name,
-                $appointment->doctor?->name ?? 'N/A',
-                $appointment->appointment_date?->format('d M Y') ?? 'N/A',
-                $appointment->timeSlot?->time ?? 'N/A',
-            ),
+            'title' => __('messages.notifications.booking_new_title', [], $locale),
+            'message' => __('messages.notifications.booking_new_message', [
+                'patient' => $appointment->patient_name,
+                'doctor' => $appointment->doctor?->name ?? 'N/A',
+                'date' => $appointment->appointment_date?->format('d M Y') ?? 'N/A',
+                'time' => $appointment->timeSlot?->time ?? 'N/A',
+            ], $locale),
         ];
     }
 }

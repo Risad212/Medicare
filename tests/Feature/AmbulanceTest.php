@@ -137,7 +137,7 @@ class AmbulanceTest extends TestCase
         $this->get('/admin/ambulance-requests')->assertRedirect('/login');
 
         $patient = User::factory()->create(['role' => 'patient']);
-        $this->actingAs($patient)->get('/admin/ambulance-requests')->assertRedirect('/login');
+        $this->actingAs($patient)->get('/admin/ambulance-requests')->assertForbidden();
     }
 
     public function test_disabled_module_hides_ambulance_routes(): void

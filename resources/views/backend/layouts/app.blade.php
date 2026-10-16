@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="utf-8">
@@ -27,6 +27,12 @@
     <style>@import url("{{ asset('backend-assets/css/bootstrap.min.css') }}") layer(bootstrap);</style>
     <!-- MediCare admin brand skin — plain CSS, no build step -->
     <link rel="stylesheet" href="{{ asset('backend-assets/css/admin-brand.css') }}">
+    @if(app()->getLocale() === 'ar')
+        <style>
+            html[dir="rtl"] body { direction: rtl; text-align: right; }
+            html[dir="rtl"] .dropdown-menu { text-align: right; }
+        </style>
+    @endif
 
     <!-- Tailwind v4 admin theme (legacy — being phased out section by section) -->
     @vite(['resources/css/admin.css'])

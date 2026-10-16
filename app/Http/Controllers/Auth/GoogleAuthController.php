@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UnlinkGoogleRequest;
 use App\Models\User;
 use App\Services\GuestRecordLinker;
 use Illuminate\Http\RedirectResponse;
@@ -85,6 +86,8 @@ class GoogleAuthController extends Controller
                 }
             } else {
                 // 3. Create new patient
+                // `role` is intentionally not mass-assignable, so it is set
+                // explicitly here after creation to lock it to 'patient'.
                 $user = User::create([
                     'name' => $name,
                     'email' => $email,
@@ -92,15 +95,17 @@ class GoogleAuthController extends Controller
                     'provider' => 'google',
                     'avatar' => $avatar,
                     'password' => Hash::make(Str::random(32)), // random, never used; nullable now
-                    'role' => 'patient',
                     'email_verified_at' => now(), // Google email is verified
                 ]);
+                $user->forceFill(['role' => 'patient'])->save();
             }
         }
 
         GuestRecordLinker::link($user);
 
-        Auth::login($user, true);
+        // Session-only login: the user just proved presence via Google, so no
+        // long-lived remember cookie is issued (narrows token-theft replay).
+        Auth::login($user);
 
         // New session id on login — otherwise an attacker-supplied session id
         // would survive authentication (session fixation).
@@ -121,5 +126,29 @@ class GoogleAuthController extends Controller
 
         // Default: patient
         return redirect()->intended(route('profile'));
+    }
+
+    /**
+     * Unlink the current user's Google account.
+     *
+     * Requires password re-authentication (see UnlinkGoogleRequest) so a
+     * Google-only account — whose stored password is an unknown random
+     * value — cannot be unlinked into a locked-out state.
+     */
+    public function unlink(UnlinkGoogleRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        if (! $user->google_id) {
+            return back()->withErrors(['current_password' => 'This account is not linked to Google.']);
+        }
+
+        // Keep the e-mail/password login intact; only drop the OAuth link.
+        $user->forceFill([
+            'google_id' => null,
+            'provider' => null,
+        ])->save();
+
+        return back()->with('success', 'Google account disconnected. You can now sign in with your email and password.');
     }
 }

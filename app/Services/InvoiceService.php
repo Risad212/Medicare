@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Invoice;
-use App\Models\LabOrder;
+use App\Modules\Lab\Models\LabOrder;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 

@@ -51,6 +51,15 @@
                             @endforeach
                         </select>
                     </div>
+                    @if(\App\Support\Module::enabled('zoom'))
+                    <div class="mc-f">
+                        <label>Consultation Mode</label>
+                        <select name="consultation_mode" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal">
+                            <option value="in_person" {{ $appointment->consultation_mode === 'in_person' ? 'selected' : '' }}>In-person</option>
+                            <option value="telehealth" {{ $appointment->consultation_mode === 'telehealth' ? 'selected' : '' }}>Zoom telehealth</option>
+                        </select>
+                    </div>
+                    @endif
                     <div class="mc-f">
                         <label>Visit Type</label>
                         <select name="visit_type" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal">

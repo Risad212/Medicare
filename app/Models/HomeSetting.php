@@ -21,5 +21,11 @@ class HomeSetting extends Model
         'counter_three_number',
         'counter_four_text',
         'counter_four_number',
+        'services_subtitle',
+        'services_title',
+        'blog_subtitle',
+        'blog_title',
+        'brands_subtitle',
+        'brands_title',
     ];
 }

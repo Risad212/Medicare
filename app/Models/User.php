@@ -28,7 +28,6 @@ use Illuminate\Notifications\Notifiable;
     'google_id',
     'provider',
     'avatar',
-    'role',
     'email_verified_at',
 ])]
 #[Hidden([

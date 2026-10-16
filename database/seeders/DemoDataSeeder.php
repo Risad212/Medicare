@@ -35,16 +35,32 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DemoDataSeeder extends Seeder
 {
+    public static function isAllowed(): bool
+    {
+        if (app()->environment('production')) {
+            return false;
+        }
+
+        return app()->environment(['local', 'testing']) || (bool) config('app.demo_data_enabled', false);
+    }
+
     /**
      * Fill the app with realistic demo content so every module looks alive.
      * Idempotent: re-runs stop after the marker admin account exists.
      */
     public function run(): void
     {
+        if (! self::isAllowed()) {
+            Log::notice('Demo data seeding was skipped for this environment.');
+
+            return;
+        }
+
         if (User::where('email', 'admin@medicare.test')->exists()) {
             $this->command->info('Demo data already seeded — skipping.');
 
@@ -130,7 +146,7 @@ class DemoDataSeeder extends Seeder
     {
         $password = Hash::make('123456');
 
-        $admin = User::create([
+        $admin = User::forceCreate([
             'name' => 'Hospital Admin', 'email' => 'admin@medicare.test',
             'password' => $password, 'role' => 'admin', 'email_verified_at' => now(),
         ]);
@@ -142,7 +158,7 @@ class DemoDataSeeder extends Seeder
         ];
         $staff = [];
         foreach ($staffMap as [$name, $email, $role, $slug]) {
-            $user = User::create([
+            $user = User::forceCreate([
                 'name' => $name, 'email' => $email, 'password' => $password,
                 'role' => $role, 'phone' => '01'.rand(300000000, 399999999), 'email_verified_at' => now(),
             ]);
@@ -152,7 +168,7 @@ class DemoDataSeeder extends Seeder
         $patientNames = ['Rahim Uddin', 'Fatema Begum', 'Karim Sheikh', 'Ayesha Siddika', 'Mohan Das', 'Nusrat Jahan', 'Habib Rahman', 'Salma Akter'];
         $patients = [];
         foreach ($patientNames as $i => $name) {
-            $patients[] = User::create([
+            $patients[] = User::forceCreate([
                 'name' => $name, 'email' => 'patient'.($i + 1).'@medicare.test',
                 'password' => $password, 'role' => 'patient',
                 'phone' => '01'.rand(300000000, 399999999),
@@ -165,7 +181,7 @@ class DemoDataSeeder extends Seeder
 
         $doctorUsers = [];
         for ($i = 1; $i <= 6; $i++) {
-            $doctorUsers[] = User::create([
+            $doctorUsers[] = User::forceCreate([
                 'name' => 'Doctor '.$i, 'email' => 'doctor'.$i.'@medicare.test',
                 'password' => $password, 'role' => 'doctor', 'email_verified_at' => now(),
             ]);
@@ -530,6 +546,12 @@ class DemoDataSeeder extends Seeder
             'counter_two_number' => 150, 'counter_two_text' => 'Specialist Doctors',
             'counter_three_number' => 48000, 'counter_three_text' => 'Happy Patients',
             'counter_four_number' => 15, 'counter_four_text' => 'Medical Departments',
+            'services_subtitle' => 'Our Services',
+            'services_title' => 'We Care Our Patients',
+            'blog_subtitle' => 'Our Blog',
+            'blog_title' => 'Recent Articles and News',
+            'brands_subtitle' => 'Sister Concerns',
+            'brands_title' => 'Our Brands',
         ]);
 
         AboutSetting::firstOrCreate([], [

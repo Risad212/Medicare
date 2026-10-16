@@ -1,25 +1,29 @@
 <x-mail::message>
-# Hi {{ $appointment->patient_name }},
+# {{ __('messages.mail_body.greeting', ['name' => $appointment->patient_name]) }}
 
-Your appointment has been **confirmed**.
+{{ __('messages.mail_body.confirmed_intro') }}
 
-**Details:**
+**{{ __('messages.mail_body.details') }}**
 
 <x-mail::table>
 | | |
 | --- | --- |
-| Doctor | {{ $appointment->doctor->name ?? 'N/A' }} |
-| Date | {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('l, d F Y') }} |
-| Time | {{ $appointment->timeSlot->time ?? 'N/A' }} |
-| Visit Type | {{ $appointment->visit_type_label }} |
+| {{ __('messages.mail_body.t_doctor') }} | {{ $appointment->doctor->name ?? 'N/A' }} |
+| {{ __('messages.mail_body.t_date') }} | {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('l, d F Y') }} |
+| {{ __('messages.mail_body.t_time') }} | {{ $appointment->timeSlot->time ?? 'N/A' }} |
+| {{ __('messages.mail_body.t_visit_type') }} | {{ $appointment->visit_type_label }} |
 </x-mail::table>
 
-Please arrive at least **15 minutes early** and carry any previous reports with you.
+@if($appointment->consultation_mode === 'telehealth')
+{{ __('messages.mail_body.confirmed_telehealth') }}
+@else
+{{ __('messages.mail_body.confirmed_inperson') }}
+@endif
 
 <x-mail::button :url="route('home')">
-Visit MediCare
+{{ __('messages.mail_body.visit_site') }}
 </x-mail::button>
 
-Thanks,<br>
+{{ __('messages.mail_body.thanks') }}<br>
 {{ config('app.name') }}
 </x-mail::message>

@@ -11,6 +11,7 @@ use App\Models\Doctor;
 use App\Models\DoctorOffDay;
 use App\Models\TimeSlot;
 use App\Models\User;
+use App\Support\Module;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -251,7 +252,8 @@ class DoctorController extends Controller
         // NEVER hard-delete a doctor who still owns patient history: the
         // appointments and lab-orders FKs cascade and would wipe that
         // patient record in one shot. Deactivate (status=0) instead.
-        $hasHistory = $doctor->appointments()->exists() || $doctor->labOrders()->exists();
+        $hasHistory = $doctor->appointments()->exists()
+            || (Module::enabled('lab') && $doctor->labOrders()->exists());
         if ($hasHistory) {
             return redirect()
                 ->route('admin.doctors.index')

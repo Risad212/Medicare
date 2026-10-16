@@ -28,8 +28,8 @@ class DoctorController extends Controller
         }
 
         $seo = SeoSetting::where('page', 'doctor')->first();
-        $pageTitle = 'Our Doctors';
-        $noDoctorsMessage = 'No doctors found.';
+        $pageTitle = __('messages.public.our_doctors');
+        $noDoctorsMessage = __('messages.public.no_doctors');
 
         return view('frontend.doctor', compact('doctors', 'departments', 'filters', 'seo', 'pageTitle', 'noDoctorsMessage'));
     }

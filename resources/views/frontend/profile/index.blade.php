@@ -105,13 +105,20 @@
             <div class="d-flex flex-column flex-md-row gap-3 align-items-md-center">
                 @if($user->profile_image)
                     <img src="{{ asset('storage/' . $user->profile_image) }}" alt="{{ $user->name }}" class="mx-avatar">
+                @elseif($user->avatar)
+                    {{-- OAuth (Google) avatar is an absolute URL, not a storage path. --}}
+                    <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="mx-avatar">
                 @else
                     <div class="mx-avatar-fallback">{{ $user->name ? strtoupper(mb_substr($user->name, 0, 1)) : '?' }}</div>
                 @endif
                 <div class="flex-grow-1">
                     <div class="d-flex align-items-center gap-2 flex-wrap">
                         <h4 class="mb-0" style="font-weight:800;letter-spacing:-.02em">{{ $user->name }}</h4>
-                        <span class="mx-verified">Verified patient</span>
+                        @if($user->email_verified_at)
+                            <span class="mx-verified">{{ __('Verified patient') }}</span>
+                        @else
+                            <span class="mx-id-chip">{{ __('Unverified patient') }}</span>
+                        @endif
                     </div>
                     <div class="mt-1" style="color:var(--mx-muted);font-size:.88rem">{{ $user->email }} @if($user->phone)&middot; {{ $user->phone }}@endif</div>
                     <div class="d-flex gap-2 mt-2 flex-wrap">
@@ -207,11 +214,27 @@
                                     <div class="col-12 mx-field"><label>Allergies <span class="text-muted fw-normal">(visible to your doctor when prescribing)</span></label><textarea name="allergies" rows="3" class="form-control @error('allergies') is-invalid @enderror" placeholder="e.g. Penicillin, peanuts, latex — comma or newline separated">{{ old('allergies', $user->allergies) }}</textarea>@error('allergies')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
                                     @endif
                                     <div class="col-12 mx-field"><label>Profile photo</label><input type="file" name="profile_image" class="form-control" accept="image/jpeg,image/png,image/webp"><small class="text-muted">JPG, PNG or WEBP, max 2MB.</small></div>
+                                    <div class="col-md-6 mx-field"><label>New password <span class="text-muted fw-normal">(leave blank to keep current)</span></label><input type="password" name="password" class="form-control @error('password') is-invalid @enderror" autocomplete="new-password">@error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
+                                    <div class="col-md-6 mx-field"><label>Confirm new password</label><input type="password" name="password_confirmation" class="form-control" autocomplete="new-password"></div>
                                 </div>
                                 <div class="d-flex gap-2 mt-4"><button type="submit" class="btn mx-btn-primary px-4">Save changes</button></div>
                             </form>
                         </div>
                     </div>
+
+                    @if($user->google_id)
+                    <div class="mx-panel mt-4">
+                        <div class="mx-panel-head"><h5>Connected accounts</h5><p>Google is currently linked to this account.</p></div>
+                        <div class="mx-panel-body">
+                            <form action="{{ route('profile.google.unlink') }}" method="POST" class="row g-3 align-items-end">
+                                @csrf
+                                @method('DELETE')
+                                <div class="col-md-8 mx-field"><label>Confirm your password</label><input type="password" name="current_password" class="form-control @error('current_password') is-invalid @enderror" autocomplete="current-password" required>@error('current_password')<div class="invalid-feedback">{{ $message }}</div>@enderror<small class="text-muted">Set a password above first if you have only ever signed in with Google.</small></div>
+                                <div class="col-md-4"><button type="submit" class="btn btn-outline-danger">Disconnect Google</button></div>
+                            </form>
+                        </div>
+                    </div>
+                    @endif
                 </div>
 
                 <div class="tab-pane fade" id="appointments" role="tabpanel">
@@ -228,7 +251,15 @@
                                         <td class="text-nowrap">{{ $appointment->timeSlot->time ?? 'N/A' }}</td>
                                         <td>@if($appointment->visit_type == 1)First visit@elseif($appointment->visit_type == 2)Second visit@elseif($appointment->visit_type == 3)Report review@else<span class="text-muted">N/A</span>@endif</td>
                                         <td>@if($appointment->status == 1)<span class="pill p-confirmed"><i></i>Confirmed</span>@elseif($appointment->status == 2)<span class="pill p-completed"><i></i>Completed</span>@elseif($appointment->status == 3)<span class="pill p-cancelled"><i></i>Cancelled</span>@else<span class="pill p-pending"><i></i>Pending</span>@endif</td>
-                                        <td class="text-end">@if($appointment->status == 0)<form action="{{ route('appointment.cancel', $appointment->id) }}" method="POST" class="d-inline">@csrf @method('PATCH')<button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius:10px" onclick="return confirm('Cancel this appointment?')">Cancel</button></form>@else<span class="text-muted">—</span>@endif</td>
+                                        <td class="text-end">
+                                            @if($telehealthJoinLinks->has($appointment->id))
+                                                <a href="{{ $telehealthJoinLinks->get($appointment->id) }}" class="btn btn-sm mx-btn-primary">Join consultation</a>
+                                            @elseif(in_array($appointment->status, [0, 1]) && $appointment->user_id === auth()->id())
+                                                <form action="{{ route('appointment.cancel', $appointment->id) }}" method="POST" class="d-inline">@csrf @method('PATCH')<button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius:10px" onclick="return confirm('Cancel this appointment?')">Cancel</button></form>
+                                            @else
+                                                <span class="text-muted">—</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>

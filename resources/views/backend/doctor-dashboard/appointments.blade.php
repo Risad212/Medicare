@@ -21,6 +21,9 @@
                     <th>Date</th>
                     <th>Time</th>
                     <th>Visit Type</th>
+                    @if(\App\Support\Module::enabled('zoom'))
+                    <th>Consultation</th>
+                    @endif
                     <th>Status</th>
                 </tr>
             </thead>
@@ -39,6 +42,25 @@
                         @else N/A
                         @endif
                     </td>
+                    @if(\App\Support\Module::enabled('zoom'))
+                    <td>
+                        @if($appointment->consultation_mode === 'telehealth')
+                            @php($zoomStatus = $appointment->zoomMeeting?->sync_status ?? 'pending')
+                            @if($zoomStatus === 'ready')
+                                <a href="{{ route('doctor.telehealth.host', $appointment) }}" class="mc-btn sm">Start Zoom</a>
+                            @elseif($zoomStatus === 'failed')
+                                <span class="text-danger">Zoom failed ({{ $appointment->zoomMeeting->last_error_code }})</span>
+                                @if($appointment->status == 1)
+                                <form action="{{ route('doctor.telehealth.retry', $appointment) }}" method="POST" class="mt-1">@csrf<button type="submit" class="mc-btn sm">Retry</button></form>
+                                @endif
+                            @else
+                                <span>Meeting pending</span>
+                            @endif
+                        @else
+                            <span>In-person</span>
+                        @endif
+                    </td>
+                    @endif
                     <td>
                         @if($appointment->status == 0)
                             <span class="mc-pill p-pending"><i></i>Pending</span>
@@ -89,11 +111,14 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7"><div class="mc-empty"><b>Nothing on this chart</b>No appointments found.</div></td>
+                    <td colspan="{{ \App\Support\Module::enabled('zoom') ? 8 : 7 }}"><div class="mc-empty"><b>Nothing on this chart</b>No appointments found.</div></td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
+    </div>
+    <div class="mc-pg">
+        {{ $appointments->links() }}
     </div>
 </div>
 

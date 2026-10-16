@@ -24,6 +24,13 @@
     </div>
 @endif
 
+@include('partials.patient-picker', [
+    'id' => 'bed-patient-search',
+    'endpoint' => route('admin.patients.picker'),
+    'targets' => ['select[name="patient_user_id"]'],
+    'placeholder' => 'Search patients to assign…',
+])
+
 @forelse($wards as $ward)
     <div class="mc-card mb-4">
         <div class="border-b border-line px-4.5 py-3.5 d-flex justify-content-between align-items-center flex-wrap gap-2">

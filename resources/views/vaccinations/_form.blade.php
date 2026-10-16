@@ -1,4 +1,9 @@
 @php($vaccination ??= null)
+@php
+    $isAdminStaff = auth()->user()?->role === 'admin';
+    $usersPickerRoute = $isAdminStaff ? 'admin.patients.picker' : 'doctor.patients.picker';
+    $recordsPickerRoute = $isAdminStaff ? 'admin.patient-records.picker' : 'doctor.patient-records.picker';
+@endphp
 <form action="{{ $formAction }}" method="POST">
     @csrf
     @if(($method ?? null) === 'PUT')
@@ -10,6 +15,13 @@
         <div class="grid grid-cols-1 gap-3 px-4.5 py-4 md:grid-cols-2">
             <div class="mc-f">
                 <label>Patient account (login user)</label>
+                @include('partials.patient-picker', [
+                    'id' => 'vaccination-user-search',
+                    'endpoint' => route($usersPickerRoute),
+                    'targets' => ['select[name="user_id"]'],
+                    'placeholder' => 'Search patient accounts…',
+                    'blankLabel' => '-- Select account --',
+                ])
                 <select name="user_id" class="form-select">
                     <option value="">-- Select account --</option>
                     @foreach($users as $user)
@@ -21,6 +33,13 @@
             </div>
             <div class="mc-f">
                 <label>Clinic register patient</label>
+                @include('partials.patient-picker', [
+                    'id' => 'vaccination-record-search',
+                    'endpoint' => route($recordsPickerRoute),
+                    'targets' => ['select[name="patient_id"]'],
+                    'placeholder' => 'Search register patients…',
+                    'blankLabel' => '-- Select register entry --',
+                ])
                 <select name="patient_id" class="form-select">
                     <option value="">-- Select register entry --</option>
                     @foreach($patients as $patient)

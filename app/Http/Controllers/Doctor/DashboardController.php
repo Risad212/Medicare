@@ -8,6 +8,7 @@ use App\Models\Doctor;
 use App\Services\AppointmentNotifier;
 use App\Services\PatientNotifier;
 use App\Services\StaffNotifier;
+use App\Support\Module;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -19,10 +20,13 @@ class DashboardController extends Controller
         $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
 
         $todayAppointments = Appointment::where('doctor_id', $doctor->id)
-            ->where('appointment_date', today())
+            ->whereDate('appointment_date', today())
+            ->where('status', '!=', 3)
             ->count();
 
-        $totalAppointments = Appointment::where('doctor_id', $doctor->id)->count();
+        $totalAppointments = Appointment::where('doctor_id', $doctor->id)
+            ->where('status', '!=', 3)
+            ->count();
 
         $pendingAppointments = Appointment::where('doctor_id', $doctor->id)
             ->where('status', 0)
@@ -30,7 +34,7 @@ class DashboardController extends Controller
 
         $todayAppointmentsList = Appointment::with('timeSlot')
             ->where('doctor_id', $doctor->id)
-            ->where('appointment_date', today())
+            ->whereDate('appointment_date', today())
             ->get();
 
         return view('backend.doctor-dashboard.dashboard', compact(
@@ -47,9 +51,10 @@ class DashboardController extends Controller
         $doctor = Doctor::where('user_id', auth()->id())->firstOrFail();
 
         $appointments = Appointment::with('timeSlot')
+            ->when(Module::enabled('zoom'), fn ($query) => $query->with('zoomMeeting'))
             ->where('doctor_id', $doctor->id)
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('backend.doctor-dashboard.appointments', compact('appointments'));
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AboutSetting;
 use App\Models\SeoSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AboutSettingController extends Controller
 {
@@ -51,15 +52,21 @@ class AboutSettingController extends Controller
 
         $data = $validated;
 
+        $about = AboutSetting::first();
+
         if ($request->hasFile('image_one')) {
+            if ($about?->image_one) {
+                Storage::disk('public')->delete($about->image_one);
+            }
             $data['image_one'] = $request->file('image_one')->store('about', 'public');
         }
 
         if ($request->hasFile('image_two')) {
+            if ($about?->image_two) {
+                Storage::disk('public')->delete($about->image_two);
+            }
             $data['image_two'] = $request->file('image_two')->store('about', 'public');
         }
-
-        $about = AboutSetting::first();
 
         if ($about) {
             $about->update($data);

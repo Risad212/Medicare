@@ -10,7 +10,13 @@ class ActivityLogObserver
     /**
      * Columns that must never be persisted into the audit trail.
      */
-    protected array $sensitive = ['password', 'remember_token'];
+    // Never persist secrets, OAuth tokens, or raw patient PII in audit
+    // payloads — log opaque IDs + action only (HIPAA minimum-necessary).
+    protected array $sensitive = [
+        'password', 'remember_token',
+        'google_id', 'avatar', 'access_token', 'refresh_token',
+        'patient_name', 'phone', 'email',
+    ];
 
     public function created(Model $model): void
     {

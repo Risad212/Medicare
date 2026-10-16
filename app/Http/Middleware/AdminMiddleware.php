@@ -19,6 +19,10 @@ class AdminMiddleware
             return $next($request);
         }
 
+        if (auth()->check()) {
+            abort(403);
+        }
+
         return redirect('/login');
     }
 }

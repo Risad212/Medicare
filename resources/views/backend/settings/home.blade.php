@@ -101,6 +101,37 @@
         </div>
     </section>
 
+    {{-- Homepage Sections Copy --}}
+    <section class="mc-sec mb-4">
+        <div class="mc-sec-hd"><span class="no">03</span><h3>Homepage Sections Copy</h3><p>Headlines shown above the services, blog and brands sections. Leave empty to use the default text.</p></div>
+        <div class="mc-sec-bd">
+            <div class="mc-f">
+                <label>Services — Kicker</label>
+                <input type="text" name="services_subtitle" class="form-control" value="{{ old('services_subtitle', $homeSetting->services_subtitle ?? '') }}">
+            </div>
+            <div class="mc-f">
+                <label>Services — Headline</label>
+                <input type="text" name="services_title" class="form-control" value="{{ old('services_title', $homeSetting->services_title ?? '') }}">
+            </div>
+            <div class="mc-f">
+                <label>Blog — Kicker</label>
+                <input type="text" name="blog_subtitle" class="form-control" value="{{ old('blog_subtitle', $homeSetting->blog_subtitle ?? '') }}">
+            </div>
+            <div class="mc-f">
+                <label>Blog — Headline</label>
+                <input type="text" name="blog_title" class="form-control" value="{{ old('blog_title', $homeSetting->blog_title ?? '') }}">
+            </div>
+            <div class="mc-f">
+                <label>Brands — Kicker</label>
+                <input type="text" name="brands_subtitle" class="form-control" value="{{ old('brands_subtitle', $homeSetting->brands_subtitle ?? '') }}">
+            </div>
+            <div class="mc-f">
+                <label>Brands — Headline</label>
+                <input type="text" name="brands_title" class="form-control" value="{{ old('brands_title', $homeSetting->brands_title ?? '') }}">
+            </div>
+        </div>
+    </section>
+
     <div class="mc-formacts">
         <button type="submit" class="mc-btn"><i class="bi bi-save"></i> Save home settings</button>
     </div>

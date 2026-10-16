@@ -36,26 +36,26 @@
 
     <label class="mc-top-search d-none d-lg-flex ms-3" title="Filter menu">
         <i class="bi bi-search"></i>
-        <input id="mc-menu-search" type="search" placeholder="Search menu…" autocomplete="off">
+        <input id="mc-menu-search" type="search" placeholder="{{ __('messages.staff.search_menu') }}" autocomplete="off">
     </label>
 
     <div class="ms-auto d-flex align-items-center gap-2">
         @if(!$isDoctor)
-        <a href="{{ route('admin.appointments.index', ['status' => 0]) }}" class="top-iconbox" title="Pending appointments">
+        <a href="{{ route('admin.appointments.index', ['status' => 0]) }}" class="top-iconbox" title="{{ __('messages.staff.pending_appointments') }}">
             <i class="bi bi-bell"></i>
             @if($navCounts['pendingAppointments'] > 0)
                 <span class="top-count">{{ $navCounts['pendingAppointments'] > 9 ? '9+' : $navCounts['pendingAppointments'] }}</span>
             @endif
         </a>
         @if($isAdmin)
-        <a href="{{ route('admin.comments.index') }}" class="top-iconbox" title="Pending reviews">
+        <a href="{{ route('admin.comments.index') }}" class="top-iconbox" title="{{ __('messages.staff.pending_reviews') }}">
             <i class="bi bi-chat-left-text"></i>
             @if($navCounts['pendingComments'] > 0)
                 <span class="top-count">{{ $navCounts['pendingComments'] > 9 ? '9+' : $navCounts['pendingComments'] }}</span>
             @endif
         </a>
         @endif
-        <a href="{{ route('admin.appointments.index') }}" class="top-iconbox" title="Today's appointments">
+        <a href="{{ route('admin.appointments.index') }}" class="top-iconbox" title="{{ __('messages.staff.todays_appointments') }}">
             <i class="bi bi-calendar-check"></i>
             @if($navCounts['todayAppointments'] > 0)
                 <span class="top-count">{{ $navCounts['todayAppointments'] > 9 ? '9+' : $navCounts['todayAppointments'] }}</span>
@@ -88,23 +88,23 @@
                 <li>
                     @if($isDoctor)
                     <a class="mc-usermenu-item" href="{{ route('doctor.profile.edit') }}">
-                        <span class="mc-usermenu-ic"><i class="bi bi-person"></i></span> Profile
+                        <span class="mc-usermenu-ic"><i class="bi bi-person"></i></span> {{ __('messages.staff.profile') }}
                     </a>
                     @else
                     <a class="mc-usermenu-item" href="{{ route('admin.users.edit', $me->id) }}">
-                        <span class="mc-usermenu-ic"><i class="bi bi-person"></i></span> My Access
+                        <span class="mc-usermenu-ic"><i class="bi bi-person"></i></span> {{ __('messages.staff.my_access') }}
                     </a>
                     @endif
                 </li>
                 <li>
                     <a class="mc-usermenu-item" href="{{ route('notifications.index') }}">
-                        <span class="mc-usermenu-ic"><i class="bi bi-bell"></i></span> Notifications
+                        <span class="mc-usermenu-ic"><i class="bi bi-bell"></i></span> {{ __('messages.staff.notifications') }}
                     </a>
                 </li>
                 @if(!$isDoctor)
                 <li>
                     <a class="mc-usermenu-item" href="{{ route('settings.general') }}">
-                        <span class="mc-usermenu-ic"><i class="bi bi-gear"></i></span> Settings
+                        <span class="mc-usermenu-ic"><i class="bi bi-gear"></i></span> {{ __('messages.staff.settings') }}
                     </a>
                 </li>
                 @endif
@@ -113,7 +113,7 @@
                     <a class="mc-usermenu-item danger"
                        href="{{ route('logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <span class="mc-usermenu-ic"><i class="bi bi-box-arrow-right"></i></span> Logout
+                        <span class="mc-usermenu-ic"><i class="bi bi-box-arrow-right"></i></span> {{ __('messages.staff.logout') }}
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -140,18 +140,18 @@
             <li class="side-tree {{ request()->routeIs('admin.home', 'admin.patients.*', 'admin.doctors.*', 'admin.comments.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.home', 'admin.patients.*', 'admin.doctors.*', 'admin.comments.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-speedometer2"></i>
-                    <span>Dashboard</span>
+                    <span>{{ __('messages.staff.dashboard') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    <li><a class="side-sublink {{ request()->routeIs('admin.home') ? 'active' : '' }}" href="{{ route('admin.home') }}"><span class="side-dot"></span> Dashboard</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.home') ? 'active' : '' }}" href="{{ route('admin.home') }}"><span class="side-dot"></span> {{ __('messages.staff.dashboard') }}</a></li>
                     @if($isAdmin || $isRecep)
-                    <li><a class="side-sublink {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}" href="{{ route('admin.patients.index') }}"><span class="side-dot"></span> Patients</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}" href="{{ route('admin.doctors.index') }}"><span class="side-dot"></span> Doctors</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}" href="{{ route('admin.patients.index') }}"><span class="side-dot"></span> {{ __('messages.staff.patients') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}" href="{{ route('admin.doctors.index') }}"><span class="side-dot"></span> {{ __('messages.staff.doctors') }}</a></li>
                     @endif
                     @if($isAdmin)
                     <li>
-                        <a class="side-sublink {{ request()->routeIs('admin.comments.*') ? 'active' : '' }}" href="{{ route('admin.comments.index') }}"><span class="side-dot"></span> Reviews
+                        <a class="side-sublink {{ request()->routeIs('admin.comments.*') ? 'active' : '' }}" href="{{ route('admin.comments.index') }}"><span class="side-dot"></span> {{ __('messages.staff.reviews') }}
                             @if($navCounts['pendingComments'] > 0)
                                 <span class="side-minibadge">{{ $navCounts['pendingComments'] }}</span>
                             @endif
@@ -165,17 +165,17 @@
             <li class="side-tree {{ request()->routeIs('admin.appointments.*', 'admin.time-slots.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.appointments.*', 'admin.time-slots.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-calendar-check"></i>
-                    <span>Appointments</span>
+                    <span>{{ __('messages.staff.appointments') }}</span>
                     @if($navCounts['pendingAppointments'] > 0)
                         <span class="side-badge">{{ $navCounts['pendingAppointments'] }}</span>
                     @endif
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    <li><a class="side-sublink {{ request()->routeIs('admin.appointments.index') ? 'active' : '' }}" href="{{ route('admin.appointments.index') }}"><span class="side-dot"></span> All Appointments</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.appointments.create') ? 'active' : '' }}" href="{{ route('admin.appointments.create') }}"><span class="side-dot"></span> Book Appointment</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.appointments.index') ? 'active' : '' }}" href="{{ route('admin.appointments.index') }}"><span class="side-dot"></span> {{ __('messages.staff.all_appointments') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.appointments.create') ? 'active' : '' }}" href="{{ route('admin.appointments.create') }}"><span class="side-dot"></span> {{ __('messages.staff.book_appointment') }}</a></li>
                     @if($isAdmin)
-                    <li><a class="side-sublink {{ request()->routeIs('admin.time-slots.*') ? 'active' : '' }}" href="{{ route('admin.time-slots.index') }}"><span class="side-dot"></span> Time Slots</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.time-slots.*') ? 'active' : '' }}" href="{{ route('admin.time-slots.index') }}"><span class="side-dot"></span> {{ __('messages.staff.time_slots') }}</a></li>
                     @endif
                 </ul>
             </li>
@@ -185,27 +185,27 @@
             <li class="side-tree {{ request()->routeIs('admin.lab-tests.*', 'admin.lab-orders.*', 'admin.invoices.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.lab-tests.*', 'admin.lab-orders.*', 'admin.invoices.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-clipboard2-pulse"></i>
-                    <span>Laboratory</span>
+                    <span>{{ __('messages.staff.laboratory') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
                     @if(($isAdmin || $isLabTech) && \App\Support\Module::enabled('lab'))
-                    <li><a class="side-sublink {{ request()->routeIs('admin.lab-tests.index') ? 'active' : '' }}" href="{{ route('admin.lab-tests.index') }}"><span class="side-dot"></span> Lab Tests</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.lab-tests.create') ? 'active' : '' }}" href="{{ route('admin.lab-tests.create') }}"><span class="side-dot"></span> Add Test</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.lab-orders.*') ? 'active' : '' }}" href="{{ route('admin.lab-orders.index') }}"><span class="side-dot"></span> Lab Orders</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.lab-tests.index') ? 'active' : '' }}" href="{{ route('admin.lab-tests.index') }}"><span class="side-dot"></span> {{ __('messages.staff.lab_tests') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.lab-tests.create') ? 'active' : '' }}" href="{{ route('admin.lab-tests.create') }}"><span class="side-dot"></span> {{ __('messages.staff.add_test') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.lab-orders.*') ? 'active' : '' }}" href="{{ route('admin.lab-orders.index') }}"><span class="side-dot"></span> {{ __('messages.staff.lab_orders') }}</a></li>
                     @endif
-                    @if($isAdmin || $isRecep)
-                    <li><a class="side-sublink {{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}" href="{{ route('admin.invoices.index') }}"><span class="side-dot"></span> Invoices</a></li>
+                    @if(($isAdmin || $isRecep) && \App\Support\Module::enabled('billing'))
+                    <li><a class="side-sublink {{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}" href="{{ route('admin.invoices.index') }}"><span class="side-dot"></span> {{ __('messages.staff.invoices') }}</a></li>
                     @endif
                 </ul>
             </li>
             @endif
 
-            @if($isAdmin || $isPharm)
+            @if(($isAdmin || $isPharm) && \App\Support\Module::enabled('prescriptions'))
             <li class="side-tree">
                 <a class="side-link {{ request()->routeIs('admin.prescriptions.*') ? 'active' : '' }}" href="{{ route('admin.prescriptions.index') }}">
                     <i class="side-icon bi bi-capsule"></i>
-                    <span>Prescriptions</span>
+                    <span>{{ __('messages.staff.prescriptions') }}</span>
                 </a>
             </li>
             @endif
@@ -214,7 +214,7 @@
             <li class="side-tree">
                 <a class="side-link {{ request()->routeIs('admin.vaccinations.*') ? 'active' : '' }}" href="{{ route('admin.vaccinations.index') }}">
                     <i class="side-icon bi bi-shield-plus"></i>
-                    <span>Vaccinations</span>
+                    <span>{{ __('messages.staff.vaccinations') }}</span>
                 </a>
             </li>
             @endif
@@ -223,18 +223,18 @@
             <li class="side-tree {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-droplet"></i>
-                    <span>Blood Bank</span>
+                    <span>{{ __('messages.staff.blood_bank') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.dashboard') ? 'active' : '' }}" href="{{ route('admin.bloodbank.dashboard') }}"><span class="side-dot"></span> Dashboard</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.inventory') ? 'active' : '' }}" href="{{ route('admin.bloodbank.inventory') }}"><span class="side-dot"></span> Inventory</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-groups.*') ? 'active' : '' }}" href="{{ route('admin.blood-groups.index') }}"><span class="side-dot"></span> Blood Groups</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-donors.*') ? 'active' : '' }}" href="{{ route('admin.blood-donors.index') }}"><span class="side-dot"></span> Donors</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-donations.*') ? 'active' : '' }}" href="{{ route('admin.blood-donations.index') }}"><span class="side-dot"></span> Donations</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-requests.*') ? 'active' : '' }}" href="{{ route('admin.blood-requests.index') }}"><span class="side-dot"></span> Requests</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-issues.*') ? 'active' : '' }}" href="{{ route('admin.blood-issues.index') }}"><span class="side-dot"></span> Issues</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.reports') ? 'active' : '' }}" href="{{ route('admin.bloodbank.reports') }}"><span class="side-dot"></span> Reports</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.dashboard') ? 'active' : '' }}" href="{{ route('admin.bloodbank.dashboard') }}"><span class="side-dot"></span> {{ __('messages.staff.dashboard') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.inventory') ? 'active' : '' }}" href="{{ route('admin.bloodbank.inventory') }}"><span class="side-dot"></span> {{ __('messages.staff.inventory') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-groups.*') ? 'active' : '' }}" href="{{ route('admin.blood-groups.index') }}"><span class="side-dot"></span> {{ __('messages.staff.blood_groups') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-donors.*') ? 'active' : '' }}" href="{{ route('admin.blood-donors.index') }}"><span class="side-dot"></span> {{ __('messages.staff.donors') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-donations.*') ? 'active' : '' }}" href="{{ route('admin.blood-donations.index') }}"><span class="side-dot"></span> {{ __('messages.staff.donations') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-requests.*') ? 'active' : '' }}" href="{{ route('admin.blood-requests.index') }}"><span class="side-dot"></span> {{ __('messages.staff.requests') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-issues.*') ? 'active' : '' }}" href="{{ route('admin.blood-issues.index') }}"><span class="side-dot"></span> {{ __('messages.staff.issues') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.reports') ? 'active' : '' }}" href="{{ route('admin.bloodbank.reports') }}"><span class="side-dot"></span> {{ __('messages.staff.reports') }}</a></li>
                 </ul>
             </li>
 
@@ -242,7 +242,7 @@
             <li class="side-tree">
                 <a class="side-link {{ request()->routeIs('admin.ambulance-requests.*') ? 'active' : '' }}" href="{{ route('admin.ambulance-requests.index') }}">
                     <i class="side-icon bi bi-truck"></i>
-                    <span>Ambulance</span>
+                    <span>{{ __('messages.staff.ambulance') }}</span>
                 </a>
             </li>
             @endif
@@ -251,13 +251,13 @@
             <li class="side-tree {{ request()->routeIs('admin.beds.*', 'admin.wards.*', 'admin.rooms.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.beds.*', 'admin.wards.*', 'admin.rooms.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-hospital"></i>
-                    <span>In-patient</span>
+                    <span>{{ __('messages.staff.inpatient') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    <li><a class="side-sublink {{ request()->routeIs('admin.beds.index') ? 'active' : '' }}" href="{{ route('admin.beds.index') }}"><span class="side-dot"></span> Bed Dashboard</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.wards.*') ? 'active' : '' }}" href="{{ route('admin.wards.index') }}"><span class="side-dot"></span> Wards</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.rooms.*') ? 'active' : '' }}" href="{{ route('admin.rooms.index') }}"><span class="side-dot"></span> Rooms</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.beds.index') ? 'active' : '' }}" href="{{ route('admin.beds.index') }}"><span class="side-dot"></span> {{ __('messages.staff.bed_dashboard') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.wards.*') ? 'active' : '' }}" href="{{ route('admin.wards.index') }}"><span class="side-dot"></span> {{ __('messages.staff.wards') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.rooms.*') ? 'active' : '' }}" href="{{ route('admin.rooms.index') }}"><span class="side-dot"></span> {{ __('messages.staff.rooms') }}</a></li>
                 </ul>
             </li>
             @endif
@@ -267,12 +267,12 @@
             <li class="side-tree {{ request()->routeIs('admin.medicines.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.medicines.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-prescription2"></i>
-                    <span>Pharmacy</span>
+                    <span>{{ __('messages.staff.pharmacy') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    <li><a class="side-sublink {{ request()->routeIs('admin.medicines.index') ? 'active' : '' }}" href="{{ route('admin.medicines.index') }}"><span class="side-dot"></span> Medicine Stock</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.prescriptions.index') ? 'active' : '' }}" href="{{ route('admin.prescriptions.index') }}"><span class="side-dot"></span> Dispense</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.medicines.index') ? 'active' : '' }}" href="{{ route('admin.medicines.index') }}"><span class="side-dot"></span> {{ __('messages.staff.medicine_stock') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.prescriptions.index') ? 'active' : '' }}" href="{{ route('admin.prescriptions.index') }}"><span class="side-dot"></span> {{ __('messages.staff.dispense') }}</a></li>
                 </ul>
             </li>
             @endif
@@ -281,18 +281,18 @@
             <li class="side-tree {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.bloodbank.*', 'admin.blood-groups.*', 'admin.blood-donors.*', 'admin.blood-donations.*', 'admin.blood-requests.*', 'admin.blood-issues.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-droplet"></i>
-                    <span>Blood Bank</span>
+                    <span>{{ __('messages.staff.blood_bank') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.dashboard') ? 'active' : '' }}" href="{{ route('admin.bloodbank.dashboard') }}"><span class="side-dot"></span> Dashboard</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.inventory') ? 'active' : '' }}" href="{{ route('admin.bloodbank.inventory') }}"><span class="side-dot"></span> Inventory</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-groups.*') ? 'active' : '' }}" href="{{ route('admin.blood-groups.index') }}"><span class="side-dot"></span> Blood Groups</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-donors.*') ? 'active' : '' }}" href="{{ route('admin.blood-donors.index') }}"><span class="side-dot"></span> Donors</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-donations.*') ? 'active' : '' }}" href="{{ route('admin.blood-donations.index') }}"><span class="side-dot"></span> Donations</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-requests.*') ? 'active' : '' }}" href="{{ route('admin.blood-requests.index') }}"><span class="side-dot"></span> Requests</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-issues.*') ? 'active' : '' }}" href="{{ route('admin.blood-issues.index') }}"><span class="side-dot"></span> Issues</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.reports') ? 'active' : '' }}" href="{{ route('admin.bloodbank.reports') }}"><span class="side-dot"></span> Reports</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.dashboard') ? 'active' : '' }}" href="{{ route('admin.bloodbank.dashboard') }}"><span class="side-dot"></span> {{ __('messages.staff.dashboard') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.inventory') ? 'active' : '' }}" href="{{ route('admin.bloodbank.inventory') }}"><span class="side-dot"></span> {{ __('messages.staff.inventory') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-groups.*') ? 'active' : '' }}" href="{{ route('admin.blood-groups.index') }}"><span class="side-dot"></span> {{ __('messages.staff.blood_groups') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-donors.*') ? 'active' : '' }}" href="{{ route('admin.blood-donors.index') }}"><span class="side-dot"></span> {{ __('messages.staff.donors') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-donations.*') ? 'active' : '' }}" href="{{ route('admin.blood-donations.index') }}"><span class="side-dot"></span> {{ __('messages.staff.donations') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-requests.*') ? 'active' : '' }}" href="{{ route('admin.blood-requests.index') }}"><span class="side-dot"></span> {{ __('messages.staff.requests') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blood-issues.*') ? 'active' : '' }}" href="{{ route('admin.blood-issues.index') }}"><span class="side-dot"></span> {{ __('messages.staff.issues') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.bloodbank.reports') ? 'active' : '' }}" href="{{ route('admin.bloodbank.reports') }}"><span class="side-dot"></span> {{ __('messages.staff.reports') }}</a></li>
                 </ul>
             </li>
             @endif
@@ -301,55 +301,55 @@
             <li class="side-tree {{ request()->routeIs('admin.departments.*', 'admin.services.*', 'admin.blogs.*', 'admin.categories.*', 'admin.tags.*', 'admin.sliders.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.departments.*', 'admin.services.*', 'admin.blogs.*', 'admin.categories.*', 'admin.tags.*', 'admin.sliders.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-journal-text"></i>
-                    <span>Content</span>
+                    <span>{{ __('messages.staff.content') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    <li><a class="side-sublink {{ request()->routeIs('admin.departments.*') ? 'active' : '' }}" href="{{ route('admin.departments.index') }}"><span class="side-dot"></span> Departments</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.services.*') ? 'active' : '' }}" href="{{ route('admin.services.index') }}"><span class="side-dot"></span> Services</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}" href="{{ route('admin.blogs.index') }}"><span class="side-dot"></span> Blogs</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}"><span class="side-dot"></span> Categories</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.tags.*') ? 'active' : '' }}" href="{{ route('admin.tags.index') }}"><span class="side-dot"></span> Tags</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}" href="{{ route('admin.sliders.index') }}"><span class="side-dot"></span> Sliders</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.departments.*') ? 'active' : '' }}" href="{{ route('admin.departments.index') }}"><span class="side-dot"></span> {{ __('messages.staff.departments') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.services.*') ? 'active' : '' }}" href="{{ route('admin.services.index') }}"><span class="side-dot"></span> {{ __('messages.staff.services') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}" href="{{ route('admin.blogs.index') }}"><span class="side-dot"></span> {{ __('messages.staff.blogs') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}"><span class="side-dot"></span> {{ __('messages.staff.categories') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.tags.*') ? 'active' : '' }}" href="{{ route('admin.tags.index') }}"><span class="side-dot"></span> {{ __('messages.staff.tags') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}" href="{{ route('admin.sliders.index') }}"><span class="side-dot"></span> {{ __('messages.staff.sliders') }}</a></li>
                 </ul>
             </li>
 
             <li class="side-tree {{ request()->routeIs('settings.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('settings.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-gear"></i>
-                    <span>Settings</span>
+                    <span>{{ __('messages.staff.settings') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    <li><a class="side-sublink {{ request()->routeIs('settings.general') ? 'active' : '' }}" href="{{ route('settings.general') }}"><span class="side-dot"></span> General</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('settings.home') ? 'active' : '' }}" href="{{ route('settings.home') }}"><span class="side-dot"></span> Home</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('settings.about') ? 'active' : '' }}" href="{{ route('settings.about') }}"><span class="side-dot"></span> About</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('settings.service') ? 'active' : '' }}" href="{{ route('settings.service') }}"><span class="side-dot"></span> Service</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('settings.doctor') ? 'active' : '' }}" href="{{ route('settings.doctor') }}"><span class="side-dot"></span> Doctor</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('settings.blog') ? 'active' : '' }}" href="{{ route('settings.blog') }}"><span class="side-dot"></span> Blog</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('settings.contact') ? 'active' : '' }}" href="{{ route('settings.contact') }}"><span class="side-dot"></span> Contact</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('settings.appointment') ? 'active' : '' }}" href="{{ route('settings.appointment') }}"><span class="side-dot"></span> Appointment</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('settings.general') ? 'active' : '' }}" href="{{ route('settings.general') }}"><span class="side-dot"></span> {{ __('messages.staff.general') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('settings.home') ? 'active' : '' }}" href="{{ route('settings.home') }}"><span class="side-dot"></span> {{ __('messages.staff.home') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('settings.about') ? 'active' : '' }}" href="{{ route('settings.about') }}"><span class="side-dot"></span> {{ __('messages.staff.about') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('settings.service') ? 'active' : '' }}" href="{{ route('settings.service') }}"><span class="side-dot"></span> {{ __('messages.staff.service') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('settings.doctor') ? 'active' : '' }}" href="{{ route('settings.doctor') }}"><span class="side-dot"></span> {{ __('messages.staff.doctor') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('settings.blog') ? 'active' : '' }}" href="{{ route('settings.blog') }}"><span class="side-dot"></span> {{ __('messages.staff.blog') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('settings.contact') ? 'active' : '' }}" href="{{ route('settings.contact') }}"><span class="side-dot"></span> {{ __('messages.staff.contact') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('settings.appointment') ? 'active' : '' }}" href="{{ route('settings.appointment') }}"><span class="side-dot"></span> {{ __('messages.staff.appointment') }}</a></li>
                 </ul>
             </li>
 
             <li class="side-tree">
                 <a class="side-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                     <i class="side-icon bi bi-people"></i>
-                    <span>Staff &amp; Users</span>
+                    <span>{{ __('messages.staff.staff_users') }}</span>
                 </a>
             </li>
 
             <li class="side-tree">
                 <a class="side-link {{ request()->routeIs('admin.activity-logs.*') ? 'active' : '' }}" href="{{ route('admin.activity-logs.index') }}">
                     <i class="side-icon bi bi-list-check"></i>
-                    <span>Activity Logs</span>
+                    <span>{{ __('messages.staff.activity_logs') }}</span>
                 </a>
             </li>
             @if(\App\Support\Module::enabled('backups'))
             <li class="side-tree">
                 <a class="side-link {{ request()->routeIs('admin.backups.*') ? 'active' : '' }}" href="{{ route('admin.backups.index') }}">
                     <i class="side-icon bi bi-database"></i>
-                    <span>Backups</span>
+                    <span>{{ __('messages.staff.backups') }}</span>
                 </a>
             </li>
             @endif
@@ -365,21 +365,26 @@
 
         @else
 
-            <li class="side-tree {{ request()->routeIs('doctor.dashboard', 'doctor.appointments', 'doctor.lab-orders.*', 'doctor.prescriptions.*', 'doctor.vaccinations.*') ? 'is-expanded' : '' }}">
-                <a class="side-link {{ request()->routeIs('doctor.dashboard', 'doctor.appointments', 'doctor.lab-orders.*', 'doctor.prescriptions.*', 'doctor.vaccinations.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
+            <li class="side-tree {{ request()->routeIs('doctor.dashboard', 'doctor.appointments', 'doctor.lab-orders.*', 'doctor.prescriptions.*', 'doctor.vaccinations.*', 'doctor.calendar.*') ? 'is-expanded' : '' }}">
+                <a class="side-link {{ request()->routeIs('doctor.dashboard', 'doctor.appointments', 'doctor.lab-orders.*', 'doctor.prescriptions.*', 'doctor.vaccinations.*', 'doctor.calendar.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-speedometer2"></i>
-                    <span>Dashboard</span>
+                    <span>{{ __('messages.staff.dashboard') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    <li><a class="side-sublink {{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}" href="{{ route('doctor.dashboard') }}"><span class="side-dot"></span> Dashboard</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('doctor.appointments') ? 'active' : '' }}" href="{{ route('doctor.appointments') }}"><span class="side-dot"></span> Appointments</a></li>
-                    @if(\App\Support\Module::enabled('lab'))
-                    <li><a class="side-sublink {{ request()->routeIs('doctor.lab-orders.*') ? 'active' : '' }}" href="{{ route('doctor.lab-orders.index') }}"><span class="side-dot"></span> Lab Requests</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}" href="{{ route('doctor.dashboard') }}"><span class="side-dot"></span> {{ __('messages.staff.dashboard') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('doctor.appointments') ? 'active' : '' }}" href="{{ route('doctor.appointments') }}"><span class="side-dot"></span> {{ __('messages.staff.appointments') }}</a></li>
+                    @if(\App\Support\Module::enabled('google_calendar'))
+                    <li><a class="side-sublink {{ request()->routeIs('doctor.calendar.*') ? 'active' : '' }}" href="{{ route('doctor.calendar.index') }}"><span class="side-dot"></span> {{ __('messages.staff.google_calendar') }}</a></li>
                     @endif
-                    <li><a class="side-sublink {{ request()->routeIs('doctor.prescriptions.*') ? 'active' : '' }}" href="{{ route('doctor.prescriptions.index') }}"><span class="side-dot"></span> Prescriptions</a></li>
+                    @if(\App\Support\Module::enabled('lab'))
+                    <li><a class="side-sublink {{ request()->routeIs('doctor.lab-orders.*') ? 'active' : '' }}" href="{{ route('doctor.lab-orders.index') }}"><span class="side-dot"></span> {{ __('messages.staff.lab_requests') }}</a></li>
+                    @endif
+                    @if(\App\Support\Module::enabled('prescriptions'))
+                    <li><a class="side-sublink {{ request()->routeIs('doctor.prescriptions.*') ? 'active' : '' }}" href="{{ route('doctor.prescriptions.index') }}"><span class="side-dot"></span> {{ __('messages.staff.prescriptions') }}</a></li>
+                    @endif
                     @if(\App\Support\Module::enabled('vaccination'))
-                    <li><a class="side-sublink {{ request()->routeIs('doctor.vaccinations.*') ? 'active' : '' }}" href="{{ route('doctor.vaccinations.index') }}"><span class="side-dot"></span> Vaccinations</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('doctor.vaccinations.*') ? 'active' : '' }}" href="{{ route('doctor.vaccinations.index') }}"><span class="side-dot"></span> {{ __('messages.staff.vaccinations') }}</a></li>
                     @endif
                 </ul>
             </li>
@@ -388,12 +393,12 @@
             <li class="side-tree {{ request()->routeIs('doctor.blood-requests.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('doctor.blood-requests.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-droplet"></i>
-                    <span>Blood Requests</span>
+                    <span>{{ __('messages.staff.blood_requests') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">
-                    <li><a class="side-sublink {{ request()->routeIs('doctor.blood-requests.index') ? 'active' : '' }}" href="{{ route('doctor.blood-requests.index') }}"><span class="side-dot"></span> All Requests</a></li>
-                    <li><a class="side-sublink {{ request()->routeIs('doctor.blood-requests.create') ? 'active' : '' }}" href="{{ route('doctor.blood-requests.create') }}"><span class="side-dot"></span> New Request</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('doctor.blood-requests.index') ? 'active' : '' }}" href="{{ route('doctor.blood-requests.index') }}"><span class="side-dot"></span> {{ __('messages.staff.all_requests') }}</a></li>
+                    <li><a class="side-sublink {{ request()->routeIs('doctor.blood-requests.create') ? 'active' : '' }}" href="{{ route('doctor.blood-requests.create') }}"><span class="side-dot"></span> {{ __('messages.staff.new_request') }}</a></li>
                 </ul>
             </li>
             @endif
@@ -401,7 +406,7 @@
             <li class="side-tree">
                 <a class="side-link {{ request()->routeIs('doctor.profile.*') ? 'active' : '' }}" href="{{ route('doctor.profile.edit') }}">
                     <i class="side-icon bi bi-person"></i>
-                    <span>Profile</span>
+                    <span>{{ __('messages.staff.profile') }}</span>
                 </a>
             </li>
 

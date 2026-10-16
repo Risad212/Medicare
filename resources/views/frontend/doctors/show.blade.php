@@ -85,12 +85,26 @@
                                     <label>Visit Type</label>
                                     <div class="mb-3">
                                         <select id="visit_type" class="form-control" name="visit_type">
-                                            <option value="1">First Visit</option>
-                                            <option value="2">Second Visit</option>
-                                            <option value="3">Report Review</option>
+                                            <option value="1" {{ old('visit_type') == '1' ? 'selected' : '' }}>First Visit</option>
+                                            <option value="2" {{ old('visit_type') == '2' ? 'selected' : '' }}>Second Visit</option>
+                                            <option value="3" {{ old('visit_type') == '3' ? 'selected' : '' }}>Report Review</option>
                                         </select>
+                                        @error('visit_type') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
+
+                                @if(\App\Support\Module::enabled('zoom'))
+                                <div class="col-lg-6">
+                                    <label>{{ __('messages.appointment.mode') }}</label>
+                                    <div class="mb-3">
+                                        <select name="consultation_mode" id="consultation_mode" class="form-control">
+                                            <option value="in_person" {{ old('consultation_mode', 'in_person') === 'in_person' ? 'selected' : '' }}>{{ __('messages.appointment.in_person') }}</option>
+                                            <option value="telehealth" {{ old('consultation_mode') === 'telehealth' ? 'selected' : '' }}>{{ __('messages.appointment.telehealth') }}</option>
+                                        </select>
+                                        @error('consultation_mode') <small class="text-danger">{{ $message }}</small> @enderror
+                                    </div>
+                                </div>
+                                @endif
 
                                 <div class="col-lg-6">
                                     <label>Patient Name</label>
@@ -98,7 +112,9 @@
                                         <input type="text"
                                                class="form-control"
                                                name="patient_name"
+                                               value="{{ old('patient_name') }}"
                                                placeholder="Enter patient name">
+                                        @error('patient_name') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
@@ -108,7 +124,9 @@
                                         <input type="number"
                                                class="form-control"
                                                name="age"
+                                               value="{{ old('age') }}"
                                                placeholder="Your age">
+                                        @error('age') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
@@ -116,21 +134,26 @@
                                     <label>Gender</label>
                                     <div class="mb-3">
                                         <select class="form-control" name="gender">
-                                            <option value="" disabled selected>Select Gender</option>
-                                            <option value="1">Male</option>
-                                            <option value="2">Female</option>
-                                            <option value="3">Other</option>
+                                            <option value="" disabled {{ old('gender') ? '' : 'selected' }}>Select Gender</option>
+                                            <option value="1" {{ old('gender') == '1' ? 'selected' : '' }}>Male</option>
+                                            <option value="2" {{ old('gender') == '2' ? 'selected' : '' }}>Female</option>
+                                            <option value="3" {{ old('gender') == '3' ? 'selected' : '' }}>Other</option>
                                         </select>
+                                        @error('gender') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
                                     <label>Phone</label>
                                     <div class="mb-3">
-                                        <input type="number"
+                                        <input type="tel"
+                                               inputmode="tel"
+                                               pattern="[0-9+\-\s]+"
                                                class="form-control"
                                                name="phone"
+                                               value="{{ old('phone') }}"
                                                placeholder="Your phone number">
+                                        @error('phone') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
@@ -140,8 +163,13 @@
                                         <input type="email"
                                                class="form-control"
                                                name="email"
+                                               id="patient_email"
+                                               data-cancel-placeholder="{{ __('messages.appointment.email_cancel') }}"
+                                               data-telehealth-placeholder="{{ __('messages.appointment.email_telehealth') }}"
+                                               @if(old('consultation_mode') === 'telehealth') required @endif
+                                               value="{{ old('email') }}"
                                                placeholder="Your email (for cancellation link)">
-                                        @error('email') <small class="text-danger">{{ $message }}</small> @enderror
+                                         @error('email') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
@@ -154,6 +182,7 @@
                                             id="appointment_date"
                                             min="{{ date('Y-m-d') }}"
                                             value="{{ old('appointment_date') }}">
+                                        @error('appointment_date') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
@@ -186,5 +215,20 @@
 </section>
 <script>
     var getSlotsUrl = "{{ route('get.slots') }}";
+    (function () {
+        var consultationMode = document.getElementById('consultation_mode');
+        var email = document.getElementById('patient_email');
+        var updateEmailRequirement = function () {
+            if (!email) return;
+            email.required = !!consultationMode && consultationMode.value === 'telehealth';
+            email.placeholder = email.required
+                ? email.dataset.telehealthPlaceholder
+                : email.dataset.cancelPlaceholder;
+        };
+        if (consultationMode) {
+            consultationMode.addEventListener('change', updateEmailRequirement);
+        }
+        updateEmailRequirement();
+    })();
 </script>
 @endsection

@@ -4,6 +4,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\DoctorMiddleware;
 use App\Http\Middleware\ModuleEnabled;
 use App\Http\Middleware\PatientMiddleware;
+use App\Http\Middleware\RequestIdMiddleware;
 use App\Http\Middleware\SecurityHeadersMiddleware;
 use App\Http\Middleware\StaffModuleGate;
 use App\Modules\Language\Http\Middleware\SetLocale;
@@ -25,14 +26,28 @@ return Application::configure(basePath: dirname(__DIR__))
             'staff.modules' => StaffModuleGate::class,
             'module' => ModuleEnabled::class,
         ]);
+        $middleware->prepend(RequestIdMiddleware::class);
         $middleware->append(SecurityHeadersMiddleware::class);
-        // Language module (boot-time flag; runtime kill-switch lives in
-        // SetLocale itself). ::class is a plain string and never autoloads,
-        // so a deleted module folder is safe once this line is removed too.
-        if (env('MODULE_LANGUAGE', true)) {
+        // A removed language module must not leave middleware pointing at a
+        // class that no longer exists.
+        if (env('MODULE_LANGUAGE', true) && class_exists(SetLocale::class)) {
             $middleware->web(append: [SetLocale::class]);
         }
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->context(function (): array {
+            $requestId = request()->attributes->get('request_id');
+
+            return $requestId ? ['request_id' => $requestId] : [];
+        });
+
+        $exceptions->respond(function ($response, $exception, $request) {
+            $requestId = $request->attributes->get('request_id');
+
+            if ($requestId) {
+                $response->headers->set('X-Request-ID', $requestId);
+            }
+
+            return $response;
+        });
     })->create();

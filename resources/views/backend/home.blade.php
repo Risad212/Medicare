@@ -82,7 +82,7 @@
       <div class="flex items-start justify-between gap-3">
         <div>
           <p class="welly-stat-num">${{ number_format($hospitalEarning, 0) }}</p>
-          <p class="welly-stat-label">Hospital Earning</p>
+          <p class="welly-stat-label">Hospital Earning (this month)</p>
         </div>
         <span class="welly-stat-icon"><i class="bi bi-coin"></i></span>
       </div>

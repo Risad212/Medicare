@@ -28,7 +28,6 @@ class StaffModuleGate
             'admin.patients.*',
             'admin.doctors.index',
             'admin.doctors.availability',
-            'admin.invoices.*',
             'admin.exports.*',
         ],
         'lab-technician' => [
@@ -36,53 +35,20 @@ class StaffModuleGate
         ],
         'pharmacist' => [
             'admin.home',
-            'admin.prescriptions.index',
-            'admin.prescriptions.show',
-            'admin.prescriptions.pdf',
         ],
     ];
 
     /**
-     * Route grants contributed by optional modules. A disabled (or deleted)
-     * module grants nothing, so its routes stay unreachable for staff.
+     * Route grants contributed by optional modules, merged from each
+     * enabled module's own service provider (Module::staffGrants()).
+     * A disabled (or deleted) module grants nothing, so its routes stay
+     * unreachable for staff.
      *
      * @return array<string, array<int, string>>
      */
     private static function moduleGrants(): array
     {
-        $grants = [];
-
-        if (Module::enabled('pharmacy')) {
-            $grants['pharmacist'] = [
-                'admin.prescriptions.items.dispense',
-                'admin.medicines.index',
-            ];
-        }
-
-        if (Module::enabled('lab')) {
-            $grants['lab-technician'] = [
-                'admin.lab-tests.*',
-                'admin.lab-orders.*',
-                'admin.lab-order-items.*',
-                'admin.lab-reports.*',
-            ];
-        }
-
-        if (Module::enabled('bloodbank')) {
-            // Day-to-day blood bank ops for receptionists (no deletes, no settings).
-            $grants['receptionist'] = [
-                'admin.bloodbank.dashboard',
-                'admin.bloodbank.inventory',
-                'admin.bloodbank.reports*',
-                'admin.blood-groups.*',
-                'admin.blood-donors.*',
-                'admin.blood-donations.*',
-                'admin.blood-requests.*',
-                'admin.blood-issues.*',
-            ];
-        }
-
-        return $grants;
+        return Module::staffGrants();
     }
 
     /**

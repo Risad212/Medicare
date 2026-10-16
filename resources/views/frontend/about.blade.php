@@ -16,7 +16,7 @@
 @endphp
 
 @include('frontend.components.breadcrumb', [
-    'title' => $pageTitle ?? 'About Us'
+    'title' => $pageTitle ?? __('messages.public.about_us')
 ])
 
 <!--========== About Hospital section ==========-->

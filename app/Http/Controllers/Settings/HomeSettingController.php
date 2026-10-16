@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HomeSetting;
 use App\Models\SeoSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class HomeSettingController extends Controller
 {
@@ -44,6 +45,12 @@ class HomeSettingController extends Controller
             'counter_three_number' => 'nullable|integer|min:0',
             'counter_four_text' => 'nullable|string|max:100',
             'counter_four_number' => 'nullable|integer|min:0',
+            'services_subtitle' => 'nullable|string|max:255',
+            'services_title' => 'nullable|string|max:255',
+            'blog_subtitle' => 'nullable|string|max:255',
+            'blog_title' => 'nullable|string|max:255',
+            'brands_subtitle' => 'nullable|string|max:255',
+            'brands_title' => 'nullable|string|max:255',
             'about_image_one' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'about_image_two' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'about_image_three' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -51,19 +58,28 @@ class HomeSettingController extends Controller
 
         $data = $validated;
 
+        $setting = HomeSetting::first();
+
         if ($request->hasFile('about_image_one')) {
+            if ($setting?->about_image_one) {
+                Storage::disk('public')->delete($setting->about_image_one);
+            }
             $data['about_image_one'] = $request->file('about_image_one')->store('home', 'public');
         }
 
         if ($request->hasFile('about_image_two')) {
+            if ($setting?->about_image_two) {
+                Storage::disk('public')->delete($setting->about_image_two);
+            }
             $data['about_image_two'] = $request->file('about_image_two')->store('home', 'public');
         }
 
         if ($request->hasFile('about_image_three')) {
+            if ($setting?->about_image_three) {
+                Storage::disk('public')->delete($setting->about_image_three);
+            }
             $data['about_image_three'] = $request->file('about_image_three')->store('home', 'public');
         }
-
-        $setting = HomeSetting::first();
 
         if ($setting) {
             $setting->update($data);

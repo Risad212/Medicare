@@ -19,7 +19,7 @@ class AppointmentConfirmedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your appointment has been confirmed - MediCare',
+            subject: __('messages.mail.confirmed_subject'),
         );
     }
 

@@ -73,11 +73,13 @@
           </td>
           <td>
             @if($appointment->status == 0)
-              <span class="mc-pill p-pending"><i></i>Pending</span>
+            <span class="mc-pill p-pending"><i></i>Pending</span>
             @elseif($appointment->status == 1)
-              <span class="mc-pill p-info"><i></i>Approved</span>
+            <span class="mc-pill p-approved"><i></i>Approved</span>
+            @elseif($appointment->status == 2)
+            <span class="mc-pill p-completed"><i></i>Completed</span>
             @else
-              <span class="mc-pill p-completed"><i></i>Completed</span>
+            <span class="mc-pill p-cancelled"><i></i>Cancelled</span>
             @endif
           </td>
         </tr>

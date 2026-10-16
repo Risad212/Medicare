@@ -19,7 +19,7 @@ class LabResultReadyMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your lab results are ready - MediCare',
+            subject: __('messages.mail.lab_subject'),
         );
     }
 

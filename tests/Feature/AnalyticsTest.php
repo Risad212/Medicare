@@ -73,7 +73,7 @@ class AnalyticsTest extends TestCase
     {
         $patient = User::factory()->create(['role' => 'patient']);
 
-        $this->actingAs($patient)->get('/admin')->assertRedirect('/login');
+        $this->actingAs($patient)->get('/admin')->assertForbidden();
     }
 
     public function test_disabled_module_hides_section_without_queries(): void

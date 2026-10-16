@@ -31,7 +31,7 @@ class AuthorizationTest extends TestCase
 
         $response = $this->actingAs($patient)->get('/admin');
 
-        $response->assertRedirect('/login');
+        $response->assertForbidden();
     }
 
     public function test_patient_cannot_access_doctor_dashboard(): void
@@ -40,7 +40,7 @@ class AuthorizationTest extends TestCase
 
         $response = $this->actingAs($patient)->get('/doctor/dashboard');
 
-        $response->assertRedirect('/login');
+        $response->assertForbidden();
     }
 
     public function test_doctor_cannot_access_admin_dashboard(): void
@@ -49,7 +49,7 @@ class AuthorizationTest extends TestCase
 
         $response = $this->actingAs($doctorUser)->get('/admin');
 
-        $response->assertRedirect('/login');
+        $response->assertForbidden();
     }
 
     public function test_admin_can_access_admin_dashboard(): void

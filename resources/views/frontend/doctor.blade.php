@@ -7,7 +7,7 @@
 @section('front-content')
 
 @include('frontend.components.breadcrumb', [
-    'title' => $pageTitle ?? 'Our Doctors'
+    'title' => $pageTitle ?? __('messages.public.our_doctors')
 ])
 
 @if(\App\Support\Module::enabled('search'))
@@ -42,7 +42,7 @@
                         </span>
 
                         <a href="{{ route('doctor.show', $doctor->id ?? 0) }}" class="card-btn">
-                            Book Appointment
+                            {{ __('messages.public.book_appointment') }}
                         </a>
 
                     </div>
@@ -92,7 +92,7 @@
 
         @else  
         <div class="text-center py-5">
-            <p>{{ $noDoctorsMessage ?? 'No doctors found' }}</p>
+            <p>{{ $noDoctorsMessage ?? __('messages.public.no_doctors') }}</p>
         </div>
         @endif
 

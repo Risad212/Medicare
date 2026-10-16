@@ -11,6 +11,7 @@ use App\Notifications\AppointmentReminderPatient;
 use App\Notifications\AppointmentStatusChangedPatient;
 use App\Notifications\LabResultReadyPatient;
 use App\Notifications\PrescriptionReadyPatient;
+use App\Notifications\PrescriptionWithdrawnPatient;
 use Illuminate\Notifications\Notification;
 
 class PatientNotifier
@@ -53,6 +54,14 @@ class PatientNotifier
     public static function prescriptionReady(Prescription $prescription): void
     {
         self::send($prescription->patient, new PrescriptionReadyPatient($prescription));
+    }
+
+    /**
+     * Notify the patient user that a prescription was withdrawn by the doctor.
+     */
+    public static function prescriptionWithdrawn(Prescription $prescription): void
+    {
+        self::send($prescription->patient, new PrescriptionWithdrawnPatient($prescription));
     }
 
     /**

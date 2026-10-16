@@ -20,19 +20,30 @@ class ContactController extends Controller
 
     public function store(Request $request)
     {
+        $messages = [
+            'name.required' => __('messages.contact.validation.required'),
+            'email.required' => __('messages.contact.validation.required'),
+            'email.email' => __('messages.contact.validation.email_invalid'),
+            'phone.required' => __('messages.contact.validation.required'),
+            'subject.required' => __('messages.contact.validation.required'),
+            'message.required' => __('messages.contact.validation.required'),
+        ];
+
         $data = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required',
-            'subject' => 'required',
-            'message' => 'required',
-        ]);
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:5000',
+        ], $messages);
 
         $recipient = GeneralSetting::first()?->email ?: config('mail.from.address');
 
+        // Queued so a slow/unavailable SMTP server can't fail the request.
         Mail::to($recipient)
-            ->send(new ContactFormMail($data));
+            ->locale(app()->getLocale())
+            ->queue(new ContactFormMail($data));
 
-        return back()->with('success', 'Message sent successfully.');
+        return back()->with('success', __('messages.contact.sent'));
     }
 }

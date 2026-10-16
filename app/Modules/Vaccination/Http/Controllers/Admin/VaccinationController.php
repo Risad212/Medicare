@@ -34,8 +34,8 @@ class VaccinationController extends Controller
 
     public function create()
     {
-        $users = User::where('role', 'patient')->orderBy('name')->limit(200)->get(['id', 'name']);
-        $patients = Patient::orderBy('name')->limit(200)->get(['id', 'name']);
+        $users = User::where('role', 'patient')->orderBy('name')->limit(50)->get(['id', 'name']);
+        $patients = Patient::orderBy('name')->limit(50)->get(['id', 'name']);
 
         return view('vaccinations.create', compact('users', 'patients'));
     }
@@ -57,8 +57,8 @@ class VaccinationController extends Controller
 
     public function edit(Vaccination $vaccination)
     {
-        $users = User::where('role', 'patient')->orderBy('name')->limit(200)->get(['id', 'name']);
-        $patients = Patient::orderBy('name')->limit(200)->get(['id', 'name']);
+        $users = User::where('role', 'patient')->orderBy('name')->limit(50)->get(['id', 'name']);
+        $patients = Patient::orderBy('name')->limit(50)->get(['id', 'name']);
 
         return view('vaccinations.edit', compact('vaccination', 'users', 'patients'));
     }

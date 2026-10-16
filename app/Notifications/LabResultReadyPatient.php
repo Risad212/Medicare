@@ -26,13 +26,14 @@ class LabResultReadyPatient extends Notification
      */
     public function toDatabase(object $notifiable): array
     {
+        $locale = $notifiable->locale ?? app()->getLocale();
+
         return [
             'lab_order_id' => $this->order->id,
-            'title' => 'Lab result ready',
-            'message' => sprintf(
-                'Lab results are ready for your order #%d. You can view them in your profile.',
-                $this->order->id,
-            ),
+            'title' => __('messages.notifications.lab_title', [], $locale),
+            'message' => __('messages.notifications.lab_patient_message', [
+                'id' => $this->order->id,
+            ], $locale),
         ];
     }
 }

@@ -58,6 +58,16 @@
                         <input type="date" name="date" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal @error('date') border-[#dc2626] @enderror" value="{{ old('date', date('Y-m-d')) }}">
                         @error('date') <p class="mt-1 text-xs text-red-t">{{ $message }}</p> @enderror
                     </div>
+                    @if(\App\Support\Module::enabled('zoom'))
+                    <div class="mc-f">
+                        <label>Consultation Mode <i class="req">*</i></label>
+                        <select name="consultation_mode" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal @error('consultation_mode') border-[#dc2626] @enderror">
+                            <option value="in_person" {{ old('consultation_mode', 'in_person') === 'in_person' ? 'selected' : '' }}>In-person</option>
+                            <option value="telehealth" {{ old('consultation_mode') === 'telehealth' ? 'selected' : '' }}>Zoom telehealth</option>
+                        </select>
+                        @error('consultation_mode') <p class="mt-1 text-xs text-red-t">{{ $message }}</p> @enderror
+                    </div>
+                    @endif
                     <div class="mc-f">
                         <label>Visit Type <i class="req">*</i></label>
                         <select name="visit_type" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal @error('visit_type') border-[#dc2626] @enderror">
@@ -98,7 +108,7 @@
                         @error('gender') <p class="mt-1 text-xs text-red-t">{{ $message }}</p> @enderror
                     </div>
                     <div class="mc-f full">
-                        <label>Email</label>
+                        <label>Email {{ old('consultation_mode') === 'telehealth' ? '*' : '' }}</label>
                         <input type="email" name="email" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal @error('email') border-[#dc2626] @enderror" value="{{ old('email') }}">
                         @error('email') <p class="mt-1 text-xs text-red-t">{{ $message }}</p> @enderror
                     </div>

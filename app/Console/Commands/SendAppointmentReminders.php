@@ -36,7 +36,9 @@ class SendAppointmentReminders extends Command
             PatientNotifier::appointmentReminder($appointment);
 
             if ($email) {
-                Mail::to($email)->queue(new AppointmentReminderMail($appointment));
+                Mail::to($email)
+                    ->locale($appointment->user?->locale ?? app()->getLocale())
+                    ->queue(new AppointmentReminderMail($appointment));
                 // Quiet: marking sent must not fire ActivityLogObserver::updated noise.
                 $appointment->forceFill(['reminder_sent_at' => now()])->saveQuietly();
                 $sent++;

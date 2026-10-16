@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Modules\BloodBank\Models\BloodRequest;
+use App\Modules\Lab\Models\LabOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

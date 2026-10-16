@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Patient;
 use App\Modules\Lab\Models\LabOrder;
+use App\Services\ActivityLogger;
 use App\Services\CsvExport;
 
 class ExportController extends Controller
@@ -13,8 +14,10 @@ class ExportController extends Controller
     /**
      * Export all appointments as a CSV file.
      */
-    public function appointments(CsvExport $csv)
+    public function appointments(CsvExport $csv, ActivityLogger $audit)
     {
+        $audit->log('phi_export', null, ['type' => 'appointments', 'count' => Appointment::count()]);
+
         $rows = Appointment::with('doctor', 'timeSlot')
             ->latest()
             ->cursor()
@@ -51,8 +54,10 @@ class ExportController extends Controller
     /**
      * Export all patient records as a CSV file.
      */
-    public function patients(CsvExport $csv)
+    public function patients(CsvExport $csv, ActivityLogger $audit)
     {
+        $audit->log('phi_export', null, ['type' => 'patients', 'count' => Patient::count()]);
+
         $rows = Patient::latest()
             ->cursor()
             ->map(fn ($patient) => [
@@ -73,8 +78,10 @@ class ExportController extends Controller
     /**
      * Export all lab orders as a CSV file.
      */
-    public function labOrders(CsvExport $csv)
+    public function labOrders(CsvExport $csv, ActivityLogger $audit)
     {
+        $audit->log('phi_export', null, ['type' => 'lab-orders', 'count' => LabOrder::count()]);
+
         $rows = LabOrder::with('doctor', 'items.test', 'reports')
             ->latest()
             ->cursor()

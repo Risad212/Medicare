@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\ExportController as AdminExportController;
-use App\Http\Controllers\Admin\InvoiceController as AdminInvoiceController;
 use App\Modules\Lab\Http\Controllers\Admin\LabOrderController as AdminLabOrderController;
 use App\Modules\Lab\Http\Controllers\Admin\LabTestController;
 use App\Modules\Lab\Http\Controllers\Doctor\LabOrderController as DoctorLabOrderController;
@@ -26,9 +25,9 @@ Route::middleware(['web', 'auth', 'admin', 'module:lab', 'staff.modules'])->grou
 
     Route::get('/admin/lab-reports/{report}/download', [AdminLabOrderController::class, 'downloadReport'])->name('admin.lab-reports.download');
 
-    Route::get('/admin/exports/lab-orders', [AdminExportController::class, 'labOrders'])->name('admin.exports.lab-orders');
+    Route::get('/admin/exports/lab-orders', [AdminExportController::class, 'labOrders'])->middleware('throttle:10,60')->name('admin.exports.lab-orders');
 
-    Route::post('/admin/lab-orders/{order}/invoice', [AdminInvoiceController::class, 'createFromOrder'])->name('admin.invoices.create-from-order');
+    Route::post('/admin/lab-orders/{order}/invoice', [AdminLabOrderController::class, 'createInvoice'])->name('admin.invoices.create-from-order');
 });
 
 Route::middleware(['web', 'auth', 'doctor', 'module:lab'])->group(function () {

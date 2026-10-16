@@ -19,7 +19,7 @@ class AppointmentReminderMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reminder: your appointment is tomorrow - MediCare',
+            subject: __('messages.mail.reminder_subject'),
         );
     }
 

@@ -54,15 +54,19 @@ class PatientController extends Controller
     {
         $visits = collect();
 
-        if ($patient->email || $patient->phone) {
+        $email = $patient->email ? strtolower(trim($patient->email)) : null;
+        $phone = $patient->phone ? trim($patient->phone) : null;
+
+        if ($email || $phone) {
             $visits = Appointment::with(['doctor', 'timeSlot'])
-                ->where(function ($query) use ($patient) {
-                    if ($patient->email) {
-                        $query->orWhere('email', $patient->email);
-                    }
-                    if ($patient->phone) {
-                        $query->orWhere('phone', $patient->phone);
-                    }
+                ->when($email && $phone, function ($query) use ($email, $phone) {
+                    $query->whereRaw('LOWER(email) = ?', [$email])->where('phone', $phone);
+                })
+                ->when($email && ! $phone, function ($query) use ($email) {
+                    $query->whereRaw('LOWER(email) = ?', [$email]);
+                })
+                ->when(! $email && $phone, function ($query) use ($phone) {
+                    $query->where('phone', $phone);
                 })
                 ->latest()
                 ->get();

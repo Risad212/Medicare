@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
     <title>@yield('meta_title', 'Medicare')</title>
@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/daterangepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/magnific-popup.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/main.css') }}">
+    <style>
+        html[dir="rtl"] body { direction: rtl; text-align: right; }
+        html[dir="rtl"] .dropdown-menu { text-align: right; }
+    </style>
 </head>
 
 <body>

@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
-    <title>Prescription #{{ $prescription->id }}</title>
+    <title>{{ __('messages.pdf.prescription_title') }} #{{ $prescription->id }}</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -94,38 +94,38 @@
             @endif
         </div>
         <div class="doc-title">
-            <h2>Prescription</h2>
+            <h2>{{ __('messages.pdf.prescription_title') }}</h2>
             <div class="subtitle">No. #{{ $prescription->id }}</div>
         </div>
     </div>
 
     <table class="meta">
         <tr>
-            <td>Patient</td>
+            <td>{{ __('messages.pdf.patient') }}</td>
             <td><strong>{{ $prescription->patient_name }}</strong></td>
         </tr>
         <tr>
-            <td>Age / Gender</td>
+            <td>{{ __('messages.pdf_body.age') }} / {{ __('messages.pdf_body.gender') }}</td>
             <td>
                 {{ $prescription->age ? $prescription->age . ' yrs' : 'N/A' }}
                 / {{ $prescription->gender_label }}
             </td>
         </tr>
         <tr>
-            <td>Phone</td>
+            <td>{{ __('messages.pdf_body.phone') }}</td>
             <td>{{ $prescription->phone ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <td>Date</td>
+            <td>{{ __('messages.pdf.date') }}</td>
             <td>{{ $prescription->created_at->format('d F Y h:i A') }}</td>
         </tr>
         <tr>
-            <td>Doctor</td>
+            <td>{{ __('messages.pdf.doctor') }}</td>
             <td>Dr. {{ $prescription->doctor->name ?? 'N/A' }} @if($prescription->doctor->specialist) ({{ $prescription->doctor->specialist }}) @endif</td>
         </tr>
         @if($prescription->appointment)
             <tr>
-                <td>Appointment</td>
+                <td>{{ __('messages.pdf_body.appointment_label') }}</td>
                 <td>#{{ $prescription->appointment->id }} - {{ $prescription->appointment->appointment_date }}</td>
             </tr>
         @endif
@@ -133,33 +133,33 @@
 
     @if($prescription->symptoms)
         <div class="box">
-            <h4>Symptoms</h4>
+            <h4>{{ __('messages.pdf_body.symptoms') }}</h4>
             <p>{{ $prescription->symptoms }}</p>
         </div>
     @endif
 
     <div class="box">
-        <h4>Diagnosis</h4>
+        <h4>{{ __('messages.pdf.diagnosis') }}</h4>
         <p>{{ $prescription->diagnosis }}</p>
     </div>
 
     @if($prescription->advice)
         <div class="box">
-            <h4>Advice &amp; Notes</h4>
+            <h4>{{ __('messages.pdf.advice') }}</h4>
             <p>{{ $prescription->advice }}</p>
         </div>
     @endif
 
-    <h3 style="color:#0b8f74; margin-bottom:8px;">Medicines</h3>
+    <h3 style="color:#0b8f74; margin-bottom:8px;">{{ __('messages.pdf_body.medicines') }}</h3>
     <table class="items">
         <thead>
             <tr>
-                <th style="width:26%">Medicine</th>
-                <th>Dosage</th>
-                <th>Frequency</th>
-                <th>Duration</th>
-                <th>Quantity</th>
-                <th>Instructions</th>
+                <th style="width:26%">{{ __('messages.pdf.medicine') }}</th>
+                <th>{{ __('messages.pdf.dosage') }}</th>
+                <th>{{ __('messages.pdf.frequency') }}</th>
+                <th>{{ __('messages.pdf.duration') }}</th>
+                <th>{{ __('messages.pdf.quantity') }}</th>
+                <th>{{ __('messages.pdf.instructions') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -174,7 +174,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6">No medicines recorded.</td>
+                    <td colspan="6">{{ __('messages.pdf_body.no_medicines') }}</td>
                 </tr>
             @endforelse
         </tbody>
@@ -182,7 +182,7 @@
 
     @if($prescription->follow_up_date)
         <p style="color:#374151;">
-            <strong>Follow-up:</strong>
+            <strong>{{ __('messages.pdf_body.followup') }}</strong>
             {{ $prescription->follow_up_date->format('d F Y') }}
         </p>
     @endif
@@ -197,7 +197,7 @@
     </div>
 
     <div class="footer">
-        This prescription is generated electronically by {{ $setting->site_name ?? config('app.name') }}.
+        {{ __('messages.pdf_body.rx_footer', ['site' => $setting->site_name ?? config('app.name')]) }}
     </div>
 </body>
 </html>

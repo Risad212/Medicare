@@ -187,8 +187,8 @@ class VaccinationTest extends TestCase
         $this->get('/my-vaccinations')->assertRedirect('/login');
 
         $patient = User::factory()->create(['role' => 'patient']);
-        $this->actingAs($patient)->get('/admin/vaccinations')->assertRedirect('/login');
-        $this->actingAs($patient)->get('/doctor/vaccinations')->assertRedirect('/login');
+        $this->actingAs($patient)->get('/admin/vaccinations')->assertForbidden();
+        $this->actingAs($patient)->get('/doctor/vaccinations')->assertForbidden();
     }
 
     /**
@@ -213,6 +213,6 @@ class VaccinationTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
 
         $this->actingAs($admin)->get('/admin/vaccinations')->assertNotFound();
-        $this->get('/my-vaccinations')->assertRedirect('/login');
+        $this->get('/my-vaccinations')->assertForbidden();
     }
 }

@@ -41,7 +41,8 @@ class NotificationController extends Controller
      */
     public function markAsRead(DatabaseNotification $notification)
     {
-        abort_unless($notification->notifiable_id === auth()->id(), 403);
+        // 404 (not 403) so we never reveal whether a notification id exists.
+        abort_if($notification->notifiable_id !== auth()->id(), 404);
 
         if ($notification->unread()) {
             $notification->markAsRead();

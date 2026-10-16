@@ -8,7 +8,7 @@
 
 <!--========== BreadCamb Section ==========-->
 @include('frontend.components.breadcrumb', [
-    'title' => $pageTitle ?? 'Contact Us'
+    'title' => __('messages.contact.title')
 ])
 
 <!--========== Contact Section ==========-->
@@ -34,7 +34,7 @@
                             </svg>
                         </span>
                         <div class="content">
-                            <h4 class="title">Location</h4>
+                            <h4 class="title">{{ __('messages.contact.location') }}</h4>
                             <span>{{ $setting->address ?? '' }}</span>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                             </svg>
                         </span>
                         <div class="content">
-                            <h4 class="title">Phones</h4>
+                            <h4 class="title">{{ __('messages.contact.phones') }}</h4>
                             <span>{{ $setting->phone ?? '' }}</span>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                             </svg>
                         </span>
                         <div class="content">
-                            <h4 class="title">Email</h4>
+                            <h4 class="title">{{ __('messages.contact.email') }}</h4>
                             <span>{{ $setting->email ?? '' }}</span>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                             </svg>
                         </span>
                         <div class="content">
-                            <h4 class="title">Working Hours</h4>
+                            <h4 class="title">{{ __('messages.contact.working_hours') }}</h4>
                             <span>{{ $setting->working_hours ?? '' }}</span>
                         </div>
                     </div>
@@ -115,28 +115,38 @@
                    <form action="{{ route('contact.submit') }}" method="POST">
                     @csrf
 
+                    @if ($errors->any())
+                        <div class="alert alert-danger" role="alert">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <input type="text" name="name" placeholder="Your Name">
+                                <input type="text" name="name" placeholder="{{ __('messages.contact.name') }}" value="{{ old('name') }}">
                             </div>
                         </div>
 
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <input type="email" name="email" placeholder="Email Address">
+                                <input type="email" name="email" placeholder="{{ __('messages.contact.email_address') }}" value="{{ old('email') }}">
                             </div>
                         </div>
 
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <input type="number" name="phone" placeholder="Phone Number">
+                                <input type="tel" name="phone" placeholder="{{ __('messages.contact.phone_number') }}" value="{{ old('phone') }}">
                             </div>
                         </div>
 
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <input type="text" name="subject" placeholder="Subject">
+                                <input type="text" name="subject" placeholder="{{ __('messages.contact.subject') }}" value="{{ old('subject') }}">
                             </div>
                         </div>
 
@@ -144,15 +154,15 @@
                             <div class="mb-3">
                                 <textarea 
                                     name="message" 
-                                    placeholder="Write Message"
-                                    style="height: 150px">
+                                    placeholder="{{ __('messages.contact.write_message') }}"
+                                    style="height: 150px">{{ old('message') }}
                                 </textarea>
                             </div>
                         </div>
                     </div>
 
                     <button type="submit" class="form-button">
-                        Send Message
+                        {{ __('messages.contact.send_message') }}
                     </button>
                 </form>
                 </div>
