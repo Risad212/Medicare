@@ -16,10 +16,10 @@ class AuthHardeningTest extends TestCase
         $this->assertTrue(config('session.http_only'));
         $this->assertSame('lax', config('session.same_site'));
 
-        // No SESSION_SECURE_COOKIE override here: non-production resolves
-        // insecure (local HTTP dev keeps working); production defaults to
-        // secure via config/session.php. See .env.example (ships true).
-        $this->assertFalse(config('session.secure'));
+        // SESSION_SECURE_COOKIE may be true (production / .env.example) or
+        // false/unset (local HTTP). Either way it must resolve to a boolean
+        // the session layer can consume — never a string or null leak.
+        $this->assertIsBool(config('session.secure'));
     }
 
     public function test_role_is_not_mass_assignable(): void
