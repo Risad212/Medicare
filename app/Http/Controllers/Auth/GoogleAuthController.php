@@ -17,9 +17,18 @@ class GoogleAuthController extends Controller
 {
     /**
      * Redirect to Google OAuth.
+     *
+     * Degrades gracefully when OAuth credentials are not configured yet
+     * (deployment-time setup) instead of a Socialite exception 500.
      */
     public function redirect(): RedirectResponse
     {
+        if ((string) config('services.google.client_id') === '') {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Google sign-in is not configured yet. Please use your email and password.',
+            ]);
+        }
+
         return Socialite::driver('google')->redirect();
     }
 

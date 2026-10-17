@@ -11,6 +11,15 @@ class GoogleAccountTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_google_redirect_degrades_gracefully_when_credentials_missing(): void
+    {
+        config(['services.google.client_id' => '', 'services.google.client_secret' => '']);
+
+        $this->get(route('auth.google.redirect'))
+            ->assertRedirect(route('login'))
+            ->assertSessionHasErrors('email');
+    }
+
     public function test_user_can_set_a_password_from_the_profile(): void
     {
         $user = User::factory()->create([
