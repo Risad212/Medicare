@@ -46,8 +46,8 @@
     </div>
   </div>
 
-  {{-- ===== 4 stat cards (gold baseline like screenshot) ===== --}}
-  <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  {{-- ===== Stat cards (2/3/4 responsive so role-gated cards never orphan a row) ===== --}}
+  <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
     @if($dashFrontDesk)
     <div class="welly-stat">
       <div class="flex items-start justify-between gap-3">
@@ -88,7 +88,11 @@
       </div>
     </div>
     @endif
-    @if($dashLab)
+  </section>
+
+  {{-- ===== Lab stat row (own 2-up so it never orphans the 4-up above) ===== --}}
+  @if($dashLab)
+  <section class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div class="welly-stat">
       <div class="flex items-start justify-between gap-3">
         <div>
@@ -107,8 +111,8 @@
         <span class="welly-stat-icon"><i class="bi bi-graph-up"></i></span>
       </div>
     </div>
-    @endif
   </section>
+  @endif
 
   {{-- ===== Patient Percentage + Appointment Schedule ===== --}}
   @if($dashAdmin || $dashFrontDesk)

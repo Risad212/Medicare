@@ -168,7 +168,7 @@ return [
         'signature' => 'স্বাক্ষর',
     ],
     'public' => [
-        'read_more' => 'আরও পড়ুন',
+        'read_more' => 'আরও পড়ুন', 'filter' => 'ফিল্টার',
         'view_all' => 'সব দেখুন',
         'our_doctors' => 'আমাদের ডাক্তারগণ',
         'our_services' => 'আমাদের সেবাসমূহ',
@@ -285,7 +285,7 @@ return [
         'paid_on' => 'পরিশোধের তারিখ',
     ],
     'staff' => [
-        'dashboard' => 'ড্যাশবোর্ড', 'patients' => 'রোগীগণ', 'doctors' => 'ডাক্তারগণ', 'reviews' => 'রিভিউ',
+        'dashboard' => 'ড্যাশবোর্ড', 'overview' => 'সারসংক্ষেপ', 'patients' => 'রোগীগণ', 'doctors' => 'ডাক্তারগণ', 'reviews' => 'রিভিউ',
         'appointments' => 'অ্যাপয়েন্টমেন্ট', 'all_appointments' => 'সব অ্যাপয়েন্টমেন্ট', 'book_appointment' => 'অ্যাপয়েন্টমেন্ট বুক করুন',
         'time_slots' => 'সময় স্লট', 'laboratory' => 'ল্যাবরেটরি', 'lab_tests' => 'ল্যাব পরীক্ষা', 'add_test' => 'পরীক্ষা যোগ করুন',
         'lab_orders' => 'ল্যাব অর্ডার', 'invoices' => 'ইনভয়েস', 'prescriptions' => 'প্রেসক্রিপশন', 'vaccinations' => 'টিকাদান',

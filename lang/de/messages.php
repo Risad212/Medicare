@@ -105,7 +105,7 @@ return [
         'signature' => 'Unterschrift',
     ],
     'public' => [
-        'read_more' => 'Weiterlesen',
+        'read_more' => 'Weiterlesen', 'filter' => 'Filter',
         'view_all' => 'Alle ansehen',
         'our_doctors' => 'Unsere Ärzte',
         'our_services' => 'Unsere Leistungen',
@@ -222,7 +222,7 @@ return [
         'paid_on' => 'Bezahlt am',
     ],
     'staff' => [
-        'dashboard' => 'Dashboard', 'patients' => 'Patienten', 'doctors' => 'Ärzte', 'reviews' => 'Bewertungen',
+        'dashboard' => 'Dashboard', 'overview' => 'Übersicht', 'patients' => 'Patienten', 'doctors' => 'Ärzte', 'reviews' => 'Bewertungen',
         'appointments' => 'Termine', 'all_appointments' => 'Alle Termine', 'book_appointment' => 'Termin buchen',
         'time_slots' => 'Zeitfenster', 'laboratory' => 'Labor', 'lab_tests' => 'Labortests', 'add_test' => 'Test hinzufügen',
         'lab_orders' => 'Laboraufträge', 'invoices' => 'Rechnungen', 'prescriptions' => 'Rezepte', 'vaccinations' => 'Impfungen',

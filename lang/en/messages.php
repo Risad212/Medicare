@@ -175,6 +175,7 @@ return [
     ],
     'public' => [
         'read_more' => 'Read more',
+        'filter' => 'Filter',
         'view_all' => 'View all',
         'our_doctors' => 'Our Doctors',
         'our_services' => 'Our Services',
@@ -291,7 +292,7 @@ return [
         'paid_on' => 'Paid On',
     ],
     'staff' => [
-        'dashboard' => 'Dashboard', 'patients' => 'Patients', 'doctors' => 'Doctors', 'reviews' => 'Reviews',
+        'dashboard' => 'Dashboard', 'overview' => 'Overview', 'patients' => 'Patients', 'doctors' => 'Doctors', 'reviews' => 'Reviews',
         'appointments' => 'Appointments', 'all_appointments' => 'All Appointments', 'book_appointment' => 'Book Appointment',
         'time_slots' => 'Time Slots', 'laboratory' => 'Laboratory', 'lab_tests' => 'Lab Tests', 'add_test' => 'Add Test',
         'lab_orders' => 'Lab Orders', 'invoices' => 'Invoices', 'prescriptions' => 'Prescriptions', 'vaccinations' => 'Vaccinations',

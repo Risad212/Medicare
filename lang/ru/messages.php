@@ -107,7 +107,7 @@ return [
         'signature' => 'Подпись',
     ],
     'public' => [
-        'read_more' => 'Читать далее',
+        'read_more' => 'Читать далее', 'filter' => 'Фильтр',
         'view_all' => 'Показать всё',
         'our_doctors' => 'Наши врачи',
         'our_services' => 'Наши услуги',
@@ -224,7 +224,7 @@ return [
         'paid_on' => 'Оплачен',
     ],
     'staff' => [
-        'dashboard' => 'Панель', 'patients' => 'Пациенты', 'doctors' => 'Врачи', 'reviews' => 'Отзывы',
+        'dashboard' => 'Панель', 'overview' => 'Обзор', 'patients' => 'Пациенты', 'doctors' => 'Врачи', 'reviews' => 'Отзывы',
         'appointments' => 'Приёмы', 'all_appointments' => 'Все приёмы', 'book_appointment' => 'Записать на приём',
         'time_slots' => 'Временные слоты', 'laboratory' => 'Лаборатория', 'lab_tests' => 'Анализы', 'add_test' => 'Добавить анализ',
         'lab_orders' => 'Заказы лаб.', 'invoices' => 'Счета', 'prescriptions' => 'Рецепты', 'vaccinations' => 'Вакцинация',

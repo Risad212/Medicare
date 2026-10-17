@@ -140,7 +140,7 @@
             <li class="side-tree {{ request()->routeIs('admin.home', 'admin.patients.*', 'admin.doctors.*', 'admin.comments.*') ? 'is-expanded' : '' }}">
                 <a class="side-link {{ request()->routeIs('admin.home', 'admin.patients.*', 'admin.doctors.*', 'admin.comments.*') ? 'active' : '' }}" href="#" data-toggle="treeview">
                     <i class="side-icon bi bi-speedometer2"></i>
-                    <span>{{ __('messages.staff.dashboard') }}</span>
+                    <span>{{ __('messages.staff.overview') }}</span>
                     <i class="side-chevron bi bi-chevron-right"></i>
                 </a>
                 <ul class="side-sub">

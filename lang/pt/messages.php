@@ -107,7 +107,7 @@ return [
         'signature' => 'Assinatura',
     ],
     'public' => [
-        'read_more' => 'Leia mais',
+        'read_more' => 'Leia mais', 'filter' => 'Filtrar',
         'view_all' => 'Ver tudo',
         'our_doctors' => 'Nossos médicos',
         'our_services' => 'Nossos serviços',
@@ -224,7 +224,7 @@ return [
         'paid_on' => 'Pago em',
     ],
     'staff' => [
-        'dashboard' => 'Painel', 'patients' => 'Pacientes', 'doctors' => 'Médicos', 'reviews' => 'Avaliações',
+        'dashboard' => 'Painel', 'overview' => 'Visão geral', 'patients' => 'Pacientes', 'doctors' => 'Médicos', 'reviews' => 'Avaliações',
         'appointments' => 'Consultas', 'all_appointments' => 'Todas as consultas', 'book_appointment' => 'Agendar consulta',
         'time_slots' => 'Horários', 'laboratory' => 'Laboratório', 'lab_tests' => 'Exames', 'add_test' => 'Adicionar exame',
         'lab_orders' => 'Pedidos lab.', 'invoices' => 'Faturas', 'prescriptions' => 'Receitas', 'vaccinations' => 'Vacinação',

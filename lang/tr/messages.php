@@ -107,7 +107,7 @@ return [
         'signature' => 'İmza',
     ],
     'public' => [
-        'read_more' => 'Devamını oku',
+        'read_more' => 'Devamını oku', 'filter' => 'Filtrele',
         'view_all' => 'Tümünü gör',
         'our_doctors' => 'Doktorlarımız',
         'our_services' => 'Hizmetlerimiz',
@@ -224,7 +224,7 @@ return [
         'paid_on' => 'Ödeme Tarihi',
     ],
     'staff' => [
-        'dashboard' => 'Panel', 'patients' => 'Hastalar', 'doctors' => 'Doktorlar', 'reviews' => 'Değerlendirmeler',
+        'dashboard' => 'Panel', 'overview' => 'Genel bakış', 'patients' => 'Hastalar', 'doctors' => 'Doktorlar', 'reviews' => 'Değerlendirmeler',
         'appointments' => 'Randevular', 'all_appointments' => 'Tüm randevular', 'book_appointment' => 'Randevu oluştur',
         'time_slots' => 'Saat dilimleri', 'laboratory' => 'Laboratuvar', 'lab_tests' => 'Testler', 'add_test' => 'Test ekle',
         'lab_orders' => 'Lab siparişleri', 'invoices' => 'Faturalar', 'prescriptions' => 'Reçeteler', 'vaccinations' => 'Aşılar',

@@ -21,7 +21,7 @@
             <input type="date" id="doctor-date" name="date" class="form-control" min="{{ now()->toDateString() }}" value="{{ $filters['date'] ?? request('date') }}">
         </div>
         <div class="col-md-2 d-flex gap-2">
-            <button type="submit" class="btn btn-primary">Filter</button>
+            <button type="submit" class="mc-search-btn">{{ __('messages.public.filter') }}</button>
             @if(request()->hasAny(['search', 'department', 'date']))
                 <a href="{{ route('doctor') }}" class="btn btn-outline-secondary">Reset</a>
             @endif

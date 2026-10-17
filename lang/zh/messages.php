@@ -120,7 +120,7 @@ return [
         'signature' => '签名',
     ],
     'public' => [
-        'read_more' => '阅读更多',
+        'read_more' => '阅读更多', 'filter' => '筛选',
         'view_all' => '查看全部',
         'our_doctors' => '我们的医生',
         'our_services' => '我们的服务',
@@ -237,7 +237,7 @@ return [
         'paid_on' => '付款日期',
     ],
     'staff' => [
-        'dashboard' => '工作台', 'patients' => '患者', 'doctors' => '医生', 'reviews' => '评价',
+        'dashboard' => '工作台', 'overview' => '总览', 'patients' => '患者', 'doctors' => '医生', 'reviews' => '评价',
         'appointments' => '预约', 'all_appointments' => '全部预约', 'book_appointment' => '新建预约',
         'time_slots' => '号段时间', 'laboratory' => '检验科', 'lab_tests' => '检验项目', 'add_test' => '新增项目',
         'lab_orders' => '检验单', 'invoices' => '发票', 'prescriptions' => '处方', 'vaccinations' => '疫苗接种',

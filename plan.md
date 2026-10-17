@@ -5,31 +5,25 @@ independently shippable: FormRequest + validated(), thin controller,
 app/Services + DB::transaction, Policy/Gate, throttle:10,1 on public POSTs,
 additive migrations, Pint + full suite green before merge.
 
-## Phase 1 — Online payment (highest value)
-- SSLCommerz + bKash + Stripe drivers behind a `PaymentGateway` interface
-- Pay appointment fee at booking; pay invoice balance from patient profile
-- Payment status webhook handlers; refund flow for cancelled appointments
-- New module: `app/Modules/Payment/` (removable, R1–R7 apply)
-
-## Phase 2 — SMS notifications
+## Phase 1 — SMS notifications
 - SMS driver interface (D7 Networks / BulkSMSBD / Twilio)
 - Appointment reminders, OTP option, status-change alerts
 - Per-user channel preference; log to activity feed
 - Extends existing `SendAppointmentReminders` command
 
-## Phase 3 — Patient experience
+## Phase 2 — Patient experience
 - Doctor reviews/ratings (moderated, one per completed appointment)
 - Public weekly duty-roster view per doctor/department
 - Patient medical timeline (allergies, chronic conditions, visit history)
 - FAQ + Gallery pages (Publishing module extension)
 
-## Phase 4 — Operations
+## Phase 3 — Operations
 - Receptionist role (scoped admin: appointments + patients only)
 - Discharge summaries / IPD records
 - Ambulance live tracking link
 - Newsletter subscription + campaign send
 
-## Phase 5 — Polish
+## Phase 4 — Polish
 - Translation cache warmer (`translate:warm {locales}`)
 - Locale-prefixed URLs (`/bn/doctor`) for non-English SEO
 - Curated DB-content translation via `spatie/laravel-translatable`

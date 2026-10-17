@@ -120,7 +120,7 @@ return [
         'signature' => 'Signature',
     ],
     'public' => [
-        'read_more' => 'Lire la suite',
+        'read_more' => 'Lire la suite', 'filter' => 'Filtrer',
         'view_all' => 'Tout voir',
         'our_doctors' => 'Nos médecins',
         'our_services' => 'Nos services',
@@ -237,7 +237,7 @@ return [
         'paid_on' => 'Payé le',
     ],
     'staff' => [
-        'dashboard' => 'Tableau de bord', 'patients' => 'Patients', 'doctors' => 'Médecins', 'reviews' => 'Avis',
+        'dashboard' => 'Tableau de bord', 'overview' => 'Aperçu', 'patients' => 'Patients', 'doctors' => 'Médecins', 'reviews' => 'Avis',
         'appointments' => 'Rendez-vous', 'all_appointments' => 'Tous les rendez-vous', 'book_appointment' => 'Prendre rendez-vous',
         'time_slots' => 'Créneaux', 'laboratory' => 'Laboratoire', 'lab_tests' => 'Analyses', 'add_test' => 'Ajouter une analyse',
         'lab_orders' => 'Dossiers labo', 'invoices' => 'Factures', 'prescriptions' => 'Ordonnances', 'vaccinations' => 'Vaccinations',

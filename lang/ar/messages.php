@@ -120,7 +120,7 @@ return [
         'signature' => 'التوقيع',
     ],
     'public' => [
-        'read_more' => 'اقرأ المزيد',
+        'read_more' => 'اقرأ المزيد', 'filter' => 'تصفية',
         'view_all' => 'عرض الكل',
         'our_doctors' => 'أطباؤنا',
         'our_services' => 'خدماتنا',
@@ -237,7 +237,7 @@ return [
         'paid_on' => 'تاريخ الدفع',
     ],
     'staff' => [
-        'dashboard' => 'لوحة التحكم', 'patients' => 'المرضى', 'doctors' => 'الأطباء', 'reviews' => 'التقييمات',
+        'dashboard' => 'لوحة التحكم', 'overview' => 'نظرة عامة', 'patients' => 'المرضى', 'doctors' => 'الأطباء', 'reviews' => 'التقييمات',
         'appointments' => 'المواعيد', 'all_appointments' => 'كل المواعيد', 'book_appointment' => 'حجز موعد',
         'time_slots' => 'الفترات الزمنية', 'laboratory' => 'المختبر', 'lab_tests' => 'فحوصات المختبر', 'add_test' => 'إضافة فحص',
         'lab_orders' => 'طلبات المختبر', 'invoices' => 'الفواتير', 'prescriptions' => 'الوصفات', 'vaccinations' => 'التطعيمات',
