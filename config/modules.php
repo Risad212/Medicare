@@ -41,7 +41,8 @@
 |   c. Core feature flags — no folder at all; they gate a field or behaviour
 |      that lives in core. allergy gates the users.allergies column (profile
 |      input, prescription history, validation). lockout gates the extra
-|      login throttle. Do not create an empty app/Modules/ directory for
+|      login throttle. sms gates app/Services/Sms/* and the users.sms_enabled
+|      column. Do not create an empty app/Modules/ directory for
 |      these; deleting the folder would change nothing.
 |
 */
@@ -69,6 +70,9 @@ return [
 
     // Core feature flag: no module folder; gates extra login throttling.
     'lockout' => env('MODULE_LOCKOUT', true),
+
+    // Core feature flag: gates app/Services/Sms/* + users.sms_enabled.
+    'sms' => env('MODULE_SMS', true),
 
     'publishing' => env('MODULE_PUBLISHING', true),
     'directory' => env('MODULE_DIRECTORY', true),

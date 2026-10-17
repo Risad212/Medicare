@@ -10,6 +10,8 @@ return [
     'forms' => ['name' => 'Nombre', 'email' => 'Correo electrónico', 'phone' => 'Teléfono', 'message' => 'Mensaje', 'send' => 'Enviar', 'submit' => 'Enviar', 'password' => 'Contraseña'],
     'auth' => ['login' => 'Iniciar sesión', 'register' => 'Registrarse', 'remember' => 'Recordarme', 'forgot' => '¿Olvidaste tu contraseña?'],
     'common' => ['save' => 'Guardar', 'update' => 'Actualizar', 'cancel' => 'Cancelar', 'edit' => 'Editar', 'delete' => 'Eliminar', 'back' => 'Volver', 'actions' => 'Acciones', 'status' => 'Estado', 'active' => 'Activo', 'inactive' => 'Inactivo'],
+    'sms_notifications' => 'Notificaciones SMS',
+    'sms_notifications_hint' => 'Recordatorios y actualizaciones de citas en su teléfono.',
     'admin' => [
         'languages' => 'Idiomas', 'language_list' => 'Idiomas', 'language_list_sub' => 'Idiomas disponibles en el sitio e idioma predeterminado.',
         'add_language' => 'Añadir idioma', 'edit_language' => 'Editar idioma', 'language_name' => 'Nombre del idioma',
@@ -242,5 +244,11 @@ return [
         'notifications' => 'Notificaciones', 'logout' => 'Cerrar sesión', 'search_menu' => 'Buscar en el menú…',
         'pending_appointments' => 'Citas pendientes', 'pending_reviews' => 'Reseñas pendientes',
         'todays_appointments' => 'Citas de hoy',
+    ],
+    'sms' => [
+        'booked' => 'Cita con :doctor el :date a las :time reservada.',
+        'reminder' => 'Recordatorio: cita con :doctor el :date a las :time.',
+        'status_changed' => 'Actualización de cita: su cita con :doctor ahora está :status.',
+        'otp' => 'Su código de verificación es :code. Válido durante :minutes minutos.',
     ],
 ];

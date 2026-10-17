@@ -195,13 +195,30 @@ class ReleaseReadinessCheck extends Command
             $missing[] = 'Zoom API (ZOOM_ACCOUNT_ID/CLIENT_ID/SECRET)';
         }
 
+        $smsDriver = (string) config('sms.driver', 'log');
+        $smsMissing = match ($smsDriver) {
+            'log', '' => [],
+            'd7' => array_filter(['D7_API_TOKEN' => (string) config('sms.providers.d7.token')]),
+            'bulksmsbd' => array_filter(['BULKSMSBD_API_KEY' => (string) config('sms.providers.bulksmsbd.api_key')]),
+            'twilio' => array_filter([
+                'TWILIO_ACCOUNT_SID' => (string) config('sms.providers.twilio.account_sid'),
+                'TWILIO_AUTH_TOKEN' => (string) config('sms.providers.twilio.auth_token'),
+                'TWILIO_FROM' => (string) config('sms.providers.twilio.from'),
+            ]),
+            default => ['SMS_DRIVER' => $smsDriver],
+        };
+
+        if ($smsMissing !== []) {
+            $missing[] = "SMS driver [{$smsDriver}] (".implode(', ', array_keys($smsMissing)).')';
+        }
+
         if ($missing !== []) {
             $record('credentials', 'warn', 'Missing live credentials: '.implode('; ', $missing).'. Automated tests pass; live behavior needs deployment setup.');
 
             return;
         }
 
-        $record('credentials', 'pass', 'Google/Zoom credentials present.');
+        $record('credentials', 'pass', 'Google/Zoom credentials present; SMS driver: '.$smsDriver.'.');
     }
 
     /**

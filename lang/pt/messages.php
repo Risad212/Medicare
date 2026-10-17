@@ -10,6 +10,8 @@ return [
     'forms' => ['name' => 'Nome', 'email' => 'E-mail', 'phone' => 'Telefone', 'message' => 'Mensagem', 'send' => 'Enviar', 'submit' => 'Enviar', 'password' => 'Senha'],
     'auth' => ['login' => 'Entrar', 'register' => 'Cadastrar', 'remember' => 'Lembrar-me', 'forgot' => 'Esqueceu a senha?'],
     'common' => ['save' => 'Salvar', 'update' => 'Atualizar', 'cancel' => 'Cancelar', 'edit' => 'Editar', 'delete' => 'Excluir', 'back' => 'Voltar', 'actions' => 'Ações', 'status' => 'Status', 'active' => 'Ativo', 'inactive' => 'Inativo'],
+    'sms_notifications' => 'Notificações SMS',
+    'sms_notifications_hint' => 'Lembretes e atualizações de consultas enviados para o seu telefone.',
     'admin' => [
         'languages' => 'Idiomas', 'language_list' => 'Idiomas', 'language_list_sub' => 'Idiomas disponíveis no site e idioma padrão.',
         'add_language' => 'Adicionar idioma', 'edit_language' => 'Editar idioma', 'language_name' => 'Nome do idioma',
@@ -242,5 +244,11 @@ return [
         'notifications' => 'Notificações', 'logout' => 'Sair', 'search_menu' => 'Pesquisar no menu…',
         'pending_appointments' => 'Consultas pendentes', 'pending_reviews' => 'Avaliações pendentes',
         'todays_appointments' => 'Consultas de hoje',
+    ],
+    'sms' => [
+        'booked' => 'Consulta com :doctor em :date às :time agendada.',
+        'reminder' => 'Lembrete: consulta com :doctor em :date às :time.',
+        'status_changed' => 'Atualização da consulta: sua consulta com :doctor está agora :status.',
+        'otp' => 'Seu código de verificação é :code. Válido por :minutes minutos.',
     ],
 ];

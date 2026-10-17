@@ -10,6 +10,8 @@ return [
     'forms' => ['name' => 'Name', 'email' => 'E-Mail', 'phone' => 'Telefon', 'message' => 'Nachricht', 'send' => 'Senden', 'submit' => 'Absenden', 'password' => 'Passwort'],
     'auth' => ['login' => 'Anmelden', 'register' => 'Registrieren', 'remember' => 'Angemeldet bleiben', 'forgot' => 'Passwort vergessen?'],
     'common' => ['save' => 'Speichern', 'update' => 'Aktualisieren', 'cancel' => 'Abbrechen', 'edit' => 'Bearbeiten', 'delete' => 'Löschen', 'back' => 'Zurück', 'actions' => 'Aktionen', 'status' => 'Status', 'active' => 'Aktiv', 'inactive' => 'Inaktiv'],
+    'sms_notifications' => 'SMS-Benachrichtigungen',
+    'sms_notifications_hint' => 'Terminerinnerungen und -updates an Ihr Telefon.',
     'admin' => [
         'languages' => 'Sprachen', 'language_list' => 'Sprachen', 'language_list_sub' => 'Verfügbare Website-Sprachen und Standardsprache.',
         'add_language' => 'Sprache hinzufügen', 'edit_language' => 'Sprache bearbeiten', 'language_name' => 'Sprachname',
@@ -240,5 +242,11 @@ return [
         'notifications' => 'Mitteilungen', 'logout' => 'Abmelden', 'search_menu' => 'Menü suchen…',
         'pending_appointments' => 'Ausstehende Termine', 'pending_reviews' => 'Ausstehende Bewertungen',
         'todays_appointments' => 'Heutige Termine',
+    ],
+    'sms' => [
+        'booked' => 'Termin bei :doctor am :date um :time gebucht.',
+        'reminder' => 'Erinnerung: Termin bei :doctor am :date um :time.',
+        'status_changed' => 'Termin-Update: Ihr Termin bei :doctor ist jetzt :status.',
+        'otp' => 'Ihr Bestätigungscode lautet :code. Gültig für :minutes Minuten.',
     ],
 ];

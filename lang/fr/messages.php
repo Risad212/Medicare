@@ -10,6 +10,8 @@ return [
     'forms' => ['name' => 'Nom', 'email' => 'E-mail', 'phone' => 'Téléphone', 'message' => 'Message', 'send' => 'Envoyer', 'submit' => 'Soumettre', 'password' => 'Mot de passe'],
     'auth' => ['login' => 'Connexion', 'register' => 'Créer un compte', 'remember' => 'Se souvenir de moi', 'forgot' => 'Mot de passe oublié ?'],
     'common' => ['save' => 'Enregistrer', 'update' => 'Mettre à jour', 'cancel' => 'Annuler', 'edit' => 'Modifier', 'delete' => 'Supprimer', 'back' => 'Retour', 'actions' => 'Actions', 'status' => 'Statut', 'active' => 'Actif', 'inactive' => 'Inactif'],
+    'sms_notifications' => 'Notifications SMS',
+    'sms_notifications_hint' => 'Rappels et mises à jour de rendez-vous envoyés sur votre téléphone.',
     'admin' => [
         'languages' => 'Langues', 'language_list' => 'Langues', 'language_list_sub' => 'Langues disponibles sur le site et langue par défaut.',
         'add_language' => 'Ajouter une langue', 'edit_language' => 'Modifier la langue', 'language_name' => 'Nom de la langue',
@@ -255,5 +257,11 @@ return [
         'notifications' => 'Notifications', 'logout' => 'Déconnexion', 'search_menu' => 'Rechercher dans le menu…',
         'pending_appointments' => 'Rendez-vous en attente', 'pending_reviews' => 'Avis en attente',
         'todays_appointments' => 'Rendez-vous du jour',
+    ],
+    'sms' => [
+        'booked' => 'Rendez-vous avec :doctor le :date à :time réservé.',
+        'reminder' => 'Rappel : rendez-vous avec :doctor le :date à :time.',
+        'status_changed' => 'Mise à jour : votre rendez-vous avec :doctor est maintenant :status.',
+        'otp' => 'Votre code de vérification est :code. Valable :minutes minutes.',
     ],
 ];

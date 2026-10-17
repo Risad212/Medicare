@@ -10,6 +10,8 @@ return [
     'forms' => ['name' => 'Имя', 'email' => 'Электронная почта', 'phone' => 'Телефон', 'message' => 'Сообщение', 'send' => 'Отправить', 'submit' => 'Отправить', 'password' => 'Пароль'],
     'auth' => ['login' => 'Войти', 'register' => 'Зарегистрироваться', 'remember' => 'Запомнить меня', 'forgot' => 'Забыли пароль?'],
     'common' => ['save' => 'Сохранить', 'update' => 'Обновить', 'cancel' => 'Отмена', 'edit' => 'Изменить', 'delete' => 'Удалить', 'back' => 'Назад', 'actions' => 'Действия', 'status' => 'Статус', 'active' => 'Активно', 'inactive' => 'Неактивно'],
+    'sms_notifications' => 'SMS-уведомления',
+    'sms_notifications_hint' => 'Напоминания и обновления записей отправляются на ваш телефон.',
     'admin' => [
         'languages' => 'Языки', 'language_list' => 'Языки', 'language_list_sub' => 'Языки сайта и язык по умолчанию.',
         'add_language' => 'Добавить язык', 'edit_language' => 'Изменить язык', 'language_name' => 'Название языка',
@@ -242,5 +244,11 @@ return [
         'notifications' => 'Уведомления', 'logout' => 'Выйти', 'search_menu' => 'Поиск по меню…',
         'pending_appointments' => 'Ожидающие приёмы', 'pending_reviews' => 'Ожидающие отзывы',
         'todays_appointments' => 'Приёмы сегодня',
+    ],
+    'sms' => [
+        'booked' => 'Запись к :doctor на :date в :time подтверждена.',
+        'reminder' => 'Напоминание: запись к :doctor на :date в :time.',
+        'status_changed' => 'Обновление записи: ваша запись к :doctor теперь :status.',
+        'otp' => 'Ваш код подтверждения: :code. Действителен :minutes мин.',
     ],
 ];

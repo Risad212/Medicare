@@ -10,6 +10,8 @@ return [
     'forms' => ['name' => '姓名', 'email' => '电子邮件', 'phone' => '电话', 'message' => '留言', 'send' => '发送', 'submit' => '提交', 'password' => '密码'],
     'auth' => ['login' => '登录', 'register' => '注册', 'remember' => '记住我', 'forgot' => '忘记密码？'],
     'common' => ['save' => '保存', 'update' => '更新', 'cancel' => '取消', 'edit' => '编辑', 'delete' => '删除', 'back' => '返回', 'actions' => '操作', 'status' => '状态', 'active' => '启用', 'inactive' => '停用'],
+    'sms_notifications' => '短信通知',
+    'sms_notifications_hint' => '预约提醒和更新将发送到您的手机。',
     'admin' => [
         'languages' => '语言', 'language_list' => '语言', 'language_list_sub' => '网站可用语言及默认语言。',
         'add_language' => '添加语言', 'edit_language' => '编辑语言', 'language_name' => '语言名称',
@@ -255,5 +257,11 @@ return [
         'notifications' => '通知', 'logout' => '退出登录', 'search_menu' => '搜索菜单…',
         'pending_appointments' => '待处理的预约', 'pending_reviews' => '待处理的评价',
         'todays_appointments' => '今日预约',
+    ],
+    'sms' => [
+        'booked' => '已预约 :doctor，:date :time。',
+        'reminder' => '提醒：您与 :doctor 的预约在 :date :time。',
+        'status_changed' => '预约更新：您与 :doctor 的预约当前为 :status。',
+        'otp' => '您的验证码是 :code，:minutes 分钟内有效。',
     ],
 ];

@@ -10,6 +10,8 @@ return [
     'forms' => ['name' => 'الاسم', 'email' => 'البريد الإلكتروني', 'phone' => 'الهاتف', 'message' => 'الرسالة', 'send' => 'إرسال', 'submit' => 'إرسال', 'password' => 'كلمة المرور'],
     'auth' => ['login' => 'تسجيل الدخول', 'register' => 'إنشاء حساب', 'remember' => 'تذكرني', 'forgot' => 'هل نسيت كلمة المرور؟'],
     'common' => ['save' => 'حفظ', 'update' => 'تحديث', 'cancel' => 'إلغاء', 'edit' => 'تعديل', 'delete' => 'حذف', 'back' => 'رجوع', 'actions' => 'الإجراءات', 'status' => 'الحالة', 'active' => 'نشط', 'inactive' => 'غير نشط'],
+    'sms_notifications' => 'إشعارات SMS',
+    'sms_notifications_hint' => 'تذكيرات المواعيد والتحديثات تُرسل إلى هاتفك.',
     'admin' => [
         'languages' => 'اللغات', 'language_list' => 'اللغات', 'language_list_sub' => 'اللغات المتاحة للموقع واللغة الافتراضية.',
         'add_language' => 'إضافة لغة', 'edit_language' => 'تعديل اللغة', 'language_name' => 'اسم اللغة',
@@ -255,5 +257,11 @@ return [
         'notifications' => 'الإشعارات', 'logout' => 'تسجيل الخروج', 'search_menu' => 'ابحث في القائمة…',
         'pending_appointments' => 'مواعيد قيد الانتظار', 'pending_reviews' => 'تقييمات قيد الانتظار',
         'todays_appointments' => 'مواعيد اليوم',
+    ],
+    'sms' => [
+        'booked' => 'تم حجز موعدك مع :doctor يوم :date الساعة :time.',
+        'reminder' => 'تذكير: موعدك مع :doctor يوم :date الساعة :time.',
+        'status_changed' => 'تحديث الموعد: موعدك مع :doctor الآن :status.',
+        'otp' => 'رمز التحقق الخاص بك هو :code. صالح لمدة :minutes دقائق.',
     ],
 ];

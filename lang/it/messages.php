@@ -10,6 +10,8 @@ return [
     'forms' => ['name' => 'Nome', 'email' => 'E-mail', 'phone' => 'Telefono', 'message' => 'Messaggio', 'send' => 'Invia', 'submit' => 'Invia', 'password' => 'Password'],
     'auth' => ['login' => 'Accedi', 'register' => 'Registrati', 'remember' => 'Ricordami', 'forgot' => 'Password dimenticata?'],
     'common' => ['save' => 'Salva', 'update' => 'Aggiorna', 'cancel' => 'Annulla', 'edit' => 'Modifica', 'delete' => 'Elimina', 'back' => 'Indietro', 'actions' => 'Azioni', 'status' => 'Stato', 'active' => 'Attivo', 'inactive' => 'Inattivo'],
+    'sms_notifications' => 'Notifiche SMS',
+    'sms_notifications_hint' => 'Promemoria e aggiornamenti degli appuntamenti sul tuo telefono.',
     'admin' => [
         'languages' => 'Lingue', 'language_list' => 'Lingue', 'language_list_sub' => 'Lingue disponibili sul sito e lingua predefinita.',
         'add_language' => 'Aggiungi lingua', 'edit_language' => 'Modifica lingua', 'language_name' => 'Nome della lingua',
@@ -241,5 +243,11 @@ return [
         'notifications' => 'Notifiche', 'logout' => 'Esci', 'search_menu' => 'Cerca nel menu…',
         'pending_appointments' => 'Appuntamenti in attesa', 'pending_reviews' => 'Recensioni in attesa',
         'todays_appointments' => 'Appuntamenti di oggi',
+    ],
+    'sms' => [
+        'booked' => 'Appuntamento con :doctor il :date alle :time prenotato.',
+        'reminder' => 'Promemoria: appuntamento con :doctor il :date alle :time.',
+        'status_changed' => 'Aggiornamento: il tuo appuntamento con :doctor è ora :status.',
+        'otp' => 'Il tuo codice di verifica è :code. Valido per :minutes minuti.',
     ],
 ];

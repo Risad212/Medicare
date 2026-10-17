@@ -19,6 +19,7 @@ use Illuminate\Notifications\Notifiable;
     'email',
     'password',
     'phone',
+    'sms_enabled',
     'date_of_birth',
     'gender',
     'blood_group',
@@ -50,6 +51,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'date_of_birth' => 'date',
+            'sms_enabled' => 'boolean',
         ];
     }
 

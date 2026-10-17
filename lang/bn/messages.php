@@ -45,6 +45,8 @@ return [
         'status' => 'অবস্থা',
         'active' => 'সক্রিয়',
         'inactive' => 'নিষ্ক্রিয়',
+        'sms_notifications' => 'SMS বিজ্ঞপ্তি',
+        'sms_notifications_hint' => 'অ্যাপয়েন্টমেন্টের রিমাইন্ডার ও আপডেট আপনার ফোনে পাঠানো হয়।',
     ],
     'admin' => [
         'languages' => 'ভাষাসমূহ',
@@ -303,5 +305,11 @@ return [
         'notifications' => 'নোটিফিকেশন', 'logout' => 'লগআউট', 'search_menu' => 'মেনু খুঁজুন…',
         'pending_appointments' => 'অপেক্ষমাণ অ্যাপয়েন্টমেন্ট', 'pending_reviews' => 'অপেক্ষমাণ রিভিউ',
         'todays_appointments' => 'আজকের অ্যাপয়েন্টমেন্ট',
+    ],
+    'sms' => [
+        'booked' => ':doctor-এর সাথে :date তারিখে :time সময়ে অ্যাপয়েন্টমেন্ট বুক হয়েছে।',
+        'reminder' => 'রিমাইন্ডার: :doctor-এর সাথে :date তারিখে :time সময়ে অ্যাপয়েন্টমেন্ট।',
+        'status_changed' => 'অ্যাপয়েন্টমেন্ট আপডেট: আপনার :doctor-এর সাথে অ্যাপয়েন্টমেন্ট এখন :status।',
+        'otp' => 'আপনার যাচাইকরণ কোড :code। এটি :minutes মিনিটের জন্য বৈধ।',
     ],
 ];

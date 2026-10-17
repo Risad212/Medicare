@@ -105,6 +105,12 @@ Patients choose in-person or online consultation while booking. Online bookings 
 
 The signed patient URL is a bearer secret: patients should not forward it. Configure Zoom account policy, host permissions, retention, and applicable vendor/privacy agreements before using this module for patient care. This integration does not establish HIPAA compliance.
 
+## SMS notifications
+
+SMS delivery is controlled by the `sms` module (`MODULE_SMS=true`) and the `SMS_DRIVER` setting: `log` (default — records messages without sending), `d7` (D7 Networks), `bulksmsbd` (BulkSMSBD), or `twilio` (Twilio). Set `SMS_DRIVER` plus the matching provider keys (`D7_API_TOKEN`/`D7_ORIGINATOR`, `BULKSMSBD_API_KEY`/`BULKSMSBD_SENDERID`, or `TWILIO_ACCOUNT_SID`/`TWILIO_AUTH_TOKEN`/`TWILIO_FROM`) in `.env`, apply migrations, and run a queue worker — delivery is queued. Every attempt (sent or failed) is recorded in the admin activity feed with the recipient number masked.
+
+Patients opt in from **Profile → SMS notifications** once a phone number is saved. Opted-in patients receive booking confirmations, appointment status changes, and next-day appointment reminders on their phone; guest bookings receive the same messages on the phone number given at booking, and next-day reminders also reach them. An OTP service (`App\Services\Sms\OtpService`) is available for future phone-verification flows: 6-digit codes, 5-minute validity, five attempts, burned on success. With `SMS_DRIVER=log` nothing leaves the server — the safe development default.
+
 ## Clinical review advisories
 
 The prescription screens show advisory-only clinical review flags (rules v1.0.0: allergy-overlap against patient-recorded allergies, polypharmacy count, missing dosage details). Each flag carries its rule id, rules version, severity, and references. Flags never block saving and make no dosing or interaction claims — every clinical decision stays with the prescribing clinician. Broader rules require clinician-defined logic plus a rules-version bump reviewed with clinical staff.

@@ -5,11 +5,11 @@ independently shippable: FormRequest + validated(), thin controller,
 app/Services + DB::transaction, Policy/Gate, throttle:10,1 on public POSTs,
 additive migrations, Pint + full suite green before merge.
 
-## Phase 1 — SMS notifications
-- SMS driver interface (D7 Networks / BulkSMSBD / Twilio)
-- Appointment reminders, OTP option, status-change alerts
-- Per-user channel preference; log to activity feed
-- Extends existing `SendAppointmentReminders` command
+## Phase 1 — SMS notifications (DONE — 2026-10-17)
+- SMS driver interface (D7 Networks / BulkSMSBD / Twilio + `log` default)
+- Appointment reminders, OTP service (`OtpService`), status-change alerts
+- Per-user channel preference (`users.sms_enabled` profile toggle); activity-feed log with masked numbers
+- Extends existing `SendAppointmentReminders` command; queued via `SendSms` job, `MODULE_SMS` flag
 
 ## Phase 2 — Patient experience
 - Doctor reviews/ratings (moderated, one per completed appointment)

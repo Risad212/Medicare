@@ -10,6 +10,8 @@ return [
     'forms' => ['name' => 'Ad', 'email' => 'E-posta', 'phone' => 'Telefon', 'message' => 'Mesaj', 'send' => 'Gönder', 'submit' => 'Gönder', 'password' => 'Şifre'],
     'auth' => ['login' => 'Giriş yap', 'register' => 'Kayıt ol', 'remember' => 'Beni hatırla', 'forgot' => 'Şifrenizi mi unuttunuz?'],
     'common' => ['save' => 'Kaydet', 'update' => 'Güncelle', 'cancel' => 'İptal', 'edit' => 'Düzenle', 'delete' => 'Sil', 'back' => 'Geri', 'actions' => 'İşlemler', 'status' => 'Durum', 'active' => 'Etkin', 'inactive' => 'Etkin değil'],
+    'sms_notifications' => 'SMS bildirimleri',
+    'sms_notifications_hint' => 'Randevu hatırlatmaları ve güncellemeler telefonunuza gönderilir.',
     'admin' => [
         'languages' => 'Diller', 'language_list' => 'Diller', 'language_list_sub' => 'Sitede kullanılabilen diller ve varsayılan dil.',
         'add_language' => 'Dil ekle', 'edit_language' => 'Dili düzenle', 'language_name' => 'Dil adı',
@@ -242,5 +244,11 @@ return [
         'notifications' => 'Bildirimler', 'logout' => 'Çıkış yap', 'search_menu' => 'Menüde ara…',
         'pending_appointments' => 'Bekleyen randevular', 'pending_reviews' => 'Bekleyen değerlendirmeler',
         'todays_appointments' => 'Bugünkü randevular',
+    ],
+    'sms' => [
+        'booked' => ':doctor ile :date tarihinde :time randevunuz oluşturuldu.',
+        'reminder' => 'Hatırlatma: :doctor ile :date tarihinde :time randevunuz.',
+        'status_changed' => 'Randevu güncellemesi: :doctor ile randevunuz artık :status.',
+        'otp' => 'Doğrulamanız kodunuz :code. :minutes dakika geçerlidir.',
     ],
 ];

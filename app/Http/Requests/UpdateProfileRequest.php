@@ -24,6 +24,7 @@ class UpdateProfileRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$userId],
             'phone' => ['nullable', 'string', 'max:20'],
+            'sms_enabled' => ['sometimes', 'boolean'],
             'date_of_birth' => ['nullable', 'date'],
             'gender' => ['nullable', 'in:male,female,other'],
             'blood_group' => ['nullable', 'string', 'max:10'],

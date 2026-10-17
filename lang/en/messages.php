@@ -45,6 +45,8 @@ return [
         'status' => 'Status',
         'active' => 'Active',
         'inactive' => 'Inactive',
+        'sms_notifications' => 'SMS notifications',
+        'sms_notifications_hint' => 'Appointment reminders and updates sent to your phone.',
     ],
     'admin' => [
         'languages' => 'Languages',
@@ -310,5 +312,11 @@ return [
         'notifications' => 'Notifications', 'logout' => 'Logout', 'search_menu' => 'Search menu…',
         'pending_appointments' => 'Pending appointments', 'pending_reviews' => 'Pending reviews',
         'todays_appointments' => "Today's appointments",
+    ],
+    'sms' => [
+        'booked' => 'Appointment booked with :doctor on :date at :time.',
+        'reminder' => 'Reminder: appointment with :doctor on :date at :time.',
+        'status_changed' => 'Appointment update: your appointment with :doctor is now :status.',
+        'otp' => 'Your verification code is :code. It is valid for :minutes minutes.',
     ],
 ];

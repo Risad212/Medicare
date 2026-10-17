@@ -6,6 +6,7 @@ use App\Mail\AppointmentReminderMail;
 use App\Models\Appointment;
 use App\Services\AppointmentNotifier;
 use App\Services\PatientNotifier;
+use App\Services\Sms\SmsNotifier;
 use App\Services\StaffNotifier;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -34,6 +35,10 @@ class SendAppointmentReminders extends Command
 
             // Patient's own account (if linked) gets the in-app reminder.
             PatientNotifier::appointmentReminder($appointment);
+
+            // SMS reminder (linked account with SMS on, or the guest phone
+            // the booking was made with). Queued; delivery is logged.
+            SmsNotifier::appointmentReminder($appointment);
 
             if ($email) {
                 Mail::to($email)

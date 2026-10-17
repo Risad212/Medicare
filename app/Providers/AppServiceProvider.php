@@ -10,6 +10,8 @@ use App\Models\Prescription;
 use App\Models\Service;
 use App\Models\User;
 use App\Observers\ActivityLogObserver;
+use App\Services\Sms\SmsGateway;
+use App\Services\Sms\SmsGatewayFactory;
 use App\Support\Module;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
@@ -21,7 +23,12 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->bind(SmsGateway::class, function ($app) {
+            return SmsGatewayFactory::make(
+                (string) $app['config']->get('sms.driver', 'log'),
+                (array) $app['config']->get('sms', []),
+            );
+        });
     }
 
     public function boot(): void

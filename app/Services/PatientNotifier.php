@@ -12,24 +12,27 @@ use App\Notifications\AppointmentStatusChangedPatient;
 use App\Notifications\LabResultReadyPatient;
 use App\Notifications\PrescriptionReadyPatient;
 use App\Notifications\PrescriptionWithdrawnPatient;
+use App\Services\Sms\SmsNotifier;
 use Illuminate\Notifications\Notification;
 
 class PatientNotifier
 {
     /**
-     * Notify the patient user connected to an appointment that a booking landed.
+     * Notify the patient that a booking landed (in-app + SMS).
      */
     public static function appointmentBooked(Appointment $appointment): void
     {
         self::send($appointment->user, new AppointmentBookedPatient($appointment));
+        SmsNotifier::appointmentBooked($appointment);
     }
 
     /**
-     * Notify the patient user that one of their appointments changed status.
+     * Notify the patient that an appointment changed status (in-app + SMS).
      */
     public static function appointmentStatusChanged(Appointment $appointment, int $status): void
     {
         self::send($appointment->user, new AppointmentStatusChangedPatient($appointment, $status));
+        SmsNotifier::appointmentStatusChanged($appointment, $status);
     }
 
     /**

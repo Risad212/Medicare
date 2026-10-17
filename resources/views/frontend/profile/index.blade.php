@@ -203,6 +203,14 @@
                                     <div class="col-md-6 mx-field"><label>Email</label><input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}" required>@error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
                                     <div class="col-md-6 mx-field"><label>Phone</label><input type="text" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}" placeholder="+880 1XXX XXXXXX"></div>
                                     <div class="col-md-6 mx-field"><label>Date of birth</label><input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}"></div>
+                                    <div class="col-12 mx-field">
+                                        <input type="hidden" name="sms_enabled" value="0">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="sms_enabled" id="smsEnabled" value="1" {{ old('sms_enabled', $user->sms_enabled) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="smsEnabled">{{ __('messages.common.sms_notifications') }}</label>
+                                        </div>
+                                        <small class="text-muted">{{ __('messages.common.sms_notifications_hint') }}</small>
+                                    </div>
                                     <div class="col-md-6 mx-field"><label>Gender</label>
                                         <select name="gender" class="form-select"><option value="">Select</option><option value="male" {{ old('gender', $user->gender) === 'male' ? 'selected' : '' }}>Male</option><option value="female" {{ old('gender', $user->gender) === 'female' ? 'selected' : '' }}>Female</option><option value="other" {{ old('gender', $user->gender) === 'other' ? 'selected' : '' }}>Other</option></select>
                                     </div>
