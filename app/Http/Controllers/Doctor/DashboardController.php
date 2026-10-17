@@ -37,12 +37,38 @@ class DashboardController extends Controller
             ->whereDate('appointment_date', today())
             ->get();
 
+        // Status breakdown for today (dashboard bars).
+        $todayBreakdown = [
+            'pending' => $todayAppointmentsList->where('status', 0)->count(),
+            'confirmed' => $todayAppointmentsList->where('status', 1)->count(),
+            'completed' => $todayAppointmentsList->where('status', 2)->count(),
+            'cancelled' => $todayAppointmentsList->where('status', 3)->count(),
+        ];
+
+        // Completed visits this month (earned workload stat).
+        $completedThisMonth = Appointment::where('doctor_id', $doctor->id)
+            ->where('status', 2)
+            ->whereBetween('appointment_date', [now()->startOfMonth()->toDateString(), now()->toDateString()])
+            ->count();
+
+        // Next few upcoming visits (excluding today) for the schedule rail.
+        $upcomingList = Appointment::with('timeSlot')
+            ->where('doctor_id', $doctor->id)
+            ->where('status', '!=', 3)
+            ->where('appointment_date', '>', today()->toDateString())
+            ->orderBy('appointment_date')
+            ->take(5)
+            ->get();
+
         return view('backend.doctor-dashboard.dashboard', compact(
             'doctor',
             'todayAppointments',
             'totalAppointments',
             'pendingAppointments',
-            'todayAppointmentsList'
+            'todayAppointmentsList',
+            'todayBreakdown',
+            'completedThisMonth',
+            'upcomingList'
         ));
     }
 
