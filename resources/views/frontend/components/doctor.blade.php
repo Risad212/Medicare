@@ -24,11 +24,11 @@
 
                 <div class="card-content">
 
-                    <h4 class="title">
+                    <h4 class="title" data-notranslate>
                         {{ $doctor->name }}
                     </h4>
 
-                    <span class="speacility">
+                    <span class="speacility" data-notranslate>
                         {{ $doctor->department }}
                     </span>
 

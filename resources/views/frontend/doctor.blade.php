@@ -33,11 +33,11 @@
 
                     <div class="card-content">
 
-                        <h4 class="title">
+                        <h4 class="title" data-notranslate>
                             {{ $doctor->name ?? 'Doctor Name' }}
                         </h4>
 
-                        <span class="speacility">
+                        <span class="speacility" data-notranslate>
                             {{ $doctor->specialist ?? 'Specialist' }}
                         </span>
 

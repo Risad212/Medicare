@@ -7,6 +7,7 @@ use App\Http\Middleware\PatientMiddleware;
 use App\Http\Middleware\RequestIdMiddleware;
 use App\Http\Middleware\SecurityHeadersMiddleware;
 use App\Http\Middleware\StaffModuleGate;
+use App\Http\Middleware\TranslateResponse;
 use App\Modules\Language\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -32,6 +33,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // class that no longer exists.
         if (env('MODULE_LANGUAGE', true) && class_exists(SetLocale::class)) {
             $middleware->web(append: [SetLocale::class]);
+        }
+        // Auto-translate runs after SetLocale so app()->getLocale() is final.
+        if (env('AUTO_TRANSLATE_ENABLED', true) && class_exists(TranslateResponse::class)) {
+            $middleware->web(append: [TranslateResponse::class]);
         }
     })
     ->withExceptions(function (Exceptions $exceptions): void {

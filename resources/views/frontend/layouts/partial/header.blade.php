@@ -156,7 +156,7 @@
                     </li>
 
                     @if(\App\Support\Module::enabled('language'))
-                        <li class="nav-item dropdown">
+                        <li class="nav-item dropdown" data-notranslate>
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ __('messages.nav.language') }}">
                                 {{ collect($availableLanguages ?? [])->firstWhere('code', app()->getLocale())['name'] ?? strtoupper(app()->getLocale()) }}
                             </a>

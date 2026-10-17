@@ -23,31 +23,31 @@
             <div class="col-lg-8">
                 <div class="doctor-info">
 
-                    <h4 class="doctor-name">{{ $doctor->name }}</h4>
+                    <h4 class="doctor-name" data-notranslate>{{ $doctor->name }}</h4>
 
                     <h6 class="small">
-                        <strong>Degree:</strong> {{ $doctor->degree }}
+                        <strong>Degree:</strong> <span data-notranslate>{{ $doctor->degree }}</span>
                     </h6>
 
                     <h5 class="small">
-                        <strong>Department:</strong> {{ $doctor->department }}
+                        <strong>Department:</strong> <span data-notranslate>{{ $doctor->department }}</span>
                     </h5>
 
                     <h5 class="small mb-3">
-                        <strong>Specialist:</strong> {{ $doctor->specialist }}
+                        <strong>Specialist:</strong> <span data-notranslate>{{ $doctor->specialist }}</span>
                     </h5>
 
                     <div class="mb-2">
                         <strong>Services:</strong>
-                        {{ $doctor->services }}
+                        <span data-notranslate>{{ $doctor->services }}</span>
                     </div>
 
                     <h5 class="doctor-availability">
-                        <strong>Availability:</strong> {{ $doctor->availability }}
+                        <strong>Availability:</strong> <span data-notranslate>{{ $doctor->availability }}</span>
                     </h5>
 
                     <h5 class="doctor-availability">
-                        <strong>Phone:</strong> {{ $doctor->phone }}
+                        <strong>Phone:</strong> <span data-notranslate>{{ $doctor->phone }}</span>
                     </h5>
 
                 </div>
