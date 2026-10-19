@@ -9,9 +9,15 @@ use App\Models\BlogComment;
 use App\Models\Category;
 use App\Models\Department;
 use App\Models\Doctor;
+use App\Models\DoctorOffDay;
+use App\Models\DoctorReview;
+use App\Models\DoctorSchedule;
+use App\Models\Faq;
+use App\Models\GalleryImage;
 use App\Models\GeneralSetting;
 use App\Models\HomeSetting;
 use App\Models\Invoice;
+use App\Models\Patient;
 use App\Models\Prescription;
 use App\Models\PrescriptionItem;
 use App\Models\SeoSetting;
@@ -21,13 +27,24 @@ use App\Models\Slider;
 use App\Models\Tag;
 use App\Models\TimeSlot;
 use App\Models\User;
+use App\Modules\Ambulance\Models\AmbulanceRequest;
+use App\Modules\Beds\Models\Bed;
+use App\Modules\Beds\Models\Room;
+use App\Modules\Beds\Models\Ward;
 use App\Modules\BloodBank\Models\BloodDonation;
 use App\Modules\BloodBank\Models\BloodDonor;
 use App\Modules\BloodBank\Models\BloodGroup;
+use App\Modules\BloodBank\Models\BloodIssue;
 use App\Modules\BloodBank\Models\BloodRequest;
 use App\Modules\Lab\Models\LabOrder;
 use App\Modules\Lab\Models\LabOrderItem;
+use App\Modules\Lab\Models\LabReport;
 use App\Modules\Lab\Models\LabTest;
+use App\Modules\Pharmacy\Models\Medicine;
+use App\Modules\Vaccination\Models\Vaccination;
+use App\Modules\Zoom\Models\ZoomMeeting;
+use App\Services\PatientNotifier;
+use App\Services\StaffNotifier;
 use App\Support\Module;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -36,6 +53,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class DemoDataSeeder extends Seeder
@@ -51,18 +69,13 @@ class DemoDataSeeder extends Seeder
 
     /**
      * Fill the app with realistic demo content so every module looks alive.
-     * Idempotent: re-runs stop after the marker admin account exists.
+     * Every section is gap-filling and idempotent: running the seeder again
+     * tops up whatever is missing without duplicating what already exists.
      */
     public function run(): void
     {
         if (! self::isAllowed()) {
             Log::notice('Demo data seeding was skipped for this environment.');
-
-            return;
-        }
-
-        if (User::where('email', 'admin@medicare.test')->exists()) {
-            $this->command->info('Demo data already seeded — skipping.');
 
             return;
         }
@@ -75,17 +88,44 @@ class DemoDataSeeder extends Seeder
             $slots = $this->seedTimeSlots();
             $this->seedContent();
             $appointments = $this->seedAppointments($users, $doctors, $slots);
+            $this->relinkGuestRecords();
+            $this->seedPatients($users);
+            $this->seedDoctorSchedules($doctors, $slots);
+            $this->seedDoctorOffDays($doctors);
             if (Module::enabled('lab')) {
                 $this->seedLaboratory($users, $doctors);
+                $this->seedLabReports($users);
             }
             if (Module::enabled('bloodbank')) {
                 $this->seedBlood($users, $doctors);
+                $this->seedBloodIssues($users, $doctors);
+            }
+            if (Module::enabled('pharmacy')) {
+                $this->seedMedicines();
+            }
+            if (Module::enabled('vaccination')) {
+                $this->seedVaccinations($users);
+            }
+            if (Module::enabled('beds')) {
+                $this->seedBeds($users);
+            }
+            if (Module::enabled('ambulance')) {
+                $this->seedAmbulanceRequests($users);
+            }
+            if (Module::enabled('zoom')) {
+                $this->seedZoomMeetings();
             }
             $this->seedPrescriptions($users, $doctors, $appointments);
+            if (Module::enabled('reviews')) {
+                $this->seedReviews();
+            }
+            $this->seedFaqs();
+            $this->seedGallery();
+            $this->seedNotifications();
             $this->seedSettings();
         });
 
-        $this->command->info('Demo data seeded. Log in as admin@medicare.test / 123456.');
+        $this->command->info('Demo data ready. Admin login: admin@medicare.test / 123456');
     }
 
     private function seedFrontendMedia(): void
@@ -146,10 +186,13 @@ class DemoDataSeeder extends Seeder
     {
         $password = Hash::make('123456');
 
-        $admin = User::forceCreate([
-            'name' => 'Hospital Admin', 'email' => 'admin@medicare.test',
-            'password' => $password, 'role' => 'admin', 'email_verified_at' => now(),
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@medicare.test'],
+            [
+                'name' => 'Hospital Admin',
+                'password' => $password, 'role' => 'admin', 'email_verified_at' => now(),
+            ]
+        );
 
         $staffMap = [
             ['Front Desk Officer', 'receptionist@medicare.test', 'receptionist', 'receptionist'],
@@ -158,33 +201,41 @@ class DemoDataSeeder extends Seeder
         ];
         $staff = [];
         foreach ($staffMap as [$name, $email, $role, $slug]) {
-            $user = User::forceCreate([
-                'name' => $name, 'email' => $email, 'password' => $password,
-                'role' => $role, 'phone' => '01'.rand(300000000, 399999999), 'email_verified_at' => now(),
-            ]);
+            $user = User::firstOrCreate(
+                ['email' => $email],
+                [
+                    'name' => $name, 'password' => $password,
+                    'role' => $role, 'phone' => '01'.rand(300000000, 399999999), 'email_verified_at' => now(),
+                ]
+            );
             $staff[] = $user;
         }
 
         $patientNames = ['Rahim Uddin', 'Fatema Begum', 'Karim Sheikh', 'Ayesha Siddika', 'Mohan Das', 'Nusrat Jahan', 'Habib Rahman', 'Salma Akter'];
         $patients = [];
         foreach ($patientNames as $i => $name) {
-            $patients[] = User::forceCreate([
-                'name' => $name, 'email' => 'patient'.($i + 1).'@medicare.test',
-                'password' => $password, 'role' => 'patient',
-                'phone' => '01'.rand(300000000, 399999999),
-                'gender' => $i % 2 === 0 ? 'male' : 'female',
-                'blood_group' => ['A+', 'B+', 'O+', 'AB+'][$i % 4],
-                'address' => 'House '.($i + 3).', Dhaka',
-                'email_verified_at' => now(),
-            ]);
+            $patients[] = User::firstOrCreate(
+                ['email' => 'patient'.($i + 1).'@medicare.test'],
+                [
+                    'name' => $name, 'password' => $password, 'role' => 'patient',
+                    'phone' => '01'.rand(300000000, 399999999),
+                    'gender' => $i % 2 === 0 ? 'male' : 'female',
+                    'blood_group' => ['A+', 'B+', 'O+', 'AB+'][$i % 4],
+                    'address' => 'House '.($i + 3).', Dhaka',
+                    'email_verified_at' => now(),
+                ]
+            );
         }
 
         $doctorUsers = [];
         for ($i = 1; $i <= 6; $i++) {
-            $doctorUsers[] = User::forceCreate([
-                'name' => 'Doctor '.$i, 'email' => 'doctor'.$i.'@medicare.test',
-                'password' => $password, 'role' => 'doctor', 'email_verified_at' => now(),
-            ]);
+            $doctorUsers[] = User::firstOrCreate(
+                ['email' => 'doctor'.$i.'@medicare.test'],
+                [
+                    'name' => 'Doctor '.$i, 'password' => $password,
+                    'role' => 'doctor', 'email_verified_at' => now(),
+                ]
+            );
         }
 
         return compact('admin', 'staff', 'patients', 'doctorUsers');
@@ -206,7 +257,7 @@ class DemoDataSeeder extends Seeder
         return collect($rows)->map(function ($row, $i) use ($users, $images) {
             [$name, $department, $specialist, $degree, $availability] = $row;
 
-            return Doctor::updateOrCreate(
+            $doctor = Doctor::firstOrCreate(
                 ['slug' => Str::slug($name)],
                 [
                     'name' => $name, 'degree' => $degree, 'department' => $department,
@@ -217,6 +268,18 @@ class DemoDataSeeder extends Seeder
                     'image' => $images[$i % count($images)],
                 ]
             );
+
+            // Re-attach the login account when the doctor row exists but its
+            // user link was lost (e.g. demo users were recreated).
+            if (! $doctor->user_id) {
+                $doctor->update(['user_id' => $users['doctorUsers'][$i]->id]);
+            }
+
+            if (! $doctor->image) {
+                $doctor->update(['image' => $images[$i % count($images)]]);
+            }
+
+            return $doctor;
         });
     }
 
@@ -305,6 +368,12 @@ class DemoDataSeeder extends Seeder
 
     private function seedAppointments(array $users, $doctors, $slots): Collection
     {
+        // Existing bookings are kept as-is; the guest pass below only runs
+        // on an empty calendar (the first seed).
+        if (Appointment::count() > 0) {
+            return Appointment::all();
+        }
+
         $statuses = [0, 1, 1, 2, 2, 2, 1, 2, 0, 1, 2, 3, 2, 1, 2];
         $created = collect();
 
@@ -359,6 +428,12 @@ class DemoDataSeeder extends Seeder
             ['name' => $t[0]],
             ['category' => $t[1], 'price' => $t[2], 'normal_range' => $t[3], 'unit' => $t[4], 'status' => 1]
         ));
+
+        // Orders and invoices below are plain creates (they carry unique
+        // invoice numbers), so they only run when the module is empty.
+        if (LabOrder::count() > 0) {
+            return;
+        }
 
         $statuses = ['completed', 'completed', 'in-progress', 'completed', 'pending', 'completed', 'in-progress', 'completed', 'pending', 'completed', 'completed', 'pending'];
         foreach ($statuses as $i => $status) {
@@ -503,6 +578,629 @@ class DemoDataSeeder extends Seeder
                 ['prescription_id' => $prescription->id, 'medicine_name' => $med[0]],
                 ['dosage' => $med[1], 'frequency' => $med[2], 'duration' => $med[3], 'quantity' => $med[4]]
             );
+        }
+    }
+
+    /**
+     * Re-attach guest records to the demo patient accounts by e-mail.
+     * Historic rows survive user deletion with a null link; this tops
+     * those links back up so patient profiles show their history.
+     */
+    private function relinkGuestRecords(): void
+    {
+        $byEmail = User::where('role', 'patient')->pluck('id', 'email');
+        if ($byEmail->isEmpty()) {
+            return;
+        }
+
+        $emails = $byEmail->keys()->all();
+
+        Appointment::whereNull('user_id')->whereIn('email', $emails)->get()
+            ->each(fn (Appointment $appointment) => $appointment->update(['user_id' => $byEmail[$appointment->email]]));
+
+        LabOrder::whereNull('user_id')->whereIn('email', $emails)->get()
+            ->each(fn (LabOrder $order) => $order->update(['user_id' => $byEmail[$order->email]]));
+
+        Invoice::whereNull('user_id')->whereIn('email', $emails)->get()
+            ->each(fn (Invoice $invoice) => $invoice->update(['user_id' => $byEmail[$invoice->email]]));
+
+        Prescription::whereNull('patient_user_id')->get()
+            ->each(function (Prescription $prescription) {
+                $userId = $prescription->appointment?->user_id;
+                if ($userId) {
+                    $prescription->update(['patient_user_id' => $userId]);
+                }
+            });
+    }
+
+    /**
+     * Clinic register: a patient record for every demo patient account
+     * plus a few walk-ins who never registered online.
+     */
+    private function seedPatients(array $users): void
+    {
+        foreach ($users['patients'] as $i => $user) {
+            Patient::firstOrCreate(
+                ['phone' => $user->phone],
+                [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'gender' => $user->gender,
+                    'date_of_birth' => Carbon::today()->subYears(23 + $i * 4)->subDays($i * 9)->toDateString(),
+                    'blood_group' => $user->blood_group,
+                    'address' => $user->address,
+                ]
+            );
+        }
+
+        $walkIns = [
+            ['Sultana Razia', '01711-234567', 'female', '1988-03-14', 'B+', 'Mirpur 10, Dhaka'],
+            ['Jashim Uddin', '01711-987654', 'male', '1979-11-02', 'O+', 'Uttara Sector 7, Dhaka'],
+            ['Rokeya Sultana', '01712-456789', 'female', '1995-06-21', 'A+', 'Mohammadpur, Dhaka'],
+            ['Nazmul Huda', '01713-654321', 'male', '1968-01-30', 'AB+', 'Old Dhaka, Dhaka'],
+        ];
+
+        foreach ($walkIns as [$name, $phone, $gender, $dob, $blood, $address]) {
+            Patient::firstOrCreate(
+                ['phone' => $phone],
+                ['name' => $name, 'gender' => $gender, 'date_of_birth' => $dob, 'blood_group' => $blood, 'address' => $address]
+            );
+        }
+    }
+
+    /**
+     * Each doctor works five days a week; the weekly grid feeds the
+     * booking flow's open-slot calculation.
+     */
+    private function seedDoctorSchedules(Collection $doctors, Collection $slots): void
+    {
+        $slotIds = $slots->pluck('id')->values();
+        if ($slotIds->isEmpty()) {
+            return;
+        }
+
+        $evenDays = [6, 0, 1, 2, 3]; // Saturday – Wednesday
+        $oddDays = [0, 1, 2, 3, 4];  // Sunday – Thursday
+
+        foreach ($doctors as $i => $doctor) {
+            $days = $i % 2 === 0 ? $evenDays : $oddDays;
+            $picks = $i % 2 === 0 ? $slotIds->take(6) : $slotIds->slice(1)->take(5);
+
+            foreach ($days as $weekday) {
+                foreach ($picks as $slotId) {
+                    DoctorSchedule::firstOrCreate([
+                        'doctor_id' => $doctor->id,
+                        'weekday' => $weekday,
+                        'time_slot_id' => $slotId,
+                    ]);
+                }
+            }
+        }
+    }
+
+    /**
+     * A near-future leave day per doctor, so roster and booking screens
+     * show off-day handling.
+     */
+    private function seedDoctorOffDays(Collection $doctors): void
+    {
+        $reasons = ['Conference', 'Personal leave', 'Training workshop'];
+
+        foreach ($doctors as $i => $doctor) {
+            DoctorOffDay::firstOrCreate(
+                [
+                    'doctor_id' => $doctor->id,
+                    'date' => Carbon::today()->addDays(2 + $i * 2)->toDateString(),
+                ],
+                ['reason' => $reasons[$i % count($reasons)]]
+            );
+        }
+    }
+
+    /**
+     * Downloadable PDF reports for the completed lab orders, so the
+     * reports panel is never empty.
+     */
+    private function seedLabReports(array $users): void
+    {
+        $orders = LabOrder::with('items.test')
+            ->whereDoesntHave('reports')
+            ->orderBy('id')
+            ->take(5)
+            ->get();
+
+        foreach ($orders as $order) {
+            LabReport::firstOrCreate(
+                ['lab_order_id' => $order->id, 'report_name' => 'Lab Report #'.$order->id],
+                [
+                    'file_path' => $this->storeDemoReportFile($order),
+                    'uploaded_by' => $users['admin']->id,
+                    'notes' => 'Verified by the duty pathologist.',
+                ]
+            );
+        }
+    }
+
+    /**
+     * Write a minimal valid PDF report file for a lab order.
+     */
+    private function storeDemoReportFile(LabOrder $order): string
+    {
+        $path = 'lab_reports/demo-report-'.$order->id.'.pdf';
+
+        if (Storage::disk('local')->exists($path)) {
+            return $path;
+        }
+
+        $lines = [
+            'MediCare Hospital - Diagnostics Laboratory',
+            '------------------------------------------',
+            'Report No : LAB-'.str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
+            'Patient   : '.$order->patient_name,
+            'Referred By: '.($order->doctor?->name ?? 'General Physician'),
+            'Report Date: '.now()->format('d M Y'),
+            '',
+            'Tests Performed:',
+            $order->items
+                ->map(fn ($item) => '- '.($item->test?->name ?? 'Test').'  =>  '.($item->result ?? 'Within normal limits'))
+                ->implode("\n"),
+            '',
+            'All findings were verified by the duty pathologist. Please',
+            'discuss these results with your physician before changing',
+            'any medication.',
+        ];
+
+        Storage::disk('local')->put($path, $this->buildPdf($lines));
+
+        return $path;
+    }
+
+    /**
+     * Build a minimal single-page PDF (Helvetica text lines).
+     */
+    private function buildPdf(array $lines): string
+    {
+        $text = '';
+        $y = 760;
+
+        foreach ($lines as $line) {
+            $line = str_replace(['\\', '(', ')'], ['\\\\', '\\(', '\\)'], $line);
+            $text .= "BT /F1 12 Tf 60 {$y} Td ({$line}) Tj ET\n";
+            $y -= 22;
+        }
+
+        $objects = [
+            '<< /Type /Catalog /Pages 2 0 R >>',
+            '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+            '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>',
+            '<< /Length '.strlen($text)." >>\nstream\n".$text."endstream",
+            '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+        ];
+
+        $pdf = "%PDF-1.4\n";
+        $offsets = [];
+        foreach ($objects as $index => $object) {
+            $offsets[$index + 1] = strlen($pdf);
+            $pdf .= ($index + 1).' 0 obj'."\n".$object."\nendobj\n";
+        }
+
+        $xrefPos = strlen($pdf);
+        $pdf .= "xref\n0 ".(count($objects) + 1)."\n0000000000 65535 f \n";
+        foreach ($offsets as $offset) {
+            $pdf .= str_pad((string) $offset, 10, '0', STR_PAD_LEFT)." 00000 n \n";
+        }
+        $pdf .= 'trailer'."\n".'<< /Size '.(count($objects) + 1).' /Root 1 0 R >>'."\n".'startxref'."\n".$xrefPos."\n%%EOF";
+
+        return $pdf;
+    }
+
+    /**
+     * Blood bank: fulfil requests end-to-end with issue records and
+     * matching donation statuses, so the issues screen has real data.
+     */
+    private function seedBloodIssues(array $users, Collection $doctors): void
+    {
+        $groups = BloodGroup::orderBy('id')->get()->keyBy('name');
+        if ($groups->isEmpty()) {
+            return;
+        }
+
+        $rows = [
+            ['fulfilled', 'urgent', 0, 'O+', 'Surgery'],
+            ['approved', 'normal', 1, 'B+', 'Maternity'],
+            ['fulfilled', 'emergency', 2, 'A+', 'Emergency'],
+        ];
+
+        foreach ($rows as $i => [$status, $urgency, $patientIndex, $groupName, $department]) {
+            $patient = $users['patients'][$patientIndex];
+            $group = $groups->get($groupName) ?? $groups->first();
+
+            $request = BloodRequest::firstOrCreate(
+                ['patient_id' => $patient->id, 'blood_group_id' => $group->id, 'status' => $status],
+                [
+                    'quantity' => 900, 'unit' => 'ml',
+                    'required_date' => Carbon::today()->subDays(2 + $i)->toDateString(),
+                    'urgency' => $urgency, 'department' => $department,
+                    'reason' => 'Planned transfusion during treatment',
+                    'doctor_id' => $doctors[$i % $doctors->count()]->id,
+                    'requested_by' => $doctors[$i % $doctors->count()]->user_id,
+                ]
+            );
+
+            $donation = BloodDonation::where('blood_group_id', $group->id)
+                ->where('status', BloodDonation::STATUS_AVAILABLE)
+                ->orderBy('id')
+                ->first();
+
+            if ($donation) {
+                $donation->update([
+                    'status' => $status === 'fulfilled' ? BloodDonation::STATUS_ISSUED : BloodDonation::STATUS_RESERVED,
+                    'reserved_for_request_id' => $request->id,
+                ]);
+            }
+
+            if ($status === 'fulfilled') {
+                BloodIssue::firstOrCreate(
+                    ['request_id' => $request->id],
+                    [
+                        'patient_id' => $patient->id,
+                        'blood_group_id' => $group->id,
+                        'donation_id' => $donation?->id,
+                        'quantity' => 450, 'unit' => 'ml',
+                        'issue_date' => Carbon::today()->subDays(2 + $i)->toDateString(),
+                        'issued_by' => $users['admin']->id,
+                        'receiver_name' => $patient->name,
+                        'receiver_phone' => $patient->phone,
+                        'notes' => 'Cross-matched and issued at the blood bank counter.',
+                    ]
+                );
+            }
+        }
+    }
+
+    /**
+     * Pharmacy shelf: real medicine names with stock spread from healthy
+     * to low, plus one batch nearing expiry.
+     */
+    private function seedMedicines(): void
+    {
+        $medicines = [
+            ['Napa 500mg', 'Paracetamol', 'tablet', 480, 0.80, 60, 720],
+            ['Napa Extend 665mg', 'Paracetamol (ER)', 'tablet', 240, 1.50, 50, 540],
+            ['Seclo 20mg', 'Omeprazole', 'capsule', 310, 6.00, 40, 660],
+            ['Pantonix 40mg', 'Pantoprazole', 'tablet', 145, 9.00, 30, 480],
+            ['Monas 10mg', 'Montelukast', 'tablet', 180, 12.00, 30, 420],
+            ['Alatrol 10mg', 'Cetirizine', 'tablet', 520, 2.50, 60, 700],
+            ['Azithral 500mg', 'Azithromycin', 'tablet', 85, 32.00, 25, 400],
+            ['Amoxil 500mg', 'Amoxicillin', 'capsule', 260, 8.50, 40, 360],
+            ['Fexo 120mg', 'Fexofenadine', 'tablet', 210, 10.00, 30, 520],
+            ['Ventolin Inhaler', 'Salbutamol', 'inhaler', 22, 420.00, 15, 300],
+            ['Mixtard 30/70', 'Insulin (human)', 'vial', 14, 950.00, 12, 240],
+            ['D-Rise 20000IU', 'Cholecalciferol', 'capsule', 340, 25.00, 25, 600],
+            ['Bizoran 80mg', 'Telmisartan', 'tablet', 175, 14.00, 30, 450],
+            ['Comet 500mg', 'Metformin', 'tablet', 400, 3.00, 50, 540],
+            ['Ace Syrup', 'Paracetamol (syrup)', 'bottle', 65, 85.00, 20, 300],
+            ['Alcet Syrup', 'Cetirizine (syrup)', 'bottle', 48, 75.00, 15, 45],
+        ];
+
+        foreach ($medicines as [$name, $generic, $unit, $stock, $price, $threshold, $expiryDays]) {
+            Medicine::firstOrCreate(
+                ['name' => $name],
+                [
+                    'generic_name' => $generic,
+                    'unit' => $unit,
+                    'stock_quantity' => $stock,
+                    'unit_price' => $price,
+                    'low_stock_threshold' => $threshold,
+                    'expiry_date' => Carbon::today()->addDays($expiryDays)->toDateString(),
+                ]
+            );
+        }
+    }
+
+    /**
+     * Vaccination register: mixed completed, upcoming and missed doses
+     * for the demo children.
+     */
+    private function seedVaccinations(array $users): void
+    {
+        $patients = Patient::whereIn('phone', collect($users['patients'])->pluck('phone'))
+            ->get()
+            ->keyBy('phone');
+
+        $records = [
+            // [child, vaccine, dose, given days ago, due in days, status]
+            ['Aayan Rahman', 'BCG', 1, 240, null, Vaccination::STATUS_COMPLETED],
+            ['Aayan Rahman', 'Pentavalent', 1, 220, null, Vaccination::STATUS_COMPLETED],
+            ['Aayan Rahman', 'Measles-Rubella', 1, 60, 25, Vaccination::STATUS_SCHEDULED],
+            ['Mim Akter', 'BCG', 1, 180, null, Vaccination::STATUS_COMPLETED],
+            ['Mim Akter', 'Pentavalent', 2, 140, null, Vaccination::STATUS_COMPLETED],
+            ['Mim Akter', 'OPV', 3, 90, null, Vaccination::STATUS_MISSED],
+            ['Zayan Hasan', 'BCG', 1, 120, null, Vaccination::STATUS_COMPLETED],
+            ['Zayan Hasan', 'Pentavalent', 1, 95, null, Vaccination::STATUS_COMPLETED],
+            ['Zayan Hasan', 'PCV', 2, null, 35, Vaccination::STATUS_SCHEDULED],
+            ['Pihu Das', 'BCG', 1, 60, null, Vaccination::STATUS_COMPLETED],
+            ['Pihu Das', 'Pentavalent', 1, null, 10, Vaccination::STATUS_SCHEDULED],
+            ['Nabila Islam', 'Measles-Rubella', 1, 20, null, Vaccination::STATUS_COMPLETED],
+            ['Nabila Islam', 'Vitamin A', 1, 20, null, Vaccination::STATUS_COMPLETED],
+            ['Arham Khan', 'BCG', 1, 10, null, Vaccination::STATUS_COMPLETED],
+            ['Arham Khan', 'OPV', 1, null, 22, Vaccination::STATUS_SCHEDULED],
+        ];
+
+        foreach ($records as $i => [$child, $vaccine, $dose, $givenDaysAgo, $dueInDays, $status]) {
+            $guardian = $users['patients'][$i % count($users['patients'])];
+
+            Vaccination::firstOrCreate(
+                ['child_name' => $child, 'vaccine_name' => $vaccine, 'dose_number' => $dose],
+                [
+                    'user_id' => $guardian->id,
+                    'patient_id' => $patients->get($guardian->phone)?->id,
+                    'date_given' => $givenDaysAgo !== null ? Carbon::today()->subDays($givenDaysAgo)->toDateString() : null,
+                    'next_due_date' => $dueInDays !== null
+                        ? Carbon::today()->addDays($dueInDays)->toDateString()
+                        : ($status === Vaccination::STATUS_COMPLETED ? Carbon::today()->addDays(30 + $i)->toDateString() : null),
+                    'administered_by' => $i % 2 === 0 ? 'Nurse Farzana Akter' : 'Sr. Nurse Rokeya Parvin',
+                    'notes' => $status === Vaccination::STATUS_MISSED ? 'Guardian did not attend; recall SMS sent.' : null,
+                    'status' => $status,
+                    'created_by' => $users['admin']->id,
+                ]
+            );
+        }
+    }
+
+    /**
+     * In-patient module: four wards with rooms and beds, part occupied.
+     */
+    private function seedBeds(array $users): void
+    {
+        $wards = [
+            ['General Ward', 'General admission beds with shared facilities and 24/7 nursing.'],
+            ['Intensive Care Unit', 'Critical care beds with ventilator and monitor support.'],
+            ['Maternity Ward', 'Labour rooms, post-natal beds and newborn care.'],
+            ['Pediatric Ward', 'Child-friendly beds with play area and guardian seating.'],
+        ];
+
+        $rooms = [
+            'General Ward' => [['101', 'General'], ['102', 'General'], ['103', 'Cabin']],
+            'Intensive Care Unit' => [['ICU-01', 'ICU'], ['ICU-02', 'ICU']],
+            'Maternity Ward' => [['201', 'Maternity'], ['202', 'Cabin']],
+            'Pediatric Ward' => [['301', 'Pediatric']],
+        ];
+
+        $occupancy = [
+            '101' => [1, 1, 1, 0, 0, 0],
+            '102' => [0, 1, 0, 0, 0, 0],
+            '103' => [1, 0, 0, 2],
+            'ICU-01' => [1, 1, 1, 0],
+            'ICU-02' => [1, 1, 0, 0],
+            '201' => [1, 0, 0, 0],
+            '202' => [0, 0, 0, 0],
+            '301' => [1, 1, 0, 0, 0, 2],
+        ];
+
+        $patientIds = collect($users['patients'])->pluck('id')->values();
+        $cursor = 0;
+
+        foreach ($wards as [$name, $description]) {
+            $ward = Ward::firstOrCreate(['name' => $name], ['description' => $description]);
+
+            foreach ($rooms[$name] as [$roomNumber, $type]) {
+                $room = Room::firstOrCreate(
+                    ['ward_id' => $ward->id, 'room_number' => $roomNumber],
+                    ['room_type' => $type]
+                );
+
+                foreach ($occupancy[$roomNumber] as $index => $status) {
+                    $occupied = $status === Bed::STATUS_OCCUPIED;
+
+                    Bed::firstOrCreate(
+                        ['room_id' => $room->id, 'bed_number' => (string) ($index + 1)],
+                        [
+                            'status' => $status,
+                            'current_patient_id' => $occupied ? $patientIds[$cursor++ % $patientIds->count()] : null,
+                            'admitted_at' => $occupied ? now()->subHours(6 + $index * 9) : null,
+                        ]
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Ambulance dispatch log with requests in every stage.
+     */
+    private function seedAmbulanceRequests(array $users): void
+    {
+        $rows = [
+            ['Rahim Uddin', '01711-450120', 'House 12, Road 5, Dhanmondi', 'Cardiac emergency', 0, 0],
+            ['Sultana Razia', '01711-774512', 'Block C, Mirpur 10', 'Road accident', 1, 0],
+            ['Jashim Uddin', '01712-309866', 'Sector 7, Uttara', 'Breathing difficulty', 2, 1],
+            ['Fatema Begum', '01713-118270', 'Mohammadpur Bus Stand', 'Pregnancy complication', 2, 2],
+            ['Mohan Das', '01714-662901', 'Shahbagh, Dhaka', 'High fever with convulsion', 2, 3],
+            ['Nusrat Jahan', '01715-887234', 'Bashundhara R/A', 'Fall injury', 3, 4],
+            ['Guest Caller', '01716-453398', 'Jatrabari Chowrasta', 'Stroke symptoms', 2, 5],
+            ['Habib Rahman', '01717-221490', 'Green Road, Dhaka', 'Chest pain', 1, 0],
+        ];
+
+        foreach ($rows as $i => [$name, $phone, $pickup, $type, $status, $patientIndex]) {
+            $patient = $users['patients'][$patientIndex];
+
+            $request = AmbulanceRequest::firstOrCreate(
+                ['requester_phone' => $phone, 'pickup_address' => $pickup],
+                [
+                    'user_id' => $name === 'Guest Caller' ? null : $patient->id,
+                    'requester_name' => $name,
+                    'destination' => 'MediCare Hospital, Green Road',
+                    'emergency_type' => $type,
+                    'status' => $status,
+                ]
+            );
+
+            if ($request->wasRecentlyCreated) {
+                $request->created_at = now()->subHours(4 + $i * 7);
+                $request->updated_at = now()->subHours(2 + $i * 7);
+                $request->save();
+            }
+        }
+    }
+
+    /**
+     * Telehealth rooms for upcoming consultations (demo links, ready state).
+     */
+    private function seedZoomMeetings(): void
+    {
+        if (ZoomMeeting::count() > 0) {
+            return;
+        }
+
+        $upcoming = Appointment::where('status', 1)
+            ->whereDate('appointment_date', '>=', Carbon::today())
+            ->orderBy('appointment_date')
+            ->take(4)
+            ->get();
+
+        if ($upcoming->isEmpty()) {
+            $upcoming = Appointment::where('status', 1)->orderByDesc('id')->take(3)->get();
+        }
+
+        foreach ($upcoming as $i => $appointment) {
+            $number = '845'.str_pad((string) (1234567 + $i * 111111), 7, '0', STR_PAD_LEFT);
+
+            ZoomMeeting::firstOrCreate(
+                ['appointment_id' => $appointment->id],
+                [
+                    'zoom_meeting_id' => $number,
+                    'join_url' => 'https://zoom.us/j/'.$number.'?pwd=demodemo',
+                    'start_url' => 'https://zoom.us/s/'.$number.'?zak=demo-host-token',
+                    'sync_status' => 'ready',
+                    'patient_notified_at' => $i === 0 ? now()->subDay() : null,
+                    'patient_notification_key' => $i === 0 ? 'demo-'.$appointment->id : null,
+                ]
+            );
+        }
+    }
+
+    /**
+     * Patient reviews for recently completed appointments, one awaiting
+     * moderation so the admin queue is not empty.
+     */
+    private function seedReviews(): void
+    {
+        if (DoctorReview::count() > 0) {
+            return;
+        }
+
+        $comments = [
+            'Very patient doctor, explained everything clearly and the follow-up plan worked.',
+            'Waited less than fifteen minutes. Diagnosis and medicine were spot on.',
+            'Kind and thorough — my child was not afraid at all. Highly recommended.',
+            'The doctor listened to my full history before prescribing. Very satisfied.',
+            'Clear advice on diet and exercise along with the medicine. Thank you.',
+            'Second visit for my mother — consistent, caring and never rushed.',
+            'Got an appointment the same week and the treatment relieved my pain quickly.',
+            'Professional and friendly. The online follow-up saved me a trip.',
+            'Explained the lab reports line by line. Worth every taka.',
+            'Good consultation, though the waiting room was a little busy that evening.',
+        ];
+        $ratings = [5, 5, 5, 4, 5, 5, 4, 5, 5, 4];
+
+        $completed = Appointment::where('status', 2)
+            ->orderByDesc('appointment_date')
+            ->take(count($comments))
+            ->get();
+
+        foreach ($completed as $i => $appointment) {
+            DoctorReview::firstOrCreate(
+                ['appointment_id' => $appointment->id],
+                [
+                    'doctor_id' => $appointment->doctor_id,
+                    'user_id' => $appointment->user_id,
+                    'rating' => $ratings[$i % count($ratings)],
+                    'comment' => $comments[$i],
+                    'status' => $i === 2 ? 0 : 1,
+                ]
+            );
+        }
+    }
+
+    /**
+     * Front-end FAQ accordion.
+     */
+    private function seedFaqs(): void
+    {
+        $faqs = [
+            ['How do I book an appointment?', 'Book online in under a minute: choose your doctor, pick a free slot and confirm with your phone number. You will receive a confirmation immediately, and our front desk calls to reconfirm the day before.'],
+            ['Do I need an appointment for the emergency department?', 'No. The emergency unit is open 24/7 and patients are seen in order of medical priority, not arrival. For ambulance support, call our hotline and we will prepare a bed before you arrive.'],
+            ['Can I collect my lab report online?', 'Yes. Most routine reports are ready the same day and appear in your patient dashboard, where you can download them. Emergency and critical results are phoned to your doctor within the hour.'],
+            ['Is there a blood bank on site?', 'Yes, our blood bank stocks all groups with screened units and component separation. Walk-in donors are welcome from 9 AM to 8 PM, and we issue units round the clock for emergencies.'],
+            ['Which insurance and corporate panels do you accept?', 'We work with most major insurance providers and corporate health panels. Bring your card or authorisation letter, and our billing desk will process the paperwork while you wait.'],
+            ['What should I bring to my first visit?', 'A photo ID, your phone (for confirmation), any previous prescriptions or reports, and a list of the medicines you currently take. Arrive ten minutes early for registration.'],
+            ['Do you offer home sample collection?', 'Yes, across Dhaka city. Book through the lab counter or by phone before 10 AM, and a phlebotomist will visit the same day. Reports arrive digitally as usual.'],
+            ['How do I get my prescription after an online consultation?', 'After the consultation your prescription is issued digitally and you can collect the printed copy from our pharmacy counter, or have medicines dispensed while you wait.'],
+        ];
+
+        foreach ($faqs as $i => [$question, $answer]) {
+            Faq::firstOrCreate(
+                ['question' => $question],
+                ['answer' => $answer, 'sort_order' => $i, 'status' => 1]
+            );
+        }
+    }
+
+    /**
+     * Hospital gallery using the shipped demo photography.
+     */
+    private function seedGallery(): void
+    {
+        $images = [
+            ['sliders/slider-1.jpg', 'Reception and patient waiting lounge'],
+            ['sliders/slider-2.jpg', 'Modern consultation rooms'],
+            ['sliders/slider-3.png', 'Emergency response team on standby'],
+            ['home/about-1.jpg', 'Laboratory diagnostics unit'],
+            ['home/about-2.jpg', 'Specialist dental care'],
+            ['home/about-3.jpeg', 'Eye clinic examination'],
+            ['about/about-1.jpg', 'Inpatient wing corridor'],
+            ['about/about-2.jpg', 'Physiotherapy and rehabilitation'],
+            ['service/emergency.jpg', '24/7 emergency department'],
+            ['blogs/blog-1.jpeg', 'Community health awareness program'],
+        ];
+
+        foreach ($images as $i => [$image, $caption]) {
+            GalleryImage::firstOrCreate(
+                ['image' => $image],
+                ['caption' => $caption, 'sort_order' => $i, 'status' => 1]
+            );
+        }
+    }
+
+    /**
+     * In-app notifications for staff and one patient, produced through
+     * the same notifier services the live app uses.
+     */
+    private function seedNotifications(): void
+    {
+        if (DB::table('notifications')->count() > 0) {
+            return;
+        }
+
+        Appointment::orderByDesc('id')->take(3)->get()
+            ->each(fn (Appointment $appointment) => StaffNotifier::appointmentBooked($appointment));
+
+        if (Module::enabled('lab')) {
+            LabOrder::orderByDesc('id')->take(2)->get()
+                ->each(fn (LabOrder $order) => StaffNotifier::labResultReady($order));
+        }
+
+        if (Module::enabled('ambulance') && ($request = AmbulanceRequest::orderByDesc('id')->first())) {
+            StaffNotifier::ambulanceRequested($request);
+        }
+
+        if ($appointment = Appointment::whereNotNull('user_id')->orderByDesc('id')->first()) {
+            PatientNotifier::appointmentBooked($appointment);
+        }
+
+        if (Module::enabled('lab') && ($order = LabOrder::whereNotNull('user_id')->orderByDesc('id')->first())) {
+            PatientNotifier::labResultReady($order);
         }
     }
 

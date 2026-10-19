@@ -25,6 +25,7 @@ use Illuminate\Notifications\Notifiable;
     'blood_group',
     'address',
     'allergies',
+    'chronic_conditions',
     'profile_image',
     'google_id',
     'provider',

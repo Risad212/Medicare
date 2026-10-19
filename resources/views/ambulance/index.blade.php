@@ -23,7 +23,7 @@
     </div>
 @endif
 
-<div class="mc-ecg"><span>Emergency queue</span><span>{{ $requests->total() }} requests</span></div>
+<div class="mc-ecg my-4"><span>Emergency queue</span><span>{{ $requests->total() }} requests</span></div>
 
 <div class="mc-card">
     <div class="table-responsive">

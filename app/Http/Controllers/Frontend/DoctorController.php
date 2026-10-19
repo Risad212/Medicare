@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Doctor;
+use App\Models\DoctorReview;
 use App\Models\SeoSetting;
 use App\Modules\Search\Services\DoctorSearchService;
 use App\Support\Module;
@@ -38,6 +39,14 @@ class DoctorController extends Controller
     {
         $doctor = Doctor::where('id', $id)->where('status', 1)->firstOrFail();
 
-        return view('frontend.doctors.show', compact('doctor'));
+        $reviews = collect();
+        $ratingSummary = ['avg' => 0.0, 'count' => 0];
+
+        if (Module::enabled('reviews')) {
+            $reviews = $doctor->approvedReviews()->with('user')->latest()->limit(20)->get();
+            $ratingSummary = DoctorReview::summaryFor($doctor);
+        }
+
+        return view('frontend.doctors.show', compact('doctor', 'reviews', 'ratingSummary'));
     }
 }

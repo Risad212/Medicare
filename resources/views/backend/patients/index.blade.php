@@ -18,16 +18,14 @@
     <div class="mb-3 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
 @endif
 
-<div class="mc-ecg"><span>Live register</span><span>{{ $patients->total() }} records</span></div>
-
-<div class="mc-bar">
-    <form action="{{ route('admin.patients.index') }}" method="GET" class="mc-search flex-1">
-        <i class="bi bi-search text-faint"></i>
-        <input type="text" name="search" placeholder="Search patient…" value="{{ request('search') }}" autocomplete="off">
-    </form>
-</div>
-
 <div class="mc-card">
+    <div class="mc-bar">
+        <div class="mc-ecg"><span>Live register</span><span>{{ $patients->total() }} records</span></div>
+        <form action="{{ route('admin.patients.index') }}" method="GET" class="mc-search flex-1">
+            <i class="bi bi-search text-faint"></i>
+            <input type="text" name="search" placeholder="Search patient…" value="{{ request('search') }}" autocomplete="off">
+        </form>
+    </div>
     <div class="table-responsive">
         <table class="mc-tbl">
             <thead>

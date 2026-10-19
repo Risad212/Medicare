@@ -175,6 +175,7 @@
             <div class="mx-nav nav flex-column gap-1" id="profileTabs" role="tablist">
                 <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab"><span class="dot">U</span><span>Profile<small>Personal details</small></span></button>
                 <button class="nav-link" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab"><span class="dot">A</span><span>Appointments<small>Visits &amp; status</small></span><span class="cnt">{{ $appointments->count() }}</span></button>
+                <button class="nav-link" id="timeline-tab" data-bs-toggle="tab" data-bs-target="#timeline" type="button" role="tab"><span class="dot">T</span><span>{{ __('messages.public.timeline_title') }}<small>{{ __('messages.public.timeline_tab_sub') }}</small></span></button>
                 @if(\App\Support\Module::enabled('lab'))
                 <button class="nav-link" id="lab-tab" data-bs-toggle="tab" data-bs-target="#lab-reports" type="button" role="tab"><span class="dot">L</span><span>Lab reports<small>Orders &amp; results</small></span><span class="cnt">{{ $labOrders->count() }}</span></button>
                 @endif
@@ -221,6 +222,7 @@
                                     @if(\App\Support\Module::enabled('allergy'))
                                     <div class="col-12 mx-field"><label>Allergies <span class="text-muted fw-normal">(visible to your doctor when prescribing)</span></label><textarea name="allergies" rows="3" class="form-control @error('allergies') is-invalid @enderror" placeholder="e.g. Penicillin, peanuts, latex — comma or newline separated">{{ old('allergies', $user->allergies) }}</textarea>@error('allergies')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
                                     @endif
+                                    <div class="col-12 mx-field"><label>{{ __('messages.public.chronic_title') }} <span class="text-muted fw-normal">{{ __('messages.public.chronic_hint') }}</span></label><textarea name="chronic_conditions" rows="3" class="form-control @error('chronic_conditions') is-invalid @enderror" placeholder="{{ __('messages.public.chronic_placeholder') }}">{{ old('chronic_conditions', $user->chronic_conditions) }}</textarea>@error('chronic_conditions')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
                                     <div class="col-12 mx-field"><label>Profile photo</label><input type="file" name="profile_image" class="form-control" accept="image/jpeg,image/png,image/webp"><small class="text-muted">JPG, PNG or WEBP, max 2MB.</small></div>
                                     <div class="col-md-6 mx-field"><label>New password <span class="text-muted fw-normal">(leave blank to keep current)</span></label><input type="password" name="password" class="form-control @error('password') is-invalid @enderror" autocomplete="new-password">@error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
                                     <div class="col-md-6 mx-field"><label>Confirm new password</label><input type="password" name="password_confirmation" class="form-control" autocomplete="new-password"></div>
@@ -264,6 +266,21 @@
                                                 <a href="{{ $telehealthJoinLinks->get($appointment->id) }}" class="btn btn-sm mx-btn-primary">Join consultation</a>
                                             @elseif(in_array($appointment->status, [0, 1]) && $appointment->user_id === auth()->id())
                                                 <form action="{{ route('appointment.cancel', $appointment->id) }}" method="POST" class="d-inline">@csrf @method('PATCH')<button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius:10px" onclick="return confirm('Cancel this appointment?')">Cancel</button></form>
+                                            @elseif(\App\Support\Module::enabled('reviews') && (int) $appointment->status === 2 && $appointment->user_id === auth()->id() && ! $reviewedAppointmentIds->contains($appointment->id))
+                                                <details class="d-inline-block text-end">
+                                                    <summary class="btn btn-sm btn-outline-warning" style="border-radius:10px;cursor:pointer;list-style:none">&#9733; {{ __('messages.reviews.leave') }}</summary>
+                                                    <form action="{{ route('profile.appointments.review', $appointment->id) }}" method="POST" class="text-start mt-2 p-2 border rounded-3 bg-white" style="min-width:250px">
+                                                        @csrf
+                                                        <div class="small fw-semibold mb-1">{{ __('messages.reviews.rating') }}</div>
+                                                        <div class="mb-2">
+                                                            @for($r = 1; $r <= 5; $r++)
+                                                                <label class="me-2" style="cursor:pointer"><input type="radio" name="rating" value="{{ $r }}" required> {{ $r }} &#9733;</label>
+                                                            @endfor
+                                                        </div>
+                                                        <textarea name="comment" rows="2" class="form-control form-control-sm mb-2" maxlength="1000" placeholder="{{ __('messages.reviews.comment_placeholder') }}"></textarea>
+                                                        <button type="submit" class="btn btn-sm mx-btn-primary w-100">{{ __('messages.reviews.submit') }}</button>
+                                                    </form>
+                                                </details>
                                             @else
                                                 <span class="text-muted">—</span>
                                             @endif
@@ -274,6 +291,66 @@
                             </table></div>
                         @else
                             <div class="mx-empty"><div class="mx-empty-art">A</div><h6 class="fw-bold">No appointments yet</h6><p class="text-muted small mb-3">Your bookings will show here with live status.</p><a href="{{ route('appointment') }}" class="btn mx-btn-primary btn-sm">Book appointment</a></div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="timeline" role="tabpanel">
+                    <div class="mx-panel mb-3">
+                        <div class="mx-panel-head"><h5>{{ __('messages.public.timeline_title') }}</h5><p>{{ __('messages.public.timeline_intro') }}</p></div>
+                        <div class="mx-panel-body">
+                            <div class="row g-3">
+                                @if(\App\Support\Module::enabled('allergy'))
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-3 h-100" style="background:#fff">
+                                        <div class="small fw-bold text-uppercase mb-2" style="letter-spacing:.06em;color:#b91c1c">{{ __('messages.public.allergies_title') }}</div>
+                                        @if(trim($user->allergies ?? '') !== '')
+                                            @foreach(preg_split('/[\r\n,;]+/', $user->allergies) as $allergyTag)
+                                                @if(trim($allergyTag) !== '')<span class="d-inline-block me-1 mb-1 px-2 py-1 rounded-pill small" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">{{ trim($allergyTag) }}</span>@endif
+                                            @endforeach
+                                        @else
+                                            <div class="small text-muted">{{ __('messages.public.allergies_none') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                                @endif
+                                <div class="col-md-6">
+                                    <div class="border rounded-3 p-3 h-100" style="background:#fff">
+                                        <div class="small fw-bold text-uppercase mb-2" style="letter-spacing:.06em;color:#92400e">{{ __('messages.public.chronic_title') }}</div>
+                                        @if(trim($user->chronic_conditions ?? '') !== '')
+                                            @foreach(preg_split('/[\r\n,;]+/', $user->chronic_conditions) as $conditionTag)
+                                                @if(trim($conditionTag) !== '')<span class="d-inline-block me-1 mb-1 px-2 py-1 rounded-pill small" style="background:#fffbeb;color:#92400e;border:1px solid #fde68a">{{ trim($conditionTag) }}</span>@endif
+                                            @endforeach
+                                        @else
+                                            <div class="small text-muted">{{ __('messages.public.chronic_none') }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mx-panel">
+                        <div class="mx-panel-head"><h5>{{ __('messages.public.visit_history') }}</h5><p>{{ $appointments->count() }} total</p></div>
+                        @if($appointments->count())
+                            <div class="mx-panel-body">
+                                <div class="position-relative ps-4">
+                                    <div class="position-absolute" style="left:7px;top:.4rem;bottom:.4rem;width:2px;background:#e2e8f0"></div>
+                                    @foreach($appointments as $visit)
+                                    <div class="position-relative pb-3">
+                                        <span class="position-absolute" style="left:-24px;top:.4rem;width:10px;height:10px;border-radius:50%;background:#05d3b0;border:2px solid #fff;box-shadow:0 0 0 1px #a7f3d0"></span>
+                                        <div class="d-flex justify-content-between flex-wrap gap-2 align-items-center">
+                                            <div>
+                                                <div class="fw-semibold">{{ $visit->doctor->name ?? 'N/A' }}</div>
+                                                <div class="small text-muted">{{ $visit->appointment_date ? \Carbon\Carbon::parse($visit->appointment_date)->format('d M Y') : 'N/A' }}@if($visit->timeSlot) &middot; {{ $visit->timeSlot->time }}@endif</div>
+                                            </div>
+                                            @if($visit->status == 1)<span class="pill p-confirmed"><i></i>Confirmed</span>@elseif($visit->status == 2)<span class="pill p-completed"><i></i>Completed</span>@elseif($visit->status == 3)<span class="pill p-cancelled"><i></i>Cancelled</span>@else<span class="pill p-pending"><i></i>Pending</span>@endif
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <div class="mx-empty"><div class="mx-empty-art">T</div><h6 class="fw-bold">{{ __('messages.public.no_visits') }}</h6></div>
                         @endif
                     </div>
                 </div>

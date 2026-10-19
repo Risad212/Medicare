@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Appointment;
+use App\Models\DoctorReview;
 use App\Models\Invoice;
 use App\Models\Prescription;
 use App\Modules\Lab\Models\LabOrder;
@@ -91,9 +92,13 @@ class ProfileController extends Controller
             ->latest()
             ->get();
 
+        $reviewedAppointmentIds = Module::enabled('reviews')
+            ? DoctorReview::where('user_id', $user->id)->pluck('appointment_id')
+            : collect();
+
         return view(
             'frontend.profile.index',
-            compact('user', 'appointments', 'telehealthJoinLinks', 'labOrders', 'prescriptions', 'invoices')
+            compact('user', 'appointments', 'telehealthJoinLinks', 'labOrders', 'prescriptions', 'invoices', 'reviewedAppointmentIds')
         );
     }
 

@@ -65,9 +65,9 @@
 
 @layer components {
     /* ---- Page header (legacy) ---- */
-    .mc-kicker { @apply text-xs font-bold uppercase tracking-widest text-teal-dk; }
+    .mc-kicker { @apply hidden; }
     .mc-title     { @apply font-body text-[26px] font-bold leading-[1.15] tracking-tight text-ink; }
-    .mc-title em  { @apply not-italic text-teal; }
+    .mc-title em  { @apply not-italic; }
     .mc-sub       { @apply mt-1 max-w-[620px] text-[13px] text-mut; }
     .mc-head      { @apply mb-4 flex flex-wrap items-end justify-between gap-4; }
     .mc-head-acts { @apply flex flex-wrap gap-2.5 pb-0.5; }
@@ -87,6 +87,8 @@
        sibling cards (e.g. dashboard stat cards) render at uneven heights. */
     .flex > .mc-card + .mc-card,
     .grid > .mc-card + .mc-card { margin-top: 0; }
+    /* Toolbar nested at the top of a card renders as the card's header strip. */
+    .mc-card .mc-bar { @apply mb-0 rounded-none border-x-0 border-t-0 shadow-none; }
     .welly-card { @apply overflow-hidden rounded-xl border border-line bg-white shadow-card; }
     .welly-card-hd { @apply flex items-center justify-between gap-2.5 px-5 pb-1 pt-4; }
     .welly-card-title { @apply text-[15px] font-extrabold tracking-tight text-ink; }
@@ -304,13 +306,13 @@
         @apply flex cursor-pointer items-center gap-2.5 rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] font-semibold;
     }
     .mc-check input { @apply h-[17px] w-[17px] accent-teal; }
-    .mc-imgprev { @apply max-w-[220px] rounded-lg border border-line; }
+    .mc-imgprev { @apply h-28 w-full max-w-[220px] rounded-lg border border-line object-cover; }
     .mc-formacts { @apply mt-0.5 flex flex-wrap gap-2.5; }
 
     /* ---- Misc ---- */
     .mc-note { @apply text-xs text-mut; }
     .mc-alert { @apply rounded-lg text-[14px]; }
-    .mc-ecg { @apply my-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-faint; }
+    .mc-ecg { @apply flex w-full items-center gap-3 text-xs font-semibold uppercase tracking-wider text-faint; }
 }
 
 /* ============================================================

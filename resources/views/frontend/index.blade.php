@@ -23,7 +23,7 @@
                 <div class="slider-overlay">
                     <div class="container">
                         <div class="title">
-                            <h2>{{ $slider->title ?? '' }}</h2>
+                            @if($loop->first)<h1>{{ $slider->title ?? '' }}</h1>@else<h2>{{ $slider->title ?? '' }}</h2>@endif
                             <p>{{ $slider->description ?? '' }}</p>
                             <div class="btn-title-home">
                                 <a href="{{ route('appointment') }}" class="btn-title">{{ $slider->button_text ?? __('messages.public.read_more') }}</a>

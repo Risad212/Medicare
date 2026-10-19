@@ -12,6 +12,7 @@ use App\Modules\Language\LanguageServiceProvider;
 use App\Modules\Pharmacy\PharmacyServiceProvider;
 use App\Modules\Prescriptions\PrescriptionsServiceProvider;
 use App\Modules\Publishing\PublishingServiceProvider;
+use App\Modules\Reviews\ReviewsServiceProvider;
 use App\Modules\Vaccination\VaccinationServiceProvider;
 use App\Modules\Zoom\ZoomServiceProvider;
 use App\Providers\AppServiceProvider;
@@ -32,6 +33,7 @@ $providers = [
     LanguageServiceProvider::class,
     PrescriptionsServiceProvider::class,
     PublishingServiceProvider::class,
+    ReviewsServiceProvider::class,
     GoogleCalendarServiceProvider::class,
     ZoomServiceProvider::class,
 ];

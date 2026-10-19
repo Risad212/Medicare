@@ -58,8 +58,8 @@ class AnalyticsTest extends TestCase
         $this->assertSame(2, $analytics['totalRegisteredPatients']);
         $this->assertSame(1, $analytics['newPatientsThisMonth']);
         $response->assertSee('Dr Stats', false);
-        $response->assertSee('analyticsTrend', false);
-        $response->assertSee('analyticsStatus', false);
+        $response->assertSee('<canvas id="trendChart">', false);
+        $response->assertSee('Appointment Status', false);
 
         // Trend covers exactly the last 30 days of bookings.
         $trend = $analytics['trendCounts'];
@@ -85,8 +85,7 @@ class AnalyticsTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Dashboard', false); // core page intact
-        $response->assertDontSee('analyticsTrend', false);
-        $response->assertDontSee('analyticsStatus', false);
+        $response->assertDontSee('<canvas id="trendChart">', false); // no data -> no trend canvas
         $this->assertSame([], $response->viewData('analytics'));
     }
 

@@ -53,6 +53,43 @@
                 </div>
             </div>
 
+            @if(\App\Support\Module::enabled('reviews'))
+            <div class="col-lg-12">
+                <div class="doctor-reviews mt-5">
+                    <h3>{{ __('messages.reviews.heading') }}</h3>
+
+                    @if($ratingSummary['count'] > 0)
+                        <div class="mb-3 fw-semibold" data-notranslate>
+                            <span class="text-warning">&#9733;</span>
+                            {{ __('messages.reviews.rating_of', ['avg' => $ratingSummary['avg']]) }}
+                            &middot; {{ __('messages.reviews.based_on', ['count' => $ratingSummary['count']]) }}
+                        </div>
+                    @endif
+
+                    <div class="row g-3">
+                        @forelse($reviews as $review)
+                            <div class="col-md-6">
+                                <div class="border rounded-3 p-3 h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong>{{ $review->user?->name ?? __('messages.reviews.anonymous') }}</strong>
+                                        <span class="text-warning" data-notranslate>{{ str_repeat('★', (int) $review->rating) }}</span>
+                                    </div>
+                                    <div class="small text-muted mb-2">{{ $review->created_at->format('d M Y') }}</div>
+                                    @if($review->comment)
+                                        <p class="mb-0 small">{{ $review->comment }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-12">
+                                <p class="text-muted">{{ __('messages.reviews.empty') }}</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <div class="col-lg-12" id="book-appoiment">
                 <div class="book-appoiment mt-5">
                     <div class="appointment-here-form">

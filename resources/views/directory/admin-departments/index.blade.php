@@ -17,7 +17,7 @@
     <div class="mb-4 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
 @endif
 
-<div class="mc-ecg"><span>Live register</span><span>{{ $departments->count() }} records</span></div>
+<div class="mc-ecg my-4"><span>Live register</span><span>{{ $departments->count() }} records</span></div>
 
 <div class="mc-card">
     <div class="table-responsive">

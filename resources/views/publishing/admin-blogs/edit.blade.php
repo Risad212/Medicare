@@ -53,10 +53,10 @@
                     </div>
                     <div class="mc-f full">
                         <label>Image</label>
-                        @if($blog->image)
-                            <img src="{{ asset('storage/' . $blog->image) }}" class="mc-imgprev mb-2" alt="">
-                        @endif
                         <input type="file" name="image" class="form-control">
+                        @if($blog->image)
+                            <img src="{{ asset('storage/' . $blog->image) }}" class="mc-imgprev mt-2" alt="">
+                        @endif
                         <span class="mc-hint">JPG · PNG · WEBP · max 2 MB</span>
                     </div>
                 </div>

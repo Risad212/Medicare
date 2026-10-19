@@ -17,32 +17,30 @@
     <div class="mb-3 rounded-lg bg-green-bg px-4 py-3 text-sm text-green-t">{{ session('success') }}</div>
 @endif
 
-<div class="mc-ecg"><span>Live register</span><span>{{ $donors->total() }} donors</span></div>
-
-<form action="{{ route('admin.blood-donors.index') }}" method="GET" class="mc-bar">
-    <div class="mc-search" style="flex:1">
-        <i class="bi bi-search text-faint"></i>
-        <input type="search" name="search" placeholder="Search name, phone or email…" value="{{ request('search') }}" autocomplete="off" aria-label="Search donors">
-    </div>
-    <select name="blood_group_id" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by blood group">
-        <option value="">All blood groups</option>
-        @foreach($bloodGroups as $group)
-            <option value="{{ $group->id }}" @selected(request('blood_group_id') == $group->id)>{{ $group->name }}</option>
-        @endforeach
-    </select>
-    <select name="gender" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by gender">
-        <option value="">All genders</option>
-        <option value="male" @selected(request('gender') === 'male')>Male</option>
-        <option value="female" @selected(request('gender') === 'female')>Female</option>
-    </select>
-    <select name="status" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by status">
-        <option value="">All statuses</option>
-        <option value="1" @selected(request('status') === '1')>Active</option>
-        <option value="0" @selected(request('status') === '0')>Inactive</option>
-    </select>
-</form>
-
 <div class="mc-card">
+    <form action="{{ route('admin.blood-donors.index') }}" method="GET" class="mc-bar">
+        <div class="mc-ecg"><span>Live register</span><span>{{ $donors->total() }} donors</span></div>
+        <div class="mc-search" style="flex:1">
+            <i class="bi bi-search text-faint"></i>
+            <input type="search" name="search" placeholder="Search name, phone or email…" value="{{ request('search') }}" autocomplete="off" aria-label="Search donors">
+        </div>
+        <select name="blood_group_id" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by blood group">
+            <option value="">All blood groups</option>
+            @foreach($bloodGroups as $group)
+                <option value="{{ $group->id }}" @selected(request('blood_group_id') == $group->id)>{{ $group->name }}</option>
+            @endforeach
+        </select>
+        <select name="gender" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by gender">
+            <option value="">All genders</option>
+            <option value="male" @selected(request('gender') === 'male')>Male</option>
+            <option value="female" @selected(request('gender') === 'female')>Female</option>
+        </select>
+        <select name="status" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by status">
+            <option value="">All statuses</option>
+            <option value="1" @selected(request('status') === '1')>Active</option>
+            <option value="0" @selected(request('status') === '0')>Inactive</option>
+        </select>
+    </form>
     <div class="overflow-x-auto">
         <table class="mc-tbl">
             <thead>

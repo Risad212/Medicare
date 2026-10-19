@@ -20,7 +20,7 @@
     <div class="mb-3 rounded-lg bg-red-bg px-4 py-3 text-sm text-red-t">{{ session('error') }}</div>
 @endif
 
-<div class="mc-ecg"><span>Type register</span><span>{{ $bloodGroups->count() }} groups</span></div>
+<div class="mc-ecg my-4"><span>Type register</span><span>{{ $bloodGroups->count() }} groups</span></div>
 
 <div class="mc-card">
     <div class="overflow-x-auto">

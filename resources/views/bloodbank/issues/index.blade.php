@@ -17,28 +17,26 @@
     <div class="mb-3 rounded-lg bg-red-bg px-4 py-3 text-sm text-red-t">{{ session('error') }}</div>
 @endif
 
-<div class="mc-ecg"><span>Live register</span><span>{{ $issues->total() }} issues</span></div>
-
-<form action="{{ route('admin.blood-issues.index') }}" method="GET" class="mc-bar">
-    <div class="mc-search" style="flex:1">
-        <i class="bi bi-search text-faint"></i>
-        <input type="search" name="search" placeholder="Search patient…" value="{{ request('search') }}" autocomplete="off" aria-label="Search issues">
-    </div>
-    <select name="blood_group_id" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by blood group">
-        <option value="">All groups</option>
-        @foreach($bloodGroups as $group)
-            <option value="{{ $group->id }}" @selected(request('blood_group_id') == $group->id)>{{ $group->name }}</option>
-        @endforeach
-    </select>
-    <input type="date" name="from" class="mc-date" value="{{ request('from') }}" title="From" aria-label="From date">
-    <input type="date" name="to" class="mc-date" value="{{ request('to') }}" title="To" aria-label="To date">
-    <button class="mc-btn sm" type="submit">Filter</button>
-    @if(array_filter(request()->only('search', 'blood_group_id', 'from', 'to')))
-        <a href="{{ route('admin.blood-issues.index') }}" class="mc-btn sm ghost">Clear</a>
-    @endif
-</form>
-
 <div class="mc-card">
+    <form action="{{ route('admin.blood-issues.index') }}" method="GET" class="mc-bar">
+        <div class="mc-ecg"><span>Live register</span><span>{{ $issues->total() }} issues</span></div>
+        <div class="mc-search" style="flex:1">
+            <i class="bi bi-search text-faint"></i>
+            <input type="search" name="search" placeholder="Search patient…" value="{{ request('search') }}" autocomplete="off" aria-label="Search issues">
+        </div>
+        <select name="blood_group_id" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by blood group">
+            <option value="">All groups</option>
+            @foreach($bloodGroups as $group)
+                <option value="{{ $group->id }}" @selected(request('blood_group_id') == $group->id)>{{ $group->name }}</option>
+            @endforeach
+        </select>
+        <input type="date" name="from" class="mc-date" value="{{ request('from') }}" title="From" aria-label="From date">
+        <input type="date" name="to" class="mc-date" value="{{ request('to') }}" title="To" aria-label="To date">
+        <button class="mc-btn sm" type="submit">Filter</button>
+        @if(array_filter(request()->only('search', 'blood_group_id', 'from', 'to')))
+            <a href="{{ route('admin.blood-issues.index') }}" class="mc-btn sm ghost">Clear</a>
+        @endif
+    </form>
     <div class="overflow-x-auto">
         <table class="mc-tbl">
             <thead>

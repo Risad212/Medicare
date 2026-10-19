@@ -24,20 +24,18 @@
     </div>
 @endif
 
-<div class="mc-ecg"><span>Pharmacy stock</span><span>{{ $lowStockCount }} low-stock</span></div>
-
-<div class="mc-bar">
-    <form action="{{ route('admin.medicines.index') }}" method="GET" class="mc-search flex-1">
-        <i class="bi bi-search text-faint"></i>
-        <input type="text" name="search" placeholder="Search medicine…" value="{{ request('search') }}" autocomplete="off">
-    </form>
-    <a href="{{ route('admin.medicines.index', ['low_stock' => 1]) }}" class="mc-btn sm ghost">Low stock only</a>
-    @if(request('low_stock'))
-        <a href="{{ route('admin.medicines.index') }}" class="mc-btn sm ghost">Clear</a>
-    @endif
-</div>
-
 <div class="mc-card">
+    <div class="mc-bar">
+        <div class="mc-ecg"><span>Pharmacy stock</span><span>{{ $lowStockCount }} low-stock</span></div>
+        <form action="{{ route('admin.medicines.index') }}" method="GET" class="mc-search flex-1">
+            <i class="bi bi-search text-faint"></i>
+            <input type="text" name="search" placeholder="Search medicine…" value="{{ request('search') }}" autocomplete="off">
+        </form>
+        <a href="{{ route('admin.medicines.index', ['low_stock' => 1]) }}" class="mc-btn sm ghost">Low stock only</a>
+        @if(request('low_stock'))
+            <a href="{{ route('admin.medicines.index') }}" class="mc-btn sm ghost">Clear</a>
+        @endif
+    </div>
     <div class="table-responsive">
         <table class="mc-tbl">
             <thead>

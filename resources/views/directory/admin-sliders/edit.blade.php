@@ -59,10 +59,10 @@
                 <div class="mc-sec-bd">
                     <div class="mc-f full">
                         <label>Background Image</label>
-                        @if($slider->bg_image)
-                            <img src="{{ asset('storage/' . $slider->bg_image) }}" class="mc-imgprev mb-2" alt="">
-                        @endif
                         <input type="file" name="bg_image" class="form-control">
+                        @if($slider->bg_image)
+                            <img src="{{ asset('storage/' . $slider->bg_image) }}" class="mc-imgprev mt-2" alt="">
+                        @endif
                         <span class="mc-hint">JPG · PNG · WEBP · max 2 MB</span>
                     </div>
                 </div>

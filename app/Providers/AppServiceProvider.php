@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Appointment;
 use App\Models\Blog;
 use App\Models\Doctor;
+use App\Models\DoctorReview;
 use App\Models\GeneralSetting;
 use App\Models\Prescription;
 use App\Models\Service;
@@ -70,7 +71,7 @@ class AppServiceProvider extends ServiceProvider
         // Kernel models only. Module models self-register their observer
         // inside their own service provider (Lab, BloodBank, ...), so a
         // removed module can never break core boot.
-        foreach ([Appointment::class, Blog::class, Doctor::class, User::class, Prescription::class] as $model) {
+        foreach ([Appointment::class, Blog::class, Doctor::class, DoctorReview::class, User::class, Prescription::class] as $model) {
             $model::observe(ActivityLogObserver::class);
         }
     }

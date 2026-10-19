@@ -26,17 +26,19 @@
     <section class="mc-sec mb-4">
         <div class="mc-sec-hd"><span class="no">01</span><h3>Intro Section</h3><p>Heading, copy, and images.</p></div>
         <div class="mc-sec-bd">
-            <div class="mc-f">
-                <label>Subtitle</label>
-                <input type="text" name="subtitle" class="form-control" value="{{ old('subtitle', $about->subtitle ?? '') }}" placeholder="about us">
-            </div>
-            <div class="mc-f">
-                <label>Title</label>
-                <input type="text" name="title" class="form-control" value="{{ old('title', $about->title ?? '') }}" placeholder="Compassionate Care Exceptional Expertise">
-            </div>
-            <div class="mc-f full">
-                <label>Tagline</label>
-                <input type="text" name="tagline" class="form-control" value="{{ old('tagline', $about->tagline ?? '') }}">
+            <div class="col-span-2 grid grid-cols-1 gap-x-4 gap-y-3.5 lg:grid-cols-3">
+                <div class="mc-f">
+                    <label>Subtitle</label>
+                    <input type="text" name="subtitle" class="form-control" value="{{ old('subtitle', $about->subtitle ?? '') }}" placeholder="about us">
+                </div>
+                <div class="mc-f">
+                    <label>Title</label>
+                    <input type="text" name="title" class="form-control" value="{{ old('title', $about->title ?? '') }}" placeholder="Compassionate Care Exceptional Expertise">
+                </div>
+                <div class="mc-f">
+                    <label>Tagline</label>
+                    <input type="text" name="tagline" class="form-control" value="{{ old('tagline', $about->tagline ?? '') }}">
+                </div>
             </div>
             <div class="mc-f full">
                 <label>Description</label>
@@ -52,17 +54,17 @@
             </div>
             <div class="mc-f">
                 <label>Image One</label>
-                @if(!empty($about->image_one))
-                    <img src="{{ asset('storage/' . $about->image_one) }}" class="mc-imgprev mb-2" alt="">
-                @endif
                 <input type="file" name="image_one" class="form-control">
+                @if(!empty($about->image_one))
+                    <img src="{{ asset('storage/' . $about->image_one) }}" class="mc-imgprev mt-2" alt="">
+                @endif
             </div>
             <div class="mc-f">
                 <label>Image Two</label>
-                @if(!empty($about->image_two))
-                    <img src="{{ asset('storage/' . $about->image_two) }}" class="mc-imgprev mb-2" alt="">
-                @endif
                 <input type="file" name="image_two" class="form-control">
+                @if(!empty($about->image_two))
+                    <img src="{{ asset('storage/' . $about->image_two) }}" class="mc-imgprev mt-2" alt="">
+                @endif
             </div>
         </div>
     </section>
@@ -71,29 +73,37 @@
     <section class="mc-sec mb-4">
         <div class="mc-sec-hd"><span class="no">02</span><h3>Highlights</h3><p>Mission, planning, and vision blocks.</p></div>
         <div class="mc-sec-bd">
-            <div class="mc-f">
-                <label>Mission — Title</label>
-                <input type="text" name="mission_title" class="form-control" value="{{ old('mission_title', $about->mission_title ?? '') }}" placeholder="Our Mission">
-            </div>
-            <div class="mc-f full">
-                <label>Mission — Description</label>
-                <textarea name="mission_description" class="form-control" rows="3">{{ old('mission_description', $about->mission_description ?? '') }}</textarea>
-            </div>
-            <div class="mc-f">
-                <label>Planning — Title</label>
-                <input type="text" name="planning_title" class="form-control" value="{{ old('planning_title', $about->planning_title ?? '') }}" placeholder="Our Planning">
-            </div>
-            <div class="mc-f full">
-                <label>Planning — Description</label>
-                <textarea name="planning_description" class="form-control" rows="3">{{ old('planning_description', $about->planning_description ?? '') }}</textarea>
-            </div>
-            <div class="mc-f">
-                <label>Vision — Title</label>
-                <input type="text" name="vision_title" class="form-control" value="{{ old('vision_title', $about->vision_title ?? '') }}" placeholder="Our Vision">
-            </div>
-            <div class="mc-f full">
-                <label>Vision — Description</label>
-                <textarea name="vision_description" class="form-control" rows="3">{{ old('vision_description', $about->vision_description ?? '') }}</textarea>
+            <div class="col-span-2 grid grid-cols-1 gap-x-4 gap-y-3.5 lg:grid-cols-2">
+                <div class="grid gap-y-3.5">
+                    <div class="mc-f">
+                        <label>Mission — Title</label>
+                        <input type="text" name="mission_title" class="form-control" value="{{ old('mission_title', $about->mission_title ?? '') }}" placeholder="Our Mission">
+                    </div>
+                    <div class="mc-f">
+                        <label>Mission — Description</label>
+                        <textarea name="mission_description" class="form-control" rows="3">{{ old('mission_description', $about->mission_description ?? '') }}</textarea>
+                    </div>
+                </div>
+                <div class="grid gap-y-3.5">
+                    <div class="mc-f">
+                        <label>Planning — Title</label>
+                        <input type="text" name="planning_title" class="form-control" value="{{ old('planning_title', $about->planning_title ?? '') }}" placeholder="Our Planning">
+                    </div>
+                    <div class="mc-f">
+                        <label>Planning — Description</label>
+                        <textarea name="planning_description" class="form-control" rows="3">{{ old('planning_description', $about->planning_description ?? '') }}</textarea>
+                    </div>
+                </div>
+                <div class="grid gap-y-3.5">
+                    <div class="mc-f">
+                        <label>Vision — Title</label>
+                        <input type="text" name="vision_title" class="form-control" value="{{ old('vision_title', $about->vision_title ?? '') }}" placeholder="Our Vision">
+                    </div>
+                    <div class="mc-f">
+                        <label>Vision — Description</label>
+                        <textarea name="vision_description" class="form-control" rows="3">{{ old('vision_description', $about->vision_description ?? '') }}</textarea>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

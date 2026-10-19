@@ -90,10 +90,10 @@
                 <div class="mc-sec-bd">
                     <div class="mc-f">
                         <label>Doctor Image</label>
+                        <input type="file" name="image" class="form-control">
                         @if($doctor->image)
-                            <img src="{{ asset('storage/' . $doctor->image) }}" class="mc-imgprev mb-2" alt="">
+                            <img src="{{ asset('storage/' . $doctor->image) }}" class="mc-imgprev mt-2" alt="">
                         @endif
-                        <input type="file" name="image" class="w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[14px] text-ink outline-none focus:border-teal">
                         <span class="mc-hint">JPG · PNG · WEBP · max 2 MB</span>
                     </div>
                     <div class="mc-f">

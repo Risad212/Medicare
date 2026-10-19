@@ -15,6 +15,7 @@ use App\Modules\Language\LanguageServiceProvider;
 use App\Modules\Pharmacy\PharmacyServiceProvider;
 use App\Modules\Prescriptions\PrescriptionsServiceProvider;
 use App\Modules\Publishing\PublishingServiceProvider;
+use App\Modules\Reviews\ReviewsServiceProvider;
 use App\Modules\Search\Services\DoctorSearchService;
 use App\Modules\Vaccination\VaccinationServiceProvider;
 use App\Modules\Zoom\ZoomServiceProvider;
@@ -35,6 +36,7 @@ class Module
         'pharmacy' => PharmacyServiceProvider::class,
         'prescriptions' => PrescriptionsServiceProvider::class,
         'publishing' => PublishingServiceProvider::class,
+        'reviews' => ReviewsServiceProvider::class,
         'search' => DoctorSearchService::class,
         'vaccination' => VaccinationServiceProvider::class,
         'zoom' => ZoomServiceProvider::class,

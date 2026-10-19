@@ -16,6 +16,7 @@
     $navCounts = Cache::remember('mc.nav.counts', 60, fn () => [
         'pendingAppointments' => App\Models\Appointment::where('status', 0)->count(),
         'pendingComments' => App\Models\BlogComment::where('status', 0)->count(),
+        'pendingDoctorReviews' => App\Models\DoctorReview::where('status', 0)->count(),
         'todayAppointments' => App\Models\Appointment::whereDate('appointment_date', now()->toDateString())->count(),
     ]);
 @endphp
@@ -33,11 +34,6 @@
         <span class="d-block fw-bold" style="font-size:14px;">MediCare Hospital</span>
         <span class="d-block text-secondary" style="font-size:11.5px;">{{ now()->format('l, F j, Y') }} &middot; {{ ucfirst($me->role ?? 'User') }} portal</span>
     </div>
-
-    <label class="mc-top-search d-none d-lg-flex ms-3" title="Filter menu">
-        <i class="bi bi-search"></i>
-        <input id="mc-menu-search" type="search" placeholder="{{ __('messages.staff.search_menu') }}" autocomplete="off">
-    </label>
 
     <div class="ms-auto d-flex align-items-center gap-2">
         @if(!$isDoctor)
@@ -157,6 +153,15 @@
                             @endif
                         </a>
                     </li>
+                    @if(\App\Support\Module::enabled('reviews'))
+                    <li>
+                        <a class="side-sublink {{ request()->routeIs('admin.doctor-reviews.*') ? 'active' : '' }}" href="{{ route('admin.doctor-reviews.index') }}"><span class="side-dot"></span> {{ __('messages.staff.doctor_reviews') }}
+                            @if(($navCounts['pendingDoctorReviews'] ?? 0) > 0)
+                                <span class="side-minibadge">{{ $navCounts['pendingDoctorReviews'] }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    @endif
                     @endif
                 </ul>
             </li>
@@ -332,27 +337,6 @@
                 </ul>
             </li>
 
-            <li class="side-tree">
-                <a class="side-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
-                    <i class="side-icon bi bi-people"></i>
-                    <span>{{ __('messages.staff.staff_users') }}</span>
-                </a>
-            </li>
-
-            <li class="side-tree">
-                <a class="side-link {{ request()->routeIs('admin.activity-logs.*') ? 'active' : '' }}" href="{{ route('admin.activity-logs.index') }}">
-                    <i class="side-icon bi bi-list-check"></i>
-                    <span>{{ __('messages.staff.activity_logs') }}</span>
-                </a>
-            </li>
-            @if(\App\Support\Module::enabled('backups'))
-            <li class="side-tree">
-                <a class="side-link {{ request()->routeIs('admin.backups.*') ? 'active' : '' }}" href="{{ route('admin.backups.index') }}">
-                    <i class="side-icon bi bi-database"></i>
-                    <span>{{ __('messages.staff.backups') }}</span>
-                </a>
-            </li>
-            @endif
             @if(\App\Support\Module::enabled('language'))
             <li class="side-tree">
                 <a class="side-link {{ request()->routeIs('admin.languages.*') ? 'active' : '' }}" href="{{ route('admin.languages.index') }}">
@@ -421,19 +405,3 @@
     </div>
 </aside>
 
-{{-- Sidebar live filter (no dependency on main.js) --}}
-<script>
-(function () {
-    var input = document.getElementById('mc-menu-search');
-    if (!input) return;
-    input.addEventListener('input', function () {
-        var q = input.value.trim().toLowerCase();
-        document.querySelectorAll('.admin-sidebar .side-tree').forEach(function (tree) {
-            if (!q) { tree.style.display = ''; return; }
-            var hit = (tree.textContent || '').toLowerCase().indexOf(q) !== -1;
-            tree.style.display = hit ? '' : 'none';
-            if (hit) tree.classList.add('is-expanded');
-        });
-    });
-})();
-</script>

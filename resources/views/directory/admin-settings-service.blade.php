@@ -41,21 +41,23 @@
                 <label>Description</label>
                 <textarea name="emergency_description" class="form-control" rows="4">{{ old('emergency_description', $serviceSetting->emergency_description ?? '') }}</textarea>
             </div>
-            <div class="mc-f">
-                <label>Phone</label>
-                <input type="text" name="emergency_phone" class="form-control" value="{{ old('emergency_phone', $serviceSetting->emergency_phone ?? '') }}" placeholder="+821-456-789">
-            </div>
-            <div class="mc-f">
-                <label>Email</label>
-                <input type="email" name="emergency_email" class="form-control" value="{{ old('emergency_email', $serviceSetting->emergency_email ?? '') }}" placeholder="hello@info.com">
-            </div>
-            <div class="mc-f full">
-                <label>Image</label>
-                @if(!empty($serviceSetting->emergency_image))
-                    <img src="{{ asset('storage/' . $serviceSetting->emergency_image) }}" class="mc-imgprev mb-2" alt="">
-                @endif
-                <input type="file" name="emergency_image" class="form-control">
-                @error('emergency_image') <small class="text-red-t text-xs">{{ $message }}</small> @enderror
+            <div class="col-span-2 grid grid-cols-1 gap-x-4 gap-y-3.5 lg:grid-cols-3">
+                <div class="mc-f">
+                    <label>Phone</label>
+                    <input type="text" name="emergency_phone" class="form-control" value="{{ old('emergency_phone', $serviceSetting->emergency_phone ?? '') }}" placeholder="+821-456-789">
+                </div>
+                <div class="mc-f">
+                    <label>Email</label>
+                    <input type="email" name="emergency_email" class="form-control" value="{{ old('emergency_email', $serviceSetting->emergency_email ?? '') }}" placeholder="hello@info.com">
+                </div>
+                <div class="mc-f">
+                    <label>Image</label>
+                    <input type="file" name="emergency_image" class="form-control">
+                    @if(!empty($serviceSetting->emergency_image))
+                        <img src="{{ asset('storage/' . $serviceSetting->emergency_image) }}" class="mc-imgprev mt-2" alt="">
+                    @endif
+                    @error('emergency_image') <small class="text-red-t text-xs">{{ $message }}</small> @enderror
+                </div>
             </div>
         </div>
     </section>

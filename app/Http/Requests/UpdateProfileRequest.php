@@ -29,6 +29,7 @@ class UpdateProfileRequest extends FormRequest
             'gender' => ['nullable', 'in:male,female,other'],
             'blood_group' => ['nullable', 'string', 'max:10'],
             'address' => ['nullable', 'string', 'max:1000'],
+            'chronic_conditions' => ['nullable', 'string', 'max:2000'],
             'profile_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'password' => ['nullable', 'string', 'confirmed', Password::min(12)->letters()->mixedCase()->numbers()->symbols()],
         ];

@@ -20,34 +20,32 @@
     <div class="mb-3 rounded-lg bg-red-bg px-4 py-3 text-sm text-red-t">{{ session('error') }}</div>
 @endif
 
-<div class="mc-ecg"><span>Live register</span><span>{{ $requests->total() }} requests</span></div>
-
-<form action="{{ route('admin.blood-requests.index') }}" method="GET" class="mc-bar">
-    <div class="mc-search" style="flex:1">
-        <i class="bi bi-search text-faint"></i>
-        <input type="search" name="search" placeholder="Search patient…" value="{{ request('search') }}" autocomplete="off" aria-label="Search requests">
-    </div>
-    <select name="blood_group_id" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by blood group">
-        <option value="">All groups</option>
-        @foreach($bloodGroups as $group)
-            <option value="{{ $group->id }}" @selected(request('blood_group_id') == $group->id)>{{ $group->name }}</option>
-        @endforeach
-    </select>
-    <select name="urgency" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by urgency">
-        <option value="">All urgencies</option>
-        <option value="normal" @selected(request('urgency') === 'normal')>Normal</option>
-        <option value="urgent" @selected(request('urgency') === 'urgent')>Urgent</option>
-        <option value="emergency" @selected(request('urgency') === 'emergency')>Emergency</option>
-    </select>
-    <select name="status" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by status">
-        <option value="">All statuses</option>
-        @foreach(['pending', 'approved', 'partially_approved', 'fulfilled', 'rejected', 'cancelled'] as $s)
-            <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst(str_replace('_', ' ', $s)) }}</option>
-        @endforeach
-    </select>
-</form>
-
 <div class="mc-card">
+    <form action="{{ route('admin.blood-requests.index') }}" method="GET" class="mc-bar">
+        <div class="mc-ecg"><span>Live register</span><span>{{ $requests->total() }} requests</span></div>
+        <div class="mc-search" style="flex:1">
+            <i class="bi bi-search text-faint"></i>
+            <input type="search" name="search" placeholder="Search patient…" value="{{ request('search') }}" autocomplete="off" aria-label="Search requests">
+        </div>
+        <select name="blood_group_id" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by blood group">
+            <option value="">All groups</option>
+            @foreach($bloodGroups as $group)
+                <option value="{{ $group->id }}" @selected(request('blood_group_id') == $group->id)>{{ $group->name }}</option>
+            @endforeach
+        </select>
+        <select name="urgency" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by urgency">
+            <option value="">All urgencies</option>
+            <option value="normal" @selected(request('urgency') === 'normal')>Normal</option>
+            <option value="urgent" @selected(request('urgency') === 'urgent')>Urgent</option>
+            <option value="emergency" @selected(request('urgency') === 'emergency')>Emergency</option>
+        </select>
+        <select name="status" onchange="this.form.submit()" class="mc-sel" aria-label="Filter by status">
+            <option value="">All statuses</option>
+            @foreach(['pending', 'approved', 'partially_approved', 'fulfilled', 'rejected', 'cancelled'] as $s)
+                <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst(str_replace('_', ' ', $s)) }}</option>
+            @endforeach
+        </select>
+    </form>
     <div class="overflow-x-auto">
         <table class="mc-tbl">
             <thead>

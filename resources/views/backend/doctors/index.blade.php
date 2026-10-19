@@ -21,16 +21,14 @@
     <div class="mb-3 rounded-lg bg-red-bg px-4 py-3 text-sm text-red-t">{{ session('error') }}</div>
 @endif
 
-<div class="mc-ecg"><span>Live register</span><span>{{ $doctors->total() }} records</span></div>
-
-<div class="mc-bar">
-    <form action="{{ route('admin.doctors.index') }}" method="GET" class="mc-search flex-1">
-        <i class="bi bi-search text-faint"></i>
-        <input type="text" name="search" placeholder="Search doctor…" value="{{ request('search') }}" autocomplete="off">
-    </form>
-</div>
-
 <div class="mc-card">
+    <div class="mc-bar">
+        <div class="mc-ecg"><span>Live register</span><span>{{ $doctors->total() }} records</span></div>
+        <form action="{{ route('admin.doctors.index') }}" method="GET" class="mc-search flex-1">
+            <i class="bi bi-search text-faint"></i>
+            <input type="text" name="search" placeholder="Search doctor…" value="{{ request('search') }}" autocomplete="off">
+        </form>
+    </div>
     <div class="table-responsive">
         <table class="mc-tbl">
             <thead>

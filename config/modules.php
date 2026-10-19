@@ -75,6 +75,7 @@ return [
     'sms' => env('MODULE_SMS', true),
 
     'publishing' => env('MODULE_PUBLISHING', true),
+    'reviews' => env('MODULE_REVIEWS', true),
     'directory' => env('MODULE_DIRECTORY', true),
     'billing' => env('MODULE_BILLING', true),
     'prescriptions' => env('MODULE_PRESCRIPTIONS', true),

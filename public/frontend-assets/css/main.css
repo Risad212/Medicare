@@ -214,6 +214,10 @@ input:-webkit-autofill:focus {
   color: #fff;
 }
 
+.topbar .container {
+  padding-right: 24px;
+}
+
 .topbar .topbar-wrap {
   display: flex;
   justify-content: space-between;
@@ -237,6 +241,34 @@ input:-webkit-autofill:focus {
 .topbar .topbar-wrap .topbar-left span:last-child svg {
   width: 25px;
   margin-right: 5px;
+}
+
+.topbar .topbar-wrap .topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar .topbar-wrap .topbar-right .topbar-lang {
+  background: #03856f;
+  border: none;
+  border-radius: 20px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.4;
+  outline: none;
+  padding: 4px 10px;
+  transition: background 300ms;
+}
+
+.topbar .topbar-wrap .topbar-right .topbar-lang:hover {
+  background: #026e5c;
+}
+
+.topbar .topbar-wrap .topbar-right .topbar-lang option {
+  background: #fff;
+  color: #1f2937;
 }
 
 .topbar .topbar-wrap .topbar-right .socail-list {
@@ -588,7 +620,8 @@ input:-webkit-autofill:focus {
   text-align: center;
 }
 
-.slider-section .title h2 {
+.slider-section .title h2,
+.slider-section .title h1 {
   font-size: 40px;
   font-weight: 700;
   color: #fff;
@@ -2303,7 +2336,8 @@ input:-webkit-autofill:focus {
 .appoinment-page .form-wrap {
   background: #e2f4f1;
   padding: 50px;
-  width: 50%;
+  width: 70%;
+  max-width: 880px;
   margin: auto;
 }
 
@@ -2311,7 +2345,7 @@ input:-webkit-autofill:focus {
 .appoinment-page .form-wrap select {
   width: 100%;
   height: 55px;
-  padding: 0 15px;
+  padding: 0 38px 0 15px;
   font-weight: 400;
   font-size: 14px;
   outline: none;
@@ -2341,6 +2375,9 @@ input:-webkit-autofill:focus {
   .appoinment-page .form-wrap {
     width: 100%;
     padding: 25px;
+  }
+  .appoinment-page .form-wrap .row > [class*="col-"] + .mb-1 {
+    margin-bottom: 12px;
   }
 }
 
@@ -2982,4 +3019,100 @@ textarea {
 /* ---- Language switcher: kill Bootstrap caret dash under label ---- */
 .header .navbar-nav .nav-item.dropdown .nav-link.dropdown-toggle::after {
     content: none;
+}
+
+/* ---- Nav "More" dropdown (FAQ + Gallery) ---- */
+.header .navbar-nav .nav-item.mc-nav-more .nav-link.dropdown-toggle::after {
+    content: "";
+    width: auto;
+    height: auto;
+    background: none;
+    position: static;
+    left: auto;
+    bottom: auto;
+    display: inline-block;
+    margin-left: .3em;
+    border-top: .32em solid;
+    border-right: .32em solid transparent;
+    border-bottom: 0;
+    border-left: .32em solid transparent;
+}
+.header .navbar-nav .nav-item.mc-nav-more.show > .nav-link.dropdown-toggle::after {
+    transform: rotate(180deg);
+}
+.mc-nav-dropdown {
+    min-width: 190px;
+    padding: .45rem;
+    border: 1px solid #e3e9f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(22, 32, 43, .12);
+    background: #fff;
+}
+.mc-nav-dropdown .dropdown-item {
+    color: #2c2d3f;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: capitalize;
+    padding: 9px 14px;
+    border-radius: 8px;
+    transition: background .3s, color .3s;
+}
+.mc-nav-dropdown .dropdown-item:hover,
+.mc-nav-dropdown .dropdown-item:focus {
+    background: #f2f5f9;
+    color: var(--primary-color);
+}
+
+/* ---- Screen-reader-only labels (form a11y, Stage 1) ---- */
+.mc-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---- Stage 1: guard against horizontal page overflow ---- */
+html,
+body {
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+/* ---- Stage 1: touch-friendly targets on small screens ---- */
+@media only screen and (max-width: 768px) {
+    .header .navbar-nav .nav-item .nav-link {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 10px 15px;
+    }
+    .header .navbar-nav .nav-item .nav-link::after {
+        bottom: 6px;
+    }
+    .nav-button a {
+        padding: 10px 16px !important;
+    }
+    .mc-nav-dropdown .dropdown-item {
+        padding: 13px 15px;
+    }
+    .topbar-lang {
+        padding: 8px 12px;
+    }
+    .socail-list .item {
+        padding: 10px 12px;
+    }
+    .slider-section .btn-title {
+        padding: 14px 26px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .slider-section {
+        height: 62vh;
+    }
 }

@@ -61,6 +61,12 @@ class Doctor extends Model
         return $this->hasMany(DoctorOffDay::class);
     }
 
+    public function approvedReviews(): HasMany
+    {
+        return $this->hasMany(DoctorReview::class)
+            ->where('status', DoctorReview::STATUS_APPROVED);
+    }
+
     /**
      * Whether the doctor has any configured schedule rows at all. An
      * entirely unconfigured doctor stays "all slots open" so the booking
