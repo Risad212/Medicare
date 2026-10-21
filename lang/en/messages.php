@@ -368,4 +368,20 @@ return [
         'rating_of' => ':avg out of 5',
         'based_on' => 'Based on :count reviews',
     ],
+    'doctor_profile' => [
+        'degree' => 'Degree',
+        'department' => 'Department',
+        'services' => 'Treatments & services',
+        'availability' => 'Availability',
+        'phone' => 'Phone',
+    ],
+    'service_detail' => [
+        'doctors_heading' => 'Doctors in this department',
+        'view_profile' => 'View profile',
+    ],
+    'trust' => [
+        'editorial_team' => 'MediCare editorial team',
+        'verified_patient' => 'Verified patient',
+        'by_author' => 'By :name',
+    ],
 ];

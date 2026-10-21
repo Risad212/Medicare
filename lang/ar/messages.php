@@ -313,4 +313,20 @@ return [
         'rating_of' => ':avg من 5',
         'based_on' => 'بناءً على :count مراجعات',
     ],
+    'doctor_profile' => [
+        'degree' => 'الدرجة العلمية',
+        'department' => 'القسم',
+        'services' => 'الخدمات العلاجية',
+        'availability' => 'أوقات التوفر',
+        'phone' => 'الهاتف',
+    ],
+    'service_detail' => [
+        'doctors_heading' => 'أطباء هذا القسم',
+        'view_profile' => 'عرض الملف',
+    ],
+    'trust' => [
+        'editorial_team' => 'فريق التحرير في MediCare',
+        'verified_patient' => 'مريض موثّق',
+        'by_author' => 'بقلم :name',
+    ],
 ];

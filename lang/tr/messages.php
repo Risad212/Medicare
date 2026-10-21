@@ -300,4 +300,20 @@ return [
         'rating_of' => '5 üzerinden :avg',
         'based_on' => ':count değerlendirmeye dayalı',
     ],
+    'doctor_profile' => [
+        'degree' => 'Diploma',
+        'department' => 'Bölüm',
+        'services' => 'Tedavi ve hizmetler',
+        'availability' => 'Muayene saatleri',
+        'phone' => 'Telefon',
+    ],
+    'service_detail' => [
+        'doctors_heading' => 'Bu bölümdeki hekimler',
+        'view_profile' => 'Profili görüntüle',
+    ],
+    'trust' => [
+        'editorial_team' => 'MediCare editör ekibi',
+        'verified_patient' => 'Doğrulanmış hasta',
+        'by_author' => ':name tarafından',
+    ],
 ];

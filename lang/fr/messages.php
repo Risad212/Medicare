@@ -313,4 +313,20 @@ return [
         'rating_of' => ':avg sur 5',
         'based_on' => 'Basé sur :count avis',
     ],
+    'doctor_profile' => [
+        'degree' => 'Diplôme',
+        'department' => 'Département',
+        'services' => 'Soins et services',
+        'availability' => 'Disponibilité',
+        'phone' => 'Téléphone',
+    ],
+    'service_detail' => [
+        'doctors_heading' => 'Médecins de ce département',
+        'view_profile' => 'Voir le profil',
+    ],
+    'trust' => [
+        'editorial_team' => 'Équipe éditoriale MediCare',
+        'verified_patient' => 'Patient vérifié',
+        'by_author' => 'Par :name',
+    ],
 ];

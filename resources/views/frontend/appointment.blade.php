@@ -156,7 +156,18 @@
 
 <script>
     window.getSlotsUrl = "{{ route('get.slots') }}";
-    const consultationMode = document.getElementById('consultation_mode');
+    // Deep-link preselect: /appointment?doctor_id=N selects the doctor the
+    // visitor came from (services page, referrers). Stale/unknown ids are
+    // ignored; a value the server re-populated (old input) always wins.
+    (function () {
+        var select = document.getElementById('doctor_id');
+        if (!select || select.value !== '') return;
+        var preselect = new URLSearchParams(window.location.search).get('doctor_id');
+        if (preselect && select.querySelector('option[value="' + preselect + '"]')) {
+            select.value = preselect;
+        }
+    })();
+</script>    const consultationMode = document.getElementById('consultation_mode');
     const updatePatientEmailRequirement = function () {
         const email = document.getElementById('patient_email');
         if (email) {

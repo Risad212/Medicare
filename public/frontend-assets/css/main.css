@@ -3116,3 +3116,73 @@ body {
         height: 62vh;
     }
 }
+
+/* ---- Stage 2 (T6): doctor profile facts list ---- */
+.mc-doctor-facts {
+    margin-top: 18px;
+    margin-bottom: 0;
+}
+.mc-doctor-facts .mc-fact {
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f4f8;
+}
+.mc-doctor-facts .mc-fact:last-child {
+    border-bottom: 0;
+}
+.mc-doctor-facts dt {
+    color: #7e8a9a;
+    font-size: 14px;
+    font-weight: 600;
+}
+.mc-doctor-facts dd {
+    color: #2c2d3f;
+    font-size: 14px;
+    word-break: break-word;
+}
+
+/* ---- Stage 2 (T5): service-department doctor cards ---- */
+.service-section.hospital-doctors {
+    padding: 60px 0 30px;
+}
+.service-section.hospital-doctors .title-head {
+    text-align: center;
+    margin: 0 auto 10px;
+}
+.service-section.hospital-doctors .doctor-card {
+    text-align: center;
+    height: 100%;
+}
+.mc-dept-links a {
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    color: #fff;
+    transition: 0.4s;
+}
+.mc-dept-links a:hover {
+    background: transparent;
+    color: var(--primary-color);
+}
+
+/* ---- Stage 3 (T7): trust blocks ---- */
+.mc-verified-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    background: #ecfdf5;
+    border: 1px solid #99f6e4;
+    color: #0f766e;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.mc-author-role {
+    margin-left: 8px;
+    color: #7e8a9a;
+    font-size: 13px;
+}

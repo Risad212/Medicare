@@ -299,4 +299,20 @@ return [
         'rating_of' => ':avg su 5',
         'based_on' => 'Basato su :count recensioni',
     ],
+    'doctor_profile' => [
+        'degree' => 'Titoli di studio',
+        'department' => 'Reparto',
+        'services' => 'Servizi e trattamenti',
+        'availability' => 'Disponibilità',
+        'phone' => 'Telefono',
+    ],
+    'service_detail' => [
+        'doctors_heading' => 'Medici di questo reparto',
+        'view_profile' => 'Vedi profilo',
+    ],
+    'trust' => [
+        'editorial_team' => 'Redazione MediCare',
+        'verified_patient' => 'Paziente verificato',
+        'by_author' => 'Di :name',
+    ],
 ];

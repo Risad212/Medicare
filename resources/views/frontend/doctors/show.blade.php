@@ -22,34 +22,35 @@
 
             <div class="col-lg-8">
                 <div class="doctor-info">
+                    @php
+                        $facts = [
+                            [__('messages.doctor_profile.degree'), (string) $doctor->degree],
+                            [__('messages.doctor_profile.department'), (string) $doctor->department],
+                            [__('messages.doctor_profile.services'), (string) $doctor->services],
+                            [__('messages.doctor_profile.availability'), (string) $doctor->availability],
+                            [__('messages.doctor_profile.phone'), (string) $doctor->phone],
+                        ];
+                        $hasFacts = collect($facts)->contains(fn (array $fact) => trim($fact[1]) !== '');
+                    @endphp
 
-                    <h4 class="doctor-name" data-notranslate>{{ $doctor->name }}</h4>
+                    <h2 class="doctor-name" data-notranslate>{{ $doctor->name }}</h2>
 
-                    <h6 class="small">
-                        <strong>Degree:</strong> <span data-notranslate>{{ $doctor->degree }}</span>
-                    </h6>
+                    @if(trim((string) $doctor->specialist) !== '')
+                        <p class="doctor-speacilist" data-notranslate>{{ $doctor->specialist }}</p>
+                    @endif
 
-                    <h5 class="small">
-                        <strong>Department:</strong> <span data-notranslate>{{ $doctor->department }}</span>
-                    </h5>
-
-                    <h5 class="small mb-3">
-                        <strong>Specialist:</strong> <span data-notranslate>{{ $doctor->specialist }}</span>
-                    </h5>
-
-                    <div class="mb-2">
-                        <strong>Services:</strong>
-                        <span data-notranslate>{{ $doctor->services }}</span>
-                    </div>
-
-                    <h5 class="doctor-availability">
-                        <strong>Availability:</strong> <span data-notranslate>{{ $doctor->availability }}</span>
-                    </h5>
-
-                    <h5 class="doctor-availability">
-                        <strong>Phone:</strong> <span data-notranslate>{{ $doctor->phone }}</span>
-                    </h5>
-
+                    @if($hasFacts)
+                        <dl class="mc-doctor-facts">
+                            @foreach($facts as [$label, $value])
+                                @if(trim($value) !== '')
+                                    <div class="mc-fact row">
+                                        <dt class="col-5 col-sm-4">{{ $label }}</dt>
+                                        <dd class="col-7 col-sm-8 mb-0" data-notranslate>{{ $value }}</dd>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </dl>
+                    @endif
                 </div>
             </div>
 
@@ -74,7 +75,12 @@
                                         <strong>{{ $review->user?->name ?? __('messages.reviews.anonymous') }}</strong>
                                         <span class="text-warning" data-notranslate>{{ str_repeat('★', (int) $review->rating) }}</span>
                                     </div>
-                                    <div class="small text-muted mb-2">{{ $review->created_at->format('d M Y') }}</div>
+                                    <div class="small text-muted mb-2">
+                                        {{ $review->created_at->format('d M Y') }}
+                                        {{-- doctor_reviews.appointment_id is a required unique FK
+                                             created only by the verified-patient review flow. --}}
+                                        <span class="mc-verified-badge">{{ __('messages.trust.verified_patient') }}</span>
+                                    </div>
                                     @if($review->comment)
                                         <p class="mb-0 small">{{ $review->comment }}</p>
                                     @endif
@@ -250,6 +256,30 @@
         </div>
     </div>
 </section>
+@php
+    // Physician: every field comes from the stored doctor row; props stay
+    // off the schema when the source column is empty (no invented data).
+    $physician = ['@type' => 'Physician', 'name' => $doctor->name, 'url' => route('doctor.show', $doctor->id)];
+    if (trim((string) $doctor->department) !== '') {
+        $physician['medicalSpecialty'] = $doctor->department;
+    }
+    if (trim((string) $doctor->image) !== '') {
+        $physician['image'] = asset('storage/'.$doctor->image);
+    }
+    if (trim((string) $doctor->phone) !== '') {
+        $physician['telephone'] = $doctor->phone;
+    }
+    if (($ratingSummary['count'] ?? 0) > 0) {
+        $physician['aggregateRating'] = [
+            '@type' => 'AggregateRating',
+            'ratingValue' => $ratingSummary['avg'],
+            'reviewCount' => (int) $ratingSummary['count'],
+        ];
+    }
+    $jsonld = ['@context' => 'https://schema.org', '@graph' => [$physician]];
+@endphp
+@include('frontend.components.seo-jsonld', ['jsonld' => $jsonld])
+
 <script>
     var getSlotsUrl = "{{ route('get.slots') }}";
     (function () {

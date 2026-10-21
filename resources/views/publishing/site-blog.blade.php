@@ -30,9 +30,11 @@
 
                   <div class="card-body">
                      <div class="cart-top">
+                        @if(trim((string) $blog->author) !== '')
                         <span class="author">
-                           By {{ $blog->author ?? 'Unknown' }}
+                           {{ __('messages.trust.by_author', ['name' => $blog->author]) }}
                         </span>
+                        @endif
                         <span class="date">
                            {{ isset($blog->created_at) ? $blog->created_at->format('M, d Y') : '' }}
                         </span>

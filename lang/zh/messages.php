@@ -313,4 +313,20 @@ return [
         'rating_of' => '满分 5 分：:avg',
         'based_on' => '基于 :count 条评价',
     ],
+    'doctor_profile' => [
+        'degree' => '学历资质',
+        'department' => '科室',
+        'services' => '诊疗项目',
+        'availability' => '出诊时间',
+        'phone' => '电话',
+    ],
+    'service_detail' => [
+        'doctors_heading' => '本科室医生',
+        'view_profile' => '查看简介',
+    ],
+    'trust' => [
+        'editorial_team' => 'MediCare 编辑团队',
+        'verified_patient' => '已验证的患者',
+        'by_author' => '作者：:name',
+    ],
 ];

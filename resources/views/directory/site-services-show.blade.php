@@ -30,12 +30,45 @@
                         @endforeach
                     </div>
 
-                    <a class="detail-btn" href="{{ route('appointment') }}">Book Appointment</a>
+                    <a class="detail-btn" href="{{ route('appointment') }}">{{ __('messages.public.book_appointment') }}</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+@if($departmentDoctors->isNotEmpty())
+<!--========== Doctors in this Department ==========-->
+<section class="service-section hospital-doctors">
+    <div class="container">
+        <div class="title-head">
+            <h2 class="title">{{ __('messages.service_detail.doctors_heading') }}</h2>
+        </div>
+
+        <div class="row gy-4">
+            @foreach($departmentDoctors as $doctor)
+                <div class="col-lg-4 col-md-6">
+                    <div class="doctor-card mc-dept-doctor">
+                        <div class="card-img">
+                            <img class="img-fluid" src="{{ asset('storage/'.($doctor->image ?? '')) }}" alt="{{ $doctor->name ?? 'Doctor' }}">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title" data-notranslate>{{ $doctor->name }}</h3>
+                            @if(trim((string) $doctor->specialist) !== '')
+                                <span class="speacility" data-notranslate>{{ $doctor->specialist }}</span>
+                            @endif
+                            <div class="mc-dept-links">
+                                <a href="{{ route('doctor.show', $doctor->id) }}">{{ __('messages.service_detail.view_profile') }}</a>
+                                <a href="{{ route('appointment', ['doctor_id' => $doctor->id]) }}">{{ __('messages.public.book_appointment') }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
 
 @if(isset($others) && $others->isNotEmpty())
 <!--========== Other Services ==========-->
@@ -49,5 +82,22 @@
     </div>
 </section>
 @endif
+
+@php
+    // MedicalService: only real stored fields; provider from real settings.
+    $mcSettings = App\Models\GeneralSetting::first();
+    $medicalService = [];
+    if (trim((string) $service->title) !== '') {
+        $medicalService = ['@type' => 'MedicalService', 'name' => $service->title, 'url' => route('service.show', $service->slug)];
+        if (trim((string) $service->description) !== '') {
+            $medicalService['description'] = Str::limit(strip_tags((string) $service->description), 300);
+        }
+        if ($mcSettings && trim((string) $mcSettings->site_name) !== '') {
+            $medicalService['provider'] = ['@type' => 'Organization', 'name' => $mcSettings->site_name];
+        }
+    }
+    $jsonld = $medicalService ? ['@context' => 'https://schema.org', '@graph' => [$medicalService]] : [];
+@endphp
+@include('frontend.components.seo-jsonld', ['jsonld' => $jsonld])
 
 @endsection

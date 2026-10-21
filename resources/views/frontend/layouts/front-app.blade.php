@@ -18,6 +18,34 @@
         html[dir="rtl"] body { direction: rtl; text-align: right; }
         html[dir="rtl"] .dropdown-menu { text-align: right; }
     </style>
+
+    @php
+        // Organization + WebSite for every frontend page. Each block is
+        // emitted only when its required values exist in real settings —
+        // nothing is invented to fill schema fields.
+        $mcSettings = App\Models\GeneralSetting::first();
+        $mcOrg = [];
+        if ($mcSettings && trim((string) $mcSettings->site_name) !== '') {
+            $mcOrg = ['@type' => 'Organization', 'name' => $mcSettings->site_name, 'url' => route('home')];
+            if (trim((string) $mcSettings->logo) !== '') {
+                $mcOrg['logo'] = asset('storage/'.$mcSettings->logo);
+            }
+            if (trim((string) $mcSettings->address) !== '') {
+                $mcOrg['address'] = ['@type' => 'PostalAddress', 'streetAddress' => $mcSettings->address];
+            }
+            if (trim((string) $mcSettings->phone) !== '') {
+                $mcOrg['contactPoint'] = ['@type' => 'ContactPoint', 'contactType' => 'customer service', 'telephone' => $mcSettings->phone];
+            }
+        }
+        $mcJsonLd = $mcOrg ? [
+            '@context' => 'https://schema.org',
+            '@graph' => [
+                $mcOrg,
+                ['@type' => 'WebSite', 'name' => $mcSettings->site_name, 'url' => route('home')],
+            ],
+        ] : [];
+    @endphp
+    @include('frontend.components.seo-jsonld', ['jsonld' => $mcJsonLd])
 </head>
 
 <body>

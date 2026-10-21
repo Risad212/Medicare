@@ -300,4 +300,20 @@ return [
         'rating_of' => ':avg de 5',
         'based_on' => 'Basado en :count reseñas',
     ],
+    'doctor_profile' => [
+        'degree' => 'Título',
+        'department' => 'Departamento',
+        'services' => 'Servicios y tratamientos',
+        'availability' => 'Horario de consulta',
+        'phone' => 'Teléfono',
+    ],
+    'service_detail' => [
+        'doctors_heading' => 'Médicos de este departamento',
+        'view_profile' => 'Ver perfil',
+    ],
+    'trust' => [
+        'editorial_team' => 'Equipo editorial de MediCare',
+        'verified_patient' => 'Paciente verificado',
+        'by_author' => 'Por :name',
+    ],
 ];

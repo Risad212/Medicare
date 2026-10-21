@@ -3,6 +3,7 @@
 namespace App\Modules\Directory\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -24,7 +25,7 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        return view('directory.admin-services.create');
+        return view('directory.admin-services.create', $this->departments());
     }
 
     /**
@@ -34,6 +35,7 @@ class ServiceController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'department' => 'nullable|string|max:100',
             'description' => 'nullable|string|max:2000',
             'button_text' => 'nullable|string|max:100',
             'button_url' => 'nullable|string|max:255',
@@ -58,7 +60,20 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        return view('directory.admin-services.edit', compact('service'));
+        return view('directory.admin-services.edit', array_merge(
+            ['service' => $service],
+            $this->departments(),
+        ));
+    }
+
+    /**
+     * Department names for the service form's select. Any of them may be
+     * assigned to a service; the public page then matches doctors whose
+     * `department` text equals the chosen name.
+     */
+    private function departments(): array
+    {
+        return ['departments' => Department::orderBy('name')->get(['id', 'name'])];
     }
 
     /**
@@ -68,6 +83,7 @@ class ServiceController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'department' => 'nullable|string|max:100',
             'description' => 'nullable|string|max:2000',
             'button_text' => 'nullable|string|max:100',
             'button_url' => 'nullable|string|max:255',

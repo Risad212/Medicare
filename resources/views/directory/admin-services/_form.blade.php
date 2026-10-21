@@ -38,6 +38,21 @@
                         @error('title') <small class="text-red-t text-xs">{{ $message }}</small> @enderror
                     </div>
                     <div class="mc-f full">
+                        <label>Department</label>
+                        @if(!empty($departments) && $departments->count())
+                            <select name="department" class="form-control">
+                                <option value="">— Not linked to a department —</option>
+                                @foreach($departments as $department)
+                                    <option value="{{ $department->name }}" @selected(old('department', $editing ? $service->department : '') === $department->name)>{{ $department->name }}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-gray-400">Public service page lists doctors of this department, when any are active.</small>
+                        @else
+                            <input type="text" name="department" class="form-control" placeholder="No departments yet — create one under Content" value="{{ old('department', $editing ? $service->department : '') }}" maxlength="100">
+                        @endif
+                        @error('department') <small class="text-red-t text-xs">{{ $message }}</small> @enderror
+                    </div>
+                    <div class="mc-f full">
                         <label>Description</label>
                         <textarea name="description" class="form-control" rows="8" placeholder="What this service covers… Use a blank line between paragraphs.">{{ old('description', $editing ? $service->description : '') }}</textarea>
                         @error('description') <small class="text-red-t text-xs">{{ $message }}</small> @enderror

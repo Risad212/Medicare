@@ -361,4 +361,20 @@ return [
         'rating_of' => '৫-এর মধ্যে :avg',
         'based_on' => ':count টি পর্যালোচনার ভিত্তিতে',
     ],
+    'doctor_profile' => [
+        'degree' => 'ডিগ্রি',
+        'department' => 'বিভাগ',
+        'services' => 'চিকিৎসা সেবা',
+        'availability' => 'সেবার সময়',
+        'phone' => 'ফোন',
+    ],
+    'service_detail' => [
+        'doctors_heading' => 'এই বিভাগের ডাক্তাররা',
+        'view_profile' => 'প্রোফাইল দেখুন',
+    ],
+    'trust' => [
+        'editorial_team' => 'মেডিকেয়ার এডিটরিয়াল টিম',
+        'verified_patient' => 'যাচাইকৃত রোগী',
+        'by_author' => 'লেখক: :name',
+    ],
 ];

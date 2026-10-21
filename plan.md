@@ -104,13 +104,50 @@ Each stage: edit → `php artisan view:cache && view:clear` → new tests → fu
 - [x] T4 appointment labels/attrs mirroring validation
 - [x] T3 small overflow audit patches (`hero` ≤768px, guard rule, button/nav/select hit-areas ≤768px)
 - [x] New `FrontendA11yTest` (2 tests) + full suite green — **VERIFIED 2026-10-19: 317/317 passed (1380 assertions); blade cache compiles**
-- [ ] Stage 2: T5/T6 (needs Input A check for doctor data columns)
-- [ ] Stage 3: T7 (needs Input B author convention decision)
-- [ ] Stage 4: T8 JSON-LD
-- [ ] Stage 5: T9 sweep + final report
+- [x] Stage 2: T5/T6 (needs Input A check for doctor data columns) — **RESOLVED 2026-10-21: doctors has populated `degree/department/specialist/services/availability/phone`; services had NO department relation → nullable `services.department` added (migration 2026_10_21_000001), admin form department select, demo Cardiology service linked**
+- [x] Stage 3: T7 (needs Input B author convention decision) — **Input B resolved per §6: stored `blogs.author` string surfaced (admin name at publish time / "MediCare Team"), never an invented clinician; verified reviewer = `doctor_reviews.appointment_id` FK (required+unique, patient-flow only)**
+- [x] Stage 4: T8 JSON-LD — partial `frontend/components/seo-jsonld.blade.php`; Org+WebSite in layout; Physician/MedicalService/BlogPosting/BreadcrumbList per page; all conditional on real data
+- [x] Stage 5: T9 sweep + final report — **337/337 passed, cache compiles, h1 audit 12/12 pages**
 
 ### Stage 1 verification record
 - `vendor/bin/phpunit` → **317 passed / 0 failed** (315 baseline + 2 new `FrontendA11yTest`)
 - `php artisan view:cache && view:clear` → compiles clean
 - H1 coverage: 10 breadcrumb pages + home first-slide title (+ appointment/profile/notifications via breadcrumb includes) = exactly one `<h1>` per page (test-enforced for 7 guest routes)
 - Appointment form: bound `mc-sr-only` labels on all 10 controls; `required` mirrors `AppointmentController::store`; age `min=0 max=120`; phone `inputmode=tel pattern maxlength=20`; autocompletes added; alert boxes get `role`/`aria-live`
+
+### Stage 2 verification record (2026-10-21)
+- `vendor/bin/phpunit` → **325 passed / 0 failed** (317 + 8 new `ServiceDoctorNavigationTest`); blade cache compiles
+- T5: `services.department` nullable string + fillable; admin `_form` select from `Department` names (free-text fallback when none exist); admin store/update validation `nullable|string|max:100`
+- T5: service detail lists "Doctors in this department" (`hospital-doctors` section) only when the linked department has active doctors; per-doctor "View profile" + booking deep-link `/appointment?doctor_id=N`
+- T5: appointment page `?doctor_id=` preselect via guarded JS (URLSearchParams; applies only to an empty select; stale ids ignored; server untouched)
+- T6: doctor detail rebuilt — `h2` name, specialist subtitle, `<dl class="mc-doctor-facts">` rows only for populated fields, `data-notranslate` kept on stored values, breadcrumb `h1` unchanged; empty-profile doctor renders no facts list (no invented text)
+- Seeder: demo Cardiology service linked to Cardiology department (dev DB patched too); other demo services stay unlinked to exercise the hidden path
+- New lang groups `doctor_profile.*` + `service_detail.*` added to **all 11** message files (translated); `LocalizationCoverageTest` parity unaffected
+
+### Stage 3 verification record (2026-10-21)
+- `frontend/doctors/show.blade.php` review cards: "Verified patient" badge on every review (`doctor_reviews.appointment_id` is a required unique FK, created only by the own-completed-appointment flow — no other review path exists)
+- `site-blogs-show.blade.php`: author meta item now conditional (`trim(author) !== ''`) with role label `trust.editorial_team`, stored `data-notranslate`
+- `site-blog.blade.php` list cards: "By :name" via `trust.by_author` key; removed invented `?? 'Unknown'` fallback
+- New lang group `trust.*` added to **all 11** files; badge/role CSS appended to `main.css`
+- `vendor/bin/phpunit` → trust stage local: 5/5 (`FrontendTrustTest`)
+
+### Stage 4 verification record (2026-10-21)
+- New partial `frontend/components/seo-jsonld.blade.php`: callers pass a pre-built array; payload printed `{!! !!}` only after `json_encode` with `JSON_HEX_TAG|AMP|APOS|QUOT` (cannot emit `</script>`)
+- Layout (`front-app`): `Organization` (name/logo/address/contactPoint when set) + `WebSite`, guarded by real `GeneralSetting` data
+- `breadcrumb.blade.php`: `BreadcrumbList` (Home → page title) on the 10 pages that include it
+- `doctor.show`: `Physician` (name/url/medicalSpecialty/image/telephone/aggregateRating — each present only when stored data exists)
+- `service.show`: `MedicalService` (title/limited description/provider from settings)
+- `blog.show`: `BlogPosting` (headline/dates/image = stored author/publisher) — blog post title demoted h1→h2 (both h1s violation; CSS class-based, unaffected)
+- `vendor/bin/phpunit` → **337 passed / 0 failed** (325 + 5 `FrontendTrustTest` + 7 `StructuredDataTest`)
+
+### Stage 5 verification record (2026-10-21)
+- Full `vendor/bin/phpunit` → **337 passed / 0 failed** (1549 assertions); `php artisan view:cache && view:clear` → compiles clean
+- Heading audit (12 public pages): exactly one `<h1>` everywhere; `h2` follows inside the page body (blog.show fixed from 2×h1); deep h4/h5 usage inside card/sidebar components is pre-existing template furniture, listed as follow-up polish
+- RTL: no `dir` changes made; JSON-LD sits in `<script>` + `data-notranslate` so auto-translate middleware cannot touch it
+- Viewport matrix (manual, per plan §6 — no browser automation in repo): checklist below; all CSS deltas are additive at `main.css` end and never alter base desktop rules
+  - 320px: topbar hidden by template design; nav links ≥44px (Stage 1 rule); `overflow-x: clip` guard active; dept doctor cards stack 1-col; facts list rows stack via col-5/col-7 (fits 320px)
+  - 375px / 600px: hero 62vh (Stage 1 pulse); service detail single column; "Book an Appointment" CTA full-width tap ≥44px
+  - 768px: tablet breakpoint (Stage 1 nav/tablet rules); doctor facts 4/8 split; verified badge inline fits
+  - 1024px / 1440px: unchanged desktop look (only additive mc- rules loaded)
+  - RTL Arabic spot check: `dir` untouched; facts list uses row grid that flips with RTL body direction (Bootstrap row-based, no fixed lefts)
+- Plan complete: T1–T9 all implemented and verified; suite totals 317 → 337 across the whole plan

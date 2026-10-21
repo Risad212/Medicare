@@ -300,4 +300,20 @@ return [
         'rating_of' => ':avg из 5',
         'based_on' => 'На основе :count отзывов',
     ],
+    'doctor_profile' => [
+        'degree' => 'Квалификация',
+        'department' => 'Отделение',
+        'services' => 'Медицинские услуги',
+        'availability' => 'Часы приёма',
+        'phone' => 'Телефон',
+    ],
+    'service_detail' => [
+        'doctors_heading' => 'Врачи этого отделения',
+        'view_profile' => 'Профиль врача',
+    ],
+    'trust' => [
+        'editorial_team' => 'Редакционная команда MediCare',
+        'verified_patient' => 'Проверенный пациент',
+        'by_author' => 'Автор: :name',
+    ],
 ];

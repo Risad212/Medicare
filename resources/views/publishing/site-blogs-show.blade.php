@@ -34,12 +34,15 @@
                                 </li>
                                 <li class="item">
                                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="15" height="15" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M256 0c-74.439 0-135 60.561-135 135s60.561 135 135 135 135-60.561 135-135S330.439 0 256 0zM423.966 358.195C387.006 320.667 338.009 300 286 300h-60c-52.008 0-101.006 20.667-137.966 58.195C51.255 395.539 31 444.833 31 497c0 8.284 6.716 15 15 15h420c8.284 0 15-6.716 15-15 0-52.167-20.255-101.461-57.034-138.805z" fill="#05d3b0" opacity="1" data-original="#000000" class=""></path></g></svg>
-                                    {{ $blog->author }}
+                                    @if(trim((string) $blog->author) !== '')
+                                        <span data-notranslate>{{ $blog->author }}</span>
+                                        <span class="mc-author-role">{{ __('messages.trust.editorial_team') }}</span>
+                                    @endif
                                 </li>
                             </ul>
                         </div>
                         <div class="blog-title-info">
-                            <h1 class="blog-title">{{ $blog->title }}</h1>
+                            <h2 class="blog-title">{{ $blog->title }}</h2>
                             <p class="blog-discription">{!! \App\Modules\Publishing\Services\BlogSanitizer::sanitize($blog->content ?? '') !!}
                             </p>
                         </div>
@@ -186,5 +189,40 @@
             </div>
         </div>
     </section>
+
+@php
+    // BlogPosting from the stored post row. The author block reflects the
+    // real DB author (admin name at publish time / editorial team), never
+    // an invented clinician.
+    $mcSettings = App\Models\GeneralSetting::first();
+    $blogPosting = [];
+    if (trim((string) $blog->title) !== '') {
+        $blogPosting = [
+            '@type' => 'BlogPosting',
+            'headline' => $blog->title,
+            'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => route('blog.show', $blog->slug)],
+        ];
+        if ($blog->created_at) {
+            $blogPosting['datePublished'] = $blog->created_at->toIso8601String();
+        }
+        if ($blog->updated_at && $blog->created_at && ! $blog->updated_at->equalTo($blog->created_at)) {
+            $blogPosting['dateModified'] = $blog->updated_at->toIso8601String();
+        }
+        if (trim((string) $blog->image) !== '') {
+            $blogPosting['image'] = asset('storage/'.$blog->image);
+        }
+        if (trim((string) $blog->author) !== '') {
+            $blogPosting['author'] = ['@type' => 'Organization', 'name' => $blog->author];
+        }
+        if ($mcSettings && trim((string) $mcSettings->site_name) !== '') {
+            $blogPosting['publisher'] = ['@type' => 'Organization', 'name' => $mcSettings->site_name];
+            if (trim((string) $mcSettings->logo) !== '') {
+                $blogPosting['publisher']['logo'] = ['@type' => 'ImageObject', 'url' => asset('storage/'.$mcSettings->logo)];
+            }
+        }
+    }
+    $jsonld = $blogPosting ? ['@context' => 'https://schema.org', '@graph' => [$blogPosting]] : [];
+@endphp
+@include('frontend.components.seo-jsonld', ['jsonld' => $jsonld])
 
 @endsection

@@ -298,4 +298,20 @@ return [
         'rating_of' => ':avg von 5',
         'based_on' => 'Basierend auf :count Bewertungen',
     ],
+    'doctor_profile' => [
+        'degree' => 'Abschluss',
+        'department' => 'Abteilung',
+        'services' => 'Leistungen & Behandlungen',
+        'availability' => 'Sprechzeiten',
+        'phone' => 'Telefon',
+    ],
+    'service_detail' => [
+        'doctors_heading' => 'Ärzte dieser Abteilung',
+        'view_profile' => 'Profil ansehen',
+    ],
+    'trust' => [
+        'editorial_team' => 'MediCare-Redaktion',
+        'verified_patient' => 'Verifizierter Patient',
+        'by_author' => 'Von :name',
+    ],
 ];
