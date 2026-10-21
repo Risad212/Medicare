@@ -49,7 +49,10 @@ return [
         'time_slot' => 'Choisissez d’abord la date et le médecin',
         'submit' => 'Envoyer',
         'success' => 'Rendez-vous enregistré',
-        'validation' => [
+                'doctor_name' => 'Nom du médecin',
+        'name_placeholder' => 'Entrez le nom du patient',
+        'time_slot_label' => 'Créneau',
+'validation' => [
             'required' => 'Ce champ est obligatoire.',
             'invalid' => 'Veuillez saisir une valeur valide.',
             'email_required' => 'Une adresse e-mail est obligatoire pour une consultation en ligne.',
@@ -328,5 +331,18 @@ return [
         'editorial_team' => 'Équipe éditoriale MediCare',
         'verified_patient' => 'Patient vérifié',
         'by_author' => 'Par :name',
+    ],
+    'blog_page' => [
+        'recent_posts' => 'Articles récents',
+        'categories' => 'Catégories du blog',
+        'popular_tags' => 'Tags populaires',
+        'comments_title' => ':count commentaire(s)',
+        'no_comments' => 'Pas encore de commentaires. Soyez le premier !',
+        'leave_comment' => 'Laisser un commentaire',
+        'email_notice' => 'Votre adresse e-mail ne sera pas publiée. Les champs requis sont marqués *',
+        'your_name' => 'Votre nom',
+        'your_email' => 'Votre e-mail',
+        'comment_placeholder' => 'Laissez un commentaire ici',
+        'submit' => 'Envoyer',
     ],
 ];

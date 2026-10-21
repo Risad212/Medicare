@@ -102,9 +102,9 @@
 
                         <a id="appointment"></a>
 
-                        <h3>Make an Appointment</h3>
+                        <h3>{{ __('messages.appointment.title') }}</h3>
                           @if(session('success'))
-                            <div class="alert alert-success">{{ session('success') }}</div>
+                            <div class="alert alert-success" role="status" aria-live="polite">{{ session('success') }}</div>
                           @endif
 
                       <form action="{{ route('appointment.store') }}" method="POST">
@@ -115,22 +115,24 @@
                             <div class="row">
 
                                 <div class="col-lg-6">
-                                    <label>Doctor Name</label>
+                                    <label for="doctor_name_display">{{ __('messages.appointment.doctor_name') }}</label>
                                     <div class="mb-3">
                                         <input type="text"
                                                class="form-control"
+                                               id="doctor_name_display"
                                                readonly
                                                value="{{ $doctor->name }}">
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <label>Visit Type</label>
+                                    <label for="visit_type">{{ __('messages.appointment.visit_type') }}</label>
                                     <div class="mb-3">
-                                        <select id="visit_type" class="form-control" name="visit_type">
-                                            <option value="1" {{ old('visit_type') == '1' ? 'selected' : '' }}>First Visit</option>
-                                            <option value="2" {{ old('visit_type') == '2' ? 'selected' : '' }}>Second Visit</option>
-                                            <option value="3" {{ old('visit_type') == '3' ? 'selected' : '' }}>Report Review</option>
+                                        <select id="visit_type" class="form-control" name="visit_type" required>
+                                            <option value="" disabled {{ old('visit_type') ? '' : 'selected' }}>{{ __('messages.appointment.visit_type') }}</option>
+                                            <option value="1" {{ old('visit_type') == '1' ? 'selected' : '' }}>{{ __('messages.appointment.first_visit') }}</option>
+                                            <option value="2" {{ old('visit_type') == '2' ? 'selected' : '' }}>{{ __('messages.appointment.second_visit') }}</option>
+                                            <option value="3" {{ old('visit_type') == '3' ? 'selected' : '' }}>{{ __('messages.appointment.report_review') }}</option>
                                         </select>
                                         @error('visit_type') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
@@ -138,7 +140,7 @@
 
                                 @if(\App\Support\Module::enabled('zoom'))
                                 <div class="col-lg-6">
-                                    <label>{{ __('messages.appointment.mode') }}</label>
+                                    <label for="consultation_mode">{{ __('messages.appointment.mode') }}</label>
                                     <div class="mb-3">
                                         <select name="consultation_mode" id="consultation_mode" class="form-control">
                                             <option value="in_person" {{ old('consultation_mode', 'in_person') === 'in_person' ? 'selected' : '' }}>{{ __('messages.appointment.in_person') }}</option>
@@ -150,90 +152,106 @@
                                 @endif
 
                                 <div class="col-lg-6">
-                                    <label>Patient Name</label>
+                                    <label for="patient_name">{{ __('messages.appointment.name') }}</label>
                                     <div class="mb-3">
                                         <input type="text"
                                                class="form-control"
+                                               id="patient_name"
                                                name="patient_name"
+                                               maxlength="255"
+                                               autocomplete="name"
+                                               required
                                                value="{{ old('patient_name') }}"
-                                               placeholder="Enter patient name">
+                                               placeholder="{{ __('messages.appointment.name_placeholder') }}">
                                         @error('patient_name') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <label>Age</label>
+                                    <label for="patient_age">{{ __('messages.appointment.age') }}</label>
                                     <div class="mb-3">
                                         <input type="number"
                                                class="form-control"
+                                               id="patient_age"
                                                name="age"
+                                               min="0"
+                                               max="120"
+                                               inputmode="numeric"
+                                               required
                                                value="{{ old('age') }}"
-                                               placeholder="Your age">
+                                               placeholder="{{ __('messages.appointment.age') }}">
                                         @error('age') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <label>Gender</label>
+                                    <label for="patient_gender">{{ __('messages.appointment.gender') }}</label>
                                     <div class="mb-3">
-                                        <select class="form-control" name="gender">
-                                            <option value="" disabled {{ old('gender') ? '' : 'selected' }}>Select Gender</option>
-                                            <option value="1" {{ old('gender') == '1' ? 'selected' : '' }}>Male</option>
-                                            <option value="2" {{ old('gender') == '2' ? 'selected' : '' }}>Female</option>
-                                            <option value="3" {{ old('gender') == '3' ? 'selected' : '' }}>Other</option>
+                                        <select class="form-control" name="gender" id="patient_gender" required>
+                                            <option value="" disabled {{ old('gender') ? '' : 'selected' }}>{{ __('messages.appointment.gender') }}</option>
+                                            <option value="1" {{ old('gender') == '1' ? 'selected' : '' }}>{{ __('messages.appointment.male') }}</option>
+                                            <option value="2" {{ old('gender') == '2' ? 'selected' : '' }}>{{ __('messages.appointment.female') }}</option>
+                                            <option value="3" {{ old('gender') == '3' ? 'selected' : '' }}>{{ __('messages.appointment.other') }}</option>
                                         </select>
                                         @error('gender') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <label>Phone</label>
+                                    <label for="patient_phone">{{ __('messages.appointment.phone') }}</label>
                                     <div class="mb-3">
                                         <input type="tel"
                                                inputmode="tel"
                                                pattern="[0-9+\-\s]+"
                                                class="form-control"
+                                               id="patient_phone"
                                                name="phone"
+                                               maxlength="20"
+                                               autocomplete="tel"
+                                               required
                                                value="{{ old('phone') }}"
-                                               placeholder="Your phone number">
+                                               placeholder="{{ __('messages.appointment.phone') }}">
                                         @error('phone') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <label>Email</label>
+                                    <label for="patient_email">{{ __('messages.appointment.email_cancel') }}</label>
                                     <div class="mb-3">
                                         <input type="email"
                                                class="form-control"
                                                name="email"
                                                id="patient_email"
+                                               maxlength="255"
+                                               autocomplete="email"
                                                data-cancel-placeholder="{{ __('messages.appointment.email_cancel') }}"
                                                data-telehealth-placeholder="{{ __('messages.appointment.email_telehealth') }}"
                                                @if(old('consultation_mode') === 'telehealth') required @endif
                                                value="{{ old('email') }}"
-                                               placeholder="Your email (for cancellation link)">
+                                               placeholder="{{ __('messages.appointment.email_cancel') }}">
                                          @error('email') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <label>Appointment Date</label>
+                                    <label for="appointment_date">{{ __('messages.appointment.date') }}</label>
                                     <div class="mb-3">
                                         <input type="date"
                                             name="appointment_date"
                                             class="form-control"
                                             id="appointment_date"
                                             min="{{ date('Y-m-d') }}"
+                                            required
                                             value="{{ old('appointment_date') }}">
                                         @error('appointment_date') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <label>Time Slot</label>
+                                    <label for="time_slot">{{ __('messages.appointment.time_slot_label') }}</label>
                                     <div class="mb-3">
-                                        <select name="time_slot_id" id="time_slot" class="form-control">
-                                            <option value="">Select Time Slot</option>
+                                        <select name="time_slot_id" id="time_slot" class="form-control" required>
+                                            <option value="" disabled selected>{{ __('messages.appointment.time_slot') }}</option>
                                         </select>
                                         @error('time_slot_id') <small class="text-danger">{{ $message }}</small> @enderror
                                     </div>
@@ -243,7 +261,7 @@
 
                             <div class="col-12">
                                 <button type="submit" class="default-btn">
-                                    Send Request
+                                    {{ __('messages.appointment.submit') }}
                                 </button>
                             </div>
 

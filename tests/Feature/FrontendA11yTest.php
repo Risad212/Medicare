@@ -91,6 +91,66 @@ class FrontendA11yTest extends TestCase
         $this->assertStringNotContainsString('aria-label="Appointment date"', $html); // replaced by bound label
     }
 
+    /**
+     * Doctor detail embedded booking form mirrors AppointmentController
+     * rules too: visible labels are bound with for/id, all server-required
+     * fields carry required attributes, and no hardcoded English survives.
+     */
+    public function test_doctor_detail_booking_form_labels_and_mirrored_constraints(): void
+    {
+        $user = \App\Models\User::factory()->create(['role' => 'doctor']);
+        $doctor = \App\Models\Doctor::create([
+            'name' => 'Form Doctor',
+            'slug' => 'form-doctor-'.uniqid(),
+            'department' => 'Cardiology',
+            'user_id' => $user->id,
+            'status' => 1,
+        ]);
+
+        $response = $this->get(route('doctor.show', $doctor))->assertOk();
+        $html = (string) $response->getContent();
+
+        // Visible content only — script blocks (JS identifiers, JSON-LD)
+        // are never user-visible.
+        $visible = trim(preg_replace('/<script\b[^>]*>.*?<\/script>/is', ' ', $html) ?? $html);
+
+        // No hardcoded booking-form English strings remain.
+        foreach (['Make an Appointment', 'Visit Type', 'Patient Name', 'Age', 'Gender', 'Phone', 'Email', 'Appointment Date', 'Time Slot', 'Send Request', 'First Visit', 'Second Visit', 'Report Review', 'Select Gender'] as $raw) {
+            $this->assertStringNotContainsString($raw, $visible, "Hardcoded string [{$raw}] still present.");
+        }
+
+        // Labels are bound with for/id pairs — patient_age uses a distinct
+        // handle from the standalone page's shared ids.
+        foreach (['doctor_name_display', 'visit_type', 'patient_name', 'patient_age', 'patient_gender', 'patient_phone', 'patient_email', 'appointment_date', 'time_slot'] as $id) {
+            $this->assertStringContainsString('for="'.$id.'"', $html, "Label for [{$id}] not bound.");
+            $this->assertStringContainsString('id="'.$id.'"', $html, "Missing id [{$id}].");
+        }
+
+        // Server-required fields carry required.
+        foreach (['patient_name', 'patient_age', 'patient_gender', 'patient_phone', 'appointment_date'] as $id) {
+            $this->assertMatchesRegularExpression(
+                '/<(input|select)[^>]*id=["\']'.preg_quote($id, '/').'["\'][^>]*\brequired\b/is',
+                $html,
+                "Missing required attribute on [{$id}]."
+            );
+        }
+
+        $this->assertMatchesRegularExpression('/<select[^>]*id=["\']visit_type["\'][^>]*required/is', $html);
+        $this->assertMatchesRegularExpression('/<select[^>]*id=["\']time_slot["\'][^>]*required/is', $html);
+        $this->assertMatchesRegularExpression(
+            '/<input[^>]*id=["\']appointment_date["\'][^>]*\bmin="\d{4}-\d{2}-\d{2}"/is',
+            $html,
+            'Appointment date input lost its min floor.'
+        );
+        $this->assertStringContainsString('maxlength="255"', $html);
+        $this->assertStringContainsString('autocomplete="name"', $html);
+        $this->assertStringContainsString('autocomplete="tel"', $html);
+        $this->assertStringContainsString('autocomplete="email"', $html);
+        $this->assertMatchesRegularExpression('/id=["\']patient_age["\'][^>]*\bmin="0"/is', $html);
+        $this->assertMatchesRegularExpression('/id=["\']patient_age["\'][^>]*\bmax="120"/is', $html);
+        $this->assertMatchesRegularExpression('/<h1/is', $html); // page keeps its single h1 (asserted elsewhere)
+    }
+
     private function extractInput(string $html, string $name): string
     {
         if (preg_match('/<(input|select)[^>]*name=["\']'.preg_quote($name, '/').'["\'][^>]*>/is', $html, $m)) {

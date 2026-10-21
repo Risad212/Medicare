@@ -35,7 +35,10 @@ return [
         'age' => 'Ihr Alter', 'gender' => 'Geschlecht auswählen', 'male' => 'Männlich', 'female' => 'Weiblich', 'other' => 'Divers',
         'date' => 'Termindatum', 'time_slot' => 'Wählen Sie zuerst Datum und Arzt aus',
         'submit' => 'Absenden', 'success' => 'Termin gespeichert',
-        'validation' => [
+                'doctor_name' => 'Name des Arztes',
+        'name_placeholder' => 'Patientenname eingeben',
+        'time_slot_label' => 'Terminslot',
+'validation' => [
             'required' => 'Dieses Feld ist erforderlich.', 'invalid' => 'Bitte geben Sie einen gültigen Wert ein.',
             'email_required' => 'Für einen Online-Termin ist eine E-Mail-Adresse erforderlich.',
             'email_invalid' => 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
@@ -313,5 +316,18 @@ return [
         'editorial_team' => 'MediCare-Redaktion',
         'verified_patient' => 'Verifizierter Patient',
         'by_author' => 'Von :name',
+    ],
+    'blog_page' => [
+        'recent_posts' => 'Aktuelle Beiträge',
+        'categories' => 'Blog-Kategorien',
+        'popular_tags' => 'Beliebte Tags',
+        'comments_title' => ':count Kommentar(e)',
+        'no_comments' => 'Noch keine Kommentare. Seien Sie der Erste!',
+        'leave_comment' => 'Kommentar schreiben',
+        'email_notice' => 'Ihre E-Mail-Adresse wird nicht veröffentlicht. Pflichtfelder sind mit * markiert',
+        'your_name' => 'Ihr Name',
+        'your_email' => 'Ihre E-Mail',
+        'comment_placeholder' => 'Kommentar hier eingeben',
+        'submit' => 'Absenden',
     ],
 ];

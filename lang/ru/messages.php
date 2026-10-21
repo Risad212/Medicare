@@ -37,7 +37,10 @@ return [
         'male' => 'Мужской', 'female' => 'Женский', 'other' => 'Другое',
         'date' => 'Дата приёма', 'time_slot' => 'Сначала выберите дату и врача',
         'submit' => 'Отправить', 'success' => 'Запись сохранена',
-        'validation' => [
+                'doctor_name' => 'Имя врача',
+        'name_placeholder' => 'Введите имя пациента',
+        'time_slot_label' => 'Время приёма',
+'validation' => [
             'required' => 'Это поле обязательно.', 'invalid' => 'Введите корректное значение.',
             'email_required' => 'Для онлайн-консультации требуется адрес электронной почты.',
             'email_invalid' => 'Введите корректный адрес электронной почты.',
@@ -315,5 +318,18 @@ return [
         'editorial_team' => 'Редакционная команда MediCare',
         'verified_patient' => 'Проверенный пациент',
         'by_author' => 'Автор: :name',
+    ],
+    'blog_page' => [
+        'recent_posts' => 'Свежие статьи',
+        'categories' => 'Категории блога',
+        'popular_tags' => 'Популярные теги',
+        'comments_title' => ':count коммент.',
+        'no_comments' => 'Комментариев пока нет. Станьте первым!',
+        'leave_comment' => 'Оставить комментарий',
+        'email_notice' => 'Ваш e-mail не будет опубликован. Обязательные поля отмечены *',
+        'your_name' => 'Ваше имя',
+        'your_email' => 'Ваш e-mail',
+        'comment_placeholder' => 'Напишите комментарий здесь',
+        'submit' => 'Отправить',
     ],
 ];

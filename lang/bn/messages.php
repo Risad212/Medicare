@@ -97,7 +97,10 @@ return [
         'time_slot' => 'আগে তারিখ ও ডাক্তার নির্বাচন করুন',
         'submit' => 'জমা দিন',
         'success' => 'অ্যাপয়েন্টমেন্ট সংরক্ষণ করা হয়েছে',
-        'validation' => [
+                'doctor_name' => 'ডাক্তারের নাম',
+        'name_placeholder' => 'রোগীর নাম লিখুন',
+        'time_slot_label' => 'সময় স্লট',
+'validation' => [
             'required' => 'এই ঘরটি পূরণ করা আবশ্যক।',
             'invalid' => 'একটি সঠিক মান লিখুন।',
             'email_required' => 'অনলাইন পরামর্শের জন্য ইমেইল ঠিকানা আবশ্যক।',
@@ -376,5 +379,18 @@ return [
         'editorial_team' => 'মেডিকেয়ার এডিটরিয়াল টিম',
         'verified_patient' => 'যাচাইকৃত রোগী',
         'by_author' => 'লেখক: :name',
+    ],
+    'blog_page' => [
+        'recent_posts' => 'সাম্প্রতিক পোস্ট',
+        'categories' => 'ব্লগ ক্যাটাগরি',
+        'popular_tags' => 'জনপ্রিয় ট্যাগ',
+        'comments_title' => ':countটি মন্তব্য',
+        'no_comments' => 'এখনো কোনো মন্তব্য নেই। প্রথম হন!',
+        'leave_comment' => 'মন্তব্য করুন',
+        'email_notice' => 'আপনার ইমেল প্রকাশ করা হবে না। আবশ্যক ঘরগুলো * দ্বারা চিহ্নিত',
+        'your_name' => 'আপনার নাম',
+        'your_email' => 'আপনার ইমেল',
+        'comment_placeholder' => 'এখানে মন্তব্য লিখুন',
+        'submit' => 'জমা দিন',
     ],
 ];

@@ -36,7 +36,10 @@ return [
         'male' => 'Uomo', 'female' => 'Donna', 'other' => 'Altro',
         'date' => 'Data dell’appuntamento', 'time_slot' => 'Seleziona prima data e medico',
         'submit' => 'Invia', 'success' => 'Appuntamento salvato',
-        'validation' => [
+                'doctor_name' => 'Nome del medico',
+        'name_placeholder' => 'Inserisci il nome del paziente',
+        'time_slot_label' => 'Fascia oraria',
+'validation' => [
             'required' => 'Questo campo è obbligatorio.', 'invalid' => 'Inserisci un valore valido.',
             'email_required' => 'Per un consulto online è obbligatorio un indirizzo email.',
             'email_invalid' => 'Inserisci un indirizzo email valido.',
@@ -314,5 +317,18 @@ return [
         'editorial_team' => 'Redazione MediCare',
         'verified_patient' => 'Paziente verificato',
         'by_author' => 'Di :name',
+    ],
+    'blog_page' => [
+        'recent_posts' => 'Articoli recenti',
+        'categories' => 'Categorie del blog',
+        'popular_tags' => 'Tag popolari',
+        'comments_title' => ':count commento(i)',
+        'no_comments' => 'Nessun commento ancora. Sii il primo!',
+        'leave_comment' => 'Lascia un commento',
+        'email_notice' => 'Il tuo indirizzo e-mail non sarà pubblicato. I campi obbligatori sono contrassegnati con *',
+        'your_name' => 'Il tuo nome',
+        'your_email' => 'La tua e-mail',
+        'comment_placeholder' => 'Scrivi un commento qui',
+        'submit' => 'Invia',
     ],
 ];

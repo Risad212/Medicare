@@ -49,7 +49,10 @@ return [
         'time_slot' => 'اختر التاريخ والطبيب أولًا',
         'submit' => 'إرسال',
         'success' => 'تم حفظ الموعد',
-        'validation' => [
+                'doctor_name' => 'اسم الطبيب',
+        'name_placeholder' => 'أدخل اسم المريض',
+        'time_slot_label' => 'الفترة الزمنية',
+'validation' => [
             'required' => 'هذا الحقل مطلوب.',
             'invalid' => 'يرجى إدخال قيمة صحيحة.',
             'email_required' => 'البريد الإلكتروني مطلوب للاستشارة عبر الإنترنت.',
@@ -328,5 +331,18 @@ return [
         'editorial_team' => 'فريق التحرير في MediCare',
         'verified_patient' => 'مريض موثّق',
         'by_author' => 'بقلم :name',
+    ],
+    'blog_page' => [
+        'recent_posts' => 'أحدث المقالات',
+        'categories' => 'تصنيفات المدونة',
+        'popular_tags' => 'الوسوم الشائعة',
+        'comments_title' => ':count تعليق(ات)',
+        'no_comments' => 'لا تعليقات بعد. كن أول من يعلّق!',
+        'leave_comment' => 'اترك تعليقاً',
+        'email_notice' => 'لن يُنشر بريدك الإلكتروني. الحقول الإلزامية مُعلّمة بعلامة *',
+        'your_name' => 'اسمك',
+        'your_email' => 'بريدك الإلكتروني',
+        'comment_placeholder' => 'اكتب تعليقك هنا',
+        'submit' => 'إرسال',
     ],
 ];

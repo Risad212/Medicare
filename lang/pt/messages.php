@@ -37,7 +37,10 @@ return [
         'male' => 'Masculino', 'female' => 'Feminino', 'other' => 'Outro',
         'date' => 'Data da consulta', 'time_slot' => 'Selecione primeiro a data e o médico',
         'submit' => 'Enviar', 'success' => 'Consulta salva',
-        'validation' => [
+                'doctor_name' => 'Nome do médico',
+        'name_placeholder' => 'Digite o nome do paciente',
+        'time_slot_label' => 'Horário',
+'validation' => [
             'required' => 'Este campo é obrigatório.', 'invalid' => 'Informe um valor válido.',
             'email_required' => 'O e-mail é obrigatório para consultas on-line.',
             'email_invalid' => 'Informe um endereço de e-mail válido.',
@@ -315,5 +318,18 @@ return [
         'editorial_team' => 'Equipe editorial do MediCare',
         'verified_patient' => 'Paciente verificado',
         'by_author' => 'Por :name',
+    ],
+    'blog_page' => [
+        'recent_posts' => 'Publicações recentes',
+        'categories' => 'Categorias do blog',
+        'popular_tags' => 'Tags populares',
+        'comments_title' => ':count comentário(s)',
+        'no_comments' => 'Ainda não há comentários. Seja o primeiro!',
+        'leave_comment' => 'Deixe um comentário',
+        'email_notice' => 'Seu e-mail não será publicado. Os campos obrigatórios estão marcados com *',
+        'your_name' => 'Seu nome',
+        'your_email' => 'Seu e-mail',
+        'comment_placeholder' => 'Escreva um comentário aqui',
+        'submit' => 'Enviar',
     ],
 ];

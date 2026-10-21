@@ -97,7 +97,10 @@ return [
         'time_slot' => 'Select date and doctor first',
         'submit' => 'Submit',
         'success' => 'Appointment saved',
-        'validation' => [
+                'doctor_name' => 'Doctor name',
+        'name_placeholder' => 'Enter patient name',
+        'time_slot_label' => 'Time slot',
+'validation' => [
             'required' => 'This field is required.',
             'invalid' => 'Please enter a valid value.',
             'email_required' => 'An email address is required for an online consultation.',
@@ -383,5 +386,18 @@ return [
         'editorial_team' => 'MediCare editorial team',
         'verified_patient' => 'Verified patient',
         'by_author' => 'By :name',
+    ],
+    'blog_page' => [
+        'recent_posts' => 'Recent Posts',
+        'categories' => 'Blog Categories',
+        'popular_tags' => 'Popular Tags',
+        'comments_title' => ':count comment(s)',
+        'no_comments' => 'No comments yet. Be the first!',
+        'leave_comment' => 'Leave A Comment',
+        'email_notice' => 'Your email address will not be published. Required fields are marked *',
+        'your_name' => 'Your Name',
+        'your_email' => 'Your Email',
+        'comment_placeholder' => 'Leave a comment here',
+        'submit' => 'Submit',
     ],
 ];

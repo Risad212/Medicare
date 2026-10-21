@@ -151,3 +151,11 @@ Each stage: edit → `php artisan view:cache && view:clear` → new tests → fu
   - 1024px / 1440px: unchanged desktop look (only additive mc- rules loaded)
   - RTL Arabic spot check: `dir` untouched; facts list uses row grid that flips with RTL body direction (Bootstrap row-based, no fixed lefts)
 - Plan complete: T1–T9 all implemented and verified; suite totals 317 → 337 across the whole plan
+
+### Stage 6: follow-up polish record (2026-10-21, post-completion)
+- Committed plan stages 2–5 work as `9cbe438` (30 files, +1113/−43)
+- Follow-up a — blog detail (publishing/site-blogs-show.blade.php): comment/sidebar heading order fixed h1→h2(post)→h3(sections: comments count, comment form, recent posts, blog categories, popular tags)→h4(comment authors, recent post titles); all sidebar/comment strings localized via new `blog_page.*` lang group ×11; comment form inputs gained sr-only bound labels (`comment_name/_email/_text` ids), maxlength + required mirroring StoreBlogCommentRequest
+- Follow-up b — doctor detail embedded booking form now mirrors AppointmentController exactly: visible labels bound with for/id (9 ids incl. `doctor_name_display`, `patient_gender`), all server-required fields carry `required` (+ disabled placeholder options for visit_type/gender/time_slot where the browser would otherwise silently preselect), maxlength/pattern/autocompletes/age min–max/date min floor; heading + button + placeholders localized via 3 new `appointment.*` keys (`doctor_name`, `name_placeholder`, `time_slot_label`) ×11; email-required JS flow unchanged
+- New coverage: FrontendA11yTest::test_doctor_detail_booking_form_labels_and_mirrored_constraints (checks visible text only — scripts/JSON-LD stripped — so JS identifiers cannot count as hardcoded strings)
+- Verification: full suite **338 passed / 0 failed** (1597 assertions); heading audit 12/12 pages one-h1, blog.show outline now skip-free `1·2·3·4`; blade cache compiles
+- Remaining known follow-ups: browser-automation viewport matrix (no Playwright in repo), department listing pages (`/department/{name}`), service–doctor relation shown bidirectionally on doctor profile

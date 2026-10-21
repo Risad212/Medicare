@@ -49,7 +49,10 @@ return [
         'time_slot' => '请先选择日期和医生',
         'submit' => '提交',
         'success' => '预约已保存',
-        'validation' => [
+                'doctor_name' => '医生姓名',
+        'name_placeholder' => '请输入患者姓名',
+        'time_slot_label' => '就诊时段',
+'validation' => [
             'required' => '此项为必填项。',
             'invalid' => '请输入有效内容。',
             'email_required' => '在线问诊必须提供电子邮箱。',
@@ -328,5 +331,18 @@ return [
         'editorial_team' => 'MediCare 编辑团队',
         'verified_patient' => '已验证的患者',
         'by_author' => '作者：:name',
+    ],
+    'blog_page' => [
+        'recent_posts' => '近期文章',
+        'categories' => '博客分类',
+        'popular_tags' => '热门标签',
+        'comments_title' => ':count 条评论',
+        'no_comments' => '暂无评论。来抢沙发！',
+        'leave_comment' => '发表评论',
+        'email_notice' => '您的电子邮箱不会被公开。必填项以 * 标注',
+        'your_name' => '您的姓名',
+        'your_email' => '您的邮箱',
+        'comment_placeholder' => '在此输入评论',
+        'submit' => '提交',
     ],
 ];

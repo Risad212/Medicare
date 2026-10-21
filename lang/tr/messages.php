@@ -37,7 +37,10 @@ return [
         'male' => 'Erkek', 'female' => 'Kadın', 'other' => 'Diğer',
         'date' => 'Randevu tarihi', 'time_slot' => 'Önce tarih ve doktor seçin',
         'submit' => 'Gönder', 'success' => 'Randevu kaydedildi',
-        'validation' => [
+                'doctor_name' => 'Doktor adı',
+        'name_placeholder' => 'Hasta adını girin',
+        'time_slot_label' => 'Randevu saati',
+'validation' => [
             'required' => 'Bu alan zorunludur.', 'invalid' => 'Lütfen geçerli bir değer girin.',
             'email_required' => 'Çevrim içi görüşme için e-posta adresi gereklidir.',
             'email_invalid' => 'Lütfen geçerli bir e-posta adresi girin.',
@@ -315,5 +318,18 @@ return [
         'editorial_team' => 'MediCare editör ekibi',
         'verified_patient' => 'Doğrulanmış hasta',
         'by_author' => ':name tarafından',
+    ],
+    'blog_page' => [
+        'recent_posts' => 'Son yazılar',
+        'categories' => 'Blog kategorileri',
+        'popular_tags' => 'Popüler etiketler',
+        'comments_title' => ':count yorum',
+        'no_comments' => 'Henüz yorum yok. İlk yorumu siz yapın!',
+        'leave_comment' => 'Yorum yazın',
+        'email_notice' => 'E-posta adresiniz yayınlanmayacaktır. Zorunlu alanlar * ile işaretlidir',
+        'your_name' => 'Adınız',
+        'your_email' => 'E-posta adresiniz',
+        'comment_placeholder' => 'Yorumunuzu buraya yazın',
+        'submit' => 'Gönder',
     ],
 ];

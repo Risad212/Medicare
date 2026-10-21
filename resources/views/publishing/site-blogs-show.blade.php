@@ -79,7 +79,7 @@
                         </div>
                         <hr class="mt-5">
                          <div class="comment-section">
-                            <div class="comment-title">{{ $comments->count() }} Comments</div>
+                            <h3 class="comment-title">{{ __('messages.blog_page.comments_title', ['count' => $comments->count()]) }}</h3>
 
                             @forelse($comments as $comment)
                             <div class="single-comment">
@@ -87,19 +87,19 @@
                                     <img src="{{ asset('frontend-assets/media/blog/user.png') }}" alt="">
                                 </div>
                                 <div class="comments">
-                                    <h5 class="comment-author">{{ $comment->name }}</h5>
+                                    <h4 class="comment-author">{{ $comment->name }}</h4>
                                     <span class="comment-date">{{ $comment->created_at->format('F d, Y') }}</span>
                                     <p>{{ $comment->comment }}</p>
                                 </div>
                             </div>
                             @empty
-                            <p>No comments yet. Be the first!</p>
+                            <p>{{ __('messages.blog_page.no_comments') }}</p>
                             @endforelse
 
                             {{-- comment form --}}
                             <div class="comment-form-wrap">
-                                <h4 class="title">Leave A Comment</h4>
-                                <p class="mt-3">Your email address will not be published. Required fields are marked *</p>
+                                <h3 class="title">{{ __('messages.blog_page.leave_comment') }}</h3>
+                                <p class="mt-3">{{ __('messages.blog_page.email_notice') }}</p>
 
                                 @if(session('success'))
                                     <div class="alert alert-success">{{ session('success') }}</div>
@@ -114,26 +114,29 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <input type="text" name="name" placeholder="Your Name" value="{{ old('name') }}">
+                                                <label class="mc-sr-only" for="comment_name">{{ __('messages.blog_page.your_name') }}</label>
+                                                <input type="text" id="comment_name" name="name" placeholder="{{ __('messages.blog_page.your_name') }}" maxlength="100" required value="{{ old('name') }}">
                                                 @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <input type="email" name="email" placeholder="Your Email" value="{{ old('email') }}">
+                                                <label class="mc-sr-only" for="comment_email">{{ __('messages.blog_page.your_email') }}</label>
+                                                <input type="email" id="comment_email" name="email" placeholder="{{ __('messages.blog_page.your_email') }}" maxlength="255" required value="{{ old('email') }}">
                                                 @error('email') <small class="text-danger">{{ $message }}</small> @enderror
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="mb-3">
                                                 <div class="form-floating">
-                                                    <textarea name="comment" placeholder="Leave a comment here" style="height: 150px">{{ old('comment') }}</textarea>
+                                                    <label class="mc-sr-only" for="comment_text">{{ __('messages.blog_page.comment_placeholder') }}</label>
+                                                    <textarea id="comment_text" name="comment" placeholder="{{ __('messages.blog_page.comment_placeholder') }}" style="height: 150px">{{ old('comment') }}</textarea>
                                                     @error('comment') <small class="text-danger">{{ $message }}</small> @enderror
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="submit" class="section-button">Submit</button>
+                                    <button type="submit" class="section-button">{{ __('messages.blog_page.submit') }}</button>
                                 </form>
                             </div>
                         </div>
@@ -142,7 +145,7 @@
                 <div class="col-md-4">
                     <div class="blog-right">
                         <div class="recent-post">
-                            <h4 class="title">Recent Posts</h4>
+                            <h3 class="title">{{ __('messages.blog_page.recent_posts') }}</h3>
                            @foreach($recentPosts as $post)
                             <div class="single-post">
                                 <div class="post-thumnail">
@@ -160,7 +163,7 @@
                             @endforeach
                         </div>
                         <div class="blog-category">
-                            <h4 class="category-title">Blog Categories</h4>
+                            <h3 class="category-title">{{ __('messages.blog_page.categories') }}</h3>
                             <ul class="category-list">
                               @foreach($categories as $category)
                                 <li class="item">
@@ -172,7 +175,7 @@
                             </ul>
                         </div>
                        <div class="populate-tag">
-                        <h4 class="tag-title">Popular Tags</h4>
+                        <h3 class="tag-title">{{ __('messages.blog_page.popular_tags') }}</h3>
                         <ul class="tag-list">
                             @foreach($tags as $tag)
                             <li class="tag-item">
