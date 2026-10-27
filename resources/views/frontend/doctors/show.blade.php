@@ -274,6 +274,18 @@
         </div>
     </div>
 </section>
+
+@if(isset($relatedServices) && $relatedServices->isNotEmpty())
+<section class="service-section department-services doctor-related-services">
+    <div class="container">
+        <div class="title-head">
+            <h2 class="title">{{ __('messages.service_detail.related_services') }}</h2>
+        </div>
+    </div>
+    @include('directory.components-service-card', ['serviceItems' => $relatedServices])
+</section>
+@endif
+
 @php
     // Physician: every field comes from the stored doctor row; props stay
     // off the schema when the source column is empty (no invented data).

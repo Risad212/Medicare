@@ -50,7 +50,15 @@ class DoctorController extends Controller
             $ratingSummary = DoctorReview::summaryFor($doctor);
         }
 
-        return view('frontend.doctors.show', compact('doctor', 'reviews', 'ratingSummary'));
+        // Bidirectional department link: services whose department matches
+        // the doctor's department. The section stays hidden for every
+        // empty/unknown match — no invented service data is ever rendered.
+        $department = trim((string) $doctor->department);
+        $relatedServices = $department !== ''
+            ? Service::where('status', 1)->where('department', $department)->orderBy('order')->get()
+            : collect();
+
+        return view('frontend.doctors.show', compact('doctor', 'reviews', 'ratingSummary', 'relatedServices'));
     }
 
     public function department(string $name)

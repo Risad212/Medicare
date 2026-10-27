@@ -167,3 +167,4 @@ Each stage: edit → `php artisan view:cache && view:clear` → new tests → fu
 - New localized key `service_detail.related_services` ×11 (+php -l clean)
 - New coverage: `DepartmentPageTest` (8 tests — active-doctor filtering, service matching, empty/404 flows, view-all link, single h1 outline, stored meta description)
 - 346 tests / 1623 assertions; pint clean
+- Follow-up 7b: service–doctor relation shown bidirectionally on the doctor profile (`doctor-related-services` section, hidden for empty/unknown department) + 2 tests → **348 tests / 1629 assertions**

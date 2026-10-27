@@ -119,6 +119,30 @@ class ServiceDoctorNavigationTest extends TestCase
         }
     }
 
+    /** Bidirectional department link: a doctor's profile lists services of their department. */
+    public function test_doctor_profile_lists_services_of_their_department(): void
+    {
+        $doctor = $this->makeDoctor('Heart Doctor', 'Cardiology', 1);
+        $matching = $this->makeService(['title' => 'Echo Test Service', 'department' => 'Cardiology']);
+        $this->makeService(['title' => 'Skin Test Service', 'department' => 'Dermatology']);
+
+        $this->get(route('doctor.show', $doctor))
+            ->assertOk()
+            ->assertSee('Related services')
+            ->assertSee($matching->title)
+            ->assertDontSee('Skin Test Service');
+    }
+
+    public function test_doctor_profile_without_department_omits_services_section(): void
+    {
+        $doctor = $this->makeDoctor('Bare Doctor', null, 1);
+        $this->makeService(['title' => 'Echo Test Service', 'department' => 'Cardiology']);
+
+        $this->get(route('doctor.show', $doctor))
+            ->assertOk()
+            ->assertDontSee('Related services');
+    }
+
     private function makeService(array $overrides): Service
     {
         return Service::create(array_merge([
