@@ -167,4 +167,4 @@ Each stage: edit → `php artisan view:cache && view:clear` → new tests → fu
 - New localized key `service_detail.related_services` ×11 (+php -l clean)
 - New coverage: `DepartmentPageTest` (8 tests — active-doctor filtering, service matching, empty/404 flows, view-all link, single h1 outline, stored meta description)
 - 346 tests / 1623 assertions; pint clean
-- Follow-up 7b: service–doctor relation shown bidirectionally on the doctor profile (`doctor-related-services` section, hidden for empty/unknown department) + 2 tests → **348 tests / 1629 assertions**
+- Follow-up 7c: Playwright viewport matrix automated (`tests/e2e/viewport-matrix.spec.ts`, 44 specs: 7 pages × 6 viewports 320/375/600/768/1024/1440 → no exception, single non-cloned h1, zero horizontal overflow; + hamburger toggle click test and appointment form tap-width test at 320px); full e2e suite **52 passed**. Note: owl loop clones slide markup — h1 audit must exclude `.cloned` ancestors; heading-audit script leftovers ("Audit Slide" rows) removed from dev DB
