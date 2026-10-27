@@ -379,6 +379,7 @@ return [
         'phone' => 'Phone',
     ],
     'service_detail' => [
+        'related_services' => 'Related services',
         'doctors_heading' => 'Doctors in this department',
         'view_profile' => 'View profile',
     ],

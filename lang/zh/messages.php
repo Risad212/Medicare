@@ -324,6 +324,7 @@ return [
         'phone' => '电话',
     ],
     'service_detail' => [
+        'related_services' => '相关服务',
         'doctors_heading' => '本科室医生',
         'view_profile' => '查看简介',
     ],

@@ -309,6 +309,7 @@ return [
         'phone' => 'Telefon',
     ],
     'service_detail' => [
+        'related_services' => 'Zugehörige Leistungen',
         'doctors_heading' => 'Ärzte dieser Abteilung',
         'view_profile' => 'Profil ansehen',
     ],

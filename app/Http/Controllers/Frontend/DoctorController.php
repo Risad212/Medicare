@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use App\Models\Doctor;
 use App\Models\DoctorReview;
 use App\Models\SeoSetting;
+use App\Models\Service;
 use App\Modules\Search\Services\DoctorSearchService;
 use App\Support\Module;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class DoctorController extends Controller
 {
@@ -48,5 +51,33 @@ class DoctorController extends Controller
         }
 
         return view('frontend.doctors.show', compact('doctor', 'reviews', 'ratingSummary'));
+    }
+
+    public function department(string $name)
+    {
+        $name = trim($name);
+        if ($name === '' || mb_strlen($name) > 100) {
+            abort(404);
+        }
+
+        $doctors = Doctor::where('status', 1)
+            ->where('department', $name)
+            ->orderBy('name')
+            ->get();
+
+        $services = Service::where('status', 1)
+            ->where('department', $name)
+            ->orderBy('order')
+            ->get();
+
+        if ($doctors->isEmpty() && $services->isEmpty()) {
+            abort(404);
+        }
+
+        $department = Department::where('name', $name)->where('status', 1)->first();
+
+        $metaDescription = Str::limit(strip_tags((string) ($department->description ?? '')), 150);
+
+        return view('frontend.department', compact('name', 'doctors', 'services', 'metaDescription'));
     }
 }

@@ -310,6 +310,7 @@ return [
         'phone' => 'Telefono',
     ],
     'service_detail' => [
+        'related_services' => 'Servizi correlati',
         'doctors_heading' => 'Medici di questo reparto',
         'view_profile' => 'Vedi profilo',
     ],

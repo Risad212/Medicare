@@ -372,6 +372,7 @@ return [
         'phone' => 'ফোন',
     ],
     'service_detail' => [
+        'related_services' => 'সংশ্লিষ্ট সেবা',
         'doctors_heading' => 'এই বিভাগের ডাক্তাররা',
         'view_profile' => 'প্রোফাইল দেখুন',
     ],

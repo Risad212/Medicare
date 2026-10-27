@@ -43,6 +43,6 @@ class ServiceController extends Controller
             'meta_keywords' => '',
         ];
 
-        return view('directory.site-services-show', compact('service', 'others', 'seo', 'pageTitle', 'departmentDoctors'));
+        return view('directory.site-services-show', compact('service', 'others', 'seo', 'pageTitle', 'departmentDoctors', 'department'));
     }
 }

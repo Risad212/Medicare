@@ -311,6 +311,7 @@ return [
         'phone' => 'Telefon',
     ],
     'service_detail' => [
+        'related_services' => 'İlgili hizmetler',
         'doctors_heading' => 'Bu bölümdeki hekimler',
         'view_profile' => 'Profili görüntüle',
     ],

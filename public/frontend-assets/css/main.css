@@ -3186,3 +3186,14 @@ body {
     color: #7e8a9a;
     font-size: 13px;
 }
+/* ---- Stage 7: department listing page + view-all link ---- */
+.title-head .mc-dept-all {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+.title-head .mc-dept-all:hover {
+    text-decoration: underline;
+}

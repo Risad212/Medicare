@@ -324,6 +324,7 @@ return [
         'phone' => 'Téléphone',
     ],
     'service_detail' => [
+        'related_services' => 'Services associés',
         'doctors_heading' => 'Médecins de ce département',
         'view_profile' => 'Voir le profil',
     ],

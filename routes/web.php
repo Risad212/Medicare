@@ -249,6 +249,8 @@ Route::get('/doctor', [FrontendDoctorController::class, 'index'])->name('doctor'
 
 Route::get('/doctor/{id}', [FrontendDoctorController::class, 'show'])->name('doctor.show');
 
+Route::get('/department/{name}', [FrontendDoctorController::class, 'department'])->name('department.show');
+
 Route::get('/contact', [FrontContactController::class, 'index'])->name('contact');
 
 Route::get('/appointment', [FrontAppointmentController::class, 'index'])->name('appointment');

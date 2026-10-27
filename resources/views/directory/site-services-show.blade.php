@@ -43,6 +43,7 @@
     <div class="container">
         <div class="title-head">
             <h2 class="title">{{ __('messages.service_detail.doctors_heading') }}</h2>
+            <a class="mc-dept-all" href="{{ route('department.show', ['name' => $department]) }}">{{ __('messages.public.view_all') }}</a>
         </div>
 
         <div class="row gy-4">

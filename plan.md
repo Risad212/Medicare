@@ -159,3 +159,11 @@ Each stage: edit → `php artisan view:cache && view:clear` → new tests → fu
 - New coverage: FrontendA11yTest::test_doctor_detail_booking_form_labels_and_mirrored_constraints (checks visible text only — scripts/JSON-LD stripped — so JS identifiers cannot count as hardcoded strings)
 - Verification: full suite **338 passed / 0 failed** (1597 assertions); heading audit 12/12 pages one-h1, blog.show outline now skip-free `1·2·3·4`; blade cache compiles
 - Remaining known follow-ups: browser-automation viewport matrix (no Playwright in repo), department listing pages (`/department/{name}`), service–doctor relation shown bidirectionally on doctor profile
+
+### Stage 7: department listing pages (2026-10-27, post-completion)
+- New route `GET /department/{name}` → `Frontend\DoctorController::department` (route name `department.show`); 404 when trimmed name is empty or nothing matches; exact-name match, consistent with the existing service→department doctor query
+- New view `frontend/department.blade.php`: breadcrumb h1 = department name, doctors section (`hospital-doctors` card style with View profile + Book appointment deep links), empty state via existing `public.no_doctors`, related-services section reuses `directory.components-service-card`, meta description comes from the stored `departments` row (status 1, description-trimmed)
+- Service detail page: department doctors section now carries a localized "View all" link to `/department/{name}` (reuses `public.view_all`); controller passes the department string through
+- New localized key `service_detail.related_services` ×11 (+php -l clean)
+- New coverage: `DepartmentPageTest` (8 tests — active-doctor filtering, service matching, empty/404 flows, view-all link, single h1 outline, stored meta description)
+- 346 tests / 1623 assertions; pint clean

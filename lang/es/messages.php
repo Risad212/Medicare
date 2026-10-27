@@ -311,6 +311,7 @@ return [
         'phone' => 'Teléfono',
     ],
     'service_detail' => [
+        'related_services' => 'Servicios relacionados',
         'doctors_heading' => 'Médicos de este departamento',
         'view_profile' => 'Ver perfil',
     ],

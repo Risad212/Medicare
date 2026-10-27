@@ -311,6 +311,7 @@ return [
         'phone' => 'Телефон',
     ],
     'service_detail' => [
+        'related_services' => 'Связанные услуги',
         'doctors_heading' => 'Врачи этого отделения',
         'view_profile' => 'Профиль врача',
     ],

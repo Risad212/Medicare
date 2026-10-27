@@ -324,6 +324,7 @@ return [
         'phone' => 'الهاتف',
     ],
     'service_detail' => [
+        'related_services' => 'الخدمات ذات الصلة',
         'doctors_heading' => 'أطباء هذا القسم',
         'view_profile' => 'عرض الملف',
     ],
