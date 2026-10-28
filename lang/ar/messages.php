@@ -49,10 +49,10 @@ return [
         'time_slot' => 'اختر التاريخ والطبيب أولًا',
         'submit' => 'إرسال',
         'success' => 'تم حفظ الموعد',
-                'doctor_name' => 'اسم الطبيب',
+        'doctor_name' => 'اسم الطبيب',
         'name_placeholder' => 'أدخل اسم المريض',
         'time_slot_label' => 'الفترة الزمنية',
-'validation' => [
+        'validation' => [
             'required' => 'هذا الحقل مطلوب.',
             'invalid' => 'يرجى إدخال قيمة صحيحة.',
             'email_required' => 'البريد الإلكتروني مطلوب للاستشارة عبر الإنترنت.',

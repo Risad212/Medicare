@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Doctor;
 use App\Models\Slider;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -59,12 +61,12 @@ class FrontendA11yTest extends TestCase
 
         foreach (['patient_name', 'phone', 'doctor_id', 'visit_type', 'gender', 'appointment_date', 'time_slot_id'] as $field) {
             $this->assertStringContainsString(
-                'for="'. $field .'"',
+                'for="'.$field.'"',
                 $html,
                 "Missing bound label for [{$field}]."
             );
             $this->assertStringContainsString(
-                'id="'. $field .'"',
+                'id="'.$field.'"',
                 $html,
                 "Missing id on [{$field}]."
             );
@@ -98,8 +100,8 @@ class FrontendA11yTest extends TestCase
      */
     public function test_doctor_detail_booking_form_labels_and_mirrored_constraints(): void
     {
-        $user = \App\Models\User::factory()->create(['role' => 'doctor']);
-        $doctor = \App\Models\Doctor::create([
+        $user = User::factory()->create(['role' => 'doctor']);
+        $doctor = Doctor::create([
             'name' => 'Form Doctor',
             'slug' => 'form-doctor-'.uniqid(),
             'department' => 'Cardiology',

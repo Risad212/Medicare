@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Blog;
 use App\Models\Doctor;
 use App\Models\GeneralSetting;
 use App\Models\Service;
 use App\Models\Slider;
-use App\Models\Blog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

@@ -35,10 +35,10 @@ return [
         'age' => 'Ihr Alter', 'gender' => 'Geschlecht auswählen', 'male' => 'Männlich', 'female' => 'Weiblich', 'other' => 'Divers',
         'date' => 'Termindatum', 'time_slot' => 'Wählen Sie zuerst Datum und Arzt aus',
         'submit' => 'Absenden', 'success' => 'Termin gespeichert',
-                'doctor_name' => 'Name des Arztes',
+        'doctor_name' => 'Name des Arztes',
         'name_placeholder' => 'Patientenname eingeben',
         'time_slot_label' => 'Terminslot',
-'validation' => [
+        'validation' => [
             'required' => 'Dieses Feld ist erforderlich.', 'invalid' => 'Bitte geben Sie einen gültigen Wert ein.',
             'email_required' => 'Für einen Online-Termin ist eine E-Mail-Adresse erforderlich.',
             'email_invalid' => 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',

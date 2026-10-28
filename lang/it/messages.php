@@ -36,10 +36,10 @@ return [
         'male' => 'Uomo', 'female' => 'Donna', 'other' => 'Altro',
         'date' => 'Data dell’appuntamento', 'time_slot' => 'Seleziona prima data e medico',
         'submit' => 'Invia', 'success' => 'Appuntamento salvato',
-                'doctor_name' => 'Nome del medico',
+        'doctor_name' => 'Nome del medico',
         'name_placeholder' => 'Inserisci il nome del paziente',
         'time_slot_label' => 'Fascia oraria',
-'validation' => [
+        'validation' => [
             'required' => 'Questo campo è obbligatorio.', 'invalid' => 'Inserisci un valore valido.',
             'email_required' => 'Per un consulto online è obbligatorio un indirizzo email.',
             'email_invalid' => 'Inserisci un indirizzo email valido.',

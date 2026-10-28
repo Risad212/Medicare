@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\TimeSlot;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -103,7 +104,7 @@ class PatientTimelineTest extends TestCase
             ->assertSee('Asthma', false)
             ->assertSee(__('messages.public.visit_history'), false)
             ->assertSee('Dr. Timeline', false)
-            ->assertSee(\Carbon\Carbon::parse($visit->appointment_date)->format('d M Y'), false);
+            ->assertSee(Carbon::parse($visit->appointment_date)->format('d M Y'), false);
     }
 
     public function test_timeline_shows_localized_empty_state_without_visits(): void

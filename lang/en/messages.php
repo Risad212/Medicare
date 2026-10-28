@@ -97,10 +97,10 @@ return [
         'time_slot' => 'Select date and doctor first',
         'submit' => 'Submit',
         'success' => 'Appointment saved',
-                'doctor_name' => 'Doctor name',
+        'doctor_name' => 'Doctor name',
         'name_placeholder' => 'Enter patient name',
         'time_slot_label' => 'Time slot',
-'validation' => [
+        'validation' => [
             'required' => 'This field is required.',
             'invalid' => 'Please enter a valid value.',
             'email_required' => 'An email address is required for an online consultation.',

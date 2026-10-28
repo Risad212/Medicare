@@ -37,10 +37,10 @@ return [
         'male' => 'Hombre', 'female' => 'Mujer', 'other' => 'Otro',
         'date' => 'Fecha de la cita', 'time_slot' => 'Primero selecciona la fecha y el médico',
         'submit' => 'Enviar', 'success' => 'Cita guardada',
-                'doctor_name' => 'Nombre del médico',
+        'doctor_name' => 'Nombre del médico',
         'name_placeholder' => 'Ingrese el nombre del paciente',
         'time_slot_label' => 'Horario',
-'validation' => [
+        'validation' => [
             'required' => 'Este campo es obligatorio.', 'invalid' => 'Introduce un valor válido.',
             'email_required' => 'Se requiere un correo electrónico para la consulta en línea.',
             'email_invalid' => 'Introduce un correo electrónico válido.',

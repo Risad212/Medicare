@@ -37,10 +37,10 @@ return [
         'male' => 'Masculino', 'female' => 'Feminino', 'other' => 'Outro',
         'date' => 'Data da consulta', 'time_slot' => 'Selecione primeiro a data e o médico',
         'submit' => 'Enviar', 'success' => 'Consulta salva',
-                'doctor_name' => 'Nome do médico',
+        'doctor_name' => 'Nome do médico',
         'name_placeholder' => 'Digite o nome do paciente',
         'time_slot_label' => 'Horário',
-'validation' => [
+        'validation' => [
             'required' => 'Este campo é obrigatório.', 'invalid' => 'Informe um valor válido.',
             'email_required' => 'O e-mail é obrigatório para consultas on-line.',
             'email_invalid' => 'Informe um endereço de e-mail válido.',

@@ -49,10 +49,10 @@ return [
         'time_slot' => 'Choisissez d’abord la date et le médecin',
         'submit' => 'Envoyer',
         'success' => 'Rendez-vous enregistré',
-                'doctor_name' => 'Nom du médecin',
+        'doctor_name' => 'Nom du médecin',
         'name_placeholder' => 'Entrez le nom du patient',
         'time_slot_label' => 'Créneau',
-'validation' => [
+        'validation' => [
             'required' => 'Ce champ est obligatoire.',
             'invalid' => 'Veuillez saisir une valeur valide.',
             'email_required' => 'Une adresse e-mail est obligatoire pour une consultation en ligne.',

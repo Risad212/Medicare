@@ -49,10 +49,10 @@ return [
         'time_slot' => '请先选择日期和医生',
         'submit' => '提交',
         'success' => '预约已保存',
-                'doctor_name' => '医生姓名',
+        'doctor_name' => '医生姓名',
         'name_placeholder' => '请输入患者姓名',
         'time_slot_label' => '就诊时段',
-'validation' => [
+        'validation' => [
             'required' => '此项为必填项。',
             'invalid' => '请输入有效内容。',
             'email_required' => '在线问诊必须提供电子邮箱。',

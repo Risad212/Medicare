@@ -37,10 +37,10 @@ return [
         'male' => 'Erkek', 'female' => 'Kadın', 'other' => 'Diğer',
         'date' => 'Randevu tarihi', 'time_slot' => 'Önce tarih ve doktor seçin',
         'submit' => 'Gönder', 'success' => 'Randevu kaydedildi',
-                'doctor_name' => 'Doktor adı',
+        'doctor_name' => 'Doktor adı',
         'name_placeholder' => 'Hasta adını girin',
         'time_slot_label' => 'Randevu saati',
-'validation' => [
+        'validation' => [
             'required' => 'Bu alan zorunludur.', 'invalid' => 'Lütfen geçerli bir değer girin.',
             'email_required' => 'Çevrim içi görüşme için e-posta adresi gereklidir.',
             'email_invalid' => 'Lütfen geçerli bir e-posta adresi girin.',
