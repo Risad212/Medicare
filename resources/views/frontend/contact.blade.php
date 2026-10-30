@@ -152,11 +152,10 @@
 
                         <div class="col-lg-12">
                             <div class="mb-3">
-                                <textarea 
-                                    name="message" 
+                                <textarea
+                                    name="message"
                                     placeholder="{{ __('messages.contact.write_message') }}"
-                                    style="height: 150px">{{ old('message') }}
-                                </textarea>
+                                    style="height: 150px">{{ old('message') }}</textarea>
                             </div>
                         </div>
                     </div>

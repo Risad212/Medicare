@@ -950,6 +950,10 @@ input:-webkit-autofill:focus {
   background: #f8f8f8;
 }
 
+.service-section.pb-0 {
+  padding-bottom: 0;
+}
+
 .service-section .title-head {
   text-align: center;
   margin-bottom: 40px;
@@ -1614,6 +1618,18 @@ input:-webkit-autofill:focus {
   margin-right: 12px;
 }
 
+.footer-widget-4 .contact-line{
+  display: flex;
+}
+
+.footer-widget-4 .address{
+  color: #fff;
+}
+
+.footer-widget-4 .contact-line span{
+  color: #fff;
+}
+
 /*---- copwywrite text ----*/
 .footer-section .copay-write {
   border-top: 1px solid #797979;
@@ -2010,13 +2026,15 @@ input:-webkit-autofill:focus {
 
 .emargency-services .emarency-wrap {
   display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
   margin-top: 30px;
 }
 
 .emargency-services .emarency-wrap .box {
   display: flex;
   align-items: center;
-  margin-right: 30px;
+  margin-right: 0;
 }
 
 .emargency-services .emarency-wrap .box .icon {

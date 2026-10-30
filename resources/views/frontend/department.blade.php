@@ -58,8 +58,8 @@
         <div class="title-head">
             <h2 class="title">{{ __('messages.service_detail.related_services') }}</h2>
         </div>
+        @include('directory.components-service-card', ['serviceItems' => $services])
     </div>
-    @include('directory.components-service-card', ['serviceItems' => $services])
 </section>
 @endif
 

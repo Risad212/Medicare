@@ -11,7 +11,7 @@
 ])
 
 <!--========== Service Detail ==========-->
-<section class="service-section service-details">
+<section class="service-section service-details pb-0">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
