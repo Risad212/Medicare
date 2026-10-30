@@ -16,6 +16,8 @@
                         <img src="{{ asset('storage/'.$doctor->image) }}"
                              alt="{{ $doctor->name }}"
                              class="img-fluid">
+                    @else
+                        <div class="mc-avatar-fallback" data-notranslate>{{ mb_strtoupper(mb_substr(trim((string) ($doctor->name ?? '')), 0, 1) ?: 'D') }}</div>
                     @endif
                 </div>
             </div>

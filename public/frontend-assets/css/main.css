@@ -334,7 +334,7 @@ input:-webkit-autofill:focus {
   text-transform: capitalize;
   font-weight: 500;
   font-size: 13px;
-  padding: 25px 15px;
+  padding: 25px 10px;
   position: relative;
 }
 
@@ -1072,6 +1072,10 @@ input:-webkit-autofill:focus {
   text-transform: capitalize;
 }
 
+.service-details {
+  padding: 60px 0;
+}
+
 @media only screen and (max-width: 768px) {
   .service-section {
     padding: 50px 0;
@@ -1183,6 +1187,9 @@ input:-webkit-autofill:focus {
 }
 
 .doctor-card .card-img img {
+  width: 100%;
+  aspect-ratio: 19 / 15;
+  object-fit: cover;
   transition: 0.4s;
 }
 
@@ -3002,18 +3009,77 @@ textarea {
 }
 
 /* ---- Doctors search filter (scoped to search module) ---- */
+.mc-filter-card {
+    background: #fff;
+    border: 1px solid #e3e9f0;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(22, 32, 43, .06);
+    padding: 14px 18px;
+}
+.mc-filter-card .form-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #2c2d3f;
+    margin-bottom: 4px;
+    letter-spacing: .01em;
+}
+.mc-filter-card .form-control {
+    height: 44px;
+    border: 1px solid #dbe4ee;
+    border-radius: 10px;
+    color: #16202b;
+    font-size: 13.5px;
+    padding: 0 14px;
+    transition: border-color .25s, box-shadow .25s;
+}
+.mc-filter-card .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(5, 211, 176, .15);
+    outline: none;
+}
+.mc-filter-card #doctor-search {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230e7c66' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 14px center;
+    background-size: 16px 16px;
+    padding-left: 38px;
+}
 .mc-search-btn {
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: var(--primary-color);
     border: 2px solid var(--primary-color);
     color: #fff;
     font-weight: 600;
-    padding: 10px 24px;
-    border-radius: 4px;
+    padding: 0 26px;
+    border-radius: 22px;
     transition: 0.3s;
 }
 .mc-search-btn:hover {
-    background: transparent;
-    color: var(--primary-color);
+    background: #04b89a;
+    border-color: #04b89a;
+    color: #fff;
+}
+.mc-reset-btn {
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    border: 1.5px solid #dbe4ee;
+    border-radius: 22px;
+    color: #2c2d3f;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.mc-reset-btn:hover {
+    border-color: var(--primary-color);
+    color: #0e7c66;
+    background: #e6f4f1;
 }
 
 /* ---- Language switcher: kill Bootstrap caret dash under label ---- */
@@ -3152,6 +3218,26 @@ body {
     text-align: center;
     height: 100%;
 }
+.mc-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 19 / 15;
+  background: #e6f4f1;
+  color: #0e7c66;
+  font-weight: 700;
+  font-size: 64px;
+  text-transform: uppercase;
+}
+
+.doctor-details-image .mc-avatar-fallback {
+  aspect-ratio: auto;
+  min-height: 320px;
+  font-size: 96px;
+  border-radius: 6px;
+}
+
 .mc-dept-links a {
     display: inline-block;
     padding: 8px 15px;

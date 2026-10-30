@@ -1,8 +1,8 @@
 {{-- Search module (app/Modules/Search/). Rendered only when the
      'search' flag is on; the controller passes $filters + $departments. --}}
 <!--========== Doctors Search ==========-->
-<div class="container mt-4">
-    <form action="{{ route('doctor') }}" method="GET" class="row g-2 align-items-end">
+<div class="container mt-3">
+    <form action="{{ route('doctor') }}" method="GET" class="row gx-3 align-items-end mc-filter-card">
         <div class="col-md-5">
             <label class="form-label" for="doctor-search">Search</label>
             <input type="text" id="doctor-search" name="search" class="form-control" placeholder="Name, specialist, department…" value="{{ $filters['search'] ?? request('search') }}" maxlength="100">
@@ -23,7 +23,7 @@
         <div class="col-md-2 d-flex gap-2">
             <button type="submit" class="mc-search-btn">{{ __('messages.public.filter') }}</button>
             @if(request()->hasAny(['search', 'department', 'date']))
-                <a href="{{ route('doctor') }}" class="btn btn-outline-secondary">Reset</a>
+                <a href="{{ route('doctor') }}" class="mc-reset-btn">Reset</a>
             @endif
         </div>
     </form>

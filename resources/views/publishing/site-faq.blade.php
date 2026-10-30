@@ -12,8 +12,6 @@
 
 <section class="py-5">
     <div class="container" style="max-width:860px">
-        <p class="text-muted mb-4">{{ __('messages.public.faq_intro') }}</p>
-
         @if($faqs->count())
         <style>
             .mc-faq-list{display:grid;gap:12px}

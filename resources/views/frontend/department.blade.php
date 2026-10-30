@@ -23,7 +23,11 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="doctor-card mc-dept-doctor">
                         <div class="card-img">
-                            <img class="img-fluid" src="{{ asset('storage/'.($doctor->image ?? '')) }}" alt="{{ $doctor->name ?? 'Doctor' }}">
+                            @if(!empty($doctor->image))
+                                <img class="img-fluid" src="{{ asset('storage/'.$doctor->image) }}" alt="{{ $doctor->name ?? 'Doctor' }}">
+                            @else
+                                <div class="mc-avatar-fallback" data-notranslate>{{ mb_strtoupper(mb_substr(trim((string) ($doctor->name ?? '')), 0, 1) ?: 'D') }}</div>
+                            @endif
                         </div>
                         <div class="card-content">
                             <h3 class="title" data-notranslate>{{ $doctor->name }}</h3>
