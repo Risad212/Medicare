@@ -25,7 +25,7 @@ Route::middleware(['web', 'auth', 'admin', 'module:lab', 'staff.modules'])->grou
 
     Route::get('/admin/lab-reports/{report}/download', [AdminLabOrderController::class, 'downloadReport'])->name('admin.lab-reports.download');
 
-    Route::get('/admin/exports/lab-orders', [AdminExportController::class, 'labOrders'])->middleware('throttle:10,60')->name('admin.exports.lab-orders');
+    Route::get('/admin/exports/lab-orders', [AdminExportController::class, 'labOrders'])->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,60'] : [])->name('admin.exports.lab-orders');
 
     Route::post('/admin/lab-orders/{order}/invoice', [AdminLabOrderController::class, 'createInvoice'])->name('admin.invoices.create-from-order');
 });

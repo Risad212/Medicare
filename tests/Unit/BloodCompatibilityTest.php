@@ -52,4 +52,9 @@ class BloodCompatibilityTest extends TestCase
     {
         $this->assertSame(['O-'], BloodCompatibility::compatibleDonorsFor('O-'));
     }
+
+    public function test_empty_recipient_has_no_compatible_donors(): void
+    {
+        $this->assertSame([], BloodCompatibility::compatibleDonorsFor(''));
+    }
 }

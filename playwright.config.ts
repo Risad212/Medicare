@@ -31,6 +31,7 @@ export default defineConfig({
         env: {
             APP_ENV: 'local',
             MODULE_LOCKOUT: 'false',
+            THROTTLE_ENABLED: 'false',
         },
     },
 });

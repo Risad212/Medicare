@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Route;
 
 // Auth scaffolding (verification off, custom login below). Wrapped with a
 // per-IP throttle so password reset/forgot/register can't be hammered.
-Route::middleware(app()->environment('local','testing') ? [] : ['throttle:10,1'])->group(function () {
+Route::middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,1'] : [])->group(function () {
     Auth::routes(['verify' => true, 'login' => false]);
 });
 
@@ -47,12 +47,12 @@ Route::middleware(app()->environment('local','testing') ? [] : ['throttle:10,1']
 // LoginController::hasTooManyLoginAttempts() at runtime.
 Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthLoginController::class, 'login'])
-    ->middleware(app()->environment('local','testing') ? [] : (Module::enabled('lockout') ? ['throttle:5,1'] : []))
+    ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? (Module::enabled('lockout') ? ['throttle:5,1'] : []) : [])
     ->name('login.attempt');
 
 // Google OAuth for patients (also links existing accounts)
-Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->middleware(app()->environment('local','testing') ? [] : ['throttle:10,1'])->name('auth.google.redirect');
-Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->middleware(app()->environment('local','testing') ? [] : ['throttle:10,1'])->name('auth.google.callback');
+Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,1'] : [])->name('auth.google.redirect');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,1'] : [])->name('auth.google.callback');
 
 Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
 
@@ -129,11 +129,11 @@ Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
     // Typeahead pickers must be declared before the patients resource so that
     // "/admin/patients/picker" is not captured by "/admin/patients/{patient}".
     Route::get('/admin/patients/picker', [PatientPickerController::class, 'users'])
-        ->middleware(app()->environment('local','testing') ? [] : ['throttle:60,1'])
+        ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:60,1'] : [])
         ->name('admin.patients.picker');
 
     Route::get('/admin/patient-records/picker', [PatientPickerController::class, 'records'])
-        ->middleware(app()->environment('local','testing') ? [] : ['throttle:60,1'])
+        ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:60,1'] : [])
         ->name('admin.patient-records.picker');
 
     Route::resource('/admin/patients', AdminPatientController::class)
@@ -182,9 +182,9 @@ Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
     | Export Routes
     |--------------------------------------------------------------------------
     */
-    Route::get('/admin/exports/appointments', [AdminExportController::class, 'appointments'])->middleware(app()->environment('local','testing') ? [] : ['throttle:10,60'])->name('admin.exports.appointments');
+    Route::get('/admin/exports/appointments', [AdminExportController::class, 'appointments'])->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,60'] : [])->name('admin.exports.appointments');
 
-    Route::get('/admin/exports/patients', [AdminExportController::class, 'patients'])->middleware(app()->environment('local','testing') ? [] : ['throttle:10,60'])->name('admin.exports.patients');
+    Route::get('/admin/exports/patients', [AdminExportController::class, 'patients'])->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,60'] : [])->name('admin.exports.patients');
 
     // Billing module routes live in app/Modules/Billing/routes.php.
 
@@ -197,7 +197,7 @@ Route::middleware(['auth', 'admin', 'staff.modules'])->group(function () {
 
 // Public contact form - throttle to prevent spam (was incorrectly inside admin middleware)
 Route::post('/contact-submit', [FrontContactController::class, 'store'])
-    ->middleware(app()->environment('local','testing') ? [] : ['throttle:10,1'])
+    ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,1'] : [])
     ->name('contact.submit');
 
 Route::middleware(['auth', 'doctor'])->group(function () {
@@ -215,11 +215,11 @@ Route::middleware(['auth', 'doctor'])->group(function () {
     // Doctor prescription routes (incl. appointments picker) live in app/Modules/Prescriptions/routes.php.
 
     Route::get('/doctor/patients/picker', [PatientPickerController::class, 'users'])
-        ->middleware(app()->environment('local','testing') ? [] : ['throttle:60,1'])
+        ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:60,1'] : [])
         ->name('doctor.patients.picker');
 
     Route::get('/doctor/patient-records/picker', [PatientPickerController::class, 'records'])
-        ->middleware(app()->environment('local','testing') ? [] : ['throttle:60,1'])
+        ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:60,1'] : [])
         ->name('doctor.patient-records.picker');
 
     // Doctor lab order routes live in the module: app/Modules/Lab/routes.php
@@ -255,9 +255,9 @@ Route::get('/contact', [FrontContactController::class, 'index'])->name('contact'
 
 Route::get('/appointment', [FrontAppointmentController::class, 'index'])->name('appointment');
 
-Route::post('/appointment', [FrontAppointmentController::class, 'store'])->middleware(app()->environment('local','testing') ? [] : ['throttle:10,1'])->name('appointment.store');
+Route::post('/appointment', [FrontAppointmentController::class, 'store'])->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,1'] : [])->name('appointment.store');
 
-Route::get('/get-available-slots', [FrontAppointmentController::class, 'getAvailableSlots'])->middleware(app()->environment('local','testing') ? [] : ['throttle:60,1'])->name('get.slots');
+Route::get('/get-available-slots', [FrontAppointmentController::class, 'getAvailableSlots'])->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:60,1'] : [])->name('get.slots');
 
 Route::middleware('auth')->group(function () {
 
@@ -282,26 +282,26 @@ Route::middleware('auth')->group(function () {
 
     // In-app notifications (authenticated users — view chosen per role).
     Route::get('/notifications', [NotificationController::class, 'index'])
-        ->middleware(app()->environment('local','testing') ? [] : ['throttle:60,1'])
+        ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:60,1'] : [])
         ->name('notifications.index');
 
     Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
-        ->middleware(app()->environment('local','testing') ? [] : ['throttle:120,1'])
+        ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:120,1'] : [])
         ->name('notifications.unread-count');
 
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
-        ->middleware(app()->environment('local','testing') ? [] : ['throttle:60,1'])
+        ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:60,1'] : [])
         ->name('notifications.read');
 
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
-        ->middleware(app()->environment('local','testing') ? [] : ['throttle:10,1'])
+        ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,1'] : [])
         ->name('notifications.read-all');
 
 });
 Route::get('/appointment/cancel/{token}', [FrontAppointmentController::class, 'showCancelByToken'])
-    ->middleware(app()->environment('local','testing') ? [] : ['throttle:10,1'])
+    ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,1'] : [])
     ->name('appointment.cancel-page');
 
 Route::put('/appointment/cancel/{token}', [FrontAppointmentController::class, 'cancelByToken'])
-    ->middleware(app()->environment('local','testing') ? [] : ['throttle:10,1'])
+    ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,1'] : [])
     ->name('appointment.cancel-by-token');
