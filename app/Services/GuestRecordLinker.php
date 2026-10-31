@@ -22,6 +22,13 @@ class GuestRecordLinker
      */
     public static function link(User $user): void
     {
+        // Only a verified mailbox owner may claim guest records that were
+        // booked with this address. An unverified email is self-asserted
+        // and must not silently take over another patient's history.
+        if (empty($user->email_verified_at)) {
+            return;
+        }
+
         $email = strtolower(trim((string) $user->email));
 
         if ($email === '') {

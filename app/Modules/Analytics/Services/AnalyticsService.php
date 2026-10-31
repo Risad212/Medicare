@@ -16,8 +16,8 @@ class AnalyticsService
     public function data(): array
     {
         $monthStart = now()->startOfMonth();
-        $lastMonthStart = now()->subMonth()->startOfMonth();
-        $lastMonthEnd = now()->subMonth()->endOfMonth();
+        $lastMonthStart = now()->subMonthNoOverflow()->startOfMonth();
+        $lastMonthEnd = now()->subMonthNoOverflow()->endOfMonth();
 
         $appointmentsThisMonth = Appointment::whereBetween('created_at', [$monthStart, now()])->count();
         $appointmentsLastMonth = Appointment::whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count();

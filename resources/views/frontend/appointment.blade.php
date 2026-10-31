@@ -167,7 +167,7 @@
             select.value = preselect;
         }
     })();
-</script>    const consultationMode = document.getElementById('consultation_mode');
+    const consultationMode = document.getElementById('consultation_mode');
     const updatePatientEmailRequirement = function () {
         const email = document.getElementById('patient_email');
         if (email) {

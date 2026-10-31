@@ -31,6 +31,7 @@ class GoogleAccountTest extends TestCase
             ->put(route('profile.update'), [
                 'name' => $user->name,
                 'email' => $user->email,
+                'current_password' => 'password',
                 'password' => 'Brand-New-Pass-123!',
                 'password_confirmation' => 'Brand-New-Pass-123!',
             ])

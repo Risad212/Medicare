@@ -34,6 +34,14 @@ class UpdateProfileRequest extends FormRequest
             'password' => ['nullable', 'string', 'confirmed', Password::min(12)->letters()->mixedCase()->numbers()->symbols()],
         ];
 
+        // Re-authenticate before changing an existing password. A stolen
+        // session must not be able to silently lock the account owner out.
+        // Accounts that have never set a password (e.g. Google-only) may set
+        // one for the first time without proving the (unknown) old one.
+        if ($this->filled('password') && auth()->user()?->password !== null) {
+            $rules['current_password'] = ['required', 'current_password'];
+        }
+
         if (Module::enabled('allergy')) {
             $rules['allergies'] = ['nullable', 'string', 'max:2000'];
         }

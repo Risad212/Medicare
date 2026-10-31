@@ -30,6 +30,7 @@ export default defineConfig({
         timeout: 60 * 1000,
         env: {
             APP_ENV: 'local',
+            MODULE_LOCKOUT: 'false',
         },
     },
 });

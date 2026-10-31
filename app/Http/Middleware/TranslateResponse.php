@@ -60,6 +60,13 @@ class TranslateResponse
             return false;
         }
 
+        // Never send authenticated (potentially PHI-bearing) pages to an
+        // external translation provider. Only public, guest-visible content
+        // is eligible for auto-translation.
+        if (auth()->check()) {
+            return false;
+        }
+
         $contentType = (string) $response->headers->get('Content-Type', '');
         if ($contentType !== '' && ! str_contains($contentType, 'text/html')) {
             return false;

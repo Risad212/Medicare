@@ -9,8 +9,6 @@ use App\Services\GuestRecordLinker;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
@@ -103,7 +101,7 @@ class GoogleAuthController extends Controller
                     'google_id' => $googleId,
                     'provider' => 'google',
                     'avatar' => $avatar,
-                    'password' => Hash::make(Str::random(32)), // random, never used; nullable now
+                    'password' => null, // set later via profile or password-reset flow
                     'email_verified_at' => now(), // Google email is verified
                 ]);
                 $user->forceFill(['role' => 'patient'])->save();

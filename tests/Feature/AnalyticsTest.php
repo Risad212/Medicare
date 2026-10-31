@@ -24,13 +24,13 @@ class AnalyticsTest extends TestCase
             'status' => 1,
         ]);
         User::factory()->create(['role' => 'patient']);
-        User::factory()->create(['role' => 'patient', 'created_at' => now()->subMonth()]);
+        User::factory()->create(['role' => 'patient', 'created_at' => now()->subMonthNoOverflow()]);
 
         // 2 this month (pending + completed), 1 last month (cancelled).
         $a1 = $this->makeAppointment($doctor->id, 0);
         $a2 = $this->makeAppointment($doctor->id, 2);
         $old = $this->makeAppointment($doctor->id, 3);
-        Appointment::whereKey($old->id)->update(['created_at' => now()->subMonth()]);
+        Appointment::whereKey($old->id)->update(['created_at' => now()->subMonthNoOverflow()]);
 
         Invoice::create([
             'invoice_no' => 'INV-1',

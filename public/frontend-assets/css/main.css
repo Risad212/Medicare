@@ -950,10 +950,6 @@ input:-webkit-autofill:focus {
   background: #f8f8f8;
 }
 
-.service-section.pb-0 {
-  padding-bottom: 0;
-}
-
 .service-section .title-head {
   text-align: center;
   margin-bottom: 40px;
@@ -1618,15 +1614,11 @@ input:-webkit-autofill:focus {
   margin-right: 12px;
 }
 
-.footer-widget-4 .contact-line{
+.footer-widget-4 .contact-line {
   display: flex;
 }
 
-.footer-widget-4 .address{
-  color: #fff;
-}
-
-.footer-widget-4 .contact-line span{
+.footer-widget-4 .contact-line span {
   color: #fff;
 }
 

@@ -137,6 +137,10 @@ class ProfileController extends Controller
 
         $user->update($validated);
 
+        if ($request->filled('password')) {
+            Auth::logoutOtherDevices($request->input('password'));
+        }
+
         return back()->with('success', 'Profile updated successfully.');
     }
 

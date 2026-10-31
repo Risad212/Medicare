@@ -231,7 +231,7 @@
                 </div>
             </div>
 
-             @if(\App\Support\Module::enabled('reviews'))
+            @if(\App\Support\Module::enabled('reviews'))
             <div class="col-lg-12">
                 <div class="doctor-reviews mt-5">
                     <h3>{{ __('messages.reviews.heading') }}</h3>
@@ -272,7 +272,6 @@
                 </div>
             </div>
             @endif
-            
         </div>
     </div>
 </section>
@@ -283,7 +282,7 @@
         <div class="title-head">
             <h2 class="title">{{ __('messages.service_detail.related_services') }}</h2>
         </div>
-         @include('directory.components-service-card', ['serviceItems' => $relatedServices])
+        @include('directory.components-service-card', ['serviceItems' => $relatedServices])
     </div>
 </section>
 @endif

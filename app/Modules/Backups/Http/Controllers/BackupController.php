@@ -3,6 +3,7 @@
 namespace App\Modules\Backups\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Services\ActivityLogger;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,18 +14,22 @@ class BackupController extends Controller
         return view('backups.index', ['backups' => $this->listBackups()]);
     }
 
-    public function download(string $file)
+    public function download(string $file, ActivityLogger $audit)
     {
         // Strict allowlist: plain zip filename from our own listing, so
         // '../../.env'-style traversal can never escape the backup dir.
         abort_unless($this->isListedBackup($file), 404);
 
+        $audit->log('backup_download', null, ['file' => $file]);
+
         return Storage::disk($this->disk())->download($this->prefix().$file);
     }
 
-    public function run()
+    public function run(ActivityLogger $audit)
     {
         Artisan::call('backup:run', ['--disable-notifications' => true]);
+
+        $audit->log('backup_run', null, []);
 
         return back()->with('success', 'Backup completed successfully.');
     }

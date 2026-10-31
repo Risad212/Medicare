@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\DatabaseNotification;
 
@@ -42,7 +43,7 @@ class NotificationController extends Controller
     public function markAsRead(DatabaseNotification $notification)
     {
         // 404 (not 403) so we never reveal whether a notification id exists.
-        abort_if($notification->notifiable_id !== auth()->id(), 404);
+        abort_if($notification->notifiable_type !== User::class || $notification->notifiable_id !== auth()->id(), 404);
 
         if ($notification->unread()) {
             $notification->markAsRead();
