@@ -17,10 +17,12 @@ use App\Modules\Vaccination\VaccinationServiceProvider;
 use App\Modules\Zoom\ZoomServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\AuthServiceProvider;
+use Illuminate\View\ViewServiceProvider;
 
 $providers = [
     AppServiceProvider::class,
     AuthServiceProvider::class,
+    ViewServiceProvider::class,
     PharmacyServiceProvider::class,
     BedsServiceProvider::class,
     AmbulanceServiceProvider::class,
