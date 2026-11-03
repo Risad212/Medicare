@@ -1,3 +1,4 @@
+
 <?php
 
 return [
@@ -6,11 +7,6 @@ return [
     |--------------------------------------------------------------------------
     | Default Filesystem Disk
     |--------------------------------------------------------------------------
-    |
-    | Here you may specify the default filesystem disk that should be used
-    | by the framework. The "local" disk, as well as a variety of cloud
-    | based disks are available to your application for file storage.
-    |
     */
 
     'default' => env('FILESYSTEM_DISK', 'local'),
@@ -19,13 +15,6 @@ return [
     |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
-    |
-    | Below you may configure as many filesystem disks as necessary, and you
-    | may even configure multiple disks for the same driver. Examples for
-    | most supported storage drivers are configured here for reference.
-    |
-    | Supported drivers: "local", "ftp", "sftp", "s3"
-    |
     */
 
     'disks' => [
@@ -33,22 +22,21 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            // Private files must never be web-served; with 'serve' => true the
-            // framework would claim the /storage URL and block public files.
             'serve' => false,
             'throw' => false,
             'report' => false,
         ],
 
+        /*
+         * Public files are stored directly in Wasmer's persistent volume.
+         * Volume mount: /app/public/storage
+         */
+
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'root' => public_path('storage'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/') . '/storage',
             'visibility' => 'public',
-            // Let the framework serve public-disk files directly at /storage/*
-            // so uploads work even on hosts that cannot follow the symlink
-            // created by `storage:link` (e.g. edge/container deployments).
-            'serve' => true,
             'throw' => false,
             'report' => false,
         ],
@@ -73,14 +61,10 @@ return [
     | Symbolic Links
     |--------------------------------------------------------------------------
     |
-    | Here you may configure the symbolic links that will be created when the
-    | `storage:link` Artisan command is executed. The array keys should be
-    | the locations of the links and the values should be their targets.
-    |
+    | No symlink is needed because the volume is mounted directly
+    | at public/storage.
     */
 
-    'links' => [
-        public_path('storage') => storage_path('app/public'),
-    ],
+    'links' => [],
 
 ];

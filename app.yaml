@@ -22,4 +22,4 @@ env:
 
 volumes:
   - name: medicare-uploads
-    mount: /app/storage/app/public
+    mount: /app/storage/app/storage
