@@ -1,3 +1,28 @@
+# Wasmer Edge app configuration for MediCare (Laravel/PHP)
+# Deploy with: wasmer deploy --build-remote --non-interactive
+# NOTE: a volume mount REPLACES the packaged folder at that path, so seed
+# media must be placed into the volume (the /setup one-time endpoint copies
+# it from the packaged frontend-assets on first run).
+kind: wasmer.io/App.v0
+# Matches https://medicare-risad212.wasmer.app — adjust owner/app name if
+# your dashboard shows different values.
+name: medicare
+owner: risad212
+package: .
+
+env:
+  APP_ENV: production
+  APP_DEBUG: "false"
+  # Allows the DemoDataSeeder to run in production. The /setup endpoint
+  # below needs this during the one-time content top-up. After setup has
+  # succeeded you can change this to "false" and redeploy.
+  DEMO_DATA_ENABLED: "true"
+  # Guards the one-time /setup/{token} endpoint. Remove this line after
+  # running setup once (the endpoint then 404s permanently).
+  SETUPTOKEN: "9467cd593ca60e8f26eef7ef43032dd4"
+
 volumes:
+  # Persistent storage for admin uploads: sliders, banners, doctors, blogs,
+  # logos, etc. Mounted exactly where Laravel's public disk root lives.
   - name: medicare-uploads
     mount: /app/storage/app/public

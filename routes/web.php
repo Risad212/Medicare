@@ -25,8 +25,41 @@ use App\Http\Controllers\Settings\AboutSettingController;
 use App\Http\Controllers\Settings\GeneralSettingController;
 use App\Http\Controllers\Settings\HomeSettingController;
 use App\Support\Module;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+/*
+|--------------------------------------------------------------------------
+| Storage & One-Time Deployment Setup
+|--------------------------------------------------------------------------
+*/
+
+// Serve public-disk files through Laravel when the web server cannot follow
+// the public/storage symlink (e.g. containers/edge deploys without static
+// passthrough). Locally the static server answers first, so this only acts
+// as a fallback.
+Route::get('/storage/{path}', function (string $path) {
+    if (str_contains($path, '..') || ! Storage::disk('public')->exists($path)) {
+        abort(404);
+    }
+
+    return Storage::disk('public')->response($path);
+})->where('path', '.*')->name('storage.serve');
+
+// One-time migration + content top-up for hosts without shell access
+// (Wasmer Edge). Run once with the SETUP_TOKEN, then disable on the host.
+Route::get('/setup/{token}', function (string $token) {
+    abort_unless(hash_equals((string) config('app.setup_token', ''), $token), 404);
+
+    Artisan::call('migrate', ['--force' => true]);
+    $output = Artisan::output();
+    Artisan::call('db:seed', ['--force' => true]);
+    $output .= PHP_EOL.Artisan::output();
+
+    return '<pre>'.e($output).'</pre>';
+});
 
 /*
 |--------------------------------------------------------------------------

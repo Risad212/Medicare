@@ -86,6 +86,8 @@ return [
 
     'demo_data_enabled' => env('DEMO_DATA_ENABLED', false),
 
+    'setup_token' => env('SETUPTOKEN'),
+
     /*
     |--------------------------------------------------------------------------
     | Encryption Key
