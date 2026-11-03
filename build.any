@@ -11,4 +11,16 @@ config = laravel_config(
 )
 
 build = laravel_build(config)
-laravel_serve(config, build, name = "medicare")
+
+laravel_serve(
+    config,
+    build,
+    name = "medicare",
+    commands = {
+        "start": "php -S 0.0.0.0:8080 -t public",
+        "after_deploy": "php artisan migrate --force --no-interaction",
+    },
+    volumes = [
+        volume("medicare-uploads", "/app/storage/app/public"),
+    ],
+)
