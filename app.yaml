@@ -19,3 +19,7 @@ package: .
 env:
   APP_ENV: production
   APP_DEBUG: "false"
+
+volumes:
+  - name: medicare-uploads
+    mount: /app/storage/app/public
