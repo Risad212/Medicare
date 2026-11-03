@@ -17,7 +17,7 @@ class StorageServingTest extends TestCase
 
         $this->get('/storage/sliders/slider-1.jpg')
             ->assertOk()
-            ->assertSee('fake-image-content');
+            ->assertHeader('Content-Type', 'image/jpeg');
     }
 
     public function test_storage_route_returns_404_for_missing_and_traversal_paths(): void

@@ -33,7 +33,9 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // Private files must never be web-served; with 'serve' => true the
+            // framework would claim the /storage URL and block public files.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],
@@ -43,6 +45,10 @@ return [
             'root' => storage_path('app/public'),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
+            // Let the framework serve public-disk files directly at /storage/*
+            // so uploads work even on hosts that cannot follow the symlink
+            // created by `storage:link` (e.g. edge/container deployments).
+            'serve' => true,
             'throw' => false,
             'report' => false,
         ],

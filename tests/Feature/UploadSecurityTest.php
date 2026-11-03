@@ -5,11 +5,21 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class UploadSecurityTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Keep generated test uploads out of the real public disk (that disk
+        // holds bundled production media on edge deployments).
+        Storage::fake('public');
+    }
 
     public function test_svg_logo_upload_is_rejected(): void
     {
