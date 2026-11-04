@@ -328,12 +328,14 @@ Route::put('/appointment/cancel/{token}', [FrontAppointmentController::class, 'c
 
 ////===================================================
 Route::get('/_storage-check', function () {
-    $disk = \Illuminate\Support\Facades\Storage::disk('public');
-    $path = 'settings/2tJubAEHwnnv47csV3k3YEF8pzJGwC6BanK0MKu1.png';
+    $file = 'settings/2tJubAEHwnnv47csV3k3YEF8pzJGwC6BanK0MKu1.png';
 
     return response()->json([
-        'exists' => $disk->exists($path),
-        'size' => $disk->exists($path) ? $disk->size($path) : null,
+        'disk_root' => config('filesystems.disks.public.root'),
+        'disk_exists' => \Storage::disk('public')->exists($file),
+        'public_file_exists' => file_exists(public_path('storage/'.$file)),
+        'old_file_exists' => file_exists(storage_path('app/public/'.$file)),
+        'storage_is_link' => is_link(public_path('storage')),
     ]);
 });
     
