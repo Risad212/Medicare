@@ -21,7 +21,7 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app/private'),
+            'root' => storage_path('app/public'),
             'serve' => false,
             'throw' => false,
             'report' => false,
