@@ -325,3 +325,15 @@ Route::get('/appointment/cancel/{token}', [FrontAppointmentController::class, 's
 Route::put('/appointment/cancel/{token}', [FrontAppointmentController::class, 'cancelByToken'])
     ->middleware(filter_var(env('THROTTLE_ENABLED', true), FILTER_VALIDATE_BOOLEAN) ? ['throttle:10,1'] : [])
     ->name('appointment.cancel-by-token');
+
+////===================================================
+Route::get('/_storage-check', function () {
+    $disk = \Illuminate\Support\Facades\Storage::disk('public');
+    $path = 'settings/2tJubAEHwnnv47csV3k3YEF8pzJGwC6BanK0MKu1.png';
+
+    return response()->json([
+        'exists' => $disk->exists($path),
+        'size' => $disk->exists($path) ? $disk->size($path) : null,
+    ]);
+});
+    
