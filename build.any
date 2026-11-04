@@ -19,7 +19,7 @@ laravel_serve(
     name = "medicare",
     commands = {
         "start": "php -S 0.0.0.0:8080 -t public",
-        "after_deploy": "php artisan migrate --force --no-interaction",
+       "after_deploy": "php artisan config:clear && php artisan migrate --force --no-interaction",
     },
     volumes = [
         volume("medicare-uploads", "/app/storage/app/public"),
